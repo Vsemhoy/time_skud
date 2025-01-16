@@ -12,15 +12,15 @@
 
 .sk_state_outside > td:first-child {
     /* background-color: #ffe1e1; */
-    border-left: 9px solid  #fda5a5;
+    border-left: 9px solid  #d27474;
 }
 .sk_state_active > td:first-child {
     /* background-color: #dcffdc; */
-    border-left: 9px solid #9efa9e;
+    border-left: 9px solid #6dcdbd;
 }
 .sk_state_somewhere > td:first-child {
     /* background-color: #FCFCB9; */
-    border-left: 9px solid #ffff8d;
+    border-left: 9px solid #fce08a;
 }
 
 /* td {
@@ -28,7 +28,7 @@
 }
     */
 td:first-child {
-    background: rgb(255,255,255);
+    /* background: rgb(255,255,255); */
 /* background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); */
 } 
 
@@ -41,4 +41,24 @@ td:first-child {
 }
 .sk_table_headrow > td:first-child{
     background: none;
+}
+
+.sk-user-view-table{
+    width: 100%;
+}
+.sk-user-view-table tr > td {
+    border-bottom: 1px dotted rgb(185, 185, 185);
+}
+.sk-table-current-user {
+    background-color: #1677ff15;
+}
+.sk-table-current-user > td {
+    border-top: 2px solid #1677ff;
+    border-bottom: 2px solid #1677ff !important;
+}
+.sk-table-current-user > td:first-child{
+    /* border-left: 2px solid #1677ff; */
+}
+.sk-table-current-user > td:last-child{
+    border-right: 2px solid #1677ff;
 }

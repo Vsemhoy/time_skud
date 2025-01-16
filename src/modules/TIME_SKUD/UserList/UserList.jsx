@@ -6,10 +6,27 @@ import '../style/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS } from "../../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
 import { ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import {PROD_AXIOS_INSTANCE} from "./../../../API/API";
 
-const UserList = ()=>{
 
-  const [userListData, setUserListData] = useState(DS_DEFAULT_USERS.sort((a, b) => b.department - a.department));
+const UserList = (props)=>{
+  const { userdata } = props;
+  const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
+
+  const [baseUserListData, setBaseUserListData] = useState(DS_DEFAULT_USERS);
+  const [userListData, setUserListData] = useState(baseUserListData.sort((a, b) => b.department - a.department));
+
+  const [departments, setDepartments]  = useState([
+          { key: 0, value: 0, label: 'Все' },
+          ...DS_DEPARTMENTS.map((dep)=>
+              ({
+              key: `departament_${dep.id}`,
+              value: dep.id,
+              label: dep.name
+          })
+      )
+    ]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortBy, setSortBy ] = useState(null);
@@ -20,11 +37,11 @@ const UserList = ()=>{
       setIsModalVisible(true); // Открываем модальное окно
     };
       
-      // const OpenUserCard = (event)=>{
-      //   alert('Hello')
-      //   console.log('event', event);
-      // }
 
+    // const fet = {
+    //     "status" : если null|0 - работающие (status=0), если 1 - уволенные (status=1)
+
+    // }
 
     const columns = [
       {
@@ -66,8 +83,57 @@ const UserList = ()=>{
 
 
     
+  /** ------------------ FETCHES ---------------- */
+    /**
+     * Получение списка отделов
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_departments = async (req, res) => {
+      try {
+          let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
+          console.log('response' + ' => ' + response);
+          // setOrganizations(organizations_response.data.org_list)
+          // setTotal(organizations_response.data.total_count)
+          setDepartments(response.data);
+      } catch (e) {
+          console.log(e)
+      } finally {
+          // setLoadingOrgs(false)
+      }
+  }
+
+
+      /**
+       * Получение списка пользователей
+       * @param {*} req 
+       * @param {*} res 
+       */
+      const get_users = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
+            console.log('response' + ' => ' + response);
+            console.log('response.data' + ' => ' + response.data);
+            setBaseUserListData(response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+  /** ------------------ FETCHES END ---------------- */
+
+
+  useEffect(() => {
+    if (CSRF_TOKEN){
+      PRODMODE && get_departments();
+      PRODMODE && get_users();
+    }
+  })
+
+
       
-         // Функция для определения класса строки
+    // Функция для определения класса строки
     const rowClassName = (record) => {
       let classname = '';
       switch (record.state) {
@@ -85,118 +151,30 @@ const UserList = ()=>{
             break;
       }
       if (record.type){
-        classname += ' sk_table_headrow'
+        classname += ' sk_table_headrow';
+      }
+      if (record.id == currentUserId){
+        classname += ' sk-table-current-user';
       }
       return classname;
   };
 
 
-
-   const sortUserList = (sortByValue) => {
-    console.log('sortBy' + ' => ' + sortByValue);
-    // await setUserListData(DS_DEFAULT_USERS.sort((a, b) => b.department - a.department));
-    // Копируем текущие данные для сортировки
-    let sortedData = DS_DEFAULT_USERS.sort((a, b) => b.department - a.department);
-    setSortBy(sortByValue);
-    switch (sortByValue) {
-        case "department_asc":
-            sortedData.sort((a, b) => a.department - b.department);
-            sortedData = insertDepartmentNames(sortedData);
-            break;
-
-        case "department_desc":
-            sortedData.sort((a, b) => b.department - a.department);
-            break;
-
-        case "name_asc":
-            sortedData.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-
-        case "name_desc":
-            sortedData.sort((a, b) => b.name.localeCompare(a.name));
-            break;
-
-        case "surname_asc":
-            sortedData.sort((a, b) => a.surname.localeCompare(b.surname));
-            break;
-
-        case "surname_desc":
-            sortedData.sort((a, b) => b.surname.localeCompare(a.surname));
-            break;
-
-        case "state_asc":
-            sortedData.sort((a, b) => a.state - b.state);
-            break;
-
-        case "state_desc":
-          sortedData.sort((a, b) => b.state - a.state);
-          break;
-
-        default:
-            // Сортировка по умолчанию (например, по department ASC)
-            sortedData.sort((a, b) => a.department - b.department);
-            break;
-    }
-
-    // Обновляем состояние с отсортированными данными
-      setUserListData(sortedData);
+  const SortFilterChanged = (userList) => {
+    setUserListData(userList);
   }
 
-
-  const insertDepartmentNames = (dataArray) => {
-    let newDataArray = [];
-    let next = -1; // next department ID
-
-    for (let i = 0; i < dataArray.length; i++){
-      let dep_id = dataArray[i].department;
-      
-      if (dep_id != next){
-        // insert custom row
-        let crow = customRow(dep_id);
-        console.log('crow', crow);
-        newDataArray.push(crow);
-      }
-      if (i < dataArray.length - 1){
-        next = dep_id;
-      }; 
-        newDataArray.push(dataArray[i]);
-      }
-    
-    console.log('dataArray' + ' => ' + newDataArray);
-    return newDataArray;
-  }
-
-    const getDepartmentNameById = (id) => {
-      const department = DS_DEPARTMENTS.find(dept => dept.id === id);
-      return department ? department.name : null; // Возвращаем имя или null, если не найдено
-  };
-
-  // Добавляем кастомную строку в зависимости от значения sortBy
-  const customRow = (dep_id) => {
-    return {
-      key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
-      name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
-      surname: null,
-      patronymic: null,
-      enter: '', // Пустые значения для других полей
-      exit: '',
-      losttime: '',
-      type: 'header'
-      };
-  };
-
-  const finalDataSource = () => {
-    if (!sortBy || sortBy === "department_desc") {
-        return [customRow, ...userListData]; // Добавляем кастомную строку перед основными данными
-    }
-    return userListData; // Возвращаем только основные данные
-  };
 
 
     return (
         <div>
+            
             <UserListToolbar
-              onSortBy={sortUserList}
+              // onSortBy={sortUserList}
+              departments={departments}
+              baseUsers={baseUserListData}
+              onChange={SortFilterChanged}
+              userData={userdata}
             />
             
             <Table dataSource={userListData}

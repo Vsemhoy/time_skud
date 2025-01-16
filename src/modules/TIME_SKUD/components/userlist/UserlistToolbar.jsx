@@ -1,5 +1,5 @@
 import { Button, DatePicker, Select } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
@@ -8,10 +8,11 @@ import dayjs from "dayjs";
 import '../../style/timeskud.css'
 import { StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../../CONFIG/DEFAULTSTATE";
+import { CSRF_TOKEN } from "../../../../CONFIG/config";
 
 
 const UserListToolbar = (props) => {
-    const { onSortBy } = props;
+    const {onChange, onDateChange, userData} = props;
     const location = useLocation();
     const navigate = useNavigate();
     const [companies, setCompanies] = useState([
@@ -22,7 +23,9 @@ const UserListToolbar = (props) => {
             label: com.name,
         })),
     ]);
+    const [baseUserListData, setBaseUserListData] = useState(props.baseUsers);
     const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
+    const [usedSort, setUsedSort] = useState(0);
     const [sortByValues, setSortByValues] = useState([
         {
             key:'ssv001',
@@ -119,7 +122,37 @@ const UserListToolbar = (props) => {
 
     useEffect(() => {
         changeAddressBarParam('date',usedDate.valueOf(),[0]);
+        if (typeof onDateChange === 'function')
+        {
+            onDateChange(usedDate);
+        }
     }, [usedDate])
+
+
+    useEffect(() => {
+        if (typeof onChange === 'function')
+        {
+            let userList = JSON.parse(JSON.stringify(baseUserListData));
+            userList = filterUserListByCompany(userList, usedCompany);
+            userList = filterUserListByDepartment(userList, usedDepartment);
+            userList = sortUserList(userList, usedSort);
+
+            onChange(userList);
+        }
+
+    }, [usedCompany, usedDepartment, usedSort])
+
+
+    useEffect(() => {
+        if (CSRF_TOKEN){
+            setCompanies({ key: 0, value: 0, label: 'Все компании' },
+                ...userData.companies.map((com) => ({
+                    key: com.id,
+                    value: Number(com.id),
+                    label: com.name,
+                }))
+            )}})
+
 
 
     const handleUsedCompanyChange = (value) => {
@@ -139,7 +172,6 @@ const UserListToolbar = (props) => {
     }
     const increaseDate = () => {
         setUsedDate(usedDate.add(1, 'day'));
-        
     }
     const decreaseDate = () => {
         setUsedDate(usedDate.add(-1, 'day'));
@@ -147,10 +179,7 @@ const UserListToolbar = (props) => {
     }
 
     const handleSortByChange = (value) => {
-        // console.log('value' + ' => ' + value);
-        if (typeof onSortBy == 'function'){
-            onSortBy(value);
-        }
+        setUsedSort(value);
     }
 
 
@@ -170,12 +199,120 @@ const UserListToolbar = (props) => {
 
 
 
+    // _----------------------------------------
+       const sortUserList = (userList, sortByValue) => {
+        console.log('sortBy' + ' => ' + sortByValue);
+        // await setUserListData(DS_DEFAULT_USERS.sort((a, b) => b.department - a.department));
+        // Копируем текущие данные для сортировки
+        let sortedData = userList;
+        setUsedSort(sortByValue);
+        switch (sortByValue) {
+            case "department_asc":
+                sortedData.sort((a, b) => a.department - b.department);
+                sortedData = insertDepartmentNames(sortedData);
+                break;
+    
+            case "department_desc":
+                sortedData.sort((a, b) => b.department - a.department);
+                break;
+    
+            case "name_asc":
+                sortedData.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+    
+            case "name_desc":
+                sortedData.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+    
+            case "surname_asc":
+                sortedData.sort((a, b) => a.surname.localeCompare(b.surname));
+                break;
+    
+            case "surname_desc":
+                sortedData.sort((a, b) => b.surname.localeCompare(a.surname));
+                break;
+    
+            case "state_asc":
+                sortedData.sort((a, b) => a.state - b.state);
+                break;
+    
+            case "state_desc":
+              sortedData.sort((a, b) => b.state - a.state);
+              console.log( sortedData);
+              break;
+    
+            default:
+                // Сортировка по умолчанию (например, по department ASC)
+                sortedData.sort((a, b) => a.department - b.department);
+                sortedData = insertDepartmentNames(sortedData);
+                break;
+        }
+        return sortedData;
+    }
+
+    const filterUserListByCompany = (userList, id_company)=>{
+        if (id_company == 0 || id_company == null){
+            return userList;
+        };
+        return userList.filter(item => item.id_company === Number( id_company));
+    }
+
+    const filterUserListByDepartment = (userList, depart_id) =>
+    {
+        if (depart_id == null || depart_id == 0){
+            return userList;
+        };
+        return userList.filter(item => item.department === Number(depart_id));
+    }
+
+    const insertDepartmentNames = (dataArray) => {
+        let newDataArray = [];
+        let next = -1; // next department ID
+    
+        for (let i = 0; i < dataArray.length; i++){
+          let dep_id = dataArray[i].department;
+          
+          if (dep_id != next){
+            // insert custom row
+            let crow = customRow(dep_id);
+            console.log('crow', crow);
+            newDataArray.push(crow);
+          }
+          if (i < dataArray.length - 1){
+            next = dep_id;
+          }; 
+            newDataArray.push(dataArray[i]);
+          }
+        
+        console.log('dataArray' + ' => ' + newDataArray);
+        return newDataArray;
+      }
+
+    const getDepartmentNameById = (id) => {
+      const department = DS_DEPARTMENTS.find(dept => dept.id === id);
+      return department ? department.name : null; // Возвращаем имя или null, если не найдено
+  };
+
+  // Добавляем кастомную строку в зависимости от значения sortBy
+  const customRow = (dep_id) => {
+    return {
+      key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
+      name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
+      surname: null,
+      patronymic: null,
+      enter: '', // Пустые значения для других полей
+      exit: '',
+      losttime: '',
+      type: 'header'
+      };
+  };
+
 
     return (
         <div style={{display: 'flex'}} className={"sk-flex-gap"}>
             <div className={"sk-m"}>
                 {companies.length > 2 ? (
-                    <Select
+                    <Select 
                         options={companies}
                         value={usedCompany} // Use value instead of defaultValue for controlled component
                         style={{ minWidth: 140 }}
@@ -183,7 +320,7 @@ const UserListToolbar = (props) => {
                     />
                 ) : ''}
 
-            <Select
+            <Select 
                 options={departments}
                 value={usedDepartment} // Use value instead of defaultValue for controlled component
                 style={{ minWidth: 140 }}
@@ -205,8 +342,10 @@ const UserListToolbar = (props) => {
             </div>
             <div>
             <Select
+                minWidth={130}
                 placeholder={'Упорядочить по'}
                 options={sortByValues}
+                value={usedSort == 0 ? null : usedSort}
                 allowClear={true}
                 onChange={handleSortByChange}
             />

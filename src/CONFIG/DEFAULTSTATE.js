@@ -131,6 +131,7 @@ export const DS_DEFAULT_USERS = [
         losttime: 47,
         state: 0, // Отсутствует
         department: 1,
+        id_company : 1,
     },
     {
         key: '2',
@@ -144,6 +145,7 @@ export const DS_DEFAULT_USERS = [
         losttime: 17,
         state: 10, // На месте
         department: 1,
+        id_company : 1,
     },
     {
         key: '3',
@@ -157,6 +159,7 @@ export const DS_DEFAULT_USERS = [
         losttime: 17,
         state: 5, // Вышел (на обед или по делам)
         department: 1,
+        id_company : 1,
     },
     {
         key: '4',
@@ -170,6 +173,7 @@ export const DS_DEFAULT_USERS = [
         losttime: 0,
         state:10, // На месте
         department: 2,
+        id_company : 1,
     },
     {
         key: '5',
@@ -183,6 +187,7 @@ export const DS_DEFAULT_USERS = [
         losttime: 20,
         state: 5, // Вышел (на обед или по делам)
         department: 2,
+        id_company : 1,
     },
     {
         key: '6',
@@ -196,6 +201,7 @@ export const DS_DEFAULT_USERS = [
         losttime: 30,
         state: 0, // Отсутствует
         department: 5,
+        id_company : 1,
     },
     {
         key: '7',
@@ -209,6 +215,7 @@ export const DS_DEFAULT_USERS = [
          losttime :0 ,
          state : 10 , //На месте
          department: 6,
+         id_company : 1,
     },
     {
       key:'8',
@@ -222,6 +229,7 @@ export const DS_DEFAULT_USERS = [
       losttime :15 ,
       state : 5 , //Вышел (на обед или по делам)
       department: 6,
+      id_company : 1,
     },
     {
       key:'9',
@@ -235,6 +243,7 @@ export const DS_DEFAULT_USERS = [
       losttime :0 ,
       state : 10 , //На месте
       department: 7,
+      id_company : 1,
     },
     {
       key:'10',
@@ -248,6 +257,7 @@ export const DS_DEFAULT_USERS = [
       losttime :25 ,
       state : 0 , //Отсутствует
       department: 7,
+      id_company : 1,
     },
     {
       key:'11',
@@ -261,6 +271,7 @@ export const DS_DEFAULT_USERS = [
       losttime :0 ,
       state : 5 , //Вышел (на обед или по делам)
       department: 7,
+      id_company : 2,
     },
     {
        key:'12',
@@ -274,6 +285,7 @@ export const DS_DEFAULT_USERS = [
        losttime :'0' ,
        state : 10 , //На месте
        department: 7,
+       id_company : 2,
      },
      {
        key:'13',
@@ -287,7 +299,38 @@ export const DS_DEFAULT_USERS = [
        losttime :'20' , 
        state :5 , //Вышел (на обед или по делам)
        department: 10,
-     }
+       id_company : 1,
+     },
+     {
+        key:'112',
+        id :'112' ,
+        name :'Желудь' ,
+        surname: 'Стоклан',
+        patronymic: 'Балабасович',
+        enter:['2025 -01 -10  08 ;15 ;00'] ,
+        exit:['2025 -01 -10  16 ;15 ;00'] ,
+        exittime:{ time :'480' , count :'1'} ,
+        losttime :'0' ,
+        state : 10 , //На месте
+        department: 11,
+        id_company : 1,
+      },
+      {
+        key:'46',
+        id :'46' ,
+        name :'Игнат' ,
+        surname: 'Крудо',
+        patronymic: 'Мамонович',
+        enter:['2025 -01 -10  08 ;30 ;00'] ,
+        exit:['2025 -01 -10  16 ;30 ;00'] ,
+        exittime:{ time :'420' , count :'1'} ,
+        losttime :'20' , 
+        state :5 , //Вышел (на обед или по делам)
+        department: 11,
+        id_company : 2,
+        occupy: "Дармоед",
+        status: 0,
+      }
 ];
 
 
@@ -317,7 +360,8 @@ export const DS_DEPARTMENTS = [
         "visible": 1,
         "deleted": 0,
         "icon": null,
-        "user_count": 37
+        "user_count": 37, 
+        "id_company" : 1,
     },
     {
         "id": 2,
