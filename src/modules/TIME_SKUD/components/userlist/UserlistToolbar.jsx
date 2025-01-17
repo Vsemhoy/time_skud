@@ -74,9 +74,10 @@ const UserListToolbar = (props) => {
         },
     ])
 
-
+    console.log(userData);
     const [departments, setDepartments]  = useState([
-        { key: 0, value: 0, label: 'Все' },
+        { key: 'dep_25345', value: 0, label: 'Все отделы' },
+        { key: 'dep_634567', value: userData.user.id_departament, label: 'Мой отдел'},
         ...DS_DEPARTMENTS.map((dep)=>
             ({
             key: `departament_${dep.id}`,
