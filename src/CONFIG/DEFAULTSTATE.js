@@ -263,6 +263,7 @@ export const DS_DEFAULT_USERS = [
     {
       key:'11',
       id :11 ,
+      phone :'530-40-10' ,
       name :'Булька ' ,
       surname: 'Бульдозер',
       patronymic: 'Вайп-Дорф',

@@ -65,6 +65,11 @@ const UserList = (props)=>{
         },
     },
       {
+          title: 'Тел',
+          dataIndex: 'phone',
+          key: 'ponekey',
+      },
+      {
           title: 'Время входа',
           dataIndex: 'enter',
           key: 'enterkey',

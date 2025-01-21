@@ -5,7 +5,7 @@ const HomePage = () => {
     return (
         <div>
 
-            <h1>Hello wolf!</h1>
+            <h1>Главная страница юзера</h1>
         </div>
     )
 };

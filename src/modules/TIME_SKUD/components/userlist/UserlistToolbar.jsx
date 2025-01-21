@@ -310,6 +310,7 @@ const UserListToolbar = (props) => {
 
 
     return (
+        <div className={"ts-toolbar"}>
         <div style={{display: 'flex'}} className={"sk-flex-gap"}>
             <div className={"sk-m"}>
                 {companies.length > 2 ? (
@@ -355,6 +356,7 @@ const UserListToolbar = (props) => {
 
 
             
+        </div>
         </div>
     );
 }

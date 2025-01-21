@@ -15,8 +15,15 @@ import { useEffect, useState } from 'react';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
 import { CSRF_TOKEN, PRODMODE } from './CONFIG/config';
+import AdminPage from './modules/ADMIN/AdminPage';
+import CalendarPage from './modules/CALENDAR/CalendarPage';
+
 
 const { Header, Content, Footer } = Layout;
+
+
+
+
 
 function App() {
   const menuItems = [
@@ -27,9 +34,39 @@ function App() {
 
   const [userAct, setUserAct] = useState(DS_USER);
 
+
+  /**
+   * Текущий адрес страницы
+   */
+  const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'home');
   
+    // Чтение параметра из URL при монтировании компонента
+    useEffect(() => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const value = searchParams.get('location'); // Измените на 'locate', если нужно
+      if (value) {
+          setLocation(value);
+      } else {
+          setLocation('home'); // Установка корневой страницы
+      }
+      console.log('start page is', value);
+  }, []);
+
+  // Обновление URL при изменении состояния location
+  useEffect(() => {
+      const query = new URLSearchParams(window.location.search);
+      query.set('location', location); // Устанавливаем новый параметр
+
+      // Обновляем URL без перезагрузки страницы
+      window.history.pushState({}, '', `${window.location.pathname}?${query.toString()}`);
+      
+      console.log('useState' + ' => ' + location);
+  }, [location]);
 
 
+
+
+  
 /** ------------------ FETCHES ---------------- */
     /**
      * Получение списка отделов
@@ -85,13 +122,24 @@ function App() {
         >
 
             <MenuItem>
-              <Link to="/">Home</Link>
+              <Link
+                onClick={()=>{ setLocation('home')}}
+              >Home</Link>
             </MenuItem>
             <MenuItem>
-              <Link to="/list">User list</Link>
+              <Link 
+                onClick={()=>{ setLocation('userlist')}}
+              >User list</Link>
             </MenuItem>
             <MenuItem>
-              <Link to="/page">User page</Link>
+              <Link 
+              onClick={()=>{ setLocation('admin')}}
+              >Skud Admin</Link>
+            </MenuItem>
+            <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admincalendar')}}
+              >Calendar</Link>
             </MenuItem>
           </Menu>
       </Header>
@@ -101,11 +149,19 @@ function App() {
         
         
         <div>
-        <Routes>
+          {location === '' && <HomePage />}
+          {location === 'home' && <HomePage />}
+          {location === 'admin' && <AdminPage />}
+          {location === 'userlist' && <UserList userdata={userAct}  />}
+          {location === 'admincalendar' && <CalendarPage />}
+        
+
+        
+        {/* <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/list" element={<UserList userdata={userAct}/>} />
           <Route path="/page" element={<UserPage />} />
-          </Routes>
+          </Routes> */}
         </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>

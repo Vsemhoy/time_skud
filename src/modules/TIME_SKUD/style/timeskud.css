@@ -62,3 +62,12 @@ td:first-child {
 .sk-table-current-user > td:last-child{
     border-right: 2px solid #1677ff;
 }
+
+@media screen and (max-width: 1200px) {
+    main {
+        padding: 0px !important;
+    }
+    .ts-toolbar {
+        padding: 0px 12px !important;
+    }
+}
