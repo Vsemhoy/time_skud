@@ -119,7 +119,7 @@ const UserList = (props)=>{
             let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
             console.log('response' + ' => ' + response);
             console.log('response.data' + ' => ' + response.data);
-            setBaseUserListData(response.data);
+            setBaseUserListData(response.data.data);
         } catch (e) {
             console.log(e)
         } finally {
@@ -129,12 +129,17 @@ const UserList = (props)=>{
   /** ------------------ FETCHES END ---------------- */
 
 
+  useEffect(()=>{
+    setUserListData(baseUserListData.sort((a, b) => b.department - a.department));
+  }, [baseUserListData])
+
+
   useEffect(() => {
     if (CSRF_TOKEN){
       PRODMODE && get_departments();
       PRODMODE && get_users();
     }
-  })
+  },[CSRF_TOKEN, PRODMODE])
 
 
       
@@ -168,6 +173,7 @@ const UserList = (props)=>{
   const SortFilterChanged = (userList) => {
     setUserListData(userList);
   }
+
 
 
 

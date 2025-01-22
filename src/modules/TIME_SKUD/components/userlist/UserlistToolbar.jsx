@@ -74,7 +74,10 @@ const UserListToolbar = (props) => {
         },
     ])
 
-    console.log(userData);
+    useEffect(()=>{
+        setBaseUserListData(props.baseUsers);
+    },[props.baseUsers]);
+
     const [departments, setDepartments]  = useState([
         { key: 'dep_25345', value: 0, label: 'Все отделы' },
         { key: 'dep_634567', value: userData.user.id_departament, label: 'Мой отдел'},
@@ -141,7 +144,7 @@ const UserListToolbar = (props) => {
             onChange(userList);
         }
 
-    }, [usedCompany, usedDepartment, usedSort])
+    }, [usedCompany, usedDepartment, usedSort, baseUserListData])
 
 
     useEffect(() => {
@@ -152,7 +155,8 @@ const UserListToolbar = (props) => {
                     value: Number(com.id),
                     label: com.name,
                 }))
-            )}})
+            )}},[CSRF_TOKEN])
+
 
 
 
@@ -239,7 +243,7 @@ const UserListToolbar = (props) => {
     
             case "state_desc":
               sortedData.sort((a, b) => b.state - a.state);
-              console.log( sortedData);
+            //   console.log( sortedData);
               break;
     
             default:
@@ -276,7 +280,7 @@ const UserListToolbar = (props) => {
           if (dep_id != next){
             // insert custom row
             let crow = customRow(dep_id);
-            console.log('crow', crow);
+            // console.log('crow', crow);
             newDataArray.push(crow);
           }
           if (i < dataArray.length - 1){
@@ -285,7 +289,7 @@ const UserListToolbar = (props) => {
             newDataArray.push(dataArray[i]);
           }
         
-        console.log('dataArray' + ' => ' + newDataArray);
+        // console.log('dataArray' + ' => ' + newDataArray);
         return newDataArray;
       }
 
