@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.ant-ribbon-corner {
+  /* background-color: gray !important; */
+  border-left: 5px solid rgb(177, 177, 177) !important;
+  border-top: 4px solid rgb(177, 177, 177) !important;
+}

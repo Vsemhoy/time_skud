@@ -1,0 +1,59 @@
+.sk-calendar-top-rule {
+    display: flex;
+    border-radius: 6px;
+}
+.sk-calendar-top-rule > div {
+    width: calc(100% / 21);  
+    border-radius: 6px;
+    text-align: center;
+}
+
+
+.sk-cal-modal-calendar table, .sk-cal-modal-calendar tbody {
+    width: 100%;
+}
+
+.sk-cal-modal-calendar tr:first-child >td:first-child{
+    /* width: calc(100% - 60px); */
+    background-color: rgb(238, 238, 238);
+}
+.sk-cal-modal-calendar tr>td:nth-child(2){
+    width: 50px;
+    background-color: rgb(238, 238, 238);
+}
+
+
+.sk-calendar-body {
+    display: flex;                /* Включаем flexbox */
+    flex-wrap: wrap;             /* Позволяем элементам переноситься на следующую строку */
+    justify-content: flex-start;  /* Выравнивание элементов по началу строки */
+}
+
+.sk-calendar-item {
+    width: calc(100% / 21);      /* Устанавливаем ширину элемента так, чтобы вмещалось 21 элемент в строку */
+    box-sizing: border-box;       /* Учитываем отступы и границы в ширине */
+    padding: 10px;                /* Добавляем немного отступа для визуального эффекта */
+    border: 1px solid #ffffff;       /* Добавляем границу для наглядности */
+    text-align: center;           /* Центрируем текст внутри блока */
+    font-weight: 500;
+    color: #555;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    transition: all 0.2s;
+    user-select: none;
+}
+.sk-calendar-item:hover:not(.outrange) {
+    box-shadow: 1px 1px 9px rgba(0, 0, 0, 0.329);
+    z-index: 99;
+}
+.sk-calendar-item:active {
+    border-color:  rgb(0, 119, 255);
+}
+
+.weekend {
+    background-color: #ffdcdc;   /* Пример стиля для выходных дней */
+}
+
+.outrange {
+    opacity: 0.6;
+}

@@ -1,0 +1,49 @@
+.sk-cal-description {
+    text-align: left;
+}
+
+.sk-cal-stats {
+     flex-direction: column;
+    display: flex;
+    padding: 6px;
+    text-align: center;
+ }
+ .sk-cal-stats span {
+    font-weight: 500;
+    color: #5596c9;
+ }
+ .sk-cal-title-1 {
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 500;
+    opacity: 0.8;
+}
+.sk-cal-title-2 {
+     text-align: center;
+    font-size: x-large;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e5e5e5;
+    opacity: 0.8;
+ }
+
+ .sk-cal-card  .ant-card-body {
+    padding: 0px !important;
+ }
+
+ .padding-remove {
+    padding: 0px !important;
+ }
+ .sk-cal-card-grid {
+    display: grid;
+    grid-template-columns: 250px auto;
+ }
+ .sk-cal-card-grid .ant-card-grid {
+    display: block;
+    width: 100%;
+ }
+ .sk-cal-filler {
+    display: block;
+    width: 30px;
+    background-color: #ff000000;
+ }
