@@ -124,10 +124,13 @@ const CalModal = ({ is_open, onClose, startdate, rangeEnd }) => {
                                 <td>
                                 <div className="sk-calendar-body">
                                     {calendarDays.map((day) => (
-                                            <div key={day.date} className={`sk-calendar-item ${day.is_weekend ? 'weekend' : ''} ${day.is_outrange ? 'outrange' : ''}`}
+                                        <div className={`sk-calendar-item-back sk-month-${day.month}`}>
+                                            <div 
+                                            key={day.date} className={`sk-calendar-item ${day.is_weekend ? 'weekend' : ''} ${day.is_outrange ? 'outrange' : ''}`}
                                                 title={day.date + " - " + day.week_day}
                                             >
                                                 {day.value}
+                                            </div>
                                             </div>
                                         ))}
                                 </div>
