@@ -1,4 +1,4 @@
-
+import dayjs from "dayjs";
 
 /**
  * Укорачиваем полное имя до инициалов с фамилией
@@ -20,4 +20,20 @@ export const ShortName = (surname, name, patronymic) => {
     }
 
     return shortName;
+};
+
+
+export const generateYearOptions = () => {
+    const startYear = 2000;
+    const endYear = dayjs().year() + 1; // Текущий год + 1
+    const yearsArray = [];
+    for (let year = startYear; year <= endYear; year++) {
+        yearsArray.push({
+            key: 'yearkey_' + year.toString(),
+            value: year,
+            label: year.toString() // Преобразуем номер года в строку для label
+        });
+    }
+
+    return yearsArray;
 };

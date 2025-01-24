@@ -9,6 +9,11 @@
     grid-gap: 3px;
 }
 
+.ts-toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
 
 /* .sk_state_outside > td:first-child {
     border-left: 9px solid  #d27474;
@@ -103,4 +108,20 @@ td:first-child {
 }
 .ant-table-row:hover .sk-table-state-badge {
     opacity: 1;
+}
+
+
+.sk-main-menu {
+    box-shadow: 0 5px 10px 4px #223c5033;
+}
+
+.sk-flight-table {
+    box-shadow: 0 5px 10px 0px #223c5033;
+    margin-bottom: 22px;
+}
+
+
+.sk-mw-1000 {
+    max-width: 1000px;
+    margin: auto;
 }

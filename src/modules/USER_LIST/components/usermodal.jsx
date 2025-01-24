@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'antd';
-import { DS_DEFAULT_USERS } from '../../../../CONFIG/DEFAULTSTATE';
+import { DS_DEFAULT_USERS } from '../../../CONFIG/DEFAULTSTATE';
 
 const UserModal = ({ userId, visible, onClose }) => {
     const [loading, setLoading] = React.useState(true);

@@ -1,13 +1,13 @@
 import React, {useEffect, useState } from "react";
 
-import UserListToolbar from "../components/userlist/UserlistToolbar";
+import UserListToolbar from "./components/userlist/UserlistToolbar";
 import { Table } from "antd";
-import '../style/timeskud.css';
-import { DS_DEFAULT_USERS, DS_DEPARTMENTS } from "../../../CONFIG/DEFAULTSTATE";
+import '../../components/TimeSkud/Style/timeskud.css';
+import { DS_DEFAULT_USERS, DS_DEPARTMENTS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
-import { ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
-import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
-import {PROD_AXIOS_INSTANCE} from "./../../../API/API";
+import { ShortName } from "../../GlobalComponents/Helpers/TextHelpers";
+import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {PROD_AXIOS_INSTANCE} from "../../API/API";
 
 
 const UserList = (props)=>{
@@ -208,7 +208,7 @@ const UserList = (props)=>{
 
     return (
         <div>
-            
+            <br/>
             <UserListToolbar
               // onSortBy={sortUserList}
               departments={departments}
@@ -222,7 +222,8 @@ const UserList = (props)=>{
             dataSource={userListData}
             columns={columns}
             rowClassName={rowClassName}
-            pagination={false} 
+            pagination={false}
+            className={'sk-flight-table'}
              />
             
             <UserModal

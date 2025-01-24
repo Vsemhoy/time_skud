@@ -1,0 +1,83 @@
+.sk-cal-description {
+    text-align: left;
+}
+
+.sk-cal-stats {
+     flex-direction: column;
+    display: flex;
+    padding: 6px;
+    text-align: center;
+ }
+ .sk-cal-stats span {
+    font-weight: 500;
+    color: #108ee9;
+ }
+ .sk-cal-title-1 {
+    text-align: center;
+    font-size: xx-large;
+    font-weight: 500;
+    opacity: 0.8;
+}
+.sk-cal-title-2 {
+     text-align: center;
+    font-size: x-large;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e5e5e5;
+    opacity: 0.8;
+ }
+
+ .sk-cal-card  .ant-card-body {
+    padding: 0px !important;
+
+ }
+ .sk-cal-card  {
+    transition: all 0.2s;
+    margin-bottom: 12px;
+    box-shadow: 0 5px 10px 0px #223c5025;
+    /* overflow: hidden; */
+    border-radius: 9px;
+ }
+ .sk-cal-card:hover {
+    box-shadow: 0 5px 10px 0px #223c5050;
+ }
+
+ .padding-remove {
+    padding: 0px !important;
+ }
+ .sk-cal-card-grid {
+    display: grid;
+    grid-template-columns: 250px auto;
+ }
+ .sk-cal-card-grid .ant-card-grid {
+    display: block;
+    width: 100%;
+ }
+ .sk-cal-filler {
+    display: block;
+    width: 30px;
+    background-color: #ff000000;
+ }
+ .sk-cal-item-head {
+    font-size: x-large;
+    color: #4c4c4c;
+ }
+ .sk-cal-butts {
+    display: flex;
+    justify-content: space-between;
+ }
+ .sk-cal-butts > div:nth-child(2) {
+    display: flex;
+    justify-content: flex-end;
+
+ }
+ .sk-cal-card:last-child {
+    margin-bottom: 40vh;
+ }
+
+ .sk-dead-text {
+    color: var(--ant-color-text-disabled);
+    /* cursor: not-allowed; */
+    user-select: none;
+    color: #a8a8a8;
+ }

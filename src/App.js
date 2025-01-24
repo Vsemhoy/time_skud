@@ -7,8 +7,8 @@ import {
   Routes
 } from "react-router-dom";
 import HomePage from './modules/DEFAULT_PAGE/HomePage';
-import UserList from './modules/TIME_SKUD/UserList/UserList';
-import UserPage from './modules/TIME_SKUD/UserPage/UserPage';
+import UserListPage from './modules/USER_LIST/UserListPage';
+import UserPage from './modules/USER_PAGE/UserPage';
 import { Breadcrumb, Layout, Menu, Skeleton, theme } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
 import { useEffect, useState } from 'react';
@@ -17,6 +17,9 @@ import { PROD_AXIOS_INSTANCE } from './API/API';
 import { CSRF_TOKEN, PRODMODE } from './CONFIG/config';
 import AdminPage from './modules/ADMIN/AdminPage';
 import CalendarPage from './modules/CALENDAR/CalendarPage';
+import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
+import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
+import ProdCalManagerPage from './modules/PROD_CAL_MANAGER/ProdCalManagerPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -110,10 +113,12 @@ function App() {
 
 
   return (
-    <Layout>
+    <Layout style={{background: '#fff'}}>
           <Router>
-          <div>
-      <Header style={{ display: 'flex', alignItems: 'center', background: 'white' }}>
+          <div >
+      <Header style={{ display: 'flex', alignItems: 'center', background: 'white' }}
+      className={'sk-main-menu'}
+      >
         <div className="demo-logo" />
         <Menu
           theme="light"
@@ -127,21 +132,65 @@ function App() {
                 onClick={()=>{ setLocation('home')}}
               >Home</Link>
             </MenuItem>
+
             <MenuItem>
               <Link 
                 onClick={()=>{ setLocation('userlist')}}
-              >User list</Link>
+              >Сотрудники</Link>
             </MenuItem>
+
             <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admin/rules')}}
+              >Правила</Link>
+            </MenuItem>
+
+            <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admin/schedules')}}
+              >Графики</Link>
+            </MenuItem>
+
+
+
+            <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admin/prodcals')}}
+              >Календари</Link>
+            </MenuItem>
+
+
+            <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admin/schedules')}}
+              >Заявки на смену графика</Link>
+            </MenuItem>
+
+
+
+
+
+            {/* <MenuItem>
               <Link 
               onClick={()=>{ setLocation('admin')}}
               >Skud Admin</Link>
-            </MenuItem>
+            </MenuItem> */}
+
+
+
+
+
             <MenuItem>
               <Link 
               onClick={()=>{ setLocation('admincalendar')}}
-              >Calendar</Link>
+              >Графики работы</Link>
             </MenuItem>
+            
+            {/* <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admincalendar')}}
+              >Произв. календари</Link>
+            </MenuItem> */}
           </Menu>
       </Header>
 
@@ -154,7 +203,10 @@ function App() {
             {location === '' && <HomePage />}
             {location === 'home' && <HomePage />}
             {location === 'admin' && <AdminPage />}
-            {location === 'userlist' && <UserList userdata={userAct}  />}
+            {location === 'admin/rules' && <RuleManagerPage userdata={userAct} />}
+            {location === 'admin/schedules' && <SchedManagerPage userdata={userAct} />}
+            {location === 'admin/prodcals' && <ProdCalManagerPage userdata={userAct} />}
+            {location === 'userlist' && <UserListPage userdata={userAct}  />}
             {location === 'admincalendar' && <CalendarPage />}
 
           </div>
@@ -172,9 +224,9 @@ function App() {
           <Route path="/page" element={<UserPage />} />
           </Routes> */}
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
+      {/* <Footer style={{ textAlign: 'center' }}>
         Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      </Footer> */}
 
 
         {/* A <Switch> looks through its children <Route>s and
