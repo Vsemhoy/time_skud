@@ -80,7 +80,6 @@ const UserListToolbar = (props) => {
 
     const [departments, setDepartments]  = useState([
         { key: 'dep_25345', value: 0, label: 'Все отделы' },
-        { key: 'dep_634567', value: userData.user.id_departament, label: 'Мой отдел'},
         ...DS_DEPARTMENTS.map((dep)=>
             ({
             key: `departament_${dep.id}`,
@@ -100,6 +99,19 @@ const UserListToolbar = (props) => {
         return currentDate.getTime();
     };
 
+
+    useEffect(()=>{
+        let deps = [{ key: 0, value: 0, label: 'Все отделы' },
+                  { key: 'dep_634567', value: userData.user.id_departament, label: 'Мой отдел'},
+                  ...DS_DEPARTMENTS.map((dep)=>
+                      ({
+                      key: `departament_${dep.id}`,
+                      value: dep.id,
+                      label: dep.name
+                  })
+              )];
+        setDepartments(deps);
+    }, [departments]);
 
     const [usedDate, setUsedDate] = useState(dayjs());
 
@@ -149,13 +161,13 @@ const UserListToolbar = (props) => {
 
     useEffect(() => {
         if (CSRF_TOKEN){
-            setCompanies({ key: 0, value: 0, label: 'Все компании' },
+            setCompanies([{ key: 0, value: 0, label: 'Все компании' },
                 ...userData.companies.map((com) => ({
                     key: com.id,
                     value: Number(com.id),
                     label: com.name,
-                }))
-            )}},[CSRF_TOKEN])
+                }))]
+            )}},[userData]);
 
 
 
@@ -317,7 +329,7 @@ const UserListToolbar = (props) => {
         <div className={"ts-toolbar"}>
         <div style={{display: 'flex'}} className={"sk-flex-gap"}>
             <div className={"sk-m"}>
-                {companies.length > 2 ? (
+                {companies.length > 1 ? (
                     <Select 
                         options={companies}
                         value={usedCompany} // Use value instead of defaultValue for controlled component

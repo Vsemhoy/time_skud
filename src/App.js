@@ -9,7 +9,7 @@ import {
 import HomePage from './modules/DEFAULT_PAGE/HomePage';
 import UserList from './modules/TIME_SKUD/UserList/UserList';
 import UserPage from './modules/TIME_SKUD/UserPage/UserPage';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, Menu, Skeleton, theme } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
 import { useEffect, useState } from 'react';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
@@ -32,8 +32,8 @@ function App() {
     {id: 'dassdd', name: 'User Page', to: '/'},
   ];
 
-  const [userAct, setUserAct] = useState(DS_USER);
-
+  const [userAct, setUserAct] = useState(PRODMODE ? DS_USER : []);
+  const [pageLoaded, setPageLoaded] = useState(false);
 
   /**
    * Текущий адрес страницы
@@ -85,7 +85,7 @@ function App() {
               }
           }
           let response = await PROD_AXIOS_INSTANCE.get('/usda?_token=' + CSRF_TOKEN);
-          console.log('response' + ' => ' + response);
+          console.log('me: ', response);
           // setOrganizations(organizations_response.data.org_list)
           // setTotal(organizations_response.data.total_count)
           setUserAct(response.data);
@@ -93,6 +93,7 @@ function App() {
           console.log(e)
       } finally {
           // setLoadingOrgs(false)
+          setPageLoaded(true);
       }
   }
 
@@ -104,7 +105,7 @@ function App() {
 
       // EFFECTS
       useEffect(() => {
-        PRODMODE && get_userdata(setUserAct)
+        !PRODMODE && get_userdata(setUserAct)
     }, []);
 
 
@@ -148,12 +149,20 @@ function App() {
       <Content style={{ padding: '0 48px' }}>
         
         
+          { pageLoaded || PRODMODE ? (
         <div>
-          {location === '' && <HomePage />}
-          {location === 'home' && <HomePage />}
-          {location === 'admin' && <AdminPage />}
-          {location === 'userlist' && <UserList userdata={userAct}  />}
-          {location === 'admincalendar' && <CalendarPage />}
+            {location === '' && <HomePage />}
+            {location === 'home' && <HomePage />}
+            {location === 'admin' && <AdminPage />}
+            {location === 'userlist' && <UserList userdata={userAct}  />}
+            {location === 'admincalendar' && <CalendarPage />}
+
+          </div>
+          ) : (
+            <div>
+              <Skeleton />
+            </div>
+          )} 
         
 
         
@@ -162,7 +171,6 @@ function App() {
           <Route path="/list" element={<UserList userdata={userAct}/>} />
           <Route path="/page" element={<UserPage />} />
           </Routes> */}
-        </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>
         Ant Design ©{new Date().getFullYear()} Created by Ant UED

@@ -14,11 +14,12 @@ const UserList = (props)=>{
   const { userdata } = props;
   const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
 
-  const [baseUserListData, setBaseUserListData] = useState(DS_DEFAULT_USERS);
+  const [baseUserListData, setBaseUserListData] = useState(PRODMODE ? DS_DEFAULT_USERS : []);
   const [userListData, setUserListData] = useState(baseUserListData.sort((a, b) => b.department - a.department));
 
   const [departments, setDepartments]  = useState([
           { key: 0, value: 0, label: 'Все' },
+          // { key: 'dep_634567', value: userdata.user.id_departament, label: 'Мой отдел'},
           ...DS_DEPARTMENTS.map((dep)=>
               ({
               key: `departament_${dep.id}`,
@@ -51,16 +52,25 @@ const UserList = (props)=>{
             if (record.type && record.type === 'header') {
                 return <span>{record.name} {record.id}</span>; // Отображаем имя для заголовка
             } else {
+              if (record.name != ""){
                 return (
-                    <a onClick={() => openUserCard(record.id)} title={`${record.surname} ${record.name} ${record.patronymic}`}>
-                        <strong>{ShortName(record.surname, record.name, record.patronymic)}</strong>
-                    </a>
-                );
+                  <a onClick={() => openUserCard(record.id)} title={`${record.surname} ${record.name} ${record.patronymic}`}>
+                    <span className="sk-table-username"><span className="sk-table-state-badge"> </span>  {ShortName(record.surname, record.name, record.patronymic)}</span>
+                  </a>
+              );
+              } else {
+                return (
+                  <a onClick={() => openUserCard(record.id)} title={`${record.surname} ${record.name} ${record.patronymic}`}>
+                      <strong>test user</strong>
+                  </a>
+              );
+              }
+
             }
         },
         onCell: (record) => {
             return {
-                colSpan: record.type && record.type === 'header' ? 1 : 1,
+                colSpan: record.type && record.type === 'header' ? 5 : 1,
             };
         },
     },
@@ -68,21 +78,41 @@ const UserList = (props)=>{
           title: 'Тел',
           dataIndex: 'phone',
           key: 'ponekey',
+          onCell: (record) => {
+            return {
+                colSpan: record.type && record.type === 'header' ? 0 : 1,
+            };
+        },
       },
       {
           title: 'Время входа',
           dataIndex: 'enter',
           key: 'enterkey',
+          onCell: (record) => {
+            return {
+                colSpan: record.type && record.type === 'header' ? 0 : 1,
+            };
+        },
       },
       {
           title: 'Время выхода',
           dataIndex: 'exit',
           key: 'exitkey',
+          onCell: (record) => {
+            return {
+                colSpan: record.type && record.type === 'header' ? 0 : 1,
+            };
+        },
       },
       {
           title: 'Потерянное время',
           dataIndex: 'losttime',
           key: 'losttimekey',
+          onCell: (record) => {
+            return {
+                colSpan: record.type && record.type === 'header' ? 0 : 1,
+            };
+        },
       },
   ];
 
@@ -97,10 +127,10 @@ const UserList = (props)=>{
     const get_departments = async (req, res) => {
       try {
           let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
-          console.log('response' + ' => ' + response);
+          console.log('departs', response);
           // setOrganizations(organizations_response.data.org_list)
           // setTotal(organizations_response.data.total_count)
-          setDepartments(response.data);
+          setDepartments(response.data.data);
       } catch (e) {
           console.log(e)
       } finally {
@@ -117,8 +147,7 @@ const UserList = (props)=>{
       const get_users = async (req, res) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
-            console.log('response' + ' => ' + response);
-            console.log('response.data' + ' => ' + response.data);
+            console.log('users', response);
             setBaseUserListData(response.data.data);
         } catch (e) {
             console.log(e)
@@ -135,11 +164,11 @@ const UserList = (props)=>{
 
 
   useEffect(() => {
-    if (CSRF_TOKEN){
-      PRODMODE && get_departments();
-      PRODMODE && get_users();
+    if (!PRODMODE){
+      get_departments();
+      get_users();
     }
-  },[CSRF_TOKEN, PRODMODE])
+  },[PRODMODE])
 
 
       
@@ -188,7 +217,9 @@ const UserList = (props)=>{
               userData={userdata}
             />
             
-            <Table dataSource={userListData}
+            <Table 
+            sticky={true}
+            dataSource={userListData}
             columns={columns}
             rowClassName={rowClassName}
             pagination={false} 
