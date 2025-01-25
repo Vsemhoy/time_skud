@@ -6,7 +6,6 @@
 .sk-cal-unit-name {
     text-align: center;
     background-color: rgb(222, 222, 222);
-    font-variant: all-petite-caps;
     font-weight: bold;
 }
 .sk-cal-unit-body {
@@ -22,6 +21,7 @@
 }
 .sk-cal-unit {
     border: 1px solid rgb(222, 222, 222);
+    background-color: #f2f2f2;
 }
 .sk-trule-item {
     background-color: rgb(222, 222, 222);
@@ -33,38 +33,43 @@
 }
 .sk-calendar-item-back {
     transition: all 0.2s;
+    background-color: rgb(255, 255, 255);
 }
 .sk-calendar-item-back:hover:not(.outrange) {
-    background-color: rgb(156, 156, 156);
+    background-color: rgb(199, 199, 199);
+    cursor: pointer;
 }
 .outrange {
-    opacity: 0.5;
-    background-color: rgba(0, 0, 0, 0.279);
+    opacity: 0.4;
+    background-color: rgb(242 242 242);
 }
-.sk-calendar-item:active {
+.sk-calendar-item-back:hover:not(.outrange) .sk-calendar-item:active {
     background-color:  rgb(0, 119, 255);
 }
 .sk-calendar-item {
-    padding: 10px;                /* Добавляем немного отступа для визуального эффекта */
+    min-height: 47px;          
     /* border: 1px solid #ffffff;   */
-    text-align: center;           /* Центрируем текст внутри блока */
+    text-align: center;       
     font-weight: 500;
     /* color: #555;
-    background-color: #f0f0f0;
     border-radius: 6px; */
     transition: all 0.2s;
     user-select: none;
     opacity: 0.8;
-    /* color: white; */
-    background-color: rgba(255, 255, 255, 0.795);
+    display: flex
+    ;
+        justify-content: space-around;
+        flex-direction: column;
+        align-items: center;
+    
 }
 /* .sk-calendar-item-back:hover > div {
     border: 1px solid rgb(0, 119, 255);
 } */
 
 .sk-unit-weekend {
-    background-color: rgba(255, 0, 0, 0.181);
+    background-color: #ff000024;
 }
 .sk-unit-workday {
-    background-color: rgba(0, 242, 255, 0.181);
+    background-color: rgba(0, 255, 64, 0.181);
 }

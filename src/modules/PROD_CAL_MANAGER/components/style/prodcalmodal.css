@@ -29,8 +29,23 @@
     justify-content: flex-start;  /* Выравнивание элементов по началу строки */
 }
 
+.sk-cal-modal-unitstack {
+    display: grid;
+    grid-gap: 12px;
+}
+.sk-cal-modal-unitstack.stack-3 {
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+}
+.sk-cal-modal-unitstack.stack-1 {
+    grid-template-columns: auto;
 
+}
 
+.sk-cal-unit {
+    border-radius: 12px;
+    overflow: hidden;
+}
 
 
 

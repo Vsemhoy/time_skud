@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { DS_YEARMONTHS_SELECT } from "../../CONFIG/DEFAULTSTATE";
 
 /**
  * Укорачиваем полное имя до инициалов с фамилией
@@ -36,4 +37,9 @@ export const generateYearOptions = () => {
     }
 
     return yearsArray;
+};
+
+export const getMonthName = (number) => {
+    let month = DS_YEARMONTHS_SELECT.find((el) => el.value === parseInt(number));
+    return month.label;
 };

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Select } from 'antd';
+import { Button, Input, Modal, Select, Drawer, Checkbox } from 'antd';
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
 import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
-import { generateYearOptions } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { generateYearOptions, getMonthName } from "../../../GlobalComponents/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
 
@@ -12,11 +12,50 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
     const [calendarDays, setCalendarDays] = useState([]);
     const [selectedYear, setSelectedYear] = useState(year ? year : dayjs().year());
     const [selectedMonth, setSelectedMonth] = useState(0);
+    const [selectedDay, setSelectedDay] = useState({d: 0, m: 0, text: '', w: false});
+
+    const [dayInputText, setDayInputText] = useState('');
 
     const [jobCalendar, setJobCalendar] = useState(null);
 
     const [startDate, setStartDate] = useState(startdate ? dayjs(startdate) : dayjs());
     // const [endRange, setEndRange] useState(startDate ? dayjs(startDate) : dayjs());
+
+    const [openDrawer, setOpenDrawer] = useState(false);
+
+    const openDayEditorDrawer = (day) => {
+        console.log(jobCalendar);
+        let targDate = null;
+        let existed = false;
+        if (jobCalendar.months && jobCalendar.months[day.month - 1] && jobCalendar.months[day.month - 1].days.length){
+            let days = jobCalendar.months[day.month - 1].days;
+            let tday = days.find((el)=> el.d === day.value);
+            if (tday){
+                tday.m = day.month;
+                targDate = tday;
+                console.log('tday',tday);
+                existed = true;
+            }
+        }
+        if (targDate == null)
+        {
+            targDate = {
+                d: day.value,
+                m: day.month,
+                w: true,
+                short: false
+            };
+        }
+        setDayInputText(targDate.text ? targDate.text : '');
+        setSelectedDay(targDate);
+        console.log('day',day);
+        setOpenDrawer(true);
+    };
+  
+    const onDrawerClose = () => {
+      setOpenDrawer(false);
+    };
+
 
     useEffect(() => {
         console.log('is_open' + ' => ' + is_open);
@@ -144,7 +183,48 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
     const yearArrray = () => {
         console.log('Kiwi')
         return generateYearOptions();
+    };
+
+
+    const changeChbWorkday =  (event) => {
+        console.log( event.target.checked);
+        let cp = JSON.parse(JSON.stringify(selectedDay));
+        cp.w = event.target.checked  ? 1 : 0;
+        setSelectedDay(cp);
+    };
+    const changeChbShortDay =  (event) => {
+        console.log( event.target.checked);
+        let cp = JSON.parse(JSON.stringify(selectedDay));
+        cp.short = event.target.checked  ? 1 : 0;
+        setSelectedDay(cp);
+    };
+    const changeDayText =  (event) => {
+        let cp = JSON.parse(JSON.stringify(selectedDay));
+        cp.text = event.target.value;
+        setSelectedDay(cp);
+    };
+
+    const saveDayParams = ()=>{
+        let cp = JSON.parse(JSON.stringify(selectedDay));
+        if (dayInputText !== ''){
+            cp.text = dayInputText;
+        };
+        let cpCal = JSON.parse(JSON.stringify(jobCalendar));
+        let editday = cpCal.months[cp.m - 1].days.find((el)=> el.d === cp.d);
+        if (editday){
+            editday.w = cp.w;
+            editday.short = cp.short;
+            if (cp.text != ''){ editday.text = cp.text ;};
+        } else {
+            cpCal.months[cp.m - 1].days.push(cp);
+        }
+        console.log(cpCal);
+        setJobCalendar(cpCal);
+            // let days = jobCalendar.months[day.month - 1].days;
+            // let tday = days.find((el)=> el.d === day.value);
+        onDrawerClose();
     }
+
 
     return (
         <>
@@ -174,18 +254,68 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
                     />
                 </div>
                 <br/>
-                <div class='sk-cal-modal-calendar'>
-                <ProdCalUnit 
-                    targetYear={2025}
-                    targetMonth={selectedMonth}
-                    prodCalendar={jobCalendar}
-                />
+                <div class={`sk-cal-modal-unitstack ${selectedMonth === 0 ? 'stack-3' :'stack-1'}`}>
+                { selectedMonth === 0 ? (
+                    Array.from({length: 12},(_,index) => <ProdCalUnit key={'pcalunit'+index}
+                        onDayClick={openDayEditorDrawer}
+                        targetYear={2025}
+                        targetMonth={index + 1}
+                        prodCalendar={jobCalendar}
+                    />)
+                ) : (
+                    <>
+                    <ProdCalUnit
+                        onDayClick={openDayEditorDrawer}
+                        targetYear={2025}
+                        targetMonth={selectedMonth}
+                        prodCalendar={jobCalendar}
+                    />
+                    </>
+                )}
 
                     
 
                 </div>
                 
             </Modal>
+
+            <Drawer title={`${selectedDay.d} ${ getMonthName(selectedDay.m)} ${selectedYear}`} onClose={onDrawerClose} open={openDrawer}>
+                { selectedDay ? (
+                    <div>
+                    <p>
+                        <Checkbox checked={selectedDay.w} 
+                            onChange={changeChbWorkday}
+                        >Рабочий день</Checkbox>
+                    </p>
+                    <p>
+                        <Checkbox checked={selectedDay.short} 
+                            onChange={changeChbShortDay}
+                        >Сокращенный день</Checkbox>
+                    </p>
+                        <Input placeholder="Комментарий к дате"
+                            value={dayInputText}
+                            onChange={(ev)=>{setDayInputText(ev.target.value)}}
+                            maxLength={250}
+                        ></Input>
+                    { selectedDay.mv_from ? (
+                        <p>Перенесен с {`${selectedDay.mv_from.d} ${getMonthName(selectedDay.mv_from.m)}`}</p>
+                    ) : ''}
+                    { selectedDay.mм_to ? (
+                        <p>Перенесен на {`${selectedDay.mv_to.d} ${getMonthName(selectedDay.mv_to.m)}`}</p>
+                    ) : ''}
+                    <div style={{float: 'right', paddingTop: 24}}>
+
+                        <Button color="cyan" variant="solid"
+                        onClick={saveDayParams}
+                        >
+                            Сохранить
+                        </Button>
+                    </div>
+                    </div>
+                ): ""
+                }
+
+            </Drawer>
         </>
     );
 };

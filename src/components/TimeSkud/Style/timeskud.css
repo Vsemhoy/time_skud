@@ -125,3 +125,7 @@ td:first-child {
     max-width: 1000px;
     margin: auto;
 }
+
+.sk-smaller {
+font-size: smaller;
+}
