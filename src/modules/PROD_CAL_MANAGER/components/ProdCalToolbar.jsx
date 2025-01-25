@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 
 
 const ProdCalToolbar = (props) =>{
-    const {userData, companies } = props;
+    const {userData, companies, onAddNewClick } = props;
     const location = useLocation();
     const navigate = useNavigate();
     // const [companies, setCompanies] = useState([]);
@@ -34,6 +34,12 @@ const ProdCalToolbar = (props) =>{
             navigate(`?${params.toString()}`);
         }
 
+        const clickNew = ()=>{
+            if (onAddNewClick)
+            {
+                onAddNewClick();
+            }
+        }
 
     return (
         <div className={"ts-toolbar"}>
@@ -59,7 +65,9 @@ const ProdCalToolbar = (props) =>{
         </div>
 
         <div className={"sk-flex-gap"}>
-        <Button >Добавить новый</Button>
+        <Button 
+            onClick={clickNew}
+        >Добавить новый</Button>
             </div>
 
         </div>

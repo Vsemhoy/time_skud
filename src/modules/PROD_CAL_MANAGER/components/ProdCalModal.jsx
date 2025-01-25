@@ -7,9 +7,9 @@ import { generateYearOptions, getMonthName } from "../../../GlobalComponents/Hel
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
 
-const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
+const ProdCalModal = ({ is_open, onClose, year, data, userData }) => {
     const [open, setOpen] = useState(is_open);
-    const [calendarDays, setCalendarDays] = useState([]);
+    const [calendarName, setCalendarName] = useState(data ? data.name : dayjs().year());
     const [selectedYear, setSelectedYear] = useState(year ? year : dayjs().year());
     const [selectedMonth, setSelectedMonth] = useState(0);
     const [selectedDay, setSelectedDay] = useState({d: 0, m: 0, text: '', w: false});
@@ -17,9 +17,14 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
     const [dayInputText, setDayInputText] = useState('');
 
     const [jobCalendar, setJobCalendar] = useState(null);
+    const [userdata, setUserdata] = useState(userData);
+    /**
+     * Это запись календаря, полученная из БД
+     */
+    const [calendarData, setCalendarData] = useState(data);
+    const [isNewCalendar, setIsNewCalendar] = useState(data ? false : true);
 
-    const [startDate, setStartDate] = useState(startdate ? dayjs(startdate) : dayjs());
-    // const [endRange, setEndRange] useState(startDate ? dayjs(startDate) : dayjs());
+
 
     const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -33,7 +38,6 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
             if (tday){
                 tday.m = day.month;
                 targDate = tday;
-                console.log('tday',tday);
                 existed = true;
             }
         }
@@ -48,7 +52,6 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
         }
         setDayInputText(targDate.text ? targDate.text : '');
         setSelectedDay(targDate);
-        console.log('day',day);
         setOpenDrawer(true);
     };
   
@@ -197,12 +200,18 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
         let cp = JSON.parse(JSON.stringify(selectedDay));
         cp.short = event.target.checked  ? 1 : 0;
         setSelectedDay(cp);
+        
     };
-    const changeDayText =  (event) => {
-        let cp = JSON.parse(JSON.stringify(selectedDay));
-        cp.text = event.target.value;
-        setSelectedDay(cp);
-    };
+
+    const onBlurDayText = (event)=> {
+        saveDayParams();
+    }
+
+    useEffect(()=>{
+        if (openDrawer){
+            saveDayParams();
+        }
+    },[selectedDay]);
 
     const saveDayParams = ()=>{
         let cp = JSON.parse(JSON.stringify(selectedDay));
@@ -222,43 +231,69 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
         setJobCalendar(cpCal);
             // let days = jobCalendar.months[day.month - 1].days;
             // let tday = days.find((el)=> el.d === day.value);
-        onDrawerClose();
+        // onDrawerClose();
+    }
+
+
+
+    const loadOfficialPublicCalendar = async (ev) => {
+        const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://xmlcalendar.ru/data/ru/${selectedYear}/calendar.json`));
+        if (!response.ok) {
+            throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
+        }
+        const data = await response.json();
+        const newcal = JSON.parse(data.contents);
+        setJobCalendar(normalizeObjectFromApi(newcal));
     }
 
 
     return (
         <>
             <Modal
-                title="Редактирование календаря"
+                title={isNewCalendar ? "Новый производственный календарь" : "Редактирвоание календаря"}
                 centered
                 open={open}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={1000}
+                cancelText="Закрыть"
+                okText={"Сохранить"}
             >
                 <div class='sk-cal-modal-head'>
-                <Input type="text" maxLength={500} title="" placeholder="Название..."  />
+                <Input type="text" maxLength={500} title="" placeholder="Название..." 
+                    value={calendarName}
+                    onChange={(ev)=>{setCalendarName(ev.target.value)}}
+                />
                 </div>
                 <br/>
                 <div class='sk-cal-modal-toolbar'>
-                    <Select
-                    options={DS_YEARMONTHS_SELECT}
-                    onChange={handleMonthChange}
-                    value={selectedMonth}
-                    ></Select>
-
-                    <Select
-                        options={yearArrray()}
-                        value={selectedYear}
-                        onChange={handleYearChange}
-                    />
+                    <div>
+                        <Select
+                        options={DS_YEARMONTHS_SELECT}
+                        onChange={handleMonthChange}
+                        value={selectedMonth}
+                        ></Select>
+                    </div>
+                    { isNewCalendar ? (
+                        <div>
+                            <Button
+                                color="danger" variant="solid"
+                                onClick={loadOfficialPublicCalendar}
+                             >Загрузить официальный график</Button>
+                            <Select
+                                options={yearArrray()}
+                                value={selectedYear}
+                                onChange={handleYearChange}
+                            />
+                        </div>
+                    ) : ''}
                 </div>
                 <br/>
                 <div class={`sk-cal-modal-unitstack ${selectedMonth === 0 ? 'stack-3' :'stack-1'}`}>
                 { selectedMonth === 0 ? (
                     Array.from({length: 12},(_,index) => <ProdCalUnit key={'pcalunit'+index}
                         onDayClick={openDayEditorDrawer}
-                        targetYear={2025}
+                        targetYear={selectedYear}
                         targetMonth={index + 1}
                         prodCalendar={jobCalendar}
                     />)
@@ -266,7 +301,7 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
                     <>
                     <ProdCalUnit
                         onDayClick={openDayEditorDrawer}
-                        targetYear={2025}
+                        targetYear={selectedYear}
                         targetMonth={selectedMonth}
                         prodCalendar={jobCalendar}
                     />
@@ -279,7 +314,8 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
                 
             </Modal>
 
-            <Drawer title={`${selectedDay.d} ${ getMonthName(selectedDay.m)} ${selectedYear}`} onClose={onDrawerClose} open={openDrawer}>
+            <Drawer 
+            title={`${selectedDay.d} ${ getMonthName(selectedDay.m)} ${selectedYear}`} onClose={onDrawerClose} open={openDrawer}>
                 { selectedDay ? (
                     <div>
                     <p>
@@ -296,6 +332,7 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
                             value={dayInputText}
                             onChange={(ev)=>{setDayInputText(ev.target.value)}}
                             maxLength={250}
+                            onBlur={onBlurDayText}
                         ></Input>
                     { selectedDay.mv_from ? (
                         <p>Перенесен с {`${selectedDay.mv_from.d} ${getMonthName(selectedDay.mv_from.m)}`}</p>
@@ -305,11 +342,11 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
                     ) : ''}
                     <div style={{float: 'right', paddingTop: 24}}>
 
-                        <Button color="cyan" variant="solid"
+                        {/* <Button color="cyan" variant="solid"
                         onClick={saveDayParams}
                         >
                             Сохранить
-                        </Button>
+                        </Button> */}
                     </div>
                     </div>
                 ): ""

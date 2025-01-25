@@ -27,12 +27,10 @@ const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
 
         const firstDate = operDate;
         const lastDate = operDate.add(1, 'month').subtract(1, 'day');
-        console.log('lastDate', lastDate)
 
         const daysArray = [];
         let currentDate = startOfMonth;
 
-        console.log('currentDate', currentDate)
 
         while (currentDate.isBefore(endOfMonth) || currentDate.isSame(endOfMonth))
         {
@@ -74,7 +72,7 @@ const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
         }
         // console.log(daysArray);
         setCalendarDays(daysArray);
-    }, [targetYear, targetMonth, prc]);
+    }, [targetMonth, prc]);
 
 
     const clickOnCell = (day)=>{

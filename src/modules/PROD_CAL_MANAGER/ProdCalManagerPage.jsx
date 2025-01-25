@@ -41,7 +41,9 @@ const ProdCalManagerPage = (props) => {
         setIsModalOpen(false);
     };
 
-
+    const makeEmptyCal = () =>{
+        setIsModalOpen(true);
+    }
 
     return (
         <div className={'sk-mw-1000'}>
@@ -50,6 +52,7 @@ const ProdCalManagerPage = (props) => {
             <ProdCalToolbar 
                 userData={userdata}
                 companies={companies}
+                onAddNewClick={makeEmptyCal}
             />
             <br/>
 
@@ -73,6 +76,7 @@ const ProdCalManagerPage = (props) => {
             </div>
 
             <ProdCalModal 
+                userData={userdata}
                 is_open={isModalOpen}
                 onClose={closeModal}
                 year={2024}

@@ -46,7 +46,14 @@
     border-radius: 12px;
     overflow: hidden;
 }
-
+.sk-cal-modal-toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+.sk-cal-modal-toolbar > div {
+    display: flex;
+    grid-gap: 6px;
+}
 
 
 

@@ -25,8 +25,13 @@ export const ShortName = (surname, name, patronymic) => {
 
 
 export const generateYearOptions = () => {
-    const startYear = 2000;
-    const endYear = dayjs().year() + 1; // Текущий год + 1
+    const startYear = 2014;
+    let endYear = dayjs().year(); // Текущий год + 1
+
+    if (dayjs().month() > 9){
+        endYear = dayjs().year() + 1;
+    }
+
     const yearsArray = [];
     for (let year = startYear; year <= endYear; year++) {
         yearsArray.push({
