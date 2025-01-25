@@ -1,0 +1,70 @@
+.sk-cal-unit-head {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+.sk-cal-unit-name {
+    text-align: center;
+    background-color: rgb(222, 222, 222);
+    font-variant: all-petite-caps;
+    font-weight: bold;
+}
+.sk-cal-unit-body {
+    display: flex;
+    flex-wrap: wrap;             /* Позволяем элементам переноситься на следующую строку */
+    justify-content: flex-start; 
+}
+
+.sk-calendar-item-back {
+    width: calc(100% / 7);      /* Устанавливаем ширину элемента так, чтобы вмещалось 21 элемент в строку */
+    box-sizing: border-box;       /* Учитываем отступы и границы в ширине */
+    padding: 0px;
+}
+.sk-cal-unit {
+    border: 1px solid rgb(222, 222, 222);
+}
+.sk-trule-item {
+    background-color: rgb(222, 222, 222);
+    /* border: 3px solid white; */
+    width: 100%;
+    text-align: center;
+    color: rgb(92, 92, 92);
+    font-weight: 500;
+}
+.sk-calendar-item-back {
+    transition: all 0.2s;
+}
+.sk-calendar-item-back:hover:not(.outrange) {
+    background-color: rgb(156, 156, 156);
+}
+.outrange {
+    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0.279);
+}
+.sk-calendar-item:active {
+    background-color:  rgb(0, 119, 255);
+}
+.sk-calendar-item {
+    padding: 10px;                /* Добавляем немного отступа для визуального эффекта */
+    /* border: 1px solid #ffffff;   */
+    text-align: center;           /* Центрируем текст внутри блока */
+    font-weight: 500;
+    /* color: #555;
+    background-color: #f0f0f0;
+    border-radius: 6px; */
+    transition: all 0.2s;
+    user-select: none;
+    opacity: 0.8;
+    /* color: white; */
+    background-color: rgba(255, 255, 255, 0.795);
+}
+/* .sk-calendar-item-back:hover > div {
+    border: 1px solid rgb(0, 119, 255);
+} */
+
+.sk-unit-weekend {
+    background-color: rgba(255, 0, 0, 0.181);
+}
+.sk-unit-workday {
+    background-color: rgba(0, 242, 255, 0.181);
+}

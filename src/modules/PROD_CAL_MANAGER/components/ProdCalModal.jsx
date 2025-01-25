@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, Modal, Select } from 'antd';
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
-import { DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
+import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import { generateYearOptions } from "../../../GlobalComponents/Helpers/TextHelpers";
+import ProdCalUnit from "./ProdCalUnit";
+import { PRODMODE } from "../../../CONFIG/config";
 
 const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
     const [open, setOpen] = useState(is_open);
     const [calendarDays, setCalendarDays] = useState([]);
     const [selectedYear, setSelectedYear] = useState(year ? year : dayjs().year());
     const [selectedMonth, setSelectedMonth] = useState(0);
+
+    const [jobCalendar, setJobCalendar] = useState(null);
 
     const [startDate, setStartDate] = useState(startdate ? dayjs(startdate) : dayjs());
     // const [endRange, setEndRange] useState(startDate ? dayjs(startDate) : dayjs());
@@ -18,7 +22,9 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
         console.log('is_open' + ' => ' + is_open);
         setOpen(is_open);
 
-        generateCalendarDays();
+        if (PRODMODE){
+            setJobCalendar(normalizeObjectFromApi(DS_PROD_CALENDAR));
+        }
     }, [is_open]);
 
 
@@ -38,6 +44,7 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
 
 
 
+
     const handleMonthChange = (value) => {
         console.log('month' + ' => ' + value);
         setSelectedMonth(value);
@@ -47,37 +54,91 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
     }
 
 
+    const normalizeObjectFromApi = (source)=>{
+        let target = {};
+        let tempFrom = {};
+        let tempTo = {};
+        let index = 0;
+        for (const trans of source.transitions)
+        {
+            let dfr = trans.from.split('.');
+            let dto = trans.to.split('.');
 
-    const generateCalendarDays = () => {
-        
-        // const startOfYear = dayjs().subtract(1, 'year').startOf('year'); // Начало предыдущего года
-        // const endOfYear = dayjs().add(1, 'year').startOf('year').subtract(1, 'day').endOf('week'); // Конец следующего года
+            if (tempFrom[dfr[0]] == undefined){
+                tempFrom[dfr[0]] = {};
+            };
+            tempFrom[dfr[0]][dfr[1]] = {'l': index, m: parseInt(dto[0]), d: parseInt(dto[1])};
 
-        const startOfYear = dayjs(startDate).startOf('year').day(1); // Последний понедельник
-        // Определяем первое воскресенье следующего года
-        const endOfYear = dayjs(startDate).add(1, 'year').startOf('year').add(1, 'week').day(0); // Первое воскресенье
+            if (tempTo[dto[0]] == undefined){
+                tempTo[dto[0]] = {};
+            }
+            tempTo[dto[0]][dto[1]] = {'l': index, m: parseInt(dfr[0]), d: parseInt(dfr[1])};
 
-        const firstDate = dayjs(startDate).startOf('year');
-        const lastDate = dayjs(firstDate).add(1, 'year');
-        console.log('firstdate' + ' => ' + firstDate.unix);
-
-        const daysArray = [];
-        let currentDate = startOfYear;
-
-        while (currentDate.isBefore(endOfYear) || currentDate.isSame(endOfYear)) {
-            daysArray.push({
-                value: currentDate.date(),
-                month: currentDate.month() + 1, // Месяцы начинаются с 0
-                date: currentDate.format('YYYY-MM-DD'),
-                is_weekend: currentDate.day() === 0 || currentDate.day() === 6, // Воскресенье (0) или Суббота (6),
-                week_day: currentDate.day(),
-                is_outrange: currentDate.isBefore(firstDate) || currentDate.isAfter(lastDate),
-            });
-            currentDate = currentDate.add(1, 'day');
+            index++;
         }
 
-        setCalendarDays(daysArray);
-    };
+        target.year = source.year;
+        target.months = [];
+        for (const element of source.months) {
+            let newMonth = {};
+            newMonth.month = element.month;
+            let mPad = element.month.toString().padStart(2, '0');
+            newMonth.days = [];
+            let rawDays = element.days.split(',');
+            for (let i = 0; i < rawDays.length; i++) {
+                const day = rawDays[i];
+                let newDay = {};
+                newDay.d = parseInt(day);
+                
+                if (day.includes('*'))
+                {
+                    newDay.short = 1;
+                    newDay.w = 1;
+                };
+                if (day.includes('+'))
+                {
+                    const dPad = newDay.d.toString().padStart(2, '0');
+                    newDay.mv_from = tempTo[mPad][dPad];
+                };
+                newMonth.days.push(newDay);
+            }
+            for (const key in tempFrom) {
+                if (Object.prototype.hasOwnProperty.call(tempFrom, key)) {
+                    if (mPad == key){
+                        const objelement = tempFrom[key];
+                        for (const keyd in objelement) {
+                            console.log('keyd', keyd)
+                            if (Object.prototype.hasOwnProperty.call(objelement, keyd)) {
+                                const daykey = objelement[keyd];
+                                console.log('keyd', keyd)
+                                let hasDate = false;
+                                for (let ind = 0; ind < newMonth.days.length; ind++) {
+                                    const checkday = newMonth.days[ind];
+                                    if (parseInt(checkday.d) == parseInt(keyd)){
+                                        newMonth.days[ind].mv_to = daykey;
+                                        hasDate = true;
+                                        break;
+                                    };
+                                }
+                                if (!hasDate){
+                                    let ob = tempFrom[key][keyd];
+                                    // w - means work day
+                                    newMonth.days.push({d: parseInt(keyd), w: 1, mv_to: ob})
+                                    console.log('first', ob)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            target.months.push(newMonth);
+        }
+        console.log(target)
+        return target;
+    }
+
+
 
 
     const yearArrray = () => {
@@ -114,60 +175,12 @@ const ProdCalModal = ({ is_open, onClose, startdate, rangeEnd, year }) => {
                 </div>
                 <br/>
                 <div class='sk-cal-modal-calendar'>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div className="sk-calendar-top-rule">
+                <ProdCalUnit 
+                    targetYear={2025}
+                    targetMonth={selectedMonth}
+                    prodCalendar={jobCalendar}
+                />
 
-                                            <div className="sk-trule-item">ПН</div>
-                                            <div className="sk-trule-item">ВТ</div>
-                                            <div className="sk-trule-item">СР</div>
-                                            <div className="sk-trule-item">ЧТ</div>
-                                            <div className="sk-trule-item">ПТ</div>
-                                            <div className="sk-trule-item">СБ</div>
-                                            <div className="sk-trule-item">ВС</div>
-
- 
-                                      
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                <div className="sk-calendar-body">
-                                    {calendarDays.map((day) => (
-                                        <div className={`sk-calendar-item-back sk-month-${day.month}-x`}>
-                                            <div 
-                                            key={day.date} className={`sk-calendar-item ${day.is_weekend ? 'weekend' : ''} ${day.is_outrange ? 'outrange' : ''}`}
-                                                title={day.date + " - " + day.week_day}
-                                            >
-                                                {day.value}
-                                            </div>
-                                            </div>
-                                        ))}
-                                </div>
-                                </td>
-                                <td>
-                                <div className="sk-calendar-side-rule">
-                                        <div className="sk-srule-item">ЯНВ</div>
-                                        <div className="sk-srule-item">ФЕВ</div>
-                                        <div className="sk-srule-item">МАР</div>
-                                        <div className="sk-srule-item">АПР</div>
-                                        <div className="sk-srule-item">МАЙ</div>
-                                        <div className="sk-srule-item">ИЮН</div>
-                                        <div className="sk-srule-item">ИЮЛ</div>
-                                        <div className="sk-srule-item">АВГ</div>
-                                        <div className="sk-srule-item">СЕН</div>
-                                        <div className="sk-srule-item">ОКТ</div>
-                                        <div className="sk-srule-item">НОЯ</div>
-                                        <div className="sk-srule-item">ДЕК</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                     
 
                 </div>

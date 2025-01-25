@@ -30,44 +30,9 @@
 }
 
 
-.sk-calendar-item-back {
-    width: calc(100% / 7);      /* Устанавливаем ширину элемента так, чтобы вмещалось 21 элемент в строку */
-    box-sizing: border-box;       /* Учитываем отступы и границы в ширине */
-    padding: 0px;
-}
 
-.sk-calendar-item {
-    padding: 10px;                /* Добавляем немного отступа для визуального эффекта */
-    /* border: 1px solid #ffffff;   */
-    text-align: center;           /* Центрируем текст внутри блока */
-    font-weight: 500;
-    /* color: #555;
-    background-color: #f0f0f0;
-    border-radius: 6px; */
-    transition: all 0.2s;
-    user-select: none;
-    opacity: 0.8;
-    /* color: white; */
-    background-color: rgba(255, 255, 255, 0.795);
-}
-.sk-calendar-item:hover {
-    opacity: 1;
-}
-.sk-calendar-item:hover:not(.outrange) {
-    box-shadow: 1px 1px 9px rgba(0, 0, 0, 0.329);
-    z-index: 99;
-}
-.sk-calendar-item:active {
-    border-color:  rgb(0, 119, 255);
-}
 
-.weekend {
-    background-color: #ffdcdc;   /* Пример стиля для выходных дней */
-}
 
-.outrange {
-    opacity: 0.6;
-}
 
 
 /* .sk-month-1 {
