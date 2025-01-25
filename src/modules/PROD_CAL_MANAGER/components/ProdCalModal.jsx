@@ -2,34 +2,39 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, Modal, Select, Drawer, Checkbox } from 'antd';
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
+import isLeapYear from 'dayjs/plugin/isLeapYear';
 import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import { generateYearOptions, getMonthName } from "../../../GlobalComponents/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
+dayjs.extend(isLeapYear);
 
-const ProdCalModal = ({ is_open, onClose, year, data, userData }) => {
+const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
     const [open, setOpen] = useState(is_open);
     const [calendarName, setCalendarName] = useState(data ? data.name : dayjs().year());
     const [selectedYear, setSelectedYear] = useState(year ? year : dayjs().year());
     const [selectedMonth, setSelectedMonth] = useState(0);
     const [selectedDay, setSelectedDay] = useState({d: 0, m: 0, text: '', w: false});
+    const [selectedCompany, setSelectedCompany] = useState(data ? data.id_company : userData.user.id_company);
 
     const [dayInputText, setDayInputText] = useState('');
 
     const [jobCalendar, setJobCalendar] = useState(null);
-    const [userdata, setUserdata] = useState(userData);
+    // const [userdata, setUserdata] = useState(userData);
     /**
      * Это запись календаря, полученная из БД
      */
     const [calendarData, setCalendarData] = useState(data);
     const [isNewCalendar, setIsNewCalendar] = useState(data ? false : true);
 
+    const [saveMode, setSaveMode] = useState(false);
+
 
 
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const openDayEditorDrawer = (day) => {
-        console.log(jobCalendar);
+        
         let targDate = null;
         let existed = false;
         if (jobCalendar.months && jobCalendar.months[day.month - 1] && jobCalendar.months[day.month - 1].days.length){
@@ -64,17 +69,66 @@ const ProdCalModal = ({ is_open, onClose, year, data, userData }) => {
         console.log('is_open' + ' => ' + is_open);
         setOpen(is_open);
 
-        if (PRODMODE){
-            setJobCalendar(normalizeObjectFromApi(DS_PROD_CALENDAR));
+        if (is_open === true){
+            if (PRODMODE){
+                setJobCalendar(normalizeObjectFromApi(DS_PROD_CALENDAR));
+            }
+
         }
     }, [is_open]);
 
 
+    // TO SAVE DATA
+    useEffect(()=>{
+        if (saveMode)
+        {
+            console.log(userData);
+            let obj = {};
+            if (calendarData == null){
+                obj.id = null;
+                } else {
+                    obj.id = data.id;
+                }
+                obj.year = calendarName;
+                obj.count_days = jobCalendar.total;
+                obj.count_work_days = jobCalendar.wtotal;
+                obj.count_holidays = jobCalendar.htotal;
+                obj.schedule = jobCalendar;
+                obj.id_company = selectedCompany;
+                console.log('obj', obj);
+                if (onSave){
+                onSave(obj);
+                
+            }
+            console.log(jobCalendar);
+            // ОТСЮДА СОХРАНЯЕМ УЖЕ ДАННЫЕ В БД или коллбэчим назад
+        }
+    }, [jobCalendar]);
+
+
+    /** Сохранение календаря */
     const handleOk = () => {
+        setSaveMode(true);
+        // подсчёт РД и ВД
+        let holDays = 0;
+        for (let index = 0; index < jobCalendar.months.length; index++) {
+            console.log('index' + ' => ' + index);
+            for (let i = 0; i < jobCalendar.months[index].days.length; i++) {
+                const checkday = jobCalendar.months[index].days[i];
+                if (!checkday.w || checkday.w == 0)
+                {
+                    holDays++;
+                }
+            }
+        }
+        let jcopy = JSON.parse(JSON.stringify(jobCalendar));
+        jcopy.htotal = holDays;
+        jcopy.wtotal = jcopy.total - holDays;
+        setJobCalendar(jcopy);
         setOpen(false);
         if (onClose){
             onClose(); // Вызываем функцию закрытия из родительского компонента
-        }
+        };
     };
 
     const handleCancel = () => {
@@ -121,6 +175,9 @@ const ProdCalModal = ({ is_open, onClose, year, data, userData }) => {
 
         target.year = source.year;
         target.months = [];
+        target.total = dayjs(`${target.year}-01-01`).isLeapYear() ? 366 : 365;
+        target.wtotal = 0;
+        target.htotal = 0;
         for (const element of source.months) {
             let newMonth = {};
             newMonth.month = element.month;
@@ -188,6 +245,7 @@ const ProdCalModal = ({ is_open, onClose, year, data, userData }) => {
         return generateYearOptions();
     };
 
+   
 
     const changeChbWorkday =  (event) => {
         console.log( event.target.checked);

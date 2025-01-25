@@ -13,10 +13,12 @@ const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
 
     useEffect(()=>{
         setPrc(prodCalendar);
-        console.log('useEffect call' );
-        console.log(prodCalendar);
+
 
     },[prodCalendar])
+
+
+
 
     useEffect(()=>{
         const operDate = dayjs(`${targetYear}-${targetMonth}-01`);
