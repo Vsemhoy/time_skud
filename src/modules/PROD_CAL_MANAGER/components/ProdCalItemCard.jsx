@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import './style/prodcalitemcard.css';
@@ -28,23 +28,29 @@ import { CheckCircleFilled, ClockCircleOutlined, CloseCircleOutlined, EditOutlin
 
 
 
-const ProdCalItemCard = (props) => {
+const ProdCalItemCard = ({onOpenModal, data}) => {
 
 const [ userList, setUserList] = useState(options);
+const [ calData, setCalData] = useState(data);
 
     const openModalClick = () => {
-        if (props.onOpenModal){
-            props.onOpenModal('hello');
+        if (onOpenModal){
+            onOpenModal(data.id);
         }
     }
 
+    useEffect(()=>{
+        setCalData(data);
+    }, [data]);
+
     return (
         <div className={'sk-cal-card'}> 
-            <Badge.Ribbon text="Arstel"  style={{background:"#ff4700"}}>
+            <Badge.Ribbon text={calData.company_name}  style={{background:calData.company_color}}>
             <Card className="">
-            <div class="ant-card-head">
-                <div class="ant-card-head-wrapper">
-                    <div class="ant-card-head-title sk-cal-item-head"><strong>2025</strong></div>
+            <div className="ant-card-head">
+                <div className="ant-card-head-wrapper">
+                    <div className="ant-card-head-title sk-cal-item-head">
+                    <strong>{calData.year}</strong></div>
                     <Button 
                         onClick={openModalClick}
                      icon={(<EditOutlined />)}></Button>
@@ -58,9 +64,9 @@ const [ userList, setUserList] = useState(options);
 
                 <Card.Grid hoverable={false} className="padding-remove">
                     <div className={'sk-cal-stats'}>
-                        <div><span>212</span> рабочих дней</div>
-                        <div><span>212</span> сокращенных дней</div>
-                        <div><span>131</span> выходных</div>
+                        <div><span>{calData.schedule.total}</span> всего дней</div>
+                        <div><span>{calData.schedule.wtotal}</span> рабочих дней</div>
+                        <div><span>{calData.schedule.htotal}</span> выходных</div>
                         {/* <div><span>365</span> всего</div> */}
                     </div>
                 </Card.Grid>
@@ -71,26 +77,38 @@ const [ userList, setUserList] = useState(options);
                     <br />
                     <div className={'sk-cal-butts'}>
                     <Flex gap={'4px 0'} wrap>
-                        <Tag color="#108ee9">12 графиков</Tag>
+                        { calData.count_links ? (
+                            <Tag color="#108ee9">Графики: {calData.count_links}</Tag>
+                        ) : "" }
+                        
                     </Flex>
                     {/* <Flex gap={'4px 0'} wrap>
                         <Tag color="blue">Глинтерник М.</Tag>
                     </Flex> */}
-                    <span className={'sk-dead-text'}>2025 год</span>
+                    <span className={'sk-dead-text'}>{calData.schedule.year} год</span>
  
                     <Flex gap={'4px 0'} wrap style={{}}>
-
-                        <Tag icon={<SyncOutlined spin />} color="#87d068">
+                        { calData.archieved == 0 ? (
+                            <Tag icon={<SyncOutlined spin />} color="#87d068">
                             активен
                         </Tag>
-
-                        <Tag icon={<ClockCircleOutlined />} color="#f78533">
+                        ) : "" }
+                        { calData.archieved == -1 ? (
+                            <Tag icon={<ClockCircleOutlined />} color="#f78533">
                             ожидает
                         </Tag>
-
-                        <Tag icon={<MinusCircleOutlined />} color="default">
+                        ) : "" }
+                        { calData.archieved == 1 ? (
+                            <Tag icon={<MinusCircleOutlined />} color="default">
                             архивирован
                         </Tag>
+                        ) : "" }   
+                        
+
+
+
+
+
                     </Flex>
                     </div>
                 </Card.Grid>

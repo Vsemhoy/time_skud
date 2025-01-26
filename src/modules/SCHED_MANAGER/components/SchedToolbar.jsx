@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 
 
 
-const ProdCalToolbar = (props) =>{
+const SchedToolbar = (props) =>{
     const {userData, companies, onAddNewClick, onChangeCompany } = props;
     const location = useLocation();
     const navigate = useNavigate();
@@ -18,8 +18,8 @@ const ProdCalToolbar = (props) =>{
 
 
     const handleUsedCompanyChange = (value) => {
+        setUsedCompany(value);
         if (onChangeCompany){
-            setUsedCompany(value);
             onChangeCompany(value);
         }
         // changeAddressBarParam('tgc',value,[0]);
@@ -77,4 +77,4 @@ const ProdCalToolbar = (props) =>{
     );
 }
 
-export default ProdCalToolbar;
+export default SchedToolbar;

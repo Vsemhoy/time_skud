@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Select, Drawer, Checkbox } from 'antd';
+import { Button, Input, Modal, Select, Drawer, Checkbox, Badge, Tag } from 'antd';
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
 import isLeapYear from 'dayjs/plugin/isLeapYear';
-import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
+import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT, DS_DEFAULT_SCHED } from "../../../CONFIG/DEFAULTSTATE";
 import { generateYearOptions, getMonthName } from "../../../GlobalComponents/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
+import { months } from "moment";
 dayjs.extend(isLeapYear);
 
-const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
+const ProdCalModal = ({ is_open, onClose, onSave, data, userData }) => {
     const [open, setOpen] = useState(is_open);
-    const [calendarName, setCalendarName] = useState(data ? data.name : dayjs().year());
-    const [selectedYear, setSelectedYear] = useState(year ? year : dayjs().year());
+    const [calendarData, setCalendarData] = useState(data);
+
+    const [calendarName, setCalendarName] = useState(data.year ? data.year : dayjs().year());
+    const [selectedYear, setSelectedYear] = useState(data.schedule && data.schedule.year ? data.schedule.year : dayjs().year());
     const [selectedMonth, setSelectedMonth] = useState(0);
     const [selectedDay, setSelectedDay] = useState({d: 0, m: 0, text: '', w: false});
-    const [selectedCompany, setSelectedCompany] = useState(data ? data.id_company : userData.user.id_company);
-
+    const [selectedCompany, setSelectedCompany] = useState(data.id_company ? data.id_company : userData.user.id_company);
+    const [callToSaveDay , setCallToSaveDay] = useState(false);
+const [companies, setCompanies] = useState(
+            
+            userData.companies.map((com) => ({
+                key: com.id,
+                value: Number(com.id),
+                label: com.name,
+            })),
+        );
     const [dayInputText, setDayInputText] = useState('');
 
     const [jobCalendar, setJobCalendar] = useState(null);
@@ -24,8 +35,17 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
     /**
      * Это запись календаря, полученная из БД
      */
-    const [calendarData, setCalendarData] = useState(data);
-    const [isNewCalendar, setIsNewCalendar] = useState(data ? false : true);
+    const [NEW_ITEM, setNEW_ITEM] = useState(data.id == null ? true : false);
+
+    useEffect(()=>{
+        setNEW_ITEM(data.id == null ? true : false);
+        setCalendarName(data.year ? data.year : dayjs().year());
+        setSelectedYear(data.schedule && data.schedule.year ? data.schedule.year : dayjs().year());
+        setSelectedCompany(data.id_company ? data.id_company : userData.user.id_company);
+        let defSched = DS_DEFAULT_SCHED;
+        defSched.year = dayjs().year();
+        setJobCalendar(data.schedule ? data.schedule : defSched);
+    },[data]);
 
     const [saveMode, setSaveMode] = useState(false);
 
@@ -34,16 +54,13 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const openDayEditorDrawer = (day) => {
-        
         let targDate = null;
-        let existed = false;
         if (jobCalendar.months && jobCalendar.months[day.month - 1] && jobCalendar.months[day.month - 1].days.length){
             let days = jobCalendar.months[day.month - 1].days;
             let tday = days.find((el)=> el.d === day.value);
             if (tday){
                 tday.m = day.month;
                 targDate = tday;
-                existed = true;
             }
         }
         if (targDate == null)
@@ -59,22 +76,43 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
         setSelectedDay(targDate);
         setOpenDrawer(true);
     };
+
+    const toggleDayState = (day) => {
+        setCallToSaveDay(true);
+        console.log('day', day)
+        let targDate = null;
+        if (jobCalendar.months && jobCalendar.months[day.month - 1] && jobCalendar.months[day.month - 1].days.length){
+            let days = jobCalendar.months[day.month - 1].days;
+            let tday = days.find((el)=> el.d === day.value);
+            if (tday){
+                tday.m = day.month;
+                tday.w = tday.w == 1 ? 0 : 1;
+                targDate = tday;
+            }
+        }
+        if (targDate == null)
+        {
+            targDate = {
+                d: day.value,
+                m: day.month,
+                w: false,
+            };
+        }
+        setSelectedDay(targDate);
+    };
   
     const onDrawerClose = () => {
       setOpenDrawer(false);
     };
 
 
+
+    useEffect(()=>{
+        setJobCalendar({year: selectedYear, months: []})
+    }, [selectedYear])
+
     useEffect(() => {
-        console.log('is_open' + ' => ' + is_open);
         setOpen(is_open);
-
-        if (is_open === true){
-            if (PRODMODE){
-                setJobCalendar(normalizeObjectFromApi(DS_PROD_CALENDAR));
-            }
-
-        }
     }, [is_open]);
 
 
@@ -82,25 +120,22 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
     useEffect(()=>{
         if (saveMode)
         {
-            console.log(userData);
             let obj = {};
             if (calendarData == null){
-                obj.id = null;
-                } else {
-                    obj.id = data.id;
-                }
+            obj.id = null;
+            } else {
+                obj.id = data.id;
+            }
                 obj.year = calendarName;
                 obj.count_days = jobCalendar.total;
                 obj.count_work_days = jobCalendar.wtotal;
                 obj.count_holidays = jobCalendar.htotal;
                 obj.schedule = jobCalendar;
                 obj.id_company = selectedCompany;
-                console.log('obj', obj);
                 if (onSave){
                 onSave(obj);
                 
             }
-            console.log(jobCalendar);
             // ОТСЮДА СОХРАНЯЕМ УЖЕ ДАННЫЕ В БД или коллбэчим назад
         }
     }, [jobCalendar]);
@@ -111,13 +146,14 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
         setSaveMode(true);
         // подсчёт РД и ВД
         let holDays = 0;
-        for (let index = 0; index < jobCalendar.months.length; index++) {
-            console.log('index' + ' => ' + index);
-            for (let i = 0; i < jobCalendar.months[index].days.length; i++) {
-                const checkday = jobCalendar.months[index].days[i];
-                if (!checkday.w || checkday.w == 0)
-                {
-                    holDays++;
+        if (jobCalendar.months){
+            for (let index = 0; index < jobCalendar.months.length; index++) {
+                for (let i = 0; i < jobCalendar.months[index].days.length; i++) {
+                    const checkday = jobCalendar.months[index].days[i];
+                    if (!checkday.w || checkday.w == 0)
+                    {
+                        holDays++;
+                    }
                 }
             }
         }
@@ -142,7 +178,6 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
 
 
     const handleMonthChange = (value) => {
-        console.log('month' + ' => ' + value);
         setSelectedMonth(value);
     }
     const handleYearChange = (value) => {
@@ -206,10 +241,8 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
                     if (mPad == key){
                         const objelement = tempFrom[key];
                         for (const keyd in objelement) {
-                            console.log('keyd', keyd)
                             if (Object.prototype.hasOwnProperty.call(objelement, keyd)) {
                                 const daykey = objelement[keyd];
-                                console.log('keyd', keyd)
                                 let hasDate = false;
                                 for (let ind = 0; ind < newMonth.days.length; ind++) {
                                     const checkday = newMonth.days[ind];
@@ -223,7 +256,6 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
                                     let ob = tempFrom[key][keyd];
                                     // w - means work day
                                     newMonth.days.push({d: parseInt(keyd), w: 1, mv_to: ob})
-                                    console.log('first', ob)
                                 }
                             }
                         }
@@ -233,7 +265,6 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
 
             target.months.push(newMonth);
         }
-        console.log(target)
         return target;
     }
 
@@ -241,20 +272,17 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
 
 
     const yearArrray = () => {
-        console.log('Kiwi')
         return generateYearOptions();
     };
 
    
 
     const changeChbWorkday =  (event) => {
-        console.log( event.target.checked);
         let cp = JSON.parse(JSON.stringify(selectedDay));
         cp.w = event.target.checked  ? 1 : 0;
         setSelectedDay(cp);
     };
     const changeChbShortDay =  (event) => {
-        console.log( event.target.checked);
         let cp = JSON.parse(JSON.stringify(selectedDay));
         cp.short = event.target.checked  ? 1 : 0;
         setSelectedDay(cp);
@@ -266,8 +294,9 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
     }
 
     useEffect(()=>{
-        if (openDrawer){
+        if (openDrawer || callToSaveDay){
             saveDayParams();
+            setCallToSaveDay(false);
         }
     },[selectedDay]);
 
@@ -285,7 +314,6 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
         } else {
             cpCal.months[cp.m - 1].days.push(cp);
         }
-        console.log(cpCal);
         setJobCalendar(cpCal);
             // let days = jobCalendar.months[day.month - 1].days;
             // let tday = days.find((el)=> el.d === day.value);
@@ -305,10 +333,14 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
     }
 
 
+    const handleUsedCompanyChange = (value)=>{
+        setSelectedCompany(value);
+    };
+
     return (
         <>
             <Modal
-                title={isNewCalendar ? "Новый производственный календарь" : "Редактирвоание календаря"}
+                title={NEW_ITEM ? "Новый производственный календарь" : "Редактирвоание календаря"}
                 centered
                 open={open}
                 onOk={handleOk}
@@ -317,14 +349,14 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
                 cancelText="Закрыть"
                 okText={"Сохранить"}
             >
-                <div class='sk-cal-modal-head'>
+                <div className='sk-cal-modal-head'>
                 <Input type="text" maxLength={500} title="" placeholder="Название..." 
                     value={calendarName}
                     onChange={(ev)=>{setCalendarName(ev.target.value)}}
                 />
                 </div>
                 <br/>
-                <div class='sk-cal-modal-toolbar'>
+                <div className='sk-cal-modal-toolbar'>
                     <div>
                         <Select
                         options={DS_YEARMONTHS_SELECT}
@@ -332,24 +364,37 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
                         value={selectedMonth}
                         ></Select>
                     </div>
-                    { isNewCalendar ? (
+                    { NEW_ITEM ? (
                         <div>
-                            <Button
-                                color="danger" variant="solid"
-                                onClick={loadOfficialPublicCalendar}
-                             >Загрузить официальный график</Button>
+                            {userData.companies.length > 1 ? (
+                                <Select 
+                                    status="error"
+                                    options={companies}
+                                    value={selectedCompany} // Use value instead of defaultValue for controlled component
+                                    style={{ minWidth: 140 }}
+                                    onChange={handleUsedCompanyChange}
+                                />
+                            ) : ''}
                             <Select
                                 options={yearArrray()}
                                 value={selectedYear}
                                 onChange={handleYearChange}
                             />
+                            <Button
+                                color="danger" variant="solid"
+                                onClick={loadOfficialPublicCalendar}
+                             >Загрузить официальный график</Button>
+
                         </div>
-                    ) : ''}
+                    ) : (
+                        <Tag className={'sk-cal-modal-badge'} color={data.company_color}>{data.company_name}</Tag>
+                    )}
                 </div>
                 <br/>
-                <div class={`sk-cal-modal-unitstack ${selectedMonth === 0 ? 'stack-3' :'stack-1'}`}>
+                <div className={`sk-cal-modal-unitstack ${selectedMonth === 0 ? 'stack-3' :'stack-1'}`}>
                 { selectedMonth === 0 ? (
                     Array.from({length: 12},(_,index) => <ProdCalUnit key={'pcalunit'+index}
+                        onDayToggle={toggleDayState}
                         onDayClick={openDayEditorDrawer}
                         targetYear={selectedYear}
                         targetMonth={index + 1}
@@ -358,6 +403,7 @@ const ProdCalModal = ({ is_open, onClose, onSave, year, data, userData }) => {
                 ) : (
                     <>
                     <ProdCalUnit
+                        onDayToggle={toggleDayState}
                         onDayClick={openDayEditorDrawer}
                         targetYear={selectedYear}
                         targetMonth={selectedMonth}

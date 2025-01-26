@@ -11,7 +11,7 @@ export const DS_USER = {
             "is_active": 1,
             "template_prefix": "rond",
             "folder": "rondo",
-            "color": "#22ff22",
+            "color": "#2ccf2c",
             "ext_address_offers": "/",
             "path_logo": "/images/identics/iwtRd02l2h/logo.png",
             "created_at": null,
@@ -699,6 +699,10 @@ export const DS_SKUD_SCHEDULE_TYPES = [
 
 const DS_OFFICIAL_SCHED = {
     "year": 2025,
+    total: 365,
+    wtotal:247,
+    "htotal": 118,
+    year: 2025,
     "months": [
         {
             "month": 1,
@@ -1187,18 +1191,92 @@ const DS_OFFICIAL_SCHED = {
     ]
 };
 
+export const DS_DEFAULT_SCHED = {
+    "year": 2025,
+    "total": 365,
+    "wtotal":247,
+    "htotal": 118,
+    "year": 2025,
+    "months": [
+        {
+            "month": 1,
+            "days": [
+            ]
+        },
+        {
+            "month": 2,
+            "days": [
+            ]
+        },
+        {
+            "month": 3,
+            "days": [
+            ]
+        },
+        {
+            "month": 4,
+            "days": [
+            ]
+        },
+        {
+            "month": 5,
+            "days": [
+            ]
+        },
+        {
+            "month": 6,
+            "days": [
+            ]
+        },
+        {
+            "month": 7,
+            "days": [
+            ]
+        },
+        {
+            "month": 8,
+            "days": [
+            ]
+        },
+        {
+            "month": 9,
+            "days": [
+            ]
+        },
+        {
+            "month": 10,
+            "days": [
+            ]
+        },
+        {
+            "month": 11,
+            "days": [
+            ]
+        },
+        {
+            "month": 12,
+            "days": [  
+            ]
+        }
+    ]
+};
+
 export const DS_PROD_CALENDARS = [
     {
         id: 1,
-        year: '2025 нормальный',
+        year: '2024 позитивный',
         count_days: 100,
         count_work_days: 100,
         count_holidays: 100,
-        archieved: 0,
+        archieved: 1,
         schedule: DS_OFFICIAL_SCHED,
         creator_id: 377,
         created_at: 1737782394,
         id_company: 1,
+
+        company_color: '#ff7700',
+        company_name: 'Arstel',
+        count_links: 2,
     },
     {
         id: 2,
@@ -1210,6 +1288,42 @@ export const DS_PROD_CALENDARS = [
         schedule: DS_OFFICIAL_SCHED,
         creator_id: 377,
         created_at: 1737782394,
+        id_company: 1,
+
+        company_color: '#ff7700',
+        company_name: 'Arstel',
+        count_links: 16,
+    },
+    {
+        id: 3,
+        year: '2025 сумасшедший',
+        count_days: 100,
+        count_work_days: 100,
+        count_holidays: 100,
+        archieved: 0,
+        schedule: DS_OFFICIAL_SCHED,
+        creator_id: 377,
+        created_at: 1737782394,
         id_company: 2,
+
+        company_color: '#2ccf2c',
+        company_name: 'Rondo',
+        count_links: 1,
+    },
+    {
+        id: 4,
+        year: '2026 угарный',
+        count_days: 100,
+        count_work_days: 100,
+        count_holidays: 100,
+        archieved: -1,
+        schedule: DS_OFFICIAL_SCHED,
+        creator_id: 377,
+        created_at: 1737782394,
+        id_company: 2,
+
+        company_color: '#2ccf2c',
+        company_name: 'Rondo',
+        count_links: 0,
     },
 ]

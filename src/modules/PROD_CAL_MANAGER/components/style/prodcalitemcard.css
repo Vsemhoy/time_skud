@@ -6,7 +6,8 @@
      flex-direction: column;
     display: flex;
     padding: 6px;
-    text-align: center;
+    text-align: left;
+    padding-left: 22px;
  }
  .sk-cal-stats span {
     font-weight: 500;

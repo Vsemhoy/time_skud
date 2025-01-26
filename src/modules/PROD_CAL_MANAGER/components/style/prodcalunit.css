@@ -73,3 +73,20 @@
 .sk-unit-workday {
     background-color: rgba(0, 255, 64, 0);
 }
+
+.sk-unit-dayto > .sk-text::after {
+    /* background-color: red; */
+    display: block;
+    content: '►';
+    font-size:medium;
+    border-radius: 50%;
+    line-height: 10px;
+}
+.sk-unit-dayfrom > .sk-text::before {
+    /* background-color: red; */
+    display: block;
+    content: '◄';
+    font-size: smaller;
+    border-radius: 50%;
+    line-height: 10px;
+}

@@ -7,7 +7,7 @@ import { months } from "moment";
 import { Tooltip } from "antd";
 import { getMonthName } from "../../../GlobalComponents/Helpers/TextHelpers";
 
-const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
+const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick, onDayToggle})=>{
     const [calendarDays, setCalendarDays] = useState([]);
     const [prc, setPrc] = useState(prodCalendar ? prodCalendar : {year: 2025, months: []});
 
@@ -77,11 +77,18 @@ const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
     }, [targetMonth, prc]);
 
 
-    const clickOnCell = (day)=>{
+    const clickOnCell = (day, event)=>{
         if (day.outrange == false){
-            if (onDayClick){
-                onDayClick(day);
+            if (event.ctrlKey){
+                if (onDayToggle){
+                    onDayToggle(day);
+                }
+            } else {
+                if (onDayClick){
+                    onDayClick(day);
+                }
             }
+
         }
     }
 
@@ -111,7 +118,7 @@ const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
                         tooltip += "Перенос на " + day.to.d.toString().padStart(2, '0') + " " + getMonthName(day.to.m);
                     }
                     if (day.short){
-                        tooltip += " Укороченный день";
+                        tooltip += " Сокращенный рабочий день";
                     }
                     if (day.text){
                         tooltip += " " + day.text;
@@ -120,11 +127,12 @@ const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick})=>{
                     <div className={`sk-calendar-item-back sk-month-${day.month}-x  ${day.outrange ? 'outrange' : ''}`}>
                     <Tooltip placement="bottom" title={tooltip}>
                         <div 
-                        onClick={()=>{clickOnCell(day)}}
-                        key={day.date} className={`sk-calendar-item ${day.is_weekend ? 'sk-unit-weekend' : ''} ${day.is_workday ? 'sk-unit-workday' : ''}`}
+                        onClick={(event)=>{clickOnCell(day, event)}}
+                        key={day.date} className={`sk-calendar-item ${day.is_weekend ? 'sk-unit-weekend' : ''} ${day.is_workday ? 'sk-unit-workday' : ''}
+                         ${day.to ? 'sk-unit-dayto' : ''}  ${day.from ? 'sk-unit-dayfrom' : ''}`}
                             // title={day.date + " - " + day.week_day}
                         >
-                           {day.short ? <ScissorOutlined className="sk-smaller" />: ""} <strong>{day.value}</strong> {day.text ? <InfoCircleOutlined className="sk-smaller" />: ""}
+                           {day.short ? <ScissorOutlined className="sk-smaller" />: ""} <strong className="sk-text">{day.value}</strong> {day.text ? <InfoCircleOutlined className="sk-smaller" />: ""}
                         </div>
                         </Tooltip>
                         </div>
