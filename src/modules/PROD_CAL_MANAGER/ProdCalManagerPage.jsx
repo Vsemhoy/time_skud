@@ -22,6 +22,7 @@ const ProdCalManagerPage = (props) => {
     const [selectedCompany, setSelectedCompany] = useState(0)
     const [calendarList, setCalendarList] = useState(PRODMODE ? DS_PROD_CALENDARS : []);
     const [baseCalendarList, setBaseCalendarList] = useState(PRODMODE ? DS_PROD_CALENDARS : []);
+    const [allowDelete , setAllowDelete] = useState(false);
 
     
     useEffect(() => {
@@ -32,7 +33,9 @@ const ProdCalManagerPage = (props) => {
                     value: Number(com.id),
                     label: com.name,
                 }))]
-            )}},[userdata]);
+            );
+            get_calendarList();
+        }},[userdata]);
 
 
 
@@ -86,9 +89,13 @@ const ProdCalManagerPage = (props) => {
      */
     const get_calendarList = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/prodcalendars?_token=' + CSRF_TOKEN);
-          console.log('departs', response);
-          setBaseCalendarList(response.data.data);
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get', 
+            {
+                data: {},
+                _token: CSRF_TOKEN
+            });
+            setBaseCalendarList(response.data);
+            console.log('get_calendarList => ', response.data);
       } catch (e) {
           console.log(e)
       } finally {
@@ -101,11 +108,15 @@ const ProdCalManagerPage = (props) => {
      * @param {*} req 
      * @param {*} res 
      */
-        const get_calendarItem = async (req, res, item_id) => {
+        const get_calendarItem = async (item_id, req, res ) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/prodcalendars' + item_id + '?_token=' + CSRF_TOKEN);
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get/' + item_id, 
+                    {
+                        data: {},
+                        _token: CSRF_TOKEN
+                    });
                 console.log('departs', response);
-                setCalendarList(response.data.data);
+                setEditedItem(response.data);
             } catch (e) {
                 console.log(e)
             } finally {
@@ -121,8 +132,11 @@ const ProdCalManagerPage = (props) => {
        */
         const create_calendar = async (body, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/prodcalendars?_token=' + CSRF_TOKEN,
-                {data: body});
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars',
+                {
+                    data: body, 
+                    _token: CSRF_TOKEN
+                });
             console.log('users', response);
             // setBaseUserListData(response.data.data);
         } catch (e) {
@@ -133,14 +147,18 @@ const ProdCalManagerPage = (props) => {
     }
 
     /**
-       * Получение списка пользователей
+       *  
        * @param {*} req 
        * @param {*} res 
        */
         const update_calendar = async (body, req, res) => {
+            console.log('body',body);
             try {
-                let response = await PROD_AXIOS_INSTANCE.update('/api/timeskud/prodcalendars?_token=' + CSRF_TOKEN,
-                    {data: body}
+                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/prodcalendar/prodcalendars/' + body.id,
+                    {   
+                        data: body, 
+                        _token: CSRF_TOKEN
+                    }
                 );
                 console.log('users', response);
                 // setBaseUserListData(response.data.data);
@@ -154,6 +172,34 @@ const ProdCalManagerPage = (props) => {
                 );
             }
         }
+
+    /**
+       *  
+       * @param {*} req 
+       * @param {*} res 
+       */
+    const delete_calendar = async (body, req, res) => {
+        console.log('body',body);
+        try {
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/prodcalendar/prodcalendars/' + body.id + '?_token=' + CSRF_TOKEN,
+                {   
+                    data: body, 
+                    _token: CSRF_TOKEN
+                }
+            );
+            console.log('response.data', response.data);
+            if (response.data.status === 0){
+                get_calendarList();
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+
+        }
+        setIsModalOpen(false);
+        setAllowDelete(false);
+    }
+
   /** ------------------ FETCHES END ---------------- */
 
 
@@ -161,6 +207,7 @@ const ProdCalManagerPage = (props) => {
 
     const closeModal = () => {
         setIsModalOpen(false);
+        setAllowDelete(false);
     };
 
     const saveCalendar = (data)=>{
@@ -170,8 +217,15 @@ const ProdCalManagerPage = (props) => {
         } else {
             update_calendar(data);
         }
+        setAllowDelete(false);
     }
 
+
+    const allowDeleteSet = (value)=>{
+        setAllowDelete(value);
+        console.log('value', value);
+    }
+    
 
 
     const changeCompany = (value)=>{
@@ -187,6 +241,7 @@ const ProdCalManagerPage = (props) => {
                 companies={companies}
                 onAddNewClick={openModal}
                 onChangeCompany={changeCompany}
+                allow_delete={allowDeleteSet}
             />
             <br/>
 
@@ -197,6 +252,7 @@ const ProdCalManagerPage = (props) => {
                          onOpenModal={openModal} 
                          data={jcal}
                          key={`clitem_${jcal.id}`}
+                         allow_delete={allowDeleteSet}
                         />
                     ))
                 }
@@ -210,6 +266,9 @@ const ProdCalManagerPage = (props) => {
                 onClose={closeModal}
                 data={editedItem}
                 onSave={saveCalendar}
+                allow_delete={allowDelete}
+                onDelete={delete_calendar}
+                
             />
         </div>
     )

@@ -1264,7 +1264,7 @@ export const DS_DEFAULT_SCHED = {
 export const DS_PROD_CALENDARS = [
     {
         id: 1,
-        year: '2024 позитивный',
+        year: '2024',
         count_days: 100,
         count_work_days: 100,
         count_holidays: 100,
@@ -1280,7 +1280,7 @@ export const DS_PROD_CALENDARS = [
     },
     {
         id: 2,
-        year: '2025 нормальный',
+        year: '2025',
         count_days: 100,
         count_work_days: 100,
         count_holidays: 100,
@@ -1296,7 +1296,7 @@ export const DS_PROD_CALENDARS = [
     },
     {
         id: 3,
-        year: '2025 сумасшедший',
+        year: '2025',
         count_days: 100,
         count_work_days: 100,
         count_holidays: 100,
@@ -1312,7 +1312,7 @@ export const DS_PROD_CALENDARS = [
     },
     {
         id: 4,
-        year: '2026 угарный',
+        year: '2026',
         count_days: 100,
         count_work_days: 100,
         count_holidays: 100,

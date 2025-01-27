@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Select, Drawer, Checkbox, Badge, Tag } from 'antd';
+import { Button, Input, Modal, Select, Drawer, Checkbox, Badge, Tag, Radio } from 'antd';
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
 import isLeapYear from 'dayjs/plugin/isLeapYear';
@@ -10,7 +10,7 @@ import { PRODMODE } from "../../../CONFIG/config";
 import { months } from "moment";
 dayjs.extend(isLeapYear);
 
-const ProdCalModal = ({ is_open, onClose, onSave, data, userData }) => {
+const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, onDelete }) => {
     const [open, setOpen] = useState(is_open);
     const [calendarData, setCalendarData] = useState(data);
 
@@ -20,6 +20,10 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData }) => {
     const [selectedDay, setSelectedDay] = useState({d: 0, m: 0, text: '', w: false});
     const [selectedCompany, setSelectedCompany] = useState(data.id_company ? data.id_company : userData.user.id_company);
     const [callToSaveDay , setCallToSaveDay] = useState(false);
+    const [archievedState , setArchievedState] = useState(data.archieved);
+
+    const [allowDelete, setAllowDelete] = useState(allow_delete === true ? true : false);
+
 const [companies, setCompanies] = useState(
             
             userData.companies.map((com) => ({
@@ -38,13 +42,17 @@ const [companies, setCompanies] = useState(
     const [NEW_ITEM, setNEW_ITEM] = useState(data.id == null ? true : false);
 
     useEffect(()=>{
+        console.log('allow_delete', allow_delete);
+        setCalendarData(data);
         setNEW_ITEM(data.id == null ? true : false);
         setCalendarName(data.year ? data.year : dayjs().year());
         setSelectedYear(data.schedule && data.schedule.year ? data.schedule.year : dayjs().year());
         setSelectedCompany(data.id_company ? data.id_company : userData.user.id_company);
+        setArchievedState(data.archieved);
         let defSched = DS_DEFAULT_SCHED;
         defSched.year = dayjs().year();
         setJobCalendar(data.schedule ? data.schedule : defSched);
+        setAllowDelete(allow_delete === true ? true : false);
     },[data]);
 
     const [saveMode, setSaveMode] = useState(false);
@@ -54,6 +62,7 @@ const [companies, setCompanies] = useState(
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const openDayEditorDrawer = (day) => {
+        setSaveMode(false);
         let targDate = null;
         if (jobCalendar.months && jobCalendar.months[day.month - 1] && jobCalendar.months[day.month - 1].days.length){
             let days = jobCalendar.months[day.month - 1].days;
@@ -72,13 +81,14 @@ const [companies, setCompanies] = useState(
                 short: false
             };
         }
-        setDayInputText(targDate.text ? targDate.text : '');
+        setDayInputText(targDate.text !== null && targDate.text !== '' ? targDate.text : '');
         setSelectedDay(targDate);
         setOpenDrawer(true);
     };
 
     const toggleDayState = (day) => {
         setCallToSaveDay(true);
+        setSaveMode(false);
         console.log('day', day)
         let targDate = null;
         if (jobCalendar.months && jobCalendar.months[day.month - 1] && jobCalendar.months[day.month - 1].days.length){
@@ -108,7 +118,9 @@ const [companies, setCompanies] = useState(
 
 
     useEffect(()=>{
-        setJobCalendar({year: selectedYear, months: []})
+        if (jobCalendar == null || selectedYear !== jobCalendar.year){
+            setJobCalendar(DS_DEFAULT_SCHED);
+        }
     }, [selectedYear])
 
     useEffect(() => {
@@ -118,26 +130,29 @@ const [companies, setCompanies] = useState(
 
     // TO SAVE DATA
     useEffect(()=>{
-        if (saveMode)
-        {
-            let obj = {};
-            if (calendarData == null){
-            obj.id = null;
-            } else {
-                obj.id = data.id;
+        setTimeout(() => {            
+            if (saveMode)
+            {
+                setSaveMode(false);
+                let obj = {};
+                if (calendarData == null){
+                    obj.id = null;
+                    } else {
+                        obj.id = data.id;
+                    }
+                    obj.year = calendarName;
+                    obj.count_days = jobCalendar.total;
+                    obj.count_work_days = jobCalendar.wtotal;
+                    obj.count_holidays = jobCalendar.htotal;
+                    obj.schedule   = jobCalendar;
+                    obj.id_company = selectedCompany;
+                    obj.archieved  = archievedState;
+                    if (onSave){
+                    onSave(obj);
+                    }
+                // ОТСЮДА СОХРАНЯЕМ УЖЕ ДАННЫЕ В БД или коллбэчим назад
             }
-                obj.year = calendarName;
-                obj.count_days = jobCalendar.total;
-                obj.count_work_days = jobCalendar.wtotal;
-                obj.count_holidays = jobCalendar.htotal;
-                obj.schedule = jobCalendar;
-                obj.id_company = selectedCompany;
-                if (onSave){
-                onSave(obj);
-                
-            }
-            // ОТСЮДА СОХРАНЯЕМ УЖЕ ДАННЫЕ В БД или коллбэчим назад
-        }
+        }, 500);
     }, [jobCalendar]);
 
 
@@ -158,6 +173,9 @@ const [companies, setCompanies] = useState(
             }
         }
         let jcopy = JSON.parse(JSON.stringify(jobCalendar));
+        if (!jcopy.total){
+            jcopy.total = dayjs(`${jcopy.year}-01-01`).isLeapYear() ? 366 : 365;
+        }
         jcopy.htotal = holDays;
         jcopy.wtotal = jcopy.total - holDays;
         setJobCalendar(jcopy);
@@ -181,6 +199,7 @@ const [companies, setCompanies] = useState(
         setSelectedMonth(value);
     }
     const handleYearChange = (value) => {
+        setCalendarName(value);
         setSelectedYear(value);
     }
 
@@ -269,6 +288,24 @@ const [companies, setCompanies] = useState(
     }
 
 
+    const ARCH_STATES = [
+        {
+            key: 'arsctate_m1',
+            value: -1,
+            label: "Ожидает публикации"
+        },
+        {
+            key: 'arsctate_0',
+            value: 0,
+            label: "Активен"
+        },
+        {
+            key: 'arsctate_1',
+            value: 1,
+            label: "Архивирован"
+        },
+    ]
+    
 
 
     const yearArrray = () => {
@@ -276,25 +313,41 @@ const [companies, setCompanies] = useState(
     };
 
    
+    
+    const changeDayParamRadio =  (event) => {
+        console.log(event.target.value);
+        let cp = JSON.parse(JSON.stringify(selectedDay));
+        switch (event.target.value){
+            case 0:
+                cp.w = 0;
+                cp.short = 0;
+            break;
+            case 1:
+                cp.w =  1;
+                cp.short = 0;
+            break;
+            case 2:
+                cp.w = 1;
+                cp.short = 1;
+            break;
+            default:
 
-    const changeChbWorkday =  (event) => {
-        let cp = JSON.parse(JSON.stringify(selectedDay));
-        cp.w = event.target.checked  ? 1 : 0;
+            break;
+        }
         setSelectedDay(cp);
+        // let cp = JSON.parse(JSON.stringify(selectedDay));
+        // cp.short = event.target.checked  ? 1 : 0;
+        // setSelectedDay(cp);
     };
-    const changeChbShortDay =  (event) => {
-        let cp = JSON.parse(JSON.stringify(selectedDay));
-        cp.short = event.target.checked  ? 1 : 0;
-        setSelectedDay(cp);
-        
-    };
+
 
     const onBlurDayText = (event)=> {
         saveDayParams();
     }
 
     useEffect(()=>{
-        if (openDrawer || callToSaveDay){
+        if ((is_open && openDrawer) || (is_open && callToSaveDay)){
+            console.log('348' + ' => ' + 348);
             saveDayParams();
             setCallToSaveDay(false);
         }
@@ -302,7 +355,8 @@ const [companies, setCompanies] = useState(
 
     const saveDayParams = ()=>{
         let cp = JSON.parse(JSON.stringify(selectedDay));
-        if (dayInputText !== ''){
+        delete cp.text;
+        if (dayInputText && dayInputText.trim() !== ""){
             cp.text = dayInputText;
         };
         let cpCal = JSON.parse(JSON.stringify(jobCalendar));
@@ -310,7 +364,7 @@ const [companies, setCompanies] = useState(
         if (editday){
             editday.w = cp.w;
             editday.short = cp.short;
-            if (cp.text != ''){ editday.text = cp.text ;};
+            if (cp.text !== ''){ editday.text = cp.text ;};
         } else {
             cpCal.months[cp.m - 1].days.push(cp);
         }
@@ -337,6 +391,33 @@ const [companies, setCompanies] = useState(
         setSelectedCompany(value);
     };
 
+    const updateCalendarName = (ev) => {
+        let value = ev.target.value;
+    
+        // Allow only numeric values and a single dot (for decimal numbers)
+        let numericValue = value.replace(/[^0-9.]/g, '');
+    
+        // Ensure only one dot is present
+        const dots = numericValue.split('.').length - 1;
+        if (dots > 1) {
+          numericValue = numericValue.slice(0, -1);
+        }
+    
+        // Update the state with the numeric value
+        setCalendarName(numericValue);
+      };
+
+
+    const onDeleteAction = ()=>{
+        let cf = window.confirm("Действительно удалить этот производственный календарь!?");
+        if (cf){
+            if (onDelete && allowDelete){
+                console.log('calendarData', calendarData);
+                onDelete(calendarData);
+            }
+        }
+    }
+
     return (
         <>
             <Modal
@@ -350,9 +431,10 @@ const [companies, setCompanies] = useState(
                 okText={"Сохранить"}
             >
                 <div className='sk-cal-modal-head'>
-                <Input type="text" maxLength={500} title="" placeholder="Название..." 
+                <Input type="text" maxLength={6} title="" placeholder="Название..." 
                     value={calendarName}
-                    onChange={(ev)=>{setCalendarName(ev.target.value)}}
+                    onChange={updateCalendarName}
+
                 />
                 </div>
                 <br/>
@@ -364,6 +446,7 @@ const [companies, setCompanies] = useState(
                         value={selectedMonth}
                         ></Select>
                     </div>
+                    
                     { NEW_ITEM ? (
                         <div>
                             {userData.companies.length > 1 ? (
@@ -387,7 +470,21 @@ const [companies, setCompanies] = useState(
 
                         </div>
                     ) : (
+                        <div>
+                            {allowDelete ? (
+                                <Button type="primary" danger
+                                    onClick={onDeleteAction}
+                                >
+                                Удалить график
+                                </Button>
+                            ): ''}
+                            <Select
+                                value={archievedState}
+                                options={ARCH_STATES}
+                                onChange={(value) => {setArchievedState(value)}}
+                                />
                         <Tag className={'sk-cal-modal-badge'} color={data.company_color}>{data.company_name}</Tag>
+                        </div>
                     )}
                 </div>
                 <br/>
@@ -422,16 +519,27 @@ const [companies, setCompanies] = useState(
             title={`${selectedDay.d} ${ getMonthName(selectedDay.m)} ${selectedYear}`} onClose={onDrawerClose} open={openDrawer}>
                 { selectedDay ? (
                     <div>
-                    <p>
-                        <Checkbox checked={selectedDay.w} 
-                            onChange={changeChbWorkday}
-                        >Рабочий день</Checkbox>
-                    </p>
-                    <p>
-                        <Checkbox checked={selectedDay.short} 
-                            onChange={changeChbShortDay}
-                        >Сокращенный день</Checkbox>
-                    </p>
+                        <p>
+                        <Radio.Group
+                            value={selectedDay.w && selectedDay.short ? 2 : selectedDay.w && !selectedDay.short ? 1 : 0}
+                            className="sk-radio-stack"
+                            onChange={changeDayParamRadio}
+                            options={[
+                                {
+                                value: 1,
+                                label: 'Рабочий день',
+                                },
+                                {
+                                value: 2,
+                                label: 'Сокращенный день',
+                                },
+                                {
+                                value: 0,
+                                label: 'Выходной день',
+                                },
+                            ]}
+                            />
+                        </p>
                         <Input placeholder="Комментарий к дате"
                             value={dayInputText}
                             onChange={(ev)=>{setDayInputText(ev.target.value)}}

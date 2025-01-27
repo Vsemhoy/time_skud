@@ -28,14 +28,21 @@ import { CheckCircleFilled, ClockCircleOutlined, CloseCircleOutlined, EditOutlin
 
 
 
-const ProdCalItemCard = ({onOpenModal, data}) => {
+const ProdCalItemCard = ({onOpenModal, data, allow_delete}) => {
 
 const [ userList, setUserList] = useState(options);
 const [ calData, setCalData] = useState(data);
 
-    const openModalClick = () => {
+    const openModalClick = (event) => {
+        if (event.ctrlKey){
+            console.log(event);
+            if (allow_delete){
+                allow_delete(true);
+            }
+        }
         if (onOpenModal){
-            onOpenModal(data.id);
+            console.log(calData);
+            onOpenModal(calData.id);
         }
     }
 

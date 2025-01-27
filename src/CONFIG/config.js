@@ -1,9 +1,10 @@
 import ru from "antd/es/date-picker/locale/ru_RU";
 import ruRU from "antd/es/locale/ru_RU";
 
-export const PRODMODE = true;
+export const PRODMODE = false;
 // Тянем токен со страницы
 export const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : null;
+export const HTTP_HOST = document.querySelector('meta[name="host"]') ? document.querySelector('meta[name="host"]').content : null;
 
 export const theme_1 = {
     // 1. Use dark algorithm

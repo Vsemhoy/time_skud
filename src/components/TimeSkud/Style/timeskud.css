@@ -129,3 +129,11 @@ td:first-child {
 .sk-smaller {
 font-size: smaller;
 }
+
+.sk-radio-stack {
+    display: flex;
+    flex-direction: column;
+}
+.sk-radio-stack > * {
+    margin-bottom: 12px;
+}
