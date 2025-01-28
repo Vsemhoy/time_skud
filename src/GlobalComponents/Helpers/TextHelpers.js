@@ -58,6 +58,6 @@ export const secondsValueToGlobalTime = (seconds) => {
 
 export const globalTimeToDaySeconds = (daytime) => {
     let seconds = daytime.seconds();
-    let start = daytime.startOf().seconds();
+    let start = daytime.startOf('day').seconds();
     return seconds - start;
 }
