@@ -17,6 +17,8 @@ const ProdCalToolbar = (props) =>{
 
 
 
+
+
     const handleUsedCompanyChange = (value) => {
         if (onChangeCompany){
             setUsedCompany(value);
@@ -24,6 +26,8 @@ const ProdCalToolbar = (props) =>{
         }
         // changeAddressBarParam('tgc',value,[0]);
     };
+
+
 
 
     const changeAddressBarParam = (key, value, deleteOn = [null]) =>
@@ -56,6 +60,7 @@ const ProdCalToolbar = (props) =>{
                         onChange={handleUsedCompanyChange}
                     />
                 ) : ''}
+
 
 
             </div>

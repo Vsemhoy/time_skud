@@ -48,3 +48,16 @@ export const getMonthName = (number) => {
     let month = DS_YEARMONTHS_SELECT.find((el) => el.value === parseInt(number));
     return month.label;
 };
+
+export const secondsValueToGlobalTime = (seconds) => {
+    const currentDate = dayjs();
+    const startOfDay = currentDate.startOf('day');
+    const timeForPicker = startOfDay.add(seconds, 'second');
+    return timeForPicker;
+}
+
+export const globalTimeToDaySeconds = (daytime) => {
+    let seconds = daytime.seconds();
+    let start = daytime.startOf().seconds();
+    return seconds - start;
+}

@@ -1,3 +1,9 @@
+.sk-schedule-list {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 1rem;
+}
+
 .sk-schedule-list-row {
     --border-color: rgb(230, 230, 230);
     --border-o-color: rgb(196, 196, 196);
@@ -10,6 +16,7 @@
     border-top: 0.5px solid var(--border-o-color);
     border-left: 0.5px solid var(--border-o-color);
     border-right: 0.5px solid var(--border-o-color);
+    border-bottom: 0.5px solid var(--border-o-color);
 }
 .sk-schedule-list-head > div > div {
     padding-left: 0px !important;
@@ -25,7 +32,7 @@
 
 .sk-first-row {
     display: grid;
-    grid-template-columns: 37px auto 100px 70px 70px 80px 80px;
+    grid-template-columns: 37px auto 100px 100px 70px 70px 80px 80px;
 }
 
 .sk-first-row > div {

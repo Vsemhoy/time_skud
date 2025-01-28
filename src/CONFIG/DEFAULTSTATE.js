@@ -120,6 +120,7 @@ export const DS_DEFAULT_USER = {
 }
 
 export const DS_SCHED_TYPES = [
+    
     {
         key: 'schedtype1',
         value: 1,
@@ -1387,8 +1388,8 @@ export const DS_SCHEDULE_LIST = [
         company_name: "Arstel",
         company_color: "#229900",
         id_skud_schedule_type: 1,
-        name: "Super schedule",
-        description: "Hell world if yaoudfasdifa sd",
+        name: "ULTRHA schedule",
+        description: "HULIO IGNASIAS world if yaoudfasdifa sd",
         start_time: 1738068722,
         end_time: 1738968722,
         target_time: (60*60*8),

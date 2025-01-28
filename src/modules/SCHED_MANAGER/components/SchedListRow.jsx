@@ -46,6 +46,8 @@ const Sched_type_icon = (type) => {
 
 
 const SchedListRow = (props)=>{
+    const [itemId, setItemId] = useState(props.data.id);
+
     const [itemData, setItemData] = useState(props.data);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
@@ -76,7 +78,19 @@ const SchedListRow = (props)=>{
     },[props.data]);
 
 
+    const openEditor = (event) => {
+        if (props.onOpenEditorModal)
+        {
+            props.onOpenEditorModal(itemId);
+        }
+    }
 
+    const openUserManager = (event) => {
+        if (props.onOpenUserManager)
+        {
+            props.onOpenUserManager(itemId);
+        }
+    }
 
 
     return (
@@ -94,6 +108,10 @@ const SchedListRow = (props)=>{
                     <div>
                         {itemData.description}
                     </div>
+                </div>
+
+                <div>
+                    Grafik
                 </div>
 
                 <div>
@@ -131,13 +149,19 @@ const SchedListRow = (props)=>{
                 </div>
                 <div>
                 <Flex gap="small" wrap>
-                    <Button color="default" variant="link" title="Назначить пользователей">
+                    <Button color="default" variant="link"
+                        onClick={openUserManager}
+                    title="Назначить пользователей">
                         <UserSwitchOutlined />
                     </Button>
-                    <Button color="default" variant="link" title="Скопировать">
+                    <Button color="default" variant="link"
+
+                    title="Скопировать">
                         <CopyOutlined />
                     </Button>
-                    <Button color="default" variant="link" title="Редактировать">
+                    <Button color="default" variant="link"
+                        onClick={openEditor}
+                    title="Редактировать">
                         <EditOutlined />
                     </Button>
                   </Flex>

@@ -18,6 +18,14 @@ const SchedList = (props)=>{
         console.log(dataSchedules);
     }, [dataSchedules])
 
+
+    // const openUserModal = (id)=>{
+    //     setUserManagerModalOpen(true);
+    // }
+    // const openEditorModal = (id)=>{
+    //     setEditorModalOpen(true);
+    // }
+
     return (
         <div className={'sk-schedule-list'}>
                     <div className={'sk-schedule-list-head'}>
@@ -29,6 +37,10 @@ const SchedList = (props)=>{
     
                         <div>
                             Название
+                        </div>
+
+                        <div>
+                            График
                         </div>
     
                         <div>
@@ -59,7 +71,10 @@ const SchedList = (props)=>{
             </div>
             <div className={'sk-schedule-list'}>
             { scheduleList.map((item, index) => (
-                <SchedListRow key={index} data={item} />
+                <SchedListRow key={index} data={item}
+                    onOpenEditorModal={props.onOpenEditorModal}
+                    onOpenUserManager={props.onOpenUserManager}
+                 />
             )) }
             </div>
         </div>

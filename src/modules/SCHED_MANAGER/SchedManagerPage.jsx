@@ -10,6 +10,8 @@ import SchedListRow from "./components/SchedListRow";
 import SchedList from "./components/SchedList";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import SchedModalEditor from "./components/SchedModalEditor";
+import SchedModalUsers from "./components/SchedModalUsers";
 
 const SchedManagerPage = (props) => {
     const { userdata } = props;
@@ -23,6 +25,12 @@ const SchedManagerPage = (props) => {
     ]);
     const [baseScheduleList, setBaseScheduleList] = useState(PRODMODE ? DS_SCHEDULE_LIST : []);
     const [scheduleList, setScheduleList] = useState([]);
+
+
+    const [userManagerModalOpen, setUserManagerModalOpen] = useState(false);
+    const [editorModalOpen, setEditorModalOpen] = useState(false);
+    const [editedId, setEditedId] = useState(null);
+    const [editedIdtem, setEditedItem] = useState(null);
 
 
 
@@ -61,6 +69,28 @@ const SchedManagerPage = (props) => {
 
 
 
+
+    
+    const openUserModal = (id)=>{
+        setEditedItem(baseScheduleList.find((el)=> el.id === id));
+        setEditedId(id);
+        setUserManagerModalOpen(true);
+    }
+    const cancelUsersModal = ()=>{
+        setUserManagerModalOpen(false);
+    }
+
+    
+    const openEditorModal = (id)=>{
+        setEditedItem(baseScheduleList.find((el)=> el.id === id));
+        setEditedId(id);
+        setEditorModalOpen(true);
+    }
+    const cancelEditorModal = ()=>{
+        setEditorModalOpen(false);
+    }
+
+
     return (
         <div className={'sk-mw-1400'}>
             <br />
@@ -71,35 +101,34 @@ const SchedManagerPage = (props) => {
             />
             <br />
 
-            <div className={'sk-sched-2col-body'}>
+            <div className={'sk-sched-1col-body'}>
                 <div className={'sk-sched-main-col'}>
                     <SchedList
                         dataSchedules={scheduleList}
+                        onOpenEditorModal={openEditorModal}
+                        onOpenUserManager={openUserModal}
                     />
                 </div>
-                <div className={'sk-sched-side-col'}>
-                    <div>
-                        <Tabs defaultActiveKey="1">
-                            <TabPane tab="Пользователи" key="1">
-                                Роадфыовла
-                                <div>
-                                    <SchedEntityCard />
-                                    <SchedEntityCard />
-                                    <SchedEntityCard />
-                                </div>
-                            </TabPane>
-                            <TabPane tab="Группы" key="2">
-                                <div>
-                                    <SchedEntityCard />
-                                    <SchedEntityCard />
-                                </div>
-                            </TabPane>
-                        </Tabs>
-                    </div>
-                </div>
+
             </div>
 
             <div>modal</div>
+
+            <SchedModalEditor
+                open={editorModalOpen}
+                on_cancel={cancelEditorModal}
+                target_id={editedId}
+                data={editedIdtem}
+                userData={userdata}
+                />
+
+            <SchedModalUsers
+                open={userManagerModalOpen}
+                on_cancel={cancelUsersModal}
+                target_id={editedId}
+                data={editedIdtem}
+                userData={userdata}
+                />
         </div>
     )
 };
