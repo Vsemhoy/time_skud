@@ -68,7 +68,7 @@ const ProdCalToolbar = (props) =>{
         </div>
 
         <div className={"sk-flex-gap"}>
-        <Button 
+        <Button color="primary" variant="solid"
             onClick={clickNew}
         >Добавить новый</Button>
             </div>

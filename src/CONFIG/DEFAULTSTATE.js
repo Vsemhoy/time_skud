@@ -119,6 +119,56 @@ export const DS_DEFAULT_USER = {
     "mode": null,
 }
 
+export const DS_SCHED_TYPES = [
+    {
+        key: 'schedtype1',
+        value: 1,
+        label: 'Односменный',
+    },
+    {
+        key: 'schedtype2',
+        value: 2,
+        label: 'Гибкий'
+    },
+    {
+        key: 'schedtype3',
+        value: 3,
+        label: 'Свободнй'
+    },
+    {
+        key: 'schedtype4',
+        value: 4,
+        label: 'Сменный'
+    },
+    {
+        key: 'schedtype35',
+        value: 5,
+        label: 'Суммированный'
+    },
+];
+
+export const DS_SCHED_UNITS = [
+    {
+        key: 'unittype1',
+        value: 1,
+        label: 'День',
+    },
+    {
+        key: 'unittype1',
+        value: 2,
+        label: 'Неделя'
+    },
+    {
+        key: 'unittype1',
+        value: 3,
+        label: 'Месяц'
+    },
+    {
+        key: 'unittype1',
+        value: 4,
+        label: 'Год'
+    },
+];
 
 export const DS_DEFAULT_USERS = [
     {
@@ -1326,4 +1376,54 @@ export const DS_PROD_CALENDARS = [
         company_name: 'Rondo',
         count_links: 0,
     },
+]
+
+
+export const DS_SCHEDULE_LIST = [
+    {
+        id: 12,
+        created_at: 1738068722,
+        id_company: 1,
+        company_name: "Arstel",
+        company_color: "#229900",
+        id_skud_schedule_type: 1,
+        name: "Super schedule",
+        description: "Hell world if yaoudfasdifa sd",
+        start_time: 1738068722,
+        end_time: 1738968722,
+        target_time: (60*60*8),
+        target_unit: 1,
+        lunch_start: 45000,
+        lunch_end: 50000,
+        lunch_time: (1*60*45),
+        schedule: [],
+        next_id: null,
+        deleted: 0,
+        id_skud_prod_calendar: 2,
+        created_at: 1738968722,
+        creator_id: 377
+    },
+    {
+        id: 13,
+        created_at: 1738068722,
+        id_company: 1,
+        company_name: "Arstel",
+        company_color: "#229900",
+        id_skud_schedule_type: 2,
+        name: "Super schedule 33333",
+        description: "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
+        start_time: 1738068722,
+        end_time: 1738968722,
+        target_time: (60*60*8),
+        target_unit: 1,
+        lunch_start: 53600,
+        lunch_end: 55000,
+        lunch_time: (1*60*45),
+        schedule: [],
+        next_id: null,
+        deleted: 0,
+        id_skud_prod_calendar: 2,
+        created_at: 1738968722,
+        creator_id: 377
+    }
 ]

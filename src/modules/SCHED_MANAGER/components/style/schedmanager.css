@@ -1,0 +1,9 @@
+.sk-sched-2col-body {
+    display: grid;
+    grid-template-columns: auto 300px;
+    grid-gap: 12px;
+}
+
+.sk-sched-2col-body > div {
+    /* background-color: lightgray; */
+}

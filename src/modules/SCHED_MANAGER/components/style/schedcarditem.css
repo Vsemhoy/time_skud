@@ -1,0 +1,12 @@
+.sk-sched-card-item {
+    display: grid;
+    grid-template-columns: auto 30px;
+}
+
+.sk-sched-card-body {
+    display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        grid-gap: 9px;
+}

@@ -8,7 +8,10 @@
     display: flex;
     grid-gap: 3px;
 }
-
+.sk-flex {
+    display: flex;
+    grid-gap: 12px;
+}
 .ts-toolbar {
     display: flex;
     justify-content: space-between;
@@ -123,6 +126,18 @@ td:first-child {
 
 .sk-mw-1000 {
     max-width: 1000px;
+    margin: auto;
+}
+.sk-mw-1200 {
+    max-width: 1200px;
+    margin: auto;
+}
+.sk-mw-1400 {
+    max-width: 1400px;
+    margin: auto;
+}
+.sk-mw-1600 {
+    max-width: 1600px;
     margin: auto;
 }
 
