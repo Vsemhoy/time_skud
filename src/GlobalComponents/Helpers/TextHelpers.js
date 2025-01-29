@@ -52,13 +52,13 @@ export const getMonthName = (number) => {
 export const secondsValueToGlobalTime = (seconds) => {
     const currentDate = dayjs();
     const startOfDay = currentDate.startOf('day');
-    return currentDate.diff(startOfDay, 'second');
-    // const timeForPicker = startOfDay.add(seconds, 'second');
-    // return timeForPicker;
+    // return currentDate.diff(startOfDay, 'second');
+    const timeForPicker = startOfDay.add(seconds, 'second');
+    return timeForPicker;
 }
 
 export const globalTimeToDaySeconds = (daytime) => {
-    let seconds = daytime.seconds();
-    let start = daytime.startOf('day').seconds();
+    let seconds = daytime.unix();
+    let start = daytime.startOf('day').unix();
     return seconds - start;
 }

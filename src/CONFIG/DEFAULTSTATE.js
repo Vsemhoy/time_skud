@@ -125,26 +125,30 @@ export const DS_SCHED_TYPES = [
         key: 'schedtype1',
         value: 1,
         label: 'Односменный',
+        description: "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели. "
     },
     {
         key: 'schedtype2',
         value: 2,
-        label: 'Гибкий'
+        label: 'Гибкий',
+        description: "Главное здесь - отработать требуемое количество часов в день.\nСоздание гибкого графика работы , без указания фиксированного времени начала рабочего дня и его окончания.\nУказывается количество часов, которые необходимо отработать в течение рабочего дня, продолжительность рабочей недели, диапазон рабочего времени.\n"
     },
     {
         key: 'schedtype3',
         value: 3,
-        label: 'Свободнй'
+        label: 'Свободнй',
+        description: "Ходите на работу когда хотите. Кайфуйте - жизнь одна!\nСоздание свободного графика работы без учета рабочего времени",
     },
     {
         key: 'schedtype4',
         value: 4,
-        label: 'Сменный'
-    },
+        label: 'Сменный',
+        description: "Указывается переодичность и продолжительность смен, количество рабочих часов в смене, время начала и окончания каждой рабочей смены."    },
     {
         key: 'schedtype35',
         value: 5,
-        label: 'Суммированный'
+        label: 'Суммированный',
+        description: "Не важно кто ты... главное, чтобы отработал положенное количество рабочих часов.\nВ данном случае на работу ходить нужно, но в любой удобный день и находится на работе можно столько, сколько потребуется./n Указывается тип расчета (неделя/месяц/год) и количество времени, которое необходимо отрабоать за данный период"
     },
 ];
 
@@ -1384,8 +1388,8 @@ export const DS_SCHEDULE_LIST = [
     {
         id: 12,
         created_at: 1738068722,
-        id_company: 1,
-        company_name: "Arstel",
+        id_company: 2,
+        company_name: "RONDO",
         company_color: "#229900",
         id_skud_schedule_type: 1,
         name: "ULTRHA schedule",
@@ -1400,7 +1404,7 @@ export const DS_SCHEDULE_LIST = [
         schedule: [],
         next_id: null,
         deleted: 0,
-        id_skud_prod_calendar: 2,
+        id_skud_prod_calendar: 4,
         created_at: 1738968722,
         creator_id: 377
     },
@@ -1410,7 +1414,7 @@ export const DS_SCHEDULE_LIST = [
         id_company: 1,
         company_name: "Arstel",
         company_color: "#229900",
-        id_skud_schedule_type: 2,
+        id_skud_schedule_type: 4,
         name: "Super schedule 33333",
         description: "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
         start_time: 1738068722,
@@ -1423,7 +1427,7 @@ export const DS_SCHEDULE_LIST = [
         schedule: [],
         next_id: null,
         deleted: 0,
-        id_skud_prod_calendar: 2,
+        id_skud_prod_calendar: 3,
         created_at: 1738968722,
         creator_id: 377
     }

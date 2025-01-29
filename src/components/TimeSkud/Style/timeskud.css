@@ -12,6 +12,26 @@
     display: flex;
     grid-gap: 12px;
 }
+.sk-flex-sides {
+    display: flex;
+    grid-gap: 12px;
+}
+
+
+.sk-w-50 {
+    width: 50%;
+}
+.sk-w-30 {
+    width: 30%;
+}
+.sk-w-70 {
+    width: 70%;
+}
+.sk-w-100 {
+    width: 100%;
+}
+
+
 .ts-toolbar {
     display: flex;
     justify-content: space-between;
@@ -151,4 +171,37 @@ font-size: smaller;
 }
 .sk-radio-stack > * {
     margin-bottom: 12px;
+}
+
+
+.sk-flex-form-row:nth-child(even) {
+    background-color: #eee9df;
+}
+.sk-flex-form-row:first-child {
+    margin-bottom: 122px;
+}
+.sk-flex-form-row {
+    padding: 4px;
+    font-size: medium;
+}
+.sk-flex-form-row > div > div {
+    width: 100%;
+}
+
+.sk-microspacer {
+    padding: 6px;
+}
+
+.sk-form-frame {
+    font-size: medium !important;
+    background-color: #d8e1ef;
+}
+.sk-form-frame > p {
+    padding: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin: 0px;
+}
+.sk-form-frame label {
+    font-size: medium !important;
 }

@@ -1,0 +1,18 @@
+.sk-form-button-stack {
+    display: flex;
+    justify-content: space-around;
+    color: rgb(46, 82, 122);
+    background-color: rgba(255, 255, 255, 0.795);
+}
+
+.sk-form-button-stack > div {
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+.sk-form-button-stack > .sk-active {
+    background-color: #d8e1ef;
+
+}

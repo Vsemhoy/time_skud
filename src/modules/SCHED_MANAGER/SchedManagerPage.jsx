@@ -120,6 +120,7 @@ const SchedManagerPage = (props) => {
                 target_id={editedId}
                 data={editedIdtem}
                 userData={userdata}
+                prodCalendars={DS_PROD_CALENDARS}
                 />
 
             <SchedModalUsers
