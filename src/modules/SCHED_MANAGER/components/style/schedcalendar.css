@@ -16,3 +16,85 @@
     background-color: #d8e1ef;
 
 }
+.sk-ffr-toolbar {
+    display: flex;
+    border-bottom: 1px solid white;
+}
+.sk-form-frame-row:last-child {
+    border-top: 1px solid white;
+}
+.sk-fbs-vertstack {
+    display: flex;
+    flex-direction: column;
+    padding: 3px 6px;
+}
+.sk-ffr-toolbar label {
+    font-size: inherit !important;
+}
+.sk-fbs-br {
+    border-right: 1px solid white;
+}
+.sk-fbs-bl {
+    border-left: 1px solid white;
+}
+.sk-fbs-row-2c {
+    display: grid;
+    grid-template-columns: auto 220px;
+}
+.sk-fbs-row-2c .ant-input-number {
+    width: 100%;
+}
+
+.sk-fbs-trule-item {
+    /* background-color: rgb(222, 222, 222); */
+    /* border: 3px solid white; */
+    width: 100%;
+    text-align: center;
+    color: rgb(92, 92, 92);
+    font-weight: 500;
+    font-size: small;
+}
+.sk-fbs-cal-unit-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    background-color: white;
+    min-height: 100px;
+}
+.sk-fbs-smena {
+    transition: width 0.1s;
+    transition: opacity 0.3s;
+    display: block;
+    position:absolute;
+    height: 40px;
+    background-color: rgba(0, 157, 255, 0.397);
+    min-width: 1px;
+    z-index: 1;
+    opacity: 0;
+}
+.sk-fbs-smena.sk-rendered {
+    opacity: 1;
+}
+.sk-fsb-calendar-item {
+    min-height: 47px;
+    /* border: 1px solid #ffffff; */
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.2s;
+    -webkit-user-select: none;
+    user-select: none;
+    opacity: 0.8;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    border-left: 1px solid rgb(109, 128, 150);
+    z-index: 99;
+}
+
+.sk-fsb-calendar-item-back:hover:not(.outrange) .sk-calendar-item:active {
+    background-color: rgb(0, 119, 255);
+}
+.sk-unit-selected {
+    background-color: rgba(255, 102, 75, 0.258);
+}
