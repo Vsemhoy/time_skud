@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './style/schedcalendar.css';
 import dayjs from "dayjs";
-import { Button, DatePicker, InputNumber, TimePicker } from "antd";
+import { Button, DatePicker, Input, InputNumber, TimePicker } from "antd";
 import ProdCalUnit from "../../PROD_CAL_MANAGER/components/ProdCalUnit";
 import { CheckOutlined, ClearOutlined, CloseOutlined, CopyOutlined, DiffOutlined } from "@ant-design/icons";
 
@@ -106,14 +106,7 @@ const MONTH_BUTTONS = [
 
 
 const DEMO_SCHED = [
-    [1738389600,1738476000],
-    [1738648800,1738735200],
-    [1738814400,1738824400],
-    [1738900800,1738951200],
-    [1739073600,1739109600],
-    [1739160000,1739196000],
-    [1739638800,1739725200],
-    [1740315600,1740402000]
+
 ]
 
 const SchedCalendar = (props)=>{
@@ -177,8 +170,8 @@ const SchedCalendar = (props)=>{
                 obj.smens = [];
 
                 for (let i = 0; i < schedule.length; i++) {
-                    const checkDateStart = dayjs.unix(parseInt(schedule[i][0]));
-                    const checkDateEnd = dayjs.unix(parseInt(schedule[i][1]));
+                    const checkDateStart = dayjs.unix(parseInt(schedule[i][1]));
+                    const checkDateEnd = dayjs.unix(parseInt(schedule[i][2]));
 
                     if (checkDateStart.unix() >= start.unix() && checkDateStart.unix() < end.unix()){
                         let hourslen = checkDateEnd.diff(checkDateStart, 'hours');
@@ -187,9 +180,14 @@ const SchedCalendar = (props)=>{
                         smena.offset = checkDateStart.hour() != 0 ? checkDateStart.hour() / 24 : 0;
                         smena.width = hourslen != 0 ? hourslen / 24 : 0;
                         smena.index = i;
-
+                        smena.date = schedule[i][0];
+                        smena.start = schedule[i][1];
+                        smena.end = schedule[i][2];
+                        smena.duration = schedule[i][2] - schedule[i][1];
                         if (smena.offset + smena.width > 1){
                             smena.width = 1 - smena.offset;
+                            smena.sctickleft = 1;
+                            console.log('smena', smena);
                         } 
                         obj.smens.push(smena);
                     }
@@ -201,13 +199,22 @@ const SchedCalendar = (props)=>{
                         let hourslen = checkDateEnd.diff(start, 'hours');
                         console.log('checkDate', hourslen, checkDateStart, checkDateEnd)
                         let smena = {};
+                        smena.duration = schedule[i][2] - schedule[i][1];
+                        smena.date = schedule[i][0];
                         smena.offset = 0;
                         smena.width = hourslen != 0 ? hourslen / 24 : 0;
                         smena.index = i;
-
+                        smena.stickright = 1;
+                        smena.start = schedule[i][1];
+                        smena.end = schedule[i][2];
                         obj.smens.push(smena);
                     }
                 }
+                // if (obj.smens.length == 1 && !obj.smens[0].stickright ){
+                //     obj.smens[0].stickright = 1;
+                // } else if (obj.smens.length == 2){
+
+                // }
             }
 
             daysArray.push(obj);
@@ -233,7 +240,9 @@ const SchedCalendar = (props)=>{
                 element.classList.add('sk-rendered');
             }
         }, 700);
-    }, [targetMonth]);
+    }, [targetMonth, schedule]);
+
+
 
 
     const clickOnCell = (day, event) => {
@@ -298,6 +307,138 @@ const SchedCalendar = (props)=>{
 
 
 
+    const clickOnEvent = (event) => {
+        console.log(event);
+        let item = event.target.closest('.sk-fbs-smena');
+        if (item) {
+            let index = item.getAttribute('data-index');
+            let date = item.getAttribute('data-date');
+            console.log(date);
+            let seldays = JSON.parse(JSON.stringify(selectedDays));
+
+            let obja = schedule[index];
+            if (obja){
+                let startDate = dayjs.unix(obja[1]);
+                let end_Date = dayjs.unix(obja[2]);
+                setSelectedStart(startDate);
+                setSelectedEnd(end_Date);
+                let dura = end_Date.diff(startDate, 'seconds');
+                setSelectedDuration(startDate.startOf('day').add(dura, 'seconds'));
+            }
+
+            setSelectedDate(null);
+            if (event.shiftKey) {
+                if (selectedDays.length > 0){
+                    let prevDay = selectedDays[selectedDays.length - 1].split('-');
+                    prevDay = dayjs(prevDay);
+    
+                    let newDay = dayjs(date);
+                    const differenceInDays = prevDay.diff(newDay, 'day');
+                    console.log(prevDay, newDay);
+                    console.log(differenceInDays);
+                    const dateToAdd = [];
+                    if (differenceInDays < 0){
+                        let movedDate = prevDay;
+                        // reverse
+                        for (let d = 1; d <= -differenceInDays; d++) {
+                            movedDate = prevDay.add(d, 'day');
+                            dateToAdd.push(movedDate.format('YYYY-MM-DD'))
+                        }
+                    } else {
+                        let movedDate = newDay;
+                        // reverse
+                        for (let d = 0; d < differenceInDays; d++) {
+                            movedDate = newDay.add(d, 'day');
+                            dateToAdd.push(movedDate.format('YYYY-MM-DD'))
+                        }
+                    }
+    
+                    let newResult = JSON.parse(JSON.stringify(selectedDays));
+                    for (let i = 0; i < dateToAdd.length; i++) {
+                        const element = dateToAdd[i];
+                        if (!newResult.includes(element)){
+                            newResult.push(element);
+                        }
+                    }
+                    console.log(dateToAdd);
+                    setSelectedDays(newResult);
+                    // найти все дни между выделенными датами (формат - 2025-01-13)
+                    // и записать их, включая выделенную дату
+                }     
+            } else if (event.ctrlKey){
+                setSelectedDays((previous) => {
+                    setSelectedDate(dayjs(date));
+                    // Проверяем, есть ли день уже в массиве
+                    if (previous.includes(date)) {
+                        // Если день уже есть, удаляем его
+                        return previous.filter(dater => dater !== date);
+                    } else {
+                        // Если дня нет, добавляем его
+                        return [...previous, date];
+                    }
+                });
+            } else {
+                // Если шифт не зажат, устанавливаем только выбранный день
+                setSelectedDays([date]);
+                setSelectedDate(dayjs(date));
+            }
+
+        }
+    }
+
+
+    const onApplyAction = () => {
+        if (selectedStart == null|| selectedEnd == null){ return ;};
+        let startDay = selectedStart.startOf('day');
+
+        let startTimeOffset_s = selectedStart.diff(startDay, 'seconds');
+        let durationSeconds_s = selectedDuration.diff(selectedDuration.startOf('day'), 'seconds');
+        let endTimeOffset_s = startTimeOffset_s + selectedDuration.unix();
+
+        console.log(startTimeOffset_s, durationSeconds_s);
+
+
+        let newScheduleChunk = [];
+
+        for (let i = 0; i < selectedDays.length; i++) {
+            const element = selectedDays[i];
+            let dateStartUnix = dayjs(element).unix();
+            console.log(dateStartUnix, startTimeOffset_s, endTimeOffset_s);
+            const firstTs = dateStartUnix + startTimeOffset_s;
+            const secondTs = dateStartUnix + startTimeOffset_s + durationSeconds_s;
+            console.log(firstTs, secondTs);
+            newScheduleChunk.push([element,firstTs ,secondTs ]);
+            
+        }
+
+        let mergedArray = [];
+        const firstElements = newScheduleChunk.map(subArray => subArray[0]);
+        for (let i = 0; i < schedule.length; i++) {
+            const element = schedule[i];
+            if (!firstElements.includes(element[0]))
+            {
+                mergedArray.push(element);
+            };
+        }
+        mergedArray = mergedArray.concat(newScheduleChunk);
+
+        setSchedule(mergedArray);
+    }
+
+
+
+    const clearCell = () => {
+        let newArray = [];
+        for (let i = 0; i < schedule.length; i++) {
+            const element = schedule[i];
+            if (!selectedDays.includes( element[0])){
+                newArray.push(element);
+            }
+        }
+        setSchedule(newArray);
+    }
+
+
     const clearSelection = ()=>{
         setSelectedDays([]);
         setSelectedDate(null);
@@ -306,9 +447,7 @@ const SchedCalendar = (props)=>{
         setSelectedStart(null);
     };
 
-    const clearCell = () => {
 
-    }
 
     const copyParams = () =>{
         setCopyStart(selectedStart);
@@ -324,28 +463,32 @@ const SchedCalendar = (props)=>{
         let today = dayjs();
         setSelectedStart(today.startOf('day').add(9, 'hours'));
         setSelectedEnd(today.startOf('day').add(19, 'hours'));
-        setSelectedDuration(today.startOf('day').add(12, 'hours'));
+        setSelectedDuration(today.startOf('day').add(10, 'hours'));
     }
 
 
     const changeStart = (value)=>{
         let selend = selectedEnd;
-        if (selectedEnd == null){
+        if (value != null && selectedEnd == null){
             selend = value.add(12, 'hours');
             setSelectedEnd(selend);
+        } 
+        if (value == null){
+            setSelectedStart(null);
+            setSelectedDuration(null);
+            return;
         }
         setSelectedStart(value);
-        if (value == null){
-            setSelectedDuration(null);
-        }
+
         let diff = selend.diff(value, 'hours');
         let diffMinunt = Math.abs( selend.diff(value, 'minutes'));
         console.log(diffMinunt);
 
-        setSelectedStart(selectedEnd.add(- diffMinunt, 'minutes'));
+        setSelectedStart(selend.add(- diffMinunt, 'minutes'));
         setSelectedDuration(dayjs().startOf('day').add(diffMinunt, 'minutes'));
         console.log(diff);
     }
+
 
     // Корректировка времени, чтобы конец смены не был перед началом
     const changeEnd = (value)=>{
@@ -359,6 +502,7 @@ const SchedCalendar = (props)=>{
             setSelectedDuration(dayjs().startOf('day'));
             return;
         }
+        
         let newValue = value;
         while (newValue.unix() < selest.unix()){
             newValue = newValue.add(1, 'day');
@@ -379,13 +523,19 @@ const SchedCalendar = (props)=>{
             setSelectedEnd(selest.add(diffMinunt, 'minutes'));
         }
         console.log(diffMinunt / 60);
-        setSelectedDuration(dayjs().startOf('day').add(diffMinunt, 'minutes'));
+        let seldur = dayjs().startOf('day').add(diffMinunt, 'minutes');
+        if (diffMinunt < 2){
+            seldur = seldur.add(1, 'day');
+        }
+        setSelectedDuration(seldur);
     }
+
 
     const changeDuration = (value)=>{
         if (value == null){
             setSelectedDuration(null);
             setSelectedEnd(null);
+            return;
         };
         let start = selectedStart;
         if (start == null){
@@ -399,9 +549,21 @@ const SchedCalendar = (props)=>{
         console.log(durik);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     return (
         <div className="sk-form-frame-body">
-            <div className="sk-form-frame-row">
+            <div className="sk-form-frame-row" style={{overflow: 'auto'}}>
                 <div className={'sk-form-button-stack'}>
                 {MB.map((item)=>(
                     <div 
@@ -452,18 +614,33 @@ const SchedCalendar = (props)=>{
 
                     <div className={'sk-fbs-vertstack'}>
                         <label>Длительность</label>
-                        <TimePicker type={'time'} 
+                        {(selectedDuration == null || (selectedDuration.unix() - selectedDuration.startOf('day').unix() == 0) ||
+                         (selectedDuration.unix() - selectedDuration.startOf('day').unix() == 60*60*24) ) ? (
+                            
+                            <InputNumber
+                                value={'24 часа'}
+                            />
+                            
+                         ) : (
+                            <TimePicker type={'time'} 
                             showSecond={false}
                             onChange={changeDuration}
                             value={selectedDuration}
+                            addonAfter={'hello'}
                         />
+                         ) 
+                         
+                         }
+
                     </div>
 
                     <div className={'sk-fbs-vertstack sk-no-padding'}>
                         <div className={'sk-fbs-vstack-button'}
                             onClick={copyParams}
                         >
-                            <CheckOutlined  style={{ fontSize: '26px', color: '#08c' }}/>
+                            <CheckOutlined 
+                                onClick={onApplyAction}
+                            style={{ fontSize: '26px', color: '#08c' }}/>
                             <small>Применить</small>
                         </div>
                     </div>
@@ -527,8 +704,15 @@ const SchedCalendar = (props)=>{
                     <div className={`sk-fbs-calendar-item-back sk-month-${day.month}-x  ${day.outrange ? 'outrange' : ''}`}>
                         { (day.smens && day.smens.length > 0) ? 
                         ( day.smens.map((smena)=>(
-                            <div className="sk-fbs-smena" data-width={smena.width} data-offset={smena.offset}
-                                data-index={smena.index}
+                            <div 
+                                onClick={clickOnEvent}
+                                className={`sk-fbs-smena ${smena.stickleft ? "stickleft": ""} ${smena.stickright ? "stickright": ""}`} 
+                                data-width={smena.width} data-offset={smena.offset}
+                                data-index={smena.index} data-date={smena.date}
+                                title={`Дата: ${dayjs(smena.date).format('DD-MM-YYYY')}, 
+                                начало: ${dayjs.unix(smena.start).format('DD-MM-YYYY HH:mm')}, 
+                                конец: ${dayjs.unix(smena.end).format('DD-MM-YYYY HH:mm')}, 
+                                продолжительность: ${Math.floor(smena.duration / 60 / 60)} часов ${((smena.duration / 60) % 60)} минут` }
                             >
                             </div>
 
