@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import './style/schedcalendar.css';
 import dayjs from "dayjs";
-import { Button, DatePicker, InputNumber } from "antd";
+import { Button, DatePicker, InputNumber, TimePicker } from "antd";
 import ProdCalUnit from "../../PROD_CAL_MANAGER/components/ProdCalUnit";
+import { CheckOutlined, ClearOutlined, CloseOutlined, CopyOutlined, DiffOutlined } from "@ant-design/icons";
 
 const MONTH_BUTTONS = [
     {
@@ -112,7 +113,7 @@ const DEMO_SCHED = [
     [1739073600,1739109600],
     [1739160000,1739196000],
     [1739638800,1739725200],
-    [	1740315600,	1740402000]
+    [1740315600,1740402000]
 ]
 
 const SchedCalendar = (props)=>{
@@ -122,6 +123,17 @@ const SchedCalendar = (props)=>{
     const [calendarDays, setCalendarDays] = useState([]);
     const [schedule, setSchedule] = useState(DEMO_SCHED);
     const [selectedDays, setSelectedDays] = useState([]);
+
+
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedStart, setSelectedStart] = useState(null);
+    const [selectedEnd, setSelectedEnd] = useState(null);
+    const [selectedDuration, setSelectedDuration] = useState(null);
+
+    const [copyStart, setCopyStart] = useState(null);
+    const [copyEnd, setCopyEnd] = useState(null);
+    const [copyDur, setCopyDur] = useState(null);
+
     const setMonthValue = (ev)=> {
         setTargetMonth( parseInt(ev.target.closest('.sk-fbs-button').getAttribute('data-id')));
         console.log(ev.target.closest('.sk-fbs-button').getAttribute('data-id'));
@@ -145,6 +157,7 @@ const SchedCalendar = (props)=>{
 
         const daysArray = [];
         let currentDate = startOfMonth;
+
 
 
 
@@ -225,8 +238,48 @@ const SchedCalendar = (props)=>{
 
     const clickOnCell = (day, event) => {
         console.log('day', day);
+        setSelectedDate(null);
         if (event.shiftKey) {
+            if (selectedDays.length > 0){
+                let prevDay = selectedDays[selectedDays.length - 1].split('-');
+                prevDay = dayjs(prevDay);
+
+                let newDay = dayjs(day.date);
+                const differenceInDays = prevDay.diff(newDay, 'day');
+                console.log(prevDay, newDay);
+                console.log(differenceInDays);
+                const dateToAdd = [];
+                if (differenceInDays < 0){
+                    let movedDate = prevDay;
+                    // reverse
+                    for (let d = 1; d <= -differenceInDays; d++) {
+                        movedDate = prevDay.add(d, 'day');
+                        dateToAdd.push(movedDate.format('YYYY-MM-DD'))
+                    }
+                } else {
+                    let movedDate = newDay;
+                    // reverse
+                    for (let d = 0; d < differenceInDays; d++) {
+                        movedDate = newDay.add(d, 'day');
+                        dateToAdd.push(movedDate.format('YYYY-MM-DD'))
+                    }
+                }
+
+                let newResult = JSON.parse(JSON.stringify(selectedDays));
+                for (let i = 0; i < dateToAdd.length; i++) {
+                    const element = dateToAdd[i];
+                    if (!newResult.includes(element)){
+                        newResult.push(element);
+                    }
+                }
+                console.log(dateToAdd);
+                setSelectedDays(newResult);
+                // найти все дни между выделенными датами (формат - 2025-01-13)
+                // и записать их, включая выделенную дату
+            }     
+        } else if (event.ctrlKey){
             setSelectedDays((previous) => {
+                setSelectedDate(dayjs(day.date));
                 // Проверяем, есть ли день уже в массиве
                 if (previous.includes(day.date)) {
                     // Если день уже есть, удаляем его
@@ -239,12 +292,112 @@ const SchedCalendar = (props)=>{
         } else {
             // Если шифт не зажат, устанавливаем только выбранный день
             setSelectedDays([day.date]);
+            setSelectedDate(dayjs(day.date));
         }
     };
 
 
 
+    const clearSelection = ()=>{
+        setSelectedDays([]);
+        setSelectedDate(null);
+        setSelectedEnd(null);
+        setSelectedDuration(null);
+        setSelectedStart(null);
+    };
 
+    const clearCell = () => {
+
+    }
+
+    const copyParams = () =>{
+        setCopyStart(selectedStart);
+        setCopyEnd(selectedEnd);
+        setCopyDur(selectedDuration);
+    }
+    const pasteParams = () =>{
+        setSelectedStart(copyStart);
+        setSelectedEnd(copyEnd);
+        setSelectedDuration(copyDur);
+    }
+    const insertDefaultParams = () => {
+        let today = dayjs();
+        setSelectedStart(today.startOf('day').add(9, 'hours'));
+        setSelectedEnd(today.startOf('day').add(19, 'hours'));
+        setSelectedDuration(today.startOf('day').add(12, 'hours'));
+    }
+
+
+    const changeStart = (value)=>{
+        let selend = selectedEnd;
+        if (selectedEnd == null){
+            selend = value.add(12, 'hours');
+            setSelectedEnd(selend);
+        }
+        setSelectedStart(value);
+        if (value == null){
+            setSelectedDuration(null);
+        }
+        let diff = selend.diff(value, 'hours');
+        let diffMinunt = Math.abs( selend.diff(value, 'minutes'));
+        console.log(diffMinunt);
+
+        setSelectedStart(selectedEnd.add(- diffMinunt, 'minutes'));
+        setSelectedDuration(dayjs().startOf('day').add(diffMinunt, 'minutes'));
+        console.log(diff);
+    }
+
+    // Корректировка времени, чтобы конец смены не был перед началом
+    const changeEnd = (value)=>{
+        let selest = selectedStart;
+        
+        if (selectedStart == null){
+            setSelectedStart(value);
+            selest = value;
+        }
+        if (value == null){
+            setSelectedDuration(dayjs().startOf('day'));
+            return;
+        }
+        let newValue = value;
+        while (newValue.unix() < selest.unix()){
+            newValue = newValue.add(1, 'day');
+        }
+
+        setSelectedEnd(newValue);
+        if (value == null){
+            setSelectedDuration(null);
+        }
+        let diff = selest.diff(newValue, 'hours');
+        console.log(diff);
+
+        let diffMinunt = Math.abs( selest.diff(newValue, 'minutes'));
+        console.log(diffMinunt);
+
+        if (diffMinunt > 24*60){
+            diffMinunt = diffMinunt - 24*60;
+            setSelectedEnd(selest.add(diffMinunt, 'minutes'));
+        }
+        console.log(diffMinunt / 60);
+        setSelectedDuration(dayjs().startOf('day').add(diffMinunt, 'minutes'));
+    }
+
+    const changeDuration = (value)=>{
+        if (value == null){
+            setSelectedDuration(null);
+            setSelectedEnd(null);
+        };
+        let start = selectedStart;
+        if (start == null){
+            start = dayjs();
+            setSelectedStart(start);
+        };
+        
+        let durik = value.diff(value.startOf('day'), 'minutes');
+        setSelectedEnd(start.add(durik, 'minutes'));
+        setSelectedDuration(value);
+        console.log(durik);
+    }
 
     return (
         <div className="sk-form-frame-body">
@@ -269,24 +422,83 @@ const SchedCalendar = (props)=>{
             <div className="sk-form-frame-row">
                 <div className={'sk-ffr-toolbar'}>
                     <div className="sk-fbs-vertstack">
-                        <label>Начало смены</label>
+                        <label>Выбранная дата</label>
                         <DatePicker
                         showSecond={false}
                         // defaultValue={defaultValue}
-                        showTime
+                        value={selectedDate}
                         // locale={buddhistLocale}
                         // onChange={onChange}
                         />
                     </div>
-                    <div className="sk-fbs-vertstack ">
-                    <label>Конец смены</label>
-                        <DatePicker
-                        showSecond={false}
-                        // defaultValue={defaultValue}
-                        showTime
-                        // locale={buddhistLocale}
-                        // onChange={onChange}
+
+                    <div className={'sk-fbs-vertstack'}>
+                        <label>Начало смены</label>
+                        <TimePicker type={'time'} 
+                            showSecond={false}
+                            onChange={changeStart}
+                            value={selectedStart}
                         />
+                    </div>
+
+                    <div className={'sk-fbs-vertstack'}>
+                        <label>Конец смены</label>
+                        <TimePicker type={'time'} 
+                            showSecond={false}
+                            onChange={changeEnd}
+                            value={selectedEnd}
+                        />
+                    </div>
+
+                    <div className={'sk-fbs-vertstack'}>
+                        <label>Длительность</label>
+                        <TimePicker type={'time'} 
+                            showSecond={false}
+                            onChange={changeDuration}
+                            value={selectedDuration}
+                        />
+                    </div>
+
+                    <div className={'sk-fbs-vertstack sk-no-padding'}>
+                        <div className={'sk-fbs-vstack-button'}
+                            onClick={copyParams}
+                        >
+                            <CheckOutlined  style={{ fontSize: '26px', color: '#08c' }}/>
+                            <small>Применить</small>
+                        </div>
+                    </div>
+                    <div className={'sk-fbs-vertstack sk-no-padding'}>
+                        <div className={'sk-fbs-vstack-button'}
+                            onClick={copyParams}
+                        >
+                            <CopyOutlined  style={{ fontSize: '26px', color: '#08c' }}/>
+                            <small>Копир</small>
+                        </div>
+                    </div>
+                    <div className={'sk-fbs-vertstack sk-no-padding'}>
+                        <div className={'sk-fbs-vstack-button'}
+                            onClick={pasteParams}
+                            onDoubleClick={insertDefaultParams}
+                        >
+                            <DiffOutlined  style={{ fontSize: '26px', color: '#08c' }}/>
+                            <small>Встав</small>
+                        </div>
+                    </div>
+                    <div className={'sk-fbs-vertstack sk-no-padding'}>
+                        <div className={'sk-fbs-vstack-button'}
+                        onClick={clearCell}
+                            >
+                            <ClearOutlined  style={{ fontSize: '26px', color: '#08c' }}/>
+                            <small>Очистить</small>
+                        </div>
+                    </div>
+                    <div className={'sk-fbs-vertstack sk-no-padding'}>
+                        <div className={'sk-fbs-vstack-button'}
+                            onClick={clearSelection}
+                        >
+                            <CloseOutlined  style={{ fontSize: '26px', color: '#08c' }}/>
+                            <small>Снять выделение</small>
+                        </div>
                     </div>
                 </div>
 
@@ -312,7 +524,7 @@ const SchedCalendar = (props)=>{
                         tooltip += " " + day.text;
                     }
                     return (
-                    <div className={`sk-calendar-item-back sk-month-${day.month}-x  ${day.outrange ? 'outrange' : ''}`}>
+                    <div className={`sk-fbs-calendar-item-back sk-month-${day.month}-x  ${day.outrange ? 'outrange' : ''}`}>
                         { (day.smens && day.smens.length > 0) ? 
                         ( day.smens.map((smena)=>(
                             <div className="sk-fbs-smena" data-width={smena.width} data-offset={smena.offset}
@@ -361,12 +573,17 @@ const SchedCalendar = (props)=>{
                     </div>
                     <br/>
                     <div className="sk-fbs-vertstack">
-                        <Button>Назначить график</Button>
+                        <Button>Назначить смены</Button>
                     </div>
                 </div>
             </div>
             <div className="sk-form-frame-row">
-                Stats
+                <ul>
+                    <li>В день можно назначить только одну смену</li>
+                    <li>Смена не может длиться больше 24 часов</li>
+                    <li>Смены не должны пересекаться друг с другом</li>
+                    <li></li>
+                </ul>
             </div>
         </div>
     )

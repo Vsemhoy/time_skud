@@ -27,9 +27,11 @@
     display: flex;
     flex-direction: column;
     padding: 3px 6px;
+    border-right: 1px solid rgba(255, 255, 255, 0.575);
 }
 .sk-ffr-toolbar label {
     font-size: inherit !important;
+    color:rgb(92, 92, 92);
 }
 .sk-fbs-br {
     border-right: 1px solid white;
@@ -96,5 +98,42 @@
     background-color: rgb(0, 119, 255);
 }
 .sk-unit-selected {
-    background-color: rgba(255, 102, 75, 0.258);
+    /* background-color: rgba(255, 102, 75, 0.258); */
+    background-color: rgb(0 0 0 / 16%);
+    /* box-shadow: inset 0px 0px 0px 1px #0000002e; */
+    /* box-shadow: inset 0px 0px 0px 1px #003aa76e; */
+    outline: 1px solid #00137e6e;
+}
+.sk-fbs-vstack-button {
+    transition: all 0.1s;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    user-select: none;
+}
+.sk-fbs-vstack-button > * {
+    padding: 3px;
+}
+.sk-fbs-vstack-button > small {
+    color: rgb(92, 92, 92);
+}
+
+.sk-fbs-vstack-button:hover {
+    background-color: rgba(0, 0, 0, 0.096);
+    cursor: pointer;
+}
+.sk-fbs-vstack-button:active {
+    background-color: rgba(0, 119, 255, 0.219);
+    cursor: pointer;
+}
+.sk-fbs-calendar-item-back {
+    transition: all 0.2s;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 0.5px solid #cbcbcb;
+    width: calc(100% / 7);
+    box-sizing: border-box;
+    padding: 0px;
 }

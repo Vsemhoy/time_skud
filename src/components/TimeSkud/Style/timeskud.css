@@ -37,6 +37,9 @@
     justify-content: space-between;
 }
 
+.sk-no-padding {
+    padding: 0px !important;
+}
 
 /* .sk_state_outside > td:first-child {
     border-left: 9px solid  #d27474;
