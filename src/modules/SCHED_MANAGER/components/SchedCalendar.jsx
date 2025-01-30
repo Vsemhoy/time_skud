@@ -136,6 +136,11 @@ const SchedCalendar = (props)=>{
     }, [targetMonth])
 
     const [targetYear, setTargetYear] = useState(2025);
+    const [monthStat, setMonthStat] = useState([0,0,0,0,0,0,0,0,0,0,0,0,]);
+
+    const [massInsertWork, setMassInsertWork] = useState(2);
+    const [massInsertWkd,  setMassInsertWkd]  = useState(2);
+    const [massInsertCnt,  setMassInsertCnt]  = useState(20);
 
 
  useEffect(()=>{
@@ -150,6 +155,8 @@ const SchedCalendar = (props)=>{
 
         const daysArray = [];
         let currentDate = startOfMonth;
+
+
 
 
 
@@ -178,7 +185,8 @@ const SchedCalendar = (props)=>{
                         // console.log('checkDate', hourslen, checkDateStart, checkDateEnd)
                         let smena = {};
                         smena.offset = checkDateStart.hour() != 0 ? checkDateStart.hour() / 24 : 0;
-                        smena.width = hourslen != 0 ? hourslen / 24 : 0;
+                        smena.width = hourslen != 0 ? hourslen / 24 : 1;
+                        console.log('smena.width 0 ', smena.width);
                         smena.index = i;
                         smena.date = schedule[i][0];
                         smena.start = schedule[i][1];
@@ -186,8 +194,10 @@ const SchedCalendar = (props)=>{
                         smena.duration = schedule[i][2] - schedule[i][1];
                         if (smena.offset + smena.width > 1){
                             smena.width = 1 - smena.offset;
+                            console.log('smena.width 1 ', smena.width);
+
                             smena.sctickleft = 1;
-                            console.log('smena', smena);
+                            console.log('smena', schedule[i]);
                         } 
                         obj.smens.push(smena);
                     }
@@ -196,6 +206,7 @@ const SchedCalendar = (props)=>{
                          && checkDateEnd.unix() > start.unix() 
                         && checkDateEnd.unix() <= end.unix())
                     {
+                        console.log('first')
                         let hourslen = checkDateEnd.diff(start, 'hours');
                         console.log('checkDate', hourslen, checkDateStart, checkDateEnd)
                         let smena = {};
@@ -203,6 +214,8 @@ const SchedCalendar = (props)=>{
                         smena.date = schedule[i][0];
                         smena.offset = 0;
                         smena.width = hourslen != 0 ? hourslen / 24 : 0;
+                        console.log('smena.width 2 ', smena.width);
+                        console.log('smena', schedule[i]);
                         smena.index = i;
                         smena.stickright = 1;
                         smena.start = schedule[i][1];
@@ -213,7 +226,7 @@ const SchedCalendar = (props)=>{
                 // if (obj.smens.length == 1 && !obj.smens[0].stickright ){
                 //     obj.smens[0].stickright = 1;
                 // } else if (obj.smens.length == 2){
-
+                console.log('obj.smens', obj.smens)
                 // }
             }
 
@@ -239,7 +252,17 @@ const SchedCalendar = (props)=>{
                 element.style.marginLeft  = result_o + "px";
                 element.classList.add('sk-rendered');
             }
-        }, 700);
+        },100);
+
+        let mstat = [0,0,0,0,0,0,0,0,0,0,0,0];
+        for (let i = 0; i < schedule.length; i++) {
+            const date = schedule[i][0];
+            let month = dayjs(date).month();
+            console.log('month', month)
+            mstat[month]++;
+        }
+        setMonthStat(mstat);
+
     }, [targetMonth, schedule]);
 
 
@@ -388,15 +411,12 @@ const SchedCalendar = (props)=>{
 
 
     const onApplyAction = () => {
-        if (selectedStart == null|| selectedEnd == null){ return ;};
+        if (selectedStart == null || selectedEnd == null){ return ;};
         let startDay = selectedStart.startOf('day');
 
         let startTimeOffset_s = selectedStart.diff(startDay, 'seconds');
         let durationSeconds_s = selectedDuration.diff(selectedDuration.startOf('day'), 'seconds');
         let endTimeOffset_s = startTimeOffset_s + selectedDuration.unix();
-
-        console.log(startTimeOffset_s, durationSeconds_s);
-
 
         let newScheduleChunk = [];
 
@@ -405,10 +425,9 @@ const SchedCalendar = (props)=>{
             let dateStartUnix = dayjs(element).unix();
             console.log(dateStartUnix, startTimeOffset_s, endTimeOffset_s);
             const firstTs = dateStartUnix + startTimeOffset_s;
-            const secondTs = dateStartUnix + startTimeOffset_s + durationSeconds_s;
-            console.log(firstTs, secondTs);
+            let secondTs = dateStartUnix + startTimeOffset_s + durationSeconds_s;
+            if (firstTs == secondTs) {secondTs = firstTs + (60 * 60 * 24)}
             newScheduleChunk.push([element,firstTs ,secondTs ]);
-            
         }
 
         let mergedArray = [];
@@ -421,7 +440,6 @@ const SchedCalendar = (props)=>{
             };
         }
         mergedArray = mergedArray.concat(newScheduleChunk);
-
         setSchedule(mergedArray);
     }
 
@@ -550,10 +568,121 @@ const SchedCalendar = (props)=>{
     }
 
 
+    const selectChosenDate = (value)=> {
+        if (value){
+            console.log('value', value)
+            setSelectedDays([value.format('YYYY-MM-DD')]);
+            setSelectedDate(value);
+        } else {
+            setSelectedDate([]);
+            setSelectedDate(null);
+        }
+    }
 
 
 
+    const massInsertAction = ()=>{
+        if (selectedDays.length == 0){ return;};
+        if (selectedStart == null|| selectedEnd == null){ return ;};
+        let A = massInsertWork;
+        let B = massInsertWkd;
+        let C = massInsertCnt;
+        if (massInsertWork < 1){
+            setMassInsertWork(1);
+            A = 1;
+        };
+        if (massInsertWork > 30){
+            setMassInsertWork(30);
+            A = 30;
+        };
+        if (massInsertWkd < 2){
+            setMassInsertWkd(1);
+            B = 1;
+        };
+        if (massInsertWkd > 30){
+            setMassInsertWkd(30);
+            B = 30;
+        };
+        if (massInsertCnt < 3){
+            setMassInsertCnt(2);
+            C = 2;
+        };
+        if (massInsertCnt > 365){
+            setMassInsertCnt(365);
+            C = 365;
+        };
+        let startDate = dayjs(selectedDays[0]);
+        let lastDate = startDate.add(C, 'days');
+        let targetYear = startDate.year();
 
+        let operDate = startDate;
+
+        let cdates = [];
+
+        let iterator = 0;
+        let acounter = A;
+        let bcounter = B;
+        let phase = 0;
+        while (iterator < (C - 1) && operDate.year() == targetYear){
+            operDate = startDate.add(iterator, 'days');
+            
+            if (phase == 0){
+                if (acounter == 0){
+                    bcounter = B;
+                    phase = 1;
+                } else {
+                    acounter--;
+                    console.log('operDate', operDate);
+                    cdates.push(operDate.format('YYYY-MM-DD'));
+                }   
+            } 
+            if (phase == 1) {
+                if (bcounter == 1){
+                    acounter = A;
+                    phase = 0;
+                } else {
+                    bcounter--;
+                }
+            }
+
+            // console.log('lastDate', operDate)
+            iterator++;
+        }
+        setMassInsertCnt(iterator);
+        console.log('cdates', cdates)
+
+        let startDay = selectedStart.startOf('day');
+
+        let startTimeOffset_s = selectedStart.diff(startDay, 'seconds');
+        let durationSeconds_s = selectedDuration.diff(selectedDuration.startOf('day'), 'seconds');
+        let endTimeOffset_s = startTimeOffset_s + selectedDuration.unix();
+
+        let newScheduleChunk = [];
+
+        for (let i = 0; i < cdates.length; i++) {
+            const element = cdates[i];
+            let dateStartUnix = dayjs(element).unix();
+            console.log(dateStartUnix, startTimeOffset_s, endTimeOffset_s);
+            const firstTs = dateStartUnix + startTimeOffset_s;
+            let secondTs = dateStartUnix + startTimeOffset_s + durationSeconds_s;
+            if (firstTs == secondTs) {secondTs = firstTs + (60 * 60 * 24)}
+            console.log(firstTs, secondTs);
+            newScheduleChunk.push([element,firstTs ,secondTs ]);
+        }
+
+        let mergedArray = [];
+        const firstElements = newScheduleChunk.map(subArray => subArray[0]);
+        for (let i = 0; i < schedule.length; i++) {
+            const element = schedule[i];
+            if (!firstElements.includes(element[0]))
+            {
+                mergedArray.push(element);
+            };
+        }
+        mergedArray = mergedArray.concat(newScheduleChunk);
+        setSchedule(mergedArray);
+        setSelectedDays([]);
+    }
 
 
 
@@ -565,7 +694,7 @@ const SchedCalendar = (props)=>{
         <div className="sk-form-frame-body">
             <div className="sk-form-frame-row" style={{overflow: 'auto'}}>
                 <div className={'sk-form-button-stack'}>
-                {MB.map((item)=>(
+                {MB.map((item, index)=>(
                     <div 
                         data-id={item.value}
                         onClick={(event)=>{setMonthValue(event)}}
@@ -575,7 +704,7 @@ const SchedCalendar = (props)=>{
                         {item.label[0] + item.label[1].toUpperCase() + item.label[2].toUpperCase() }
                         </div>
                         <div>
-                            { item.count_days > 0 ? item.count_days : ""}
+                            { monthStat[index] > 0 ? monthStat[index] : ""}
                         </div>
                     </div>
                 ))}
@@ -590,7 +719,7 @@ const SchedCalendar = (props)=>{
                         // defaultValue={defaultValue}
                         value={selectedDate}
                         // locale={buddhistLocale}
-                        // onChange={onChange}
+                        onChange={selectChosenDate}
                         />
                     </div>
 
@@ -701,7 +830,7 @@ const SchedCalendar = (props)=>{
                         tooltip += " " + day.text;
                     }
                     return (
-                    <div className={`sk-fbs-calendar-item-back sk-month-${day.month}-x  ${day.outrange ? 'outrange' : ''}`}>
+                    <div className={`sk-fbs-calendar-item-back sk-month-${day.month}-x  ${day.outrange ? 'outrange' : ''} ${day.date == dayjs().format('YYYY-MM-DD') ? 'sk-date-now' : ''}`}>
                         { (day.smens && day.smens.length > 0) ? 
                         ( day.smens.map((smena)=>(
                             <div 
@@ -738,26 +867,38 @@ const SchedCalendar = (props)=>{
                 </div>
                 <div className="sk-fbs-bl">
                     <div className="sk-fbs-vertstack" style={{backgroundColor: "#ffffff7d"}}>
-                        <label>Назначение по шаблону</label>
+                        <label>Назначение по интервалу</label>
                     </div>
                     <div className="sk-fbs-vertstack">
-                        <small>Кол-во рабочих дней</small>
+                        <small style={{color:"#5c5c5c"}}>Кол-во рабочих дней</small>
                         <InputNumber
+                            disabled={selectedDays.length == 1 ? false : true}
+                            value={massInsertWork}
+                            onChange={(ev)=>{setMassInsertWork(ev)}}
                         />
                     </div>
                     <div className="sk-fbs-vertstack">
-                        <small>через кол-во выходных дней</small>
+                        <small style={{color:"#5c5c5c"}}>через кол-во выходных дней</small>
                         <InputNumber
+                            disabled={selectedDays.length == 1 ? false : true}
+                            value={massInsertWkd}
+                            onChange={(ev)=>{setMassInsertWkd(ev)}}
                         />
                     </div>
                     <div className="sk-fbs-vertstack">
-                        <small>на протяжении дней</small>
+                        <small style={{color:"#5c5c5c"}}>на протяжении дней</small>
                         <InputNumber
+                            disabled={selectedDays.length == 1 ? false : true}
+                            value={massInsertCnt}
+                            onChange={(ev)=>{setMassInsertCnt(ev)}}
                         />
                     </div>
                     <br/>
                     <div className="sk-fbs-vertstack">
-                        <Button>Назначить смены</Button>
+                        <Button
+                            disabled={selectedDays.length != 1  || selectedStart == null|| selectedEnd == null ? true : false}
+                            onClick={massInsertAction}
+                        >Назначить смены</Button>
                     </div>
                 </div>
             </div>
@@ -766,8 +907,9 @@ const SchedCalendar = (props)=>{
                     <li>В день можно назначить только одну смену</li>
                     <li>Смена не может длиться больше 24 часов</li>
                     <li>Смены не должны пересекаться друг с другом</li>
-                    <li></li>
+                    
                 </ul>
+                <br/>
             </div>
         </div>
     )
