@@ -5,6 +5,7 @@ export const PRODMODE = true;
 // Тянем токен со страницы
 export const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : null;
 export const HTTP_HOST = document.querySelector('meta[name="host"]') ? document.querySelector('meta[name="host"]').content : null;
+export const HOST_COMPONENT_ROOT = PRODMODE ? '' : '/com/timeskud';
 
 export const theme_1 = {
     // 1. Use dark algorithm

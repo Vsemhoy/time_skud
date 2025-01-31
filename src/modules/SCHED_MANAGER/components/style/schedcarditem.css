@@ -1,6 +1,7 @@
 .sk-sched-card-item {
     display: grid;
     grid-template-columns: auto 30px;
+
 }
 
 .sk-sched-card-body {
@@ -9,4 +10,11 @@
         justify-content: flex-start;
         align-items: center;
         grid-gap: 9px;
+}
+.sk-schedule-list-row {
+    transition: all 0.2s;
+        margin-bottom: 12px;
+        box-shadow: 0 5px 10px 0px #223c5025;
+        /* overflow: hidden; */
+        border-radius: 9px;
 }

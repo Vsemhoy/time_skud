@@ -44,7 +44,9 @@ const SchedModalEditor = (props)=>{
 
   const [prodCalendars, setProdCalendars] = useState(DS_PROD_CALENDARS);
 
+  const [scheduleTypes, setScheduleTypes] = useState(props.schedTypes);
   // Пример использования геттеров и сеттеров
+
 
 
 
@@ -55,7 +57,7 @@ const SchedModalEditor = (props)=>{
 
     useEffect(()=>{
         console.log('props.data', props.data)
-        setIdSkudScheduleType(props.data ? props.data.id_skud_schedule_type : 1);
+        setIdSkudScheduleType(props.data ? props.data.skud_schedule_type_id : 1);
         
         
 
@@ -68,6 +70,7 @@ const SchedModalEditor = (props)=>{
         
         setStartTime(props.data ? props.data.start_time : dayjs().unix());
         setEndTime(props.data ? props.data.end_time : dayjs().unix());
+
         setTargetTime(props.data ? props.data.target_time : (60 * 60 * 8));
         setTargetUnit(props.data ? props.data.target_unit : 1);
         
@@ -77,17 +80,51 @@ const SchedModalEditor = (props)=>{
 
         setNextId(props.data ? props.data.next_id : null);
         setDeleted(props.data ? props.data.deleted : 0);
-        setIdSkudProdCalendar(props.data ? props.data.id_skud_prod_calendar : 0);
+        setIdSkudProdCalendar(props.data ? props.data.skud_prod_calendar_id : 0);
         setCreatorId(props.data ? props.data.creator_id : props.userData.id);
         setCreatedAt(props.data ? props.data.creator_id : dayjs().unix());
         setSchedule(props.data ? props.data.schedule : []);
 
         setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === idCompany));
 
-      setUsedSchedType(DS_SCHED_TYPES.find((el)=> el.value === (props.data ? parseInt(props.data.id_skud_schedule_type) : 1)));
-      console.log(usedSchedType);
+        console.log(props.schedTypes);
+        setUsedSchedType(props.schedTypes.find((el)=> el.value === (props.data ? parseInt(props.data.skud_schedule_type_id) : 1)));
 
     }, [targetId]);
+
+
+
+    const saveForm = ()=>{
+      let data = {
+        id: targetId,
+        id_company: idCompany,
+
+        skud_schedule_type_id: idSkudScheduleType,
+        name: name,
+        description: description,
+        start_time: startTime,
+        end_time: endTime,
+        target_time: targetTime,
+        target_unit: targetUnit,
+        lunch_start: lunchStart,
+        lunch_end: lunchEnd,
+        lunch_time: lunchTime,
+        schedule: schedule,
+        // next_id: null,
+        // deleted: 0,
+        skud_prod_calendar_id: idSkudProdCalendar,
+      };
+      if (targetId == null){
+        data.creator_id = props.userData.user.id
+      }
+
+      console.log(data);
+  
+      if (props.on_save){
+        props.on_save();
+      };
+      console.log('saveform');
+    }
 
 
 
@@ -97,44 +134,108 @@ const SchedModalEditor = (props)=>{
       };
     };
 
-    const onSave = ()=>{
-      if (props.on_save){
-        props.on_save();
-      };
-    };
 
+    const updateSchedule = (value)=>{
+      setSchedule(value);
+    }
 
     const handleIdSkudScheduleTypeChange = (value)=>{
       console.log('value', value)
       setIdSkudScheduleType(value);
-      console.log(DS_SCHED_TYPES.find((el)=> el.value === parseInt(value)));
-      setUsedSchedType(DS_SCHED_TYPES.find((el)=> el.value === parseInt(value)));
+      console.log(props.schedTypes.find((el)=> el.value === parseInt(value)));
+      setUsedSchedType(props.schedTypes.find((el)=> el.value === parseInt(value)));
     }
 
 
     const onChangeTargetTime = (value) => {
       console.log(value);
     }
-    const onChangeDeleted = (event)=> {
+    const ChangeDeleted = (event)=> {
       console.log(event);
       setDeleted(event ? 0 : 1);
     }
-    const onChangeCompany = (event) => {
+    const ChangeCompany = (event) => {
       setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === event));
       console.log(event);
       setIdCompany(event);
     }
+    const ChangeName = (event) => {
+      setName(event.target.value);
+    }
+    const ChangeDescription = (event) => {
+      setDescription(event.target.value);
+      
+    }
+    const ChangeUnitCount = (event) => {
+        setTargetTime(parseFloat(event));
+      console.log(event);
+    }
+    const ChangeUnitMeasure = (event) => {
+      setTargetUnit(event);
+    }
+    const ChangeLunchStart = (event) => {
+      setLunchStart(event);
+    }
+    const ChangeLunchEnd = (event) => {
+      setLunchEnd(event);
+    }
+    const ChangeLunchDuration = (event) => {
+      setLunchTime(event);
+    }
+
+
+    const changeStartTime = (value) => {
+      let cdate = dayjs(); // Current date
+      if (value) {
+        let providedDate = dayjs(value); // Convert input to Day.js object
+        let yearDifference = providedDate.diff(cdate, 'year'); // Calculate year difference
+    
+        // Check if the year difference is greater than 2
+        if (Math.abs(yearDifference) > 2) {
+          // Set providedDate to current year
+          providedDate = providedDate.year(cdate.year());
+        }
+        setStartTime(providedDate.unix());
+        console.log(providedDate); // Output adjusted date
+      }
+    }
+
+    const changeEndTime = (value) => {
+      // Convert startTime to a Day.js object
+      let startDate = dayjs.unix(startTime); 
+      if (value) {
+        // Convert input value to a Day.js object
+        let providedDate = dayjs(value); 
+        let yearDifference = providedDate.diff(startDate, 'year'); // Calculate year difference
+
+        // Check if the year is different or if provided date is earlier than startDate
+        if (Math.abs(yearDifference) > 0 || providedDate.isBefore(startDate)) {
+          // Set providedDate to December 31 of the provided year
+          providedDate = providedDate.endOf('year');
+        }
+
+        // Update end time state with the adjusted date
+        setEndTime(providedDate.unix());
+        console.log(providedDate.format()); // Output adjusted date
+      }
+    }
 
 
 
-    const [type, setType] = useState('time');
+
+
+
+
+
+
+
 
     return (
         <Modal
         title={targetId == null ? "Новый график" :  "Редактирование " + targetId}
         centered
         open={open}
-        onOk={onSave}
+        onOk={saveForm}
         onCancel={onCancel}
         width={1000}
         okText={"Сохранить"}
@@ -151,7 +252,7 @@ const SchedModalEditor = (props)=>{
             size="large"
             value={idSkudScheduleType}
             onChange={handleIdSkudScheduleTypeChange}
-            options={DS_SCHED_TYPES}
+            options={props.schedTypes}
             disabled={deleted}
           />
 
@@ -183,7 +284,7 @@ const SchedModalEditor = (props)=>{
           <div className={'sk-w-70'}>
           <Input
             value={name}
-            onChange={(event)=>{setName(event.target.value)}}
+            onChange={ChangeName}
             maxLength={120}
             disabled={deleted}
           />
@@ -198,6 +299,7 @@ const SchedModalEditor = (props)=>{
             <TextArea value={description}
               maxLength={250}
               disabled={deleted}
+              onChange={ChangeDescription}
               />
           </div>
         </div>
@@ -226,7 +328,7 @@ const SchedModalEditor = (props)=>{
           <div className={'sk-w-70'}>
             <DatePicker
               value={dayjs.unix(startTime)}
-              onChange={(value) => console.log(value)}
+              onChange={changeStartTime}
               disabled={deleted}
             />
           </div>
@@ -239,7 +341,7 @@ const SchedModalEditor = (props)=>{
           <div className={'sk-w-70'}>
             <DatePicker
               value={dayjs.unix(endTime)}
-              onChange={(value) => console.log(value)}
+              onChange={changeEndTime}
               disabled={deleted}
             />
           </div>
@@ -351,7 +453,7 @@ const SchedModalEditor = (props)=>{
                   ))}
                   value={idCompany}
                   disabled={deleted}
-                  onChange={onChangeCompany}
+                  onChange={ChangeCompany}
                   // onChange={handleUsedCompanyChange}
               />
           </div>
@@ -368,7 +470,7 @@ const SchedModalEditor = (props)=>{
             <Switch 
               checked={deleted ? false : true}
               checkedChildren="АКТИВЕН" unCheckedChildren="АРХИВИРОВАН" defaultChecked
-              onChange={onChangeDeleted}
+              onChange={ChangeDeleted}
             />
           </div>
         </div>
@@ -388,11 +490,21 @@ const SchedModalEditor = (props)=>{
         <br/>
           
         <div>
-          { idSkudScheduleType === 1 ? (<Scheditor_one   data={schedule} disabled={deleted} />):""}
-          { idSkudScheduleType === 2 ? (<Scheditor_two   data={schedule} />):""}
-          { idSkudScheduleType === 3 ? (<Scheditor_three data={schedule} />):""}
-          { idSkudScheduleType === 4 ? (<Scheditor_four  data={schedule} />):""}
-          { idSkudScheduleType === 5 ? (<Scheditor_five  data={schedule} />):""}
+          { idSkudScheduleType === 1 ? (<Scheditor_one   
+              data={schedule} 
+              disabled={deleted} updater={updateSchedule} />):""}
+          { idSkudScheduleType === 2 ? (<Scheditor_two   
+              data={schedule} 
+              updater={updateSchedule} />):""}
+          { idSkudScheduleType === 3 ? (<Scheditor_three 
+              data={schedule} 
+              updater={updateSchedule} />):""}
+          { idSkudScheduleType === 4 ? (<Scheditor_four  
+              data={schedule} 
+              updater={updateSchedule} />):""}
+          { idSkudScheduleType === 5 ? (<Scheditor_five  
+              data={schedule} u
+              pdater={updateSchedule} />):""}
         </div>
       </Modal>
     )
@@ -421,10 +533,17 @@ const Scheditor_one = (props) => {
 
   const [disabled, setDisabled] = useState(props.disabled);
 
+  const [lastDate, setLastDate] = useState('');
+  const [prevData, setPrevData] = useState(null);
+
   useEffect(()=>{
-    if (props.data.length > 0){
-      setStartTime(props.data.schedule[0][0]);
-      setEndTime(props.data.schedule[0][1]);
+    if (props.data.length > 0 && props.data[props.data.length - 1].length){
+
+      console.log(props.data);
+      setLastDate(props.data[props.data.length - 1][0]);
+      setStartTime(props.data[props.data.length - 1][1]);
+      setEndTime(props.data[props.data.length - 1][2]);
+      setPrevData(props.data);
     } else {
       setStartTime(60 * 60 * 13);
       setEndTime(60 * 60 * 15);
@@ -433,6 +552,34 @@ const Scheditor_one = (props) => {
     setDisabled(props.disabled);
   },[props]);
 
+  useEffect(()=>{
+    const t = setTimeout(() => {
+      if (props.updater){
+        let today = dayjs().format('YYYY-MM-DD');
+        if (prevData === null)
+        {
+          setPrevData([[ today, startTime, endTime]]);
+          props.updater([[ today, startTime, endTime]]);
+        } else {
+          // find last array anc compare dates
+          let lpd = JSON.parse(JSON.stringify(prevData));
+          
+          if (lpd[lpd.length - 1][0].trim() === today){
+            // update existed
+            lpd[lpd.length - 1][1] = startTime;
+            lpd[lpd.length - 1][2] = endTime;
+          } else {
+            // write new theme
+            lpd.push([ today, startTime, endTime]);
+          }
+
+          props.updater(lpd);
+        }
+      }
+    }, 500);
+    
+    return () => clearTimeout(t);
+  },[startTime, endTime] );
 
 
   const changeStartTime = (value) => {
@@ -452,10 +599,7 @@ const Scheditor_one = (props) => {
     }
   }
 
-  useEffect(()=>{
-    console.log(startTime);
-    console.log(endTime);
-  }, [startTime, endTime]);
+
 
   return (
     <div className="sk-form-frame">
@@ -504,8 +648,8 @@ const Scheditor_two = (props) => {
 
   useEffect(()=>{
     if (props.data.length > 0){
-      setStartTime(props.data.schedule[0][0]);
-      setEndTime(props.data.schedule[0][1]);
+      // setStartTime(props.data.schedule[0][0]);
+      // setEndTime(props.data.schedule[0][1]);
     } else {
       setStartTime(60 * 60 * 13);
       setEndTime(60 * 60 * 15);

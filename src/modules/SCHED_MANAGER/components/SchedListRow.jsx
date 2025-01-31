@@ -5,6 +5,13 @@ import { BorderlessTableOutlined, BranchesOutlined, ClusterOutlined, CopyOutline
 import { Space, Typography } from 'antd';
 import dayjs from "dayjs";
 import { DS_SCHED_UNITS } from "../../../CONFIG/DEFAULTSTATE";
+import { HOST_COMPONENT_ROOT, HTTP_HOST } from "../../../CONFIG/config";
+
+import SchedStdSVG from "../../../media/schedule-std.svg";
+import SchedFlexSVG from "../../../media/schedule-flex.svg";
+import SchedFreeSVG from "../../../media/schedule-free.svg";
+import SchedShiftSVG from "../../../media/schedule-shift.svg";
+import SchedSumSVG from "../../../media/schedule-sum.svg";
 
 const { Text, Link } = Typography;
 
@@ -24,19 +31,19 @@ const Sched_type_icon = (type) => {
     
     switch (type.children) {
         case 1:
-            return (<HistoryOutlined className="sk-schedule-list-type-icon" title='Пятидневка график'/>);
+            return ( <img src={HOST_COMPONENT_ROOT + SchedStdSVG} title='Пятидневка график'/>);
         break;
         case 2:
-            return (<BranchesOutlined className="sk-schedule-list-type-icon" title='Гибкий график'/>);
+            return (<img src={HOST_COMPONENT_ROOT + SchedFlexSVG}  title='Гибкий график'/>);
         break;
         case 3:
-            return (<StarOutlined className="sk-schedule-list-type-icon" title='Свободный график'/>);
+            return (<img src={HOST_COMPONENT_ROOT + SchedFreeSVG}  title='Свободный график'/>);
         break;
         case 4:
-            return (<BorderlessTableOutlined className="sk-schedule-list-type-icon" title='Сменный график'/>);
+            return (<img  src={HOST_COMPONENT_ROOT + SchedShiftSVG}  title='Сменный график'/>);
         break;
         case 5:
-            return (<ClusterOutlined className="sk-schedule-list-type-icon" title='Суммированный график'/>);
+            return (<img src={HOST_COMPONENT_ROOT + SchedSumSVG} title='Суммированный график'/>);
         break;
         default:
 
@@ -97,8 +104,8 @@ const SchedListRow = (props)=>{
         <div className={'sk-schedule-list-row'}>
             <div className="sk-row, sk-first-row">
                 <div>
-                    <div><Sched_type_icon>{itemData.id_skud_schedule_type}</Sched_type_icon></div>
-                    <div>23</div>
+                    <div><Sched_type_icon>{itemData.skud_schedule_type_id}</Sched_type_icon></div>
+                    
                 </div> 
 
                 <div>
@@ -139,7 +146,7 @@ const SchedListRow = (props)=>{
             </div>
             <div className="sk-row, sk-second-row">
                 <div>
-                    Актуален
+                    2025
                 </div>
                 <div>
                     <Text type="secondary" className={'sk-flex'}>

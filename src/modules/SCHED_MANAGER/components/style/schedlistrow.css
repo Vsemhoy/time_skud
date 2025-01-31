@@ -6,7 +6,7 @@
 
 .sk-schedule-list-row {
     --border-color: rgb(230, 230, 230);
-    --border-o-color: rgb(196, 196, 196);
+    --border-o-color: rgb(228, 228, 228);
 
 }
 .sk-schedule-list-row {
@@ -18,6 +18,16 @@
     border-right: 0.5px solid var(--border-o-color);
     border-bottom: 0.5px solid var(--border-o-color);
 }
+
+
+.sk-schedule-list-row {
+    transition: all 0.2s;
+    margin-bottom: 12px;
+    box-shadow: 0 5px 10px 0px #223c5025;
+    /* overflow: hidden; */
+    border-radius: 9px;
+}
+
 .sk-schedule-list-head > div > div {
     padding-left: 0px !important;
 }
@@ -32,7 +42,7 @@
 
 .sk-first-row {
     display: grid;
-    grid-template-columns: 37px auto 100px 100px 70px 70px 80px 80px;
+    grid-template-columns: 80px auto 100px 100px 70px 70px 80px 80px;
 }
 
 .sk-first-row > div {
@@ -66,4 +76,10 @@
 }
 .sk-schedule-list-type-icon {
     font-size: 1.4rem;
+}
+
+.sk-flex-child-bottom > div {
+    display: flex;
+    align-items: flex-end;
+    border-bottom: 2px solid rgb(189, 189, 189);
 }

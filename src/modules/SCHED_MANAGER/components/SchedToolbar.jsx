@@ -9,21 +9,38 @@ import dayjs from "dayjs";
 
 
 const SchedToolbar = (props) =>{
-    const {userData, companies, onAddNewClick, onChangeCompany } = props;
+    const {userData, companies, onAddNewClick, onChangeFilter, schedTypes } = props;
     const location = useLocation();
     const navigate = useNavigate();
     // const [companies, setCompanies] = useState([]);
     const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
-    const [usedType, setusedType] = useState(null);
+    const [usedType, setUsedType] = useState(null);
 
 
-    const handleUsedCompanyChange = (value) => {
-        setUsedCompany(value);
-        if (onChangeCompany){
-            onChangeCompany(value);
-        }
-        // changeAddressBarParam('tgc',value,[0]);
-    };
+
+
+
+    useEffect(()=>{
+        const t = setTimeout(() => {
+            let filters = [];
+
+            if (usedType != null && usedType !== 0)
+            {
+                let fil1 = {type: 'filter', key: 'skud_schedule_type_id', value: usedType};
+                filters.push(fil1);
+            };
+            if (usedCompany != null && usedCompany !== 0)
+            {
+                let fil1 = {type: 'filter', key: 'id_company', value: usedCompany};
+                filters.push(fil1);
+            }
+            if (onChangeFilter){
+                onChangeFilter(filters);
+            }
+        }, 100);
+        return () => clearTimeout(t);
+        
+    }, [usedType, usedCompany]);
 
 
     const changeAddressBarParam = (key, value, deleteOn = [null]) =>
@@ -45,8 +62,14 @@ const SchedToolbar = (props) =>{
         }
 
         const handleUsedTypeChange = (value)=>{
-            setusedType(value);
+            console.log(value);
+            setUsedType(value);
         }
+        const handleUsedCompanyChange = (value) => {
+            setUsedCompany(value);
+            console.log(value);
+            // changeAddressBarParam('tgc',value,[0]);
+        };
 
     return (
         <div className={"ts-toolbar"}>
@@ -57,7 +80,7 @@ const SchedToolbar = (props) =>{
                         options={companies}
                         value={usedCompany} // Use value instead of defaultValue for controlled component
                         style={{ minWidth: 140 }}
-                        onChange={handleUsedCompanyChange}
+                        onChange={(value)=>{setUsedCompany(value)}}
                     />
                 ) : ''}
             </div>
@@ -68,14 +91,14 @@ const SchedToolbar = (props) =>{
                         width: 120,
                     }}
                     value={usedType}
-                    onChange={handleUsedTypeChange}
+                    onChange={(value)=>{setUsedType(value)}}
                     options={[
                         {
                             key: 'schedtype0',
                             value: null,
                             label: 'Все графики',
                         },
-                        ...DS_SCHED_TYPES
+                        ...schedTypes
                     ]
                         }
                     />

@@ -16,17 +16,22 @@ const SchedModalUsers = (props)=>{
   const [open, setOpen] = useState(false);
   const [targetId, setTargetId] = useState(null);
 
-
+    useEffect(()=>{
+        setOpen(props.open);
+        setTargetId(props.target_id);
+    },[props]);
 
 
 
     const onCancel = ()=>{
+      setOpen(false);
       if (props.on_cancel){
         props.on_cancel();
       };
     };
 
     const onSave = ()=>{
+      setOpen(false);
       if (props.on_save){
         props.on_save();
       };

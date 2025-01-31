@@ -30,7 +30,7 @@ const SchedList = (props)=>{
         <div className={'sk-schedule-list'}>
                     <div className={'sk-schedule-list-head'}>
                         
-                        <div className="sk-row, sk-first-row">
+                        <div className="sk-row, sk-first-row sk-flex-child-bottom">
                         <div>
                             N
                         </div> 
