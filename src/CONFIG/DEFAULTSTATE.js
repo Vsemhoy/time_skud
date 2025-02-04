@@ -1628,6 +1628,15 @@ export const DS_GROUP_USERS = [
         user_group_id: 0,
     },
     {
+        id: 21,
+        name: 'Кирилл',
+        surname: 'Овечкин',
+        patronymic: 'Степанович',
+        department: 4,
+        id_company: 1,
+        user_group_id: 0,
+    },
+    {
         id: 2,
         name: 'Майонез',
         surname: 'Сливочный',

@@ -210,3 +210,7 @@ font-size: smaller;
 .sk-form-frame label {
     font-size: medium !important;
 }
+
+.sk-p-12 {
+    padding: 12px;
+}

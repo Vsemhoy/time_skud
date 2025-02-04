@@ -6,6 +6,7 @@ import GroupUserCardItem from "./components/groupusercarditem";
 
 import "./components/style/groupcard.css";
 import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_SKUD_GROUPS } from "../../CONFIG/DEFAULTSTATE";
+import GroupEditorModal from "./components/groupeditormodal";
 
 
 const Desc = (props) => (
@@ -69,7 +70,10 @@ const GroupManagerPage = ()=>{
     const [groupList, setGroupList] = useState([]);
 
     const [openedCooxer, setOpenedCooxer] = useState(0);
-    
+
+
+    const [editorOpened, setEditorOpened] = useState(false);
+    const [editedGroupId, setEditedGroupId] = useState(0);
 
     useEffect(()=>{
         setBaseUserList(DS_GROUP_USERS);
@@ -84,8 +88,37 @@ const GroupManagerPage = ()=>{
         setGroupList(baseGroupList);
     },[baseGroupList]);
 
+
+
+
+    const updateUserLinks = (group_id, added, removed) => {
+        let newUsers = [];
+        for (let i = 0; i < baseUserList.length; i++) {
+            const user = baseUserList[i];
+            if (added.includes( user.id ))
+            {
+                user.user_group_id = group_id;
+                console.log('first', group_id)
+            }
+            if (removed.includes( user.id ))
+            {
+                user.user_group_id = 0;
+                console.log('second', group_id)
+            }
+            newUsers.push(user);   
+        }
+        setBaseUserList(newUsers);
+    }
+
+    const openModalEditor = (group_id) => {
+        console.log('group_id', group_id)
+        setEditedGroupId(group_id);
+        setEditorOpened(true);
+    }
+
+
     return (
-        <div className={'sk-mw-1400'}>
+        <div className={'sk-mw-1400 sk-p-12'}>
             <br />
             <h2>Графики работ</h2>
             <GroupPageToolbar
@@ -106,6 +139,8 @@ const GroupManagerPage = ()=>{
                         opened={openedCooxer === group.id}
                         on_open_cooxer={(value)=>{setOpenedCooxer(value)}}
                         base_users={userList}
+                        on_link_update={updateUserLinks}
+                        on_open_editor={openModalEditor}
                         />
                 ))}
 
@@ -113,7 +148,14 @@ const GroupManagerPage = ()=>{
 
             </div>
 
-            <div>modal</div>
+            <div>
+                <GroupEditorModal
+                    open={editorOpened}
+                    item_list={baseGroupList}
+                    target_id={editedGroupId}
+                    on_cancel={()=>{setEditorOpened(false)}}
+                />
+            </div>
 
             
         </div>

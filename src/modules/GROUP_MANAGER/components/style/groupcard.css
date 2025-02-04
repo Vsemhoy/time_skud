@@ -17,8 +17,14 @@
     margin-bottom: 12px;
     box-shadow: 0 5px 10px 0px #223c5025;
     width: 100%;
-
-  
+}
+.ant-transfer-list {
+    border: 1px solid #223c5025;
+    overflow: hidden;
+    /* border-radius: 0px !important; */
+}
+.ant-card:last-child {
+    margin-bottom: 40vh;
 }
 .sk-grp-card-head {
     color: rgba(0, 0, 0, 0.88);
@@ -41,7 +47,8 @@
 
 .sk-grp-card-head {
     display: grid;
-    grid-template-columns: 30px auto 40px 40px 30px;
+    grid-template-columns: 20px auto 30px 30px 30px;
+    grid-gap: 9px;
 }
 
 .ant-card:hover {
@@ -60,15 +67,25 @@
 .sk-group-card.cooxed .sk-card-cooxer-opened {
     display: none;
 }
+.sk-grp-user-items-stack {
+    transition: all ease 0.4s;
+    height: 500px;
+    overflow: hidden;
+}
+
+.sk-group-card.cooxed {
+    margin-bottom: -12px;
+}
 .sk-group-card.cooxed .sk-grp-user-items-stack {
-    display: none;
+    /* display: none; */
+    height: 0px;
 }
 .sk-grp-user-items-stack {
     margin-top: 12px;
     /* padding-bottom: 60px; */
     /* background-color: #223c5025; */
 }
-.sk-card-cooxer {
+.sk-card-cooxer, .sk-card-call-to-modal {
     cursor: pointer;
 }
 .ant-transfer {
@@ -83,6 +100,7 @@
     background-color: white;
     margin-bottom: 1px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.144);
+    user-select: none;
 }
 .ant-transfer-list-header {
     border-radius: 0px !important;
@@ -101,9 +119,15 @@
        margin-inline: 0px 0 !important;
     }
 
-.ant-transfer-operation > button:first-child:not([disabled]) {
+.ant-transfer-operation > button:last-child:not([disabled]) {
     background-color: rgba(255, 68, 0, 0.788);
 }
-.ant-transfer-operation > button:first-child:not([disabled]):hover {
+.ant-transfer-operation > button:last-child:not([disabled]):hover {
     background-color: orangered;
+}
+
+
+
+.sk-group-card {
+    transition: all 0.4s;
 }
