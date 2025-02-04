@@ -68,7 +68,7 @@
     display: none;
 }
 .sk-grp-user-items-stack {
-    transition: all ease 0.4s;
+    transition: all ease 0.3s;
     height: 500px;
     overflow: hidden;
 }
@@ -79,6 +79,7 @@
 .sk-group-card.cooxed .sk-grp-user-items-stack {
     /* display: none; */
     height: 0px;
+    background-color: #223c5025;
 }
 .sk-grp-user-items-stack {
     margin-top: 12px;
@@ -129,5 +130,5 @@
 
 
 .sk-group-card {
-    transition: all 0.4s;
+    transition: all 0.3s;
 }

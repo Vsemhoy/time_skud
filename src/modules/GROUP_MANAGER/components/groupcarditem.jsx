@@ -176,8 +176,8 @@ const GroupCardItem = (props)=>{
             </div>
             <div className={'sk-grp-card-body'}>
                 <div className={'sk-grp-user-items-stack'}>
-
-                <Transfer
+                  {opened ? (
+                    <Transfer
                     dataSource={mockData}
                     showSearch
                     filterOption={localFilter}
@@ -196,6 +196,8 @@ const GroupCardItem = (props)=>{
                     )}
                     
                     />
+                  ) : ""}  
+
 
                 </div>
             </div>
