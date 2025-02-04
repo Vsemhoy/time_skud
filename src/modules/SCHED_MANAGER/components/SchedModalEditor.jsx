@@ -5,11 +5,14 @@ import { Space, Typography } from 'antd';
 
 import './style/schedmodaleditor.css';
 import dayjs, { Dayjs } from "dayjs";
-import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS } from "../../../CONFIG/DEFAULTSTATE";
+import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS, SKUD_SCHED_HISTORY } from "../../../CONFIG/DEFAULTSTATE";
 import { globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import TextArea from "antd/es/input/TextArea";
-import { CalendarOutlined, CheckCircleOutlined, ClockCircleOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, RadarChartOutlined } from "@ant-design/icons";
+import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined } from "@ant-design/icons";
 import SchedCalendar from "./SchedCalendar";
+import Panel from "antd/es/splitter/Panel";
+import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 
 const { Text, Link } = Typography;
 
@@ -96,7 +99,7 @@ const SchedModalEditor = (props)=>{
 
     const saveForm = ()=>{
       let data = {
-        id: targetId,
+
         id_company: idCompany,
 
         skud_schedule_type_id: idSkudScheduleType,
@@ -116,14 +119,16 @@ const SchedModalEditor = (props)=>{
       };
       if (targetId == null){
         data.creator_id = props.userData.user.id
+      } else {
+        data.id = targetId;
       }
 
-      console.log(data);
+      // console.log(data);
   
       if (props.on_save){
-        props.on_save();
+        props.on_save(data);
       };
-      console.log('saveform');
+      // console.log('saveform');
     }
 
 
@@ -491,20 +496,20 @@ const SchedModalEditor = (props)=>{
           
         <div>
           { idSkudScheduleType === 1 ? (<Scheditor_one   
-              data={schedule} 
+              data={schedule} schedule_id={targetId}
               disabled={deleted} updater={updateSchedule} />):""}
           { idSkudScheduleType === 2 ? (<Scheditor_two   
-              data={schedule} 
+              data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
           { idSkudScheduleType === 3 ? (<Scheditor_three 
-              data={schedule} 
+              data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
           { idSkudScheduleType === 4 ? (<Scheditor_four  
-              data={schedule} 
+              data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
           { idSkudScheduleType === 5 ? (<Scheditor_five  
-              data={schedule} u
-              pdater={updateSchedule} />):""}
+              data={schedule}  schedule_id={targetId}
+              updater={updateSchedule} />):""}
         </div>
       </Modal>
     )
@@ -533,20 +538,23 @@ const Scheditor_one = (props) => {
 
   const [disabled, setDisabled] = useState(props.disabled);
 
-  const [lastDate, setLastDate] = useState('');
-  const [prevData, setPrevData] = useState(null);
+  const [setDate, setSetDate] = useState(null);
+
+  const [history, setHistory] = useState([]);
+  const [historyTable, setHistoryTable] = useState("");
 
   useEffect(()=>{
-    if (props.data.length > 0 && props.data[props.data.length - 1].length){
-
+    if (props.data.length > 0 ){
+      // Входные данные в data - ['2020-03-18',1738968722,1738968722], 
+      // что означает [дата начала действия, время начала смены от начала дня, время конца смены от к.д.]
       console.log(props.data);
-      setLastDate(props.data[props.data.length - 1][0]);
-      setStartTime(props.data[props.data.length - 1][1]);
-      setEndTime(props.data[props.data.length - 1][2]);
-      setPrevData(props.data);
+      setSetDate(props.data[0]);
+      setStartTime(props.data[1]);
+      setEndTime(props.data[2]);
     } else {
       setStartTime(60 * 60 * 13);
       setEndTime(60 * 60 * 15);
+      setSetDate(dayjs().format('YYYY-MM-DD'));
     }
 
     setDisabled(props.disabled);
@@ -556,30 +564,23 @@ const Scheditor_one = (props) => {
     const t = setTimeout(() => {
       if (props.updater){
         let today = dayjs().format('YYYY-MM-DD');
-        if (prevData === null)
-        {
-          setPrevData([[ today, startTime, endTime]]);
-          props.updater([[ today, startTime, endTime]]);
-        } else {
-          // find last array anc compare dates
-          let lpd = JSON.parse(JSON.stringify(prevData));
+
+        let lpd = [];
           
-          if (lpd[lpd.length - 1][0].trim() === today){
-            // update existed
-            lpd[lpd.length - 1][1] = startTime;
-            lpd[lpd.length - 1][2] = endTime;
-          } else {
-            // write new theme
-            lpd.push([ today, startTime, endTime]);
-          }
+        if (setDate == null || startTime == null || endTime == null){
+          lpd = [];
+        } else {
+          lpd.push(setDate);
+          lpd.push(startTime);
+          lpd.push(endTime);
+        }
 
           props.updater(lpd);
-        }
       }
     }, 500);
     
     return () => clearTimeout(t);
-  },[startTime, endTime] );
+  },[startTime, endTime, setDate] );
 
 
   const changeStartTime = (value) => {
@@ -599,16 +600,130 @@ const Scheditor_one = (props) => {
     }
   }
 
+  const changeSetDate = (getDate) => {
+    let now = dayjs();
+    if (getDate != null && getDate.unix() < now.unix())
+    {
+      getDate = now;
+    };
+    if (getDate === null){
+      setSetDate(null);
+    } else {
+
+      setSetDate(getDate.format("YYYY-MM-DD"));
+    }
+  }
+
+
+
+  /** ------------------ FETCHES ---------------- */
+      /**
+       * Получение списка строк временных интервалов рабочего времени
+       * @param {*} req
+       * @param {*} res
+       */
+      const get_schedule_history = async (req, res) => {
+        if (PRODMODE){
+          setHistory(SKUD_SCHED_HISTORY);
+          return;
+        }
+        try {
+            // setLoadingOrgs(true)
+            const format_data = {
+                CSRF_TOKEN,
+                data: {
+                    schedule_id: props.schedule_id
+                    // active_date: get_unix_by_datearray(filters.active_date)
+                }
+            }
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedulehistory/schedulehistory_get_by_id?_token=' + CSRF_TOKEN, 
+              format_data
+            );
+            console.log('me: ', response);
+            // setOrganizations(organizations_response.data.org_list)
+            // setTotal(organizations_response.data.total_count)
+            setHistory(response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+            // setPageLoaded(true);
+        }
+    }
+    /** ------------------ FETCHES END ---------------- */
+    
+
+  useEffect(()=>{
+    if (props.schedule_id == null){
+      setHistoryTable("");
+      return;
+    }
+
+    let table = history.reverse();
+    let activeIndex = -1;
+    if (table.length > 0){
+      if (dayjs(table[0].enabled_at).unix() < dayjs().unix()){
+        activeIndex = 0;
+      }
+    }
+    if (activeIndex < 0 && table.length > 1){
+      if (dayjs(table[1].enabled_at).unix() < dayjs().unix()){
+        activeIndex = 1;
+      }
+    }
+
+    setHistoryTable(
+      <div className={'ant-table-container'}>
+              <div className={'ant-table-content'}>
+        
+
+      <table className={'sk-table-table'}>
+        <thead className={'ant-table-thead'}>
+          <tr>
+            <th></th>
+            <th>Вступление в действие</th>
+            <th>Начало рабочего дня</th>
+            <th>Конец рабочего дня</th>
+            <th>Интервал</th>
+          </tr>
+        </thead>
+        <tbody className={'ant-table-tbody'}>
+          { table.map((item, index)=>(
+            <tr className={(index === activeIndex ? "sk-trow-current" : "")}>
+              <td>{(index === activeIndex ? <CheckOutlined /> : dayjs(item.enabled_at).unix() > dayjs().unix()  ? <LoadingOutlined /> : <MinusOutlined />  )}</td>
+              <td>{item.enabled_at}</td>
+              <td>{secondsValueToGlobalTime(item.start_time).format('HH:mm')}</td>
+              <td>{secondsValueToGlobalTime(item.end_time).format('HH:mm')}</td>
+              <td>{secondsValueToGlobalTime(item.end_time - item.start_time).format('HH:mm')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      </div>
+      </div>
+    );
+   },[history]);
+
+
 
 
   return (
     <div className="sk-form-frame">
-        
-
-
         <br/>
     <div className={'sk-flex-sides'}>
-        <div className={'sk-w-50'}>
+        <div className={'sk-w-33'} style={{paddingLeft: 12}}>
+          <Form.Item label="Начало действия установленного времени" name="layout">
+              <DatePicker
+                type="date"
+                disabled={disabled}
+                value={dayjs(setDate)}
+                onChange={changeSetDate}
+
+              ></DatePicker>
+                </Form.Item>
+            </div>
+        <div className={'sk-w-33'}>
           <Form.Item label="Время начала рабочего дня" name="layout">
             <TimePicker type={'time'} 
                 showSecond={false}
@@ -618,9 +733,8 @@ const Scheditor_one = (props) => {
                 disabled={disabled}
                 />
                 </Form.Item>
-
             </div>
-            <div className={'sk-w-50'}>
+            <div className={'sk-w-33'}>
               <Form.Item label="Время окончания рабочего дня" name="layout">
               <TimePicker type={'time'} 
               defaultValue={secondsValueToGlobalTime(60 * 60 * 15)}
@@ -633,6 +747,21 @@ const Scheditor_one = (props) => {
 
             </div>
         </div>
+
+        {props.schedule_id ? (
+          <div className={'sk-collaptor'}>
+          <Collapse  onChange={get_schedule_history}
+            items={[{
+              key: '1',
+              label: 'История изменений графика:',
+              children: historyTable
+            ,
+            }]}
+          >
+          </Collapse>
+          </div>
+        ) : ""}
+
     </div>
   );
 }

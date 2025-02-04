@@ -12,6 +12,7 @@ import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import SchedModalEditor from "./components/SchedModalEditor";
 import SchedModalUsers from "./components/SchedModalUsers";
+import dayjs from "dayjs";
 
 const SchedManagerPage = (props) => {
     const { userdata } = props;
@@ -56,7 +57,7 @@ const SchedManagerPage = (props) => {
         if (!PRODMODE) {
             // getScheduleList(); // Загружаем данные только если не в режиме продакшн
             get_schedule_types();
-            setBaseScheduleList(DS_SCHEDULE_LIST);
+            get_schedules();
             
         } else {
             setScheduleTypes(DS_SCHED_TYPES);
@@ -98,9 +99,9 @@ const SchedManagerPage = (props) => {
        */
               const get_schedule_types = async (req, res) => {
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/scheduletype/scheduletypes_get?_token=' + CSRF_TOKEN);
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/scheduletype/scheduletypes_get?_token=' + CSRF_TOKEN);
                     console.log('users', response);
-                    setScheduleTypes(response.data);
+                    setScheduleTypes(response.data.data);
                 } catch (e) {
                     console.log(e)
                 } finally {
@@ -113,18 +114,18 @@ const SchedManagerPage = (props) => {
          * @param {*} req 
          * @param {*} res 
          */
-        const get_departments = async (req, res) => {
-        //   try {
-        //       let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
-        //       console.log('departs', response);
-        //       // setOrganizations(organizations_response.data.org_list)
-        //       // setTotal(organizations_response.data.total_count)
-        //       setDepartments(response.data.data);
-        //   } catch (e) {
-        //       console.log(e)
-        //   } finally {
-        //       // setLoadingOrgs(false)
-        //   }
+        const get_schedules = async (req, res) => {
+          try {
+              let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get?_token=' + CSRF_TOKEN);
+              console.log('departs', response.data);
+              // setOrganizations(organizations_response.data.org_list)
+              // setTotal(organizations_response.data.total_count)
+              setBaseScheduleList(response.data);
+          } catch (e) {
+              console.log(e)
+          } finally {
+              // setLoadingOrgs(false)
+          }
     }
 
 
@@ -133,9 +134,9 @@ const SchedManagerPage = (props) => {
        * @param {*} req 
        * @param {*} res 
        */
-        const get_users = async (req, res) => {
+        const get_schedule = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get?_token=' + CSRF_TOKEN);
                 console.log('users', response);
                 // setBaseUserListData(response.data.data);
             } catch (e) {
@@ -144,6 +145,83 @@ const SchedManagerPage = (props) => {
                 // setLoadingOrgs(false)
             }
         }
+
+
+    /**
+       * 
+       * @param {*} req 
+       * @param {*} res 
+       */
+        const create_schedule = async (body, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule',
+                {
+                    data: body,
+                    _token: CSRF_TOKEN
+                },
+            );
+            console.log('users', response);
+            // setBaseUserListData(response.data.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            get_schedules();
+        }
+    }
+
+    /**
+       *  
+       * @param {*} req 
+       * @param {*} res 
+       */
+        const update_schedule = async (body, req, res) => {
+            console.log('body',body);
+            try {
+                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/schedule/schedule/' + body.id,
+                    {   
+                        data: body, 
+                        _token: CSRF_TOKEN
+                    }
+                );
+                console.log('users', response);
+                // setBaseUserListData(response.data.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                setBaseScheduleList(prevList => 
+                    prevList.map(item => 
+                        item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                    )
+                );
+            }
+        }
+
+    /**
+       *  
+       * @param {*} req 
+       * @param {*} res 
+       */
+    const delete_schedule = async (body, req, res) => {
+        console.log('body',body);
+        try {
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/schedule/schedule/' + body.id + '?_token=' + CSRF_TOKEN,
+                {   
+                    data: body, 
+                    _token: CSRF_TOKEN
+                }
+            );
+            console.log('response.data', response.data);
+            if (response.data.status === 0){
+                get_schedules();
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+
+        }
+        setEditorModalOpen(false);
+        // setAllowDelete(false);
+    }
     /** ------------------ FETCHES END ---------------- */
 
     
@@ -173,6 +251,45 @@ const SchedManagerPage = (props) => {
     }
 
 
+    const openBlankEditor = () =>{
+        setEditedId(null);
+        setEditedItem(
+            {
+
+                created_at: dayjs().unix(),
+                id_company: userdata.user.id_company,
+                // company_name: "Arstel",
+                // company_color: "#229900",
+                skud_schedule_type_id: 1,
+                name: "Новый график",
+                description: "...",
+                start_time: dayjs().unix(),
+                end_time: dayjs().unix(),
+                target_time: (60*60*8),
+                target_unit: 1,
+                lunch_start: 53600,
+                lunch_end: 55000,
+                lunch_time: (1*60*45),
+                schedule: [],
+                next_id: null,
+                deleted: 0,
+                skud_prod_calendar_id: 0,
+            }
+        );
+
+        setEditorModalOpen(true);
+    }
+
+
+    const saveScheduleForm = (item)=>{
+        console.log(item);
+        if (item.id){
+            update_schedule(item);
+        } else {
+            create_schedule(item);
+        }
+    }
+
     return (
         <div className={'sk-mw-1400'}>
             <br />
@@ -182,6 +299,7 @@ const SchedManagerPage = (props) => {
                 userData={userdata}
                 onChangeFilter={onSetFilters}
                 schedTypes={scheduleTypes}
+                onAddNewClick={openBlankEditor}
             />
             <br />
 
@@ -201,6 +319,7 @@ const SchedManagerPage = (props) => {
             <SchedModalEditor
                 open={editorModalOpen}
                 on_cancel={cancelEditorModal}
+                on_save={saveScheduleForm}
                 target_id={editedId}
                 data={editedIdtem}
                 userData={userdata}

@@ -84,25 +84,28 @@ const SchedToolbar = (props) =>{
                     />
                 ) : ''}
             </div>
-            <div>
-            <Select
-                    defaultValue="lucy"
-                    style={{
-                        width: 120,
-                    }}
-                    value={usedType}
-                    onChange={(value)=>{setUsedType(value)}}
-                    options={[
-                        {
-                            key: 'schedtype0',
-                            value: null,
-                            label: 'Все графики',
-                        },
-                        ...schedTypes
-                    ]
-                        }
-                    />
-            </div>
+            {schedTypes && schedTypes.length > 0 ? (
+                <div>
+                <Select
+                        defaultValue="lucy"
+                        style={{
+                            width: 120,
+                        }}
+                        value={usedType}
+                        onChange={(value)=>{setUsedType(value)}}
+                        options={[
+                            {
+                                key: 'schedtype0',
+                                value: null,
+                                label: 'Все графики',
+                            },
+                            ...schedTypes
+                        ]
+                            }
+                        />
+                </div>
+
+            ) : ""}
             <div>
                 
             </div>

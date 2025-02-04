@@ -20,6 +20,7 @@ import CalendarPage from './modules/CALENDAR/CalendarPage';
 import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
 import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
 import ProdCalManagerPage from './modules/PROD_CAL_MANAGER/ProdCalManagerPage';
+import GroupManagerPage from './modules/GROUP_MANAGER/GroupManagerPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -182,8 +183,8 @@ function App() {
 
             <MenuItem>
               <Link 
-              onClick={()=>{ setLocation('admincalendar')}}
-              >Графики работы</Link>
+              onClick={()=>{ setLocation('admin/groups')}}
+              >Группы пользоваателей</Link>
             </MenuItem>
             
             {/* <MenuItem>
@@ -207,7 +208,7 @@ function App() {
             {location === 'admin/schedules' && <SchedManagerPage userdata={userAct} />}
             {location === 'admin/prodcals' && <ProdCalManagerPage userdata={userAct} />}
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
-            {location === 'admincalendar' && <CalendarPage />}
+            {location === 'admin/groups' && <GroupManagerPage />}
 
           </div>
           ) : (

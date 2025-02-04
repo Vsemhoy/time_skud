@@ -17,7 +17,9 @@
     grid-gap: 12px;
 }
 
-
+.sk-w-33 {
+    width: 33%;
+}
 .sk-w-50 {
     width: 50%;
 }

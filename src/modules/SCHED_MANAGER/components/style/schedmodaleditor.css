@@ -2,3 +2,44 @@
     margin: 0px;
     font-size: medium;
 }
+
+.sk-table-table {
+    width: 100%;
+    font-size: medium;
+}
+
+.sk-table-table > thead {
+    background-color: #d4ddea;
+}
+.sk-table-table  th {
+    font-weight: 500 !important;
+}
+
+.sk-table-table > tbody > tr:nth-child(odd) {
+    background-color: rgb(233, 227, 210);
+}
+.sk-table-table > tbody > tr:nth-child(even) {
+    background-color: rgb(243, 243, 243);
+}
+.sk-table-table td {
+    padding: 6px;
+}
+.sk-table-table tr > td:first-child {
+    text-align: center;
+}
+.sk-trow-future {
+    outline: 2px solid #1677ff;
+}
+
+.sk-collaptor .ant-collapse-content-box {
+    padding: 0px !important;
+}
+
+.sk-trow-current {
+    outline: 2px solid #1677ff;
+}
+
+.sk-trow-current td {
+    background-color: #1677ff49;
+    font-weight: 600;
+}

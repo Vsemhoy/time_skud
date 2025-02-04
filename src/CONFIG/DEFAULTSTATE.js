@@ -1534,4 +1534,268 @@ export const DS_SCHEDULE_LIST = [
         created_at: 1738968722,
         creator_id: 377
     }
-]
+];
+
+
+export const SKUD_SCHED_HISTORY = [
+    {
+        id: 423,
+        enabled_at: '2024-01-22',
+        start_time: 45130,
+        end_time: 46320
+    },
+    {
+        id: 424,
+        enabled_at: '2024-10-21',
+        start_time: 45130,
+        end_time: 56320
+    },
+    {
+        id: 425,
+        enabled_at: '2024-10-22',
+        start_time: 45130,
+        end_time: 49320
+    },
+    {
+        id: 426,
+        enabled_at: '2025-11-22',
+        start_time: 45130,
+        end_time: 66320
+    }
+];
+
+
+
+export const DS_SKUD_GROUPS = [
+    {
+        id: 1,
+        name: "Первая группа захвата пользователей",
+        description: "Что-то здесь должно было быть написано, но не судьба, кажись...",
+        id_company: 1,
+    },
+    {
+        id: 2,
+        name: "Группа странных пингвинов",
+        description: "Эти пингвины любят танцевать под дождем и собирать редкие камни.",
+        id_company: 1,
+    },
+    {
+        id: 3,
+        name: "Клуб любителей невидимых единорогов",
+        description: "Мы собираемся каждую пятницу, чтобы обсуждать их последние приключения.",
+        id_company: 1,
+    },
+    {
+        id: 4,
+        name: "Ассоциация котов-экспертов по лазанью",
+        description: "Наши коты знают все о лазанье и готовы делиться секретами приготовления.",
+        id_company: 1,
+    },
+    {
+        id: 71,
+        name: "Общество любителей обосранных штанов",
+        description: "Каждая пара штанов имеет свою историю. Мы собираем их продаем под видом дизайнерских.",
+        id_company: 1,
+    },
+    {
+        id: 5,
+        name: "Команда по исследованию параллельных вселенных",
+        description: "Мы изучаем альтернативные реальности, где все наоборот.",
+        id_company: 1,
+    },
+    {
+        id: 6,
+        name: "Группа по защите прав летающих картошек",
+        description: "Мы боремся за права картошки, которая хочет взлететь и увидеть мир.",
+        id_company: 1,
+    },
+    {
+        id: 7,
+        name: "Общество любителей странных шляп",
+        description: "Каждая шляпа имеет свою историю. Мы собираем их и рассказываем сказки.",
+        id_company: 1,
+    },
+];
+
+export const DS_GROUP_USERS = [
+    {
+        id: 1,
+        name: 'Кетчуп',
+        surname: 'Помидорчатый',
+        patronymic: 'Со-специями',
+        department: 1,
+        id_company: 1,
+        user_group_id: 0,
+    },
+    {
+        id: 2,
+        name: 'Майонез',
+        surname: 'Сливочный',
+        patronymic: 'Супер-легкий',
+        department: 1,
+        id_company: 1,
+        user_group_id: 0,
+    },
+    {
+        id: 3,
+        name: 'Гарнир',
+        surname: 'Овощной',
+        patronymic: 'Смешанный',
+        department: 1,
+        id_company: 1,
+        user_group_id: 7,
+    },
+    {
+        id: 4,
+        name: 'Паста',
+        surname: 'Макаронная',
+        patronymic: 'Сосисочная',
+        department: 1,
+        id_company: 1,
+        user_group_id: 7,
+    },
+    {
+        id: 5,
+        name: 'Томатный',
+        surname: 'Соусик',
+        patronymic: 'Легкий',
+        department: 1,
+        id_company: 1,
+        user_group_id: 7,
+    },
+    {
+        id: 6,
+        name: 'Чесночный',
+        surname: 'Волшебник',
+        patronymic: 'Зеленый',
+        department: 1,
+        id_company: 1,
+        user_group_id: 0,
+    },
+    {
+        id: 7,
+        name: 'Луковый',
+        surname: 'Мечтатель',
+        patronymic: 'Сладкий',
+        department: 1,
+        id_company: 1,
+        user_group_id: 3,
+    },
+    {
+        id: 8,
+        name: 'Перечный',
+        surname: 'Фантазер',
+        patronymic: 'Острый',
+        department: 1,
+        id_company: 1,
+        user_group_id: 3,
+    },
+    {
+        id: 9,
+        name: 'Сырный',
+        surname: 'Гуру',
+        patronymic: 'Деревенский',
+        department: 1,
+        id_company: 1,
+        user_group_id: 1,
+    },
+    {
+        id: 10,
+        name: 'Шпинатный',
+        surname: 'Зеленец',
+        patronymic: 'Витаминный',
+        department: 1,
+        id_company: 1,
+        user_group_id: 1,
+    },
+    {
+        id: 11,
+        name: 'Фруктовый',
+        surname: 'Пирожок',
+        patronymic: 'Сладкий',
+        department: 1,
+        id_company: 1,
+        user_group_id: 7,
+    },
+    {
+        id: 12,
+        name: 'Карамельный',
+        surname: 'Обманщик',
+        patronymic: 'Липкий',
+        department: 1,
+        id_company: 1,
+        user_group_id: 1,
+    },
+    {
+         id :13, 
+         name : "Пирожковый", 
+         surname : "Тестоед", 
+         patronymic : "Сдобный", 
+         department : 1, 
+         id_company : 1, 
+         user_group_id :7 
+     },
+     {
+         id :14, 
+         name : "Ванильный", 
+         surname : "Мороженчик", 
+         patronymic : "Холодный", 
+         department : 1, 
+         id_company : 1, 
+         user_group_id :0 
+     },
+     {
+         id :15, 
+         name : "Кокосовый", 
+         surname : "Нежный", 
+         patronymic : "Тропический", 
+         department : 1, 
+         id_company : 1, 
+         user_group_id :0 
+     },
+     {
+         id :16, 
+         name : "Мятный", 
+         surname : "Свежак", 
+         patronymic : "Зеленый", 
+         department : 1, 
+         id_company : 1, 
+         user_group_id :0 
+     },
+     {
+         id :17, 
+         name : "Шоколадный", 
+         surname : "Какаоед", 
+         patronymic : "Горький", 
+         department : 1, 
+         id_company : 1, 
+         user_group_id :2 
+     },
+     {
+         id :18, 
+         name :"Лимонный",  
+         surname :"Цитрусовый",  
+         patronymic :"Кислый",  
+         department :1,  
+         id_company :1,  
+         user_group_id :2  
+     },
+     {
+          id :19,  
+          name :"Ореховый",  
+          surname :"Хрустик",  
+          patronymic :"Мотоциклетный",  
+          department :1,  
+          id_company :1,  
+          user_group_id :2  
+      },
+      {
+          id :20,  
+          name :"Ягодный",  
+          surname :"Вкусняшка",  
+          patronymic :"Сочный",  
+          department :1,  
+          id_company :1,  
+          user_group_id :0  
+      }
+];

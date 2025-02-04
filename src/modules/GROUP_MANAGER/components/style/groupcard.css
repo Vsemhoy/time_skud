@@ -1,0 +1,109 @@
+.sk-grp-card-body {
+    
+}
+
+.sk-group-1col-body .ant-flex {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+.sk-group-1col-body .ant-typography {
+    width: 100%;
+    padding: 10px;
+}
+
+.ant-card {
+    transition: all 0.3s;
+    margin-bottom: 12px;
+    box-shadow: 0 5px 10px 0px #223c5025;
+    width: 100%;
+
+  
+}
+.sk-grp-card-head {
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 16px;
+    line-height: 1.5714285714285714;
+    list-style: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    font-weight: 600;
+}
+
+.sk-gruser-card {
+    display: grid;
+    grid-template-columns: 30px auto 100px 100px;
+    
+
+}
+.sk-group-card {
+
+}
+
+.sk-grp-card-head {
+    display: grid;
+    grid-template-columns: 30px auto 40px 40px 30px;
+}
+
+.ant-card:hover {
+    box-shadow: 0 5px 10px 0px #223c5050;
+}
+
+.sk-large-checkbox > input {
+    height: 44px;
+    padding: 12px;
+}
+
+.sk-group-card.opened .sk-card-cooxer-cooxed {
+    display: none;
+}
+
+.sk-group-card.cooxed .sk-card-cooxer-opened {
+    display: none;
+}
+.sk-group-card.cooxed .sk-grp-user-items-stack {
+    display: none;
+}
+.sk-grp-user-items-stack {
+    margin-top: 12px;
+    /* padding-bottom: 60px; */
+    /* background-color: #223c5025; */
+}
+.sk-card-cooxer {
+    cursor: pointer;
+}
+.ant-transfer {
+    display: grid;
+    grid-template-columns: auto 120px auto;
+}
+
+.ant-transfer-list {
+    width: 100% !important;
+}
+.ant-transfer-list-content-item {
+    background-color: white;
+    margin-bottom: 1px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.144);
+}
+.ant-transfer-list-header {
+    border-radius: 0px !important;
+    background-color: rgba(255, 255, 255, 0.733) !important;
+}
+
+
+
+.ant-transfer-list-header {
+    background-color: #f6f8f8;
+}
+.ant-transfer-list-body  {
+    background-color: #dfe3e6;
+}
+    .ant-transfer-list-content-item{
+       margin-inline: 0px 0 !important;
+    }
+
+.ant-transfer-operation > button:first-child:not([disabled]) {
+    background-color: rgba(255, 68, 0, 0.788);
+}
+.ant-transfer-operation > button:first-child:not([disabled]):hover {
+    background-color: orangered;
+}
