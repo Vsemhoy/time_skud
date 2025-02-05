@@ -21,6 +21,7 @@ import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
 import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
 import ProdCalManagerPage from './modules/PROD_CAL_MANAGER/ProdCalManagerPage';
 import GroupManagerPage from './modules/GROUP_MANAGER/GroupManagerPage';
+import EventRandomixer from './modules/EVENT_RANDOMIXER/EventRandomixer';
 
 
 const { Header, Content, Footer } = Layout;
@@ -167,6 +168,17 @@ function App() {
               >Заявки на смену графика</Link>
             </MenuItem>
 
+            <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('admin/groups')}}
+              >Группы пользоваателей</Link>
+            </MenuItem>
+
+            <MenuItem>
+              <Link 
+              onClick={()=>{ setLocation('superadmin/randomixer')}}
+              >RMXR</Link>
+            </MenuItem>
 
 
 
@@ -181,11 +193,7 @@ function App() {
 
 
 
-            <MenuItem>
-              <Link 
-              onClick={()=>{ setLocation('admin/groups')}}
-              >Группы пользоваателей</Link>
-            </MenuItem>
+
             
             {/* <MenuItem>
               <Link 
@@ -209,6 +217,7 @@ function App() {
             {location === 'admin/prodcals' && <ProdCalManagerPage userdata={userAct} />}
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
             {location === 'admin/groups' && <GroupManagerPage userdata={userAct} />}
+            {location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
 
           </div>
           ) : (
