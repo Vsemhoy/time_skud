@@ -7,6 +7,8 @@ import GroupUserCardItem from "./components/groupusercarditem";
 import "./components/style/groupcard.css";
 import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import GroupEditorModal from "./components/groupeditormodal";
+import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 
 
 
@@ -39,8 +41,13 @@ const GroupManagerPage = (props)=>{
     
 
     useEffect(()=>{
-        setBaseUserList(DS_GROUP_USERS);
-        setBaseGroupList(DS_SKUD_GROUPS);
+        if (PRODMODE){
+            setBaseUserList(DS_GROUP_USERS);
+            setBaseGroupList(DS_SKUD_GROUPS);
+        } else {
+            get_userList();
+            get_groupList();
+        }
 
     },[]);
 
@@ -112,6 +119,179 @@ const GroupManagerPage = (props)=>{
 
 
 
+
+  /** ------------------ FETCHES ---------------- */
+    /**
+     * Получение списка пользователей
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_userList = async (req, res) => {
+      try {
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/users_get', 
+            {
+                data: {},
+                _token: CSRF_TOKEN
+            });
+            setBaseUserList(response.data.data);
+            console.log('get_calendarList => ', response.data);
+      } catch (e) {
+          console.log(e)
+      } finally {
+          
+      }
+    }
+
+
+        /**
+     * Получение списка групп
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_groupList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get', 
+                  {
+                      data: {},
+                      _token: CSRF_TOKEN
+                  });
+                  setBaseGroupList(response.data.data);
+                  console.log('get_calendarList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+            }
+          }
+
+        /**
+    //  * Получение одного календаря
+    //  * @param {*} req 
+    //  * @param {*} res 
+    //  */
+    //     const get_groupItem = async (item_id, req, res ) => {
+    //         try {
+    //             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get/' + item_id, 
+    //                 {
+    //                     data: {},
+    //                     _token: CSRF_TOKEN
+    //                 });
+    //             console.log('departs', response);
+    //             setEditedItem(response.data);
+    //         } catch (e) {
+    //             console.log(e)
+    //         } finally {
+    //             setCallToOpen(true);
+    //         }
+    //     }
+
+
+    /**
+       * создание группы
+       * @param {*} req 
+       * @param {*} res 
+       */
+        const create_group = async (body, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups',
+                {
+                    data: body, 
+                    _token: CSRF_TOKEN
+                });
+            console.log('users', response);
+            // setBaseUserListData(response.data.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            get_groupList();
+        }
+    }
+
+    /**
+       *  Обновление группы
+       * @param {*} req 
+       * @param {*} res 
+       */
+        const update_group = async (body, req, res) => {
+            console.log('body',body);
+            try {
+                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/group/groups/' + body.id,
+                    {   
+                        data: body, 
+                        _token: CSRF_TOKEN
+                    }
+                );
+                console.log('users', response);
+                // setBaseUserListData(response.data.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                setBaseGroupList(prevList => 
+                    prevList.map(item => 
+                        item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                    )
+                );
+            }
+        }
+
+
+        /**
+       * Перелинковка юзеров с гурппами
+       * @param {*} req 
+       * @param {*} res 
+       */
+            const update_links = async (body, req, res) => {
+                console.log('body',body);
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/group/links/' + body.id,
+                        {   
+                            data: body, 
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    console.log('users', response);
+                    // setBaseUserListData(response.data.data);
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    // setBaseCalendarList(prevList => 
+                    //     prevList.map(item => 
+                    //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                    //     )
+                    // );
+                }
+            }
+
+    /**
+       * удаление группы
+       * @param {*} req 
+       * @param {*} res 
+       */
+    const delete_group = async (group_id, req, res) => {
+
+        try {
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/group/groups/' + group_id + '?_token=' + CSRF_TOKEN,
+                {   
+                    data: { "id" : group_id}, 
+                    _token: CSRF_TOKEN
+                }
+            );
+            console.log('response.data', response.data);
+            if (response.data.status === 0){
+                get_groupList();
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setBaseGroupList(baseGroupList.filter((item)=>{return item.id !== group_id}));
+        }
+    }
+
+  /** ------------------ FETCHES END ---------------- */
+
+
+
+
     const updateUserLinks = (group_id, added, removed) => {
         let newUsers = [];
         for (let i = 0; i < baseUserList.length; i++) {
@@ -128,6 +308,12 @@ const GroupManagerPage = (props)=>{
             }
             newUsers.push(user);   
         }
+        update_links(
+        {
+            group_id: group_id,
+            linked_users : added,
+            unlinked_users: removed,
+        });
         setBaseUserList(newUsers);
     }
 
@@ -149,13 +335,16 @@ const GroupManagerPage = (props)=>{
 
     const deleteGroup = (group_id) => {
         console.log('delete group', group_id);
+        delete_group(group_id);
     }
 
     const saveGroup = (group) => {
         if (group.id == null || group.id == 0){
             // create
+            create_group(group);
         } else {
             // update
+            update_group(group);
         }
         console.log(group);
     }
@@ -173,7 +362,7 @@ const GroupManagerPage = (props)=>{
     return (
         <div className={'sk-mw-1400 sk-p-12'}>
             <br />
-            <h2>Графики работ</h2>
+            <h2>Группировка пользователей</h2>
             <GroupPageToolbar
                 companies={companies}
                 userData={userData}

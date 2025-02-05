@@ -172,7 +172,7 @@ const GroupPageToolbar = (props) =>{
             </div>
         </div>
 
-        <div className={"sk-flex-gap"}>
+        <div className={"sk-flex-gap"} style={{width:"100%", paddingRight: 15}}>
             <Input 
                 placeholder="Поиск по названию или пользователю"
                 allowClear={true}
@@ -189,8 +189,9 @@ const GroupPageToolbar = (props) =>{
 
         <div className={"sk-flex-gap"}>
         <Button 
-            onClick={clickNew}
-        >Добавить новый</Button>
+            onClick={clickNew}>
+                Создать группу
+        </Button>
             </div>
 
         </div>

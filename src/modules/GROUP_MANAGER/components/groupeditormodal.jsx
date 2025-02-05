@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
 import dayjs from 'dayjs';
+import { PROD_AXIOS_INSTANCE } from '../../../API/API';
+import { CSRF_TOKEN } from '../../../CONFIG/config';
 
 const { TextArea } = Input;
 
@@ -10,6 +12,8 @@ const GroupEditorModal = (props) => {
   const [targetId, setTargetId] = useState(null);
   const [ctrKey, setCtrlKey] = useState(false);
   const [usedCompany, setUsedCompany] = useState(0);
+
+  const [editedItem, setEditedItem] = useState(null);
 
   useEffect(() => {
     setOpen(props.open);
@@ -25,6 +29,7 @@ const GroupEditorModal = (props) => {
           description: targetItem.description,
           id_company: targetItem.id_company
         });
+        get_groupItem();
         console.log('element', targetItem);
       } else {
         form.setFieldsValue({
@@ -32,6 +37,7 @@ const GroupEditorModal = (props) => {
           description: "",
           id_company: props.user_data.user.id_company
         });
+        setEditedItem(null);
       }
     }
   }, [props, form]);
@@ -54,6 +60,27 @@ const GroupEditorModal = (props) => {
 
   }, [props.user_data, open]);
   
+
+
+     /* Получение одной группы
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_groupItem = async (item_id, req, res ) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get/' + item_id, 
+                {
+                    data: {},
+                    _token: CSRF_TOKEN
+                });
+            console.log('departs', response);
+            setEditedItem(response.data.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
 
   const onCancel = () => {
     setOpen(false);
@@ -164,6 +191,28 @@ const GroupEditorModal = (props) => {
         ) : ""}
         
       </Form>
+      {editedItem ? (
+      <div className={'sk-modal-stat'}>
+          <table>
+            <tbody>
+              <tr>
+                <td>Создатель</td>
+                <td>{editedItem.surname} {editedItem.name} {editedItem.patronymic}</td>
+              </tr>
+              <tr>
+                <td>Дата создания</td>
+                <td>{editedItem.created_at}</td>
+              </tr>
+              <tr>
+                <td>Последнее обновление</td>
+                <td>{editedItem.updated_at}</td>
+              </tr>
+            </tbody>
+          </table>
+
+      </div>
+      ) : ""}
+
     </Modal>
   );
 };
