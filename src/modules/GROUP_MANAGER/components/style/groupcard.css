@@ -132,3 +132,9 @@
 .sk-group-card {
     transition: all 0.3s;
 }
+
+
+.sk-card-id-tag {
+    font-size: medium;
+    color: gray;
+}

@@ -208,7 +208,7 @@ function App() {
             {location === 'admin/schedules' && <SchedManagerPage userdata={userAct} />}
             {location === 'admin/prodcals' && <ProdCalManagerPage userdata={userAct} />}
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
-            {location === 'admin/groups' && <GroupManagerPage />}
+            {location === 'admin/groups' && <GroupManagerPage userdata={userAct} />}
 
           </div>
           ) : (

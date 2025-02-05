@@ -16,7 +16,6 @@ const GroupCardItem = (props)=>{
 
     useEffect(()=>{
         setUserList(props.base_users);
-        console.log('props.base_users', props.base_users)
     },[props.base_users]);
     
     useEffect(()=>{
@@ -107,7 +106,8 @@ const GroupCardItem = (props)=>{
 
 
 
-  const onOpenCooxer = () => {
+  const onOpenCooxer = (event) => {
+    if (event.target.closest('.ant-transfer')){ return; };
     console.log('open cooxer')
     if (!opened && props.on_open_cooxer){
         props.on_open_cooxer(props.data.id);
@@ -120,7 +120,7 @@ const GroupCardItem = (props)=>{
     console.log('open modal')
     event.preventDefault();
     if (props.on_open_editor){
-      props.on_open_editor(group_id);
+      props.on_open_editor(group_id, event);
     }
   }
 
@@ -130,15 +130,14 @@ const GroupCardItem = (props)=>{
   };
 
     return (
-        <Card className={"ant-card-small"} > 
+        <Card className={"ant-card-small"} 
+        onDoubleClick={onOpenCooxer}
+        > 
         <div className={`sk-group-card ${opened ? "opened" : "cooxed"}`}
-          onDoubleClick={onOpenCooxer}
         >
             <div className={'sk-grp-card-head'}>
             <div>
-                <Checkbox 
-                    className={'sk-large-checkbox'}
-                />
+                <span className={'sk-card-id-tag'}>{group_id}</span>
                     </div>
                     <div>
                         {name}
@@ -181,6 +180,8 @@ const GroupCardItem = (props)=>{
                     dataSource={mockData}
                     showSearch
                     filterOption={localFilter}
+                    showSelectAll={false}
+                    locale={{ itemUnit: 'Чел.', itemsUnit:'', searchPlaceholder: 'Поиск сотрудника', notFoundContent: <div>{'NF'}</div> }}
                     listStyle={{
                         
                         height: 500,
