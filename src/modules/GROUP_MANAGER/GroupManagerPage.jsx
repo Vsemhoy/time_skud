@@ -128,7 +128,7 @@ const GroupManagerPage = (props)=>{
      */
     const get_userList = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/users_get', 
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/users_get', 
             {
                 data: {},
                 _token: CSRF_TOKEN
@@ -150,7 +150,7 @@ const GroupManagerPage = (props)=>{
      */
         const get_groupList = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get', 
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups_get', 
                   {
                       data: {},
                       _token: CSRF_TOKEN
@@ -193,7 +193,7 @@ const GroupManagerPage = (props)=>{
        */
         const create_group = async (body, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups',
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups',
                 {
                     data: body, 
                     _token: CSRF_TOKEN
@@ -215,7 +215,7 @@ const GroupManagerPage = (props)=>{
         const update_group = async (body, req, res) => {
             console.log('body',body);
             try {
-                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/group/groups/' + body.id,
+                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/groups/' + body.id,
                     {   
                         data: body, 
                         _token: CSRF_TOKEN
@@ -243,7 +243,7 @@ const GroupManagerPage = (props)=>{
             const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/group/links/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/links/' + body.id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -270,7 +270,7 @@ const GroupManagerPage = (props)=>{
     const delete_group = async (group_id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/group/groups/' + group_id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/groups/' + group_id + '?_token=' + CSRF_TOKEN,
                 {   
                     data: { "id" : group_id}, 
                     _token: CSRF_TOKEN
@@ -370,7 +370,7 @@ const GroupManagerPage = (props)=>{
                 // schedTypes={scheduleTypes}
                 onAddNewClick={openBlankEditor}
             />
-            <br />
+            <br/>
 
             <div className={'sk-group-1col-body'}>
             <div>
