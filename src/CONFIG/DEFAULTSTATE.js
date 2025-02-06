@@ -1808,3 +1808,46 @@ export const DS_GROUP_USERS = [
           user_group_id :0  
       }
 ];
+
+export const DS_SCHEDULE_ENTITIES = [
+    {
+        id: 1,
+        type : 3,
+        name: 'Кетчуп',
+        surname: 'Помидорчатый',
+        patronymic: 'Со-специями',
+        description: null,
+        schedule_id : 2,
+        id_company :1,  
+    },
+    {
+        id: 337,
+        type : 2,
+        name: 'Группа выходного дня',
+        surname: null,
+        patronymic: null,
+        description: "Описание группы",
+        schedule_id : 2,
+        id_company :1,  
+    },
+    {
+        id: 2,
+        type : 3,
+        name: 'Кетчуп',
+        surname: 'Помидорчатый',
+        patronymic: 'Со-специями',
+        description: null,
+        schedule_id : 2,
+        id_company :1,  
+    },
+    {
+        id: 46,
+        type : 2,
+        name: 'Кетчуп',
+        surname: null,
+        patronymic: null,
+        description: "Описание группы",
+        schedule_id : 2,
+        id_company :1,  
+    }
+];

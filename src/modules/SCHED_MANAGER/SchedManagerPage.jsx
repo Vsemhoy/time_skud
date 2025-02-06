@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SchedToolbar from "./components/SchedToolbar";
-import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_LIST, DS_USER } from "../../CONFIG/DEFAULTSTATE";
+import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_ENTITIES, DS_SCHEDULE_LIST, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import SchedCardItem from "./components/SchedCardItem";
 import SchedEntityCard from "./components/SchedEntityCard";
 import './components/style/schedmanager.css';
@@ -25,6 +25,9 @@ const SchedManagerPage = (props) => {
         })),
     ]);
     const [baseScheduleList, setBaseScheduleList] = useState(PRODMODE ? DS_SCHEDULE_LIST : []);
+    const [baseProdCalendars, setBaseProdCalendars] = useState(PRODMODE ? DS_PROD_CALENDARS : []);
+    const [baseEntityList, setBaseEntityList] = useState([]);
+
     const [scheduleList, setScheduleList] = useState([]);
     const [scheduleTypes, setScheduleTypes] = useState([]);
 
@@ -56,10 +59,13 @@ const SchedManagerPage = (props) => {
     useEffect(() => {
         if (!PRODMODE) {
             // getScheduleList(); // Загружаем данные только если не в режиме продакшн
+            get_userList();
             get_schedule_types();
             get_schedules();
+            get_calendarList();
             
         } else {
+            setBaseEntityList(DS_SCHEDULE_ENTITIES);
             setScheduleTypes(DS_SCHED_TYPES);
             setBaseScheduleList(DS_SCHEDULE_LIST);
 
@@ -91,6 +97,51 @@ const SchedManagerPage = (props) => {
 
 
     /** ------------------ FETCHES ---------------- */
+
+    /**
+     * Получение списка пользователей
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_userList = async (req, res) => {
+      try {
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/users_get', 
+            {
+                data: {
+                    status: 0,
+                    deleted: 0,
+                },
+                _token: CSRF_TOKEN
+            });
+            setBaseEntityList(response.data.data);
+            console.log('get_calendarList => ', response.data);
+      } catch (e) {
+          console.log(e)
+      } finally {
+          
+      }
+    }
+
+        /**
+     * Получение списка календарей
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_calendarList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get', 
+                  {
+                      data: {},
+                      _token: CSRF_TOKEN
+                  });
+                  setBaseProdCalendars(response.data);
+                  console.log('get_calendarList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+            }
+          }
 
               /**
        * Получение списка пользователей
@@ -138,7 +189,7 @@ const SchedManagerPage = (props) => {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get?_token=' + CSRF_TOKEN);
                 console.log('users', response);
-                // setBaseUserListData(response.data.data);
+                // setBaseEntityListData(response.data.data);
             } catch (e) {
                 console.log(e)
             } finally {
@@ -161,7 +212,7 @@ const SchedManagerPage = (props) => {
                 },
             );
             console.log('users', response);
-            // setBaseUserListData(response.data.data);
+            // setBaseEntityListData(response.data.data);
         } catch (e) {
             console.log(e)
         } finally {
@@ -184,7 +235,7 @@ const SchedManagerPage = (props) => {
                     }
                 );
                 console.log('users', response);
-                // setBaseUserListData(response.data.data);
+                // setBaseEntityListData(response.data.data);
             } catch (e) {
                 console.log(e)
             } finally {
@@ -226,6 +277,7 @@ const SchedManagerPage = (props) => {
 
     
     const openUserModal = (id)=>{
+        console.log('id', id);
         setEditedItem(baseScheduleList.find((el)=> el.id === id));
         setEditedId(id);
         setUserManagerModalOpen(true);
@@ -267,9 +319,9 @@ const SchedManagerPage = (props) => {
                 end_time: dayjs().unix(),
                 target_time: (60*60*8),
                 target_unit: 1,
-                lunch_start: 53600,
-                lunch_end: 55000,
-                lunch_time: (1*60*45),
+                lunch_start: (60*60*13),
+                lunch_end: (60*60*15),
+                lunch_time: (60*45),
                 schedule: [],
                 next_id: null,
                 deleted: 0,
@@ -288,6 +340,9 @@ const SchedManagerPage = (props) => {
         } else {
             create_schedule(item);
         }
+        setEditedId(null);
+        setEditedItem(null);
+        setEditorModalOpen(false);
     }
 
     return (
@@ -323,7 +378,7 @@ const SchedManagerPage = (props) => {
                 target_id={editedId}
                 data={editedIdtem}
                 userData={userdata}
-                prodCalendars={DS_PROD_CALENDARS}
+                prodCalendars={baseProdCalendars}
                 schedTypes={scheduleTypes}
                 />
 
@@ -331,7 +386,7 @@ const SchedManagerPage = (props) => {
                 open={userManagerModalOpen}
                 on_cancel={cancelUsersModal}
                 target_id={editedId}
-                data={editedIdtem}
+                data={baseEntityList}
                 userData={userdata}
                 schedTypes={scheduleTypes}
                 />

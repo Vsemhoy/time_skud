@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Alert, Button, Collapse, DatePicker, Flex, Form, Input, InputNumber, Modal, Select, Switch, TimePicker } from "antd";
+import { Alert, Button, Collapse, DatePicker, Empty, Flex, Form, Input, InputNumber, Modal, Select, Switch, TimePicker } from "antd";
 import { Space, Typography } from 'antd';
 
 import './style/schedmodaleditor.css';
@@ -8,7 +8,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS, SKUD_SCHED_HISTORY } from "../../../CONFIG/DEFAULTSTATE";
 import { globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import TextArea from "antd/es/input/TextArea";
-import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined } from "@ant-design/icons";
+import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined, UnderlineOutlined } from "@ant-design/icons";
 import SchedCalendar from "./SchedCalendar";
 import Panel from "antd/es/splitter/Panel";
 import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
@@ -62,12 +62,12 @@ const SchedModalEditor = (props)=>{
         console.log('props.data', props.data)
         setIdSkudScheduleType(props.data ? props.data.skud_schedule_type_id : 1);
         
-        
+        let COM_ID = props.data && props.id_company ? props.data.id_company : props.userData.companies.reverse()[0].id;
+        setIdCompany(COM_ID);
 
         setCreatorId(props.data ? props.data.creator_id : props.userData.id);
         setName(props.data ? props.data.name : "График " + dayjs().year());
         setDescription(props.data ? props.data.description : "Опишите график тут на всякий...");
-        setIdCompany(props.id_company ? props.data.id_company : props.userData.companies[0].id);
         setCompanyName(props.company_name ? props.data.company_name : props.userData.companies[0].name);
         setCompanyColor(props.company_color ? props.data.company_color : props.userData.companies[0].color);
         
@@ -83,21 +83,22 @@ const SchedModalEditor = (props)=>{
 
         setNextId(props.data ? props.data.next_id : null);
         setDeleted(props.data ? props.data.deleted : 0);
-        setIdSkudProdCalendar(props.data ? props.data.skud_prod_calendar_id : 0);
+        setIdSkudProdCalendar(props.data ? props.data.skud_prod_calendar_id : props.prodCalendars[0] ? props.prodCalendars[0].id : 0);
         setCreatorId(props.data ? props.data.creator_id : props.userData.id);
         setCreatedAt(props.data ? props.data.creator_id : dayjs().unix());
         setSchedule(props.data ? props.data.schedule : []);
 
-        setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === idCompany));
+        setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === COM_ID));
 
         console.log(props.schedTypes);
         setUsedSchedType(props.schedTypes.find((el)=> el.value === (props.data ? parseInt(props.data.skud_schedule_type_id) : 1)));
 
-    }, [targetId]);
+    }, [targetId, props]);
 
 
 
-    const saveForm = ()=>{
+    const saveForm = () =>{
+      console.log(idSkudProdCalendar, "Hl");
       let data = {
 
         id_company: idCompany,
@@ -153,7 +154,7 @@ const SchedModalEditor = (props)=>{
 
 
     const onChangeTargetTime = (value) => {
-      console.log(value);
+      setTargetTime(value * 60 * 60);
     }
     const ChangeDeleted = (event)=> {
       console.log(event);
@@ -161,6 +162,7 @@ const SchedModalEditor = (props)=>{
     }
     const ChangeCompany = (event) => {
       setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === event));
+      setIdSkudProdCalendar(props.prodCalendars.filter((el)=>el.id_company === event).length ? props.prodCalendars.filter((el)=>el.id_company === event)[0].id : null);
       console.log(event);
       setIdCompany(event);
     }
@@ -178,14 +180,15 @@ const SchedModalEditor = (props)=>{
     const ChangeUnitMeasure = (event) => {
       setTargetUnit(event);
     }
-    const ChangeLunchStart = (event) => {
-      setLunchStart(event);
+    const ChangeLunchStart = (value) => {
+        setLunchStart(globalTimeToDaySeconds(value));
+      }
+      
+    const ChangeLunchEnd = (value) => {
+      setEndTime(globalTimeToDaySeconds(value));
     }
-    const ChangeLunchEnd = (event) => {
-      setLunchEnd(event);
-    }
-    const ChangeLunchDuration = (event) => {
-      setLunchTime(event);
+    const ChangeLunchDuration = (value) => {
+      setLunchTime(value * 60);
     }
 
 
@@ -237,7 +240,7 @@ const SchedModalEditor = (props)=>{
 
     return (
         <Modal
-        title={targetId == null ? "Новый график" :  "Редактирование " + targetId}
+        title={targetId == null ? "Новый график" :  "Редактирование графика " + targetId}
         centered
         open={open}
         onOk={saveForm}
@@ -282,174 +285,18 @@ const SchedModalEditor = (props)=>{
           
           <span className="sk-microspacer"></span>
           <span className="sk-microspacer"></span>
-        <div className={'sk-flex-sides  sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-          <FontColorsOutlined /> Название графика
-          </div>
-          <div className={'sk-w-70'}>
-          <Input
-            value={name}
-            onChange={ChangeName}
-            maxLength={120}
-            disabled={deleted}
-          />
-          </div>
-        </div>
 
+          <div className={"sk-form-group"}>
+        {props.userData.companies.length > 1 ? (
+
+          
         <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-            <FileTextOutlined /> Описание графика
+          <div className={'sk-w-40'}>
+          <RadarChartOutlined /> Подразделение, филиал, компания
           </div>
-          <div className={'sk-w-70'}>
-            <TextArea value={description}
-              maxLength={250}
-              disabled={deleted}
-              onChange={ChangeDescription}
-              />
-          </div>
-        </div>
-
-
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-          <CalendarOutlined /> Производственный календарь
-          </div>
-          <div className={'sk-w-70'}>
-            <Select
-              options={prodCalendars.map((cal) => ({
-                key: cal.id,
-                value: Number(cal.id),
-                label: cal.year + " - " + cal.company_name + "  (" + cal.id + ")",
-              }))} 
-              disabled={deleted}
-            />
-          </div>
-        </div>
-
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-          <DoubleRightOutlined /> Время начала действия графика
-          </div>
-          <div className={'sk-w-70'}>
-            <DatePicker
-              value={dayjs.unix(startTime)}
-              onChange={changeStartTime}
-              disabled={deleted}
-            />
-          </div>
-        </div>
-
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-            <DoubleLeftOutlined /> Время прекращения действия графика
-          </div>
-          <div className={'sk-w-70'}>
-            <DatePicker
-              value={dayjs.unix(endTime)}
-              onChange={changeEndTime}
-              disabled={deleted}
-            />
-          </div>
-        </div>
-
-        { idSkudScheduleType === 1 ? (
-          <div className={'sk-flex-sides sk-flex-form-row'}>
-            <div className={'sk-w-30'}>
-            <ClockCircleOutlined /> Количество рабочих <strong>часов</strong> в учетную единицу времени. Для указания минут, используйте десятичные дроби.
-            </div>
-            <div className={'sk-w-70 sk-flex-sides'}>
-              <div className={'sk-flex '}>
-                <div className="sk-w-100" >
-
-                    <InputNumber
-                        className="sk-w-100"
-                      style={{
-                        width: 200,
-                      }}
-                      defaultValue="1"
-                      min="0.1"
-                      max="160"
-                      step="0.1"
-                      onChange={onChangeTargetTime}
-                      disabled={deleted}
-                    />
-                </div>
-              </div>
-
-              <div style={{textAlign: 'right'}}>
-                Учётная единица измерения рабочего времени
-              </div>
-              <div>
-                <Select
-                className="sk-w-100"
-                width={150}
-                options={DS_SCHED_UNITS}
-                disabled={deleted}
-                />
-              </div>
-            </div>
-          </div>
-        ) : ""}     
-
-        { idSkudScheduleType === 1 ? (
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-          <DoubleRightOutlined /> Время начала обеденного периода
-          </div>
-          <div className={'sk-w-70'}>
-          <TimePicker type={'time'} 
-            showSecond={false}
-          onChange={(value) => console.log(value)}
-          disabled={deleted}
-          />
-          </div>
-        </div>
-        ) : ""} 
-
-      { idSkudScheduleType === 1 ? (
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-          <DoubleLeftOutlined/> Время окончания обеденного периода
-          </div>
-          <div className={'sk-w-70'}>
-          <TimePicker type={'time'} 
-            showSecond={false}
-            onChange={(value) => console.log(value)}
-            disabled={deleted}
-           />
-          </div>
-        </div>
-      ) : ""} 
-
-      { idSkudScheduleType === 1 ? (
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-            <ClockCircleOutlined/> Максимальная продолжительность обеда в <strong>минутах</strong>.
-          </div>
-          <div className={'sk-w-70'}>
-          <InputNumber
-                      className="sk-w-100"
-
-                    defaultValue="1"
-                    min="1"
-                    max="180"
-                    step="1"
-                    onChange={onChangeTargetTime}
-                    disabled={deleted}
-                  />
-          </div>
-        </div>
-      ) : ""} 
-
-          {props.userData.companies.length > 1 ? (
-
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
-          <RadarChartOutlined /> Целевое подразделение, компания
-          </div>
-          <div className={'sk-w-70'}>
+          <div className={'sk-w-60'}>
             <Select 
-                  options={props.userData.companies.map((el)=>(
+                  options={props.userData.companies.reverse().map((el)=>(
                     {
                       key: el.id,
                       value: el.id,
@@ -463,15 +310,192 @@ const SchedModalEditor = (props)=>{
               />
           </div>
         </div>
-                ) : ''}
+        ) : ''}
+
+
+        <div className={'sk-flex-sides  sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <FontColorsOutlined /> Название графика
+          </div>
+          <div className={'sk-w-60'}>
+          <Input
+            value={name}
+            onChange={ChangeName}
+            maxLength={120}
+            disabled={deleted}
+          />
+          </div>
+        </div>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+            <FileTextOutlined /> Описание графика
+          </div>
+          <div className={'sk-w-60'}>
+            <TextArea value={description}
+              maxLength={250}
+              disabled={deleted}
+              onChange={ChangeDescription}
+              />
+          </div>
+        </div>
+
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <CalendarOutlined /> Производственный календарь
+          </div>
+          <div className={'sk-w-60'}>
+            <Select
+              value={idSkudProdCalendar}
+              options={prodCalendars.map((cal) => ({
+                key: cal.id,
+                value: Number(cal.id),
+                label: cal.year + " - " + cal.company_name + "  (" + cal.id + ")",
+              }))} 
+              onChange={(val)=>{setIdSkudProdCalendar(val)}}
+              disabled={deleted}
+            />
+          </div>
+        </div>
+
+        </div>
+          
+        <div className={"sk-form-group"}>
+
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <DoubleRightOutlined /> Время начала действия графика
+          </div>
+          <div className={'sk-w-60'}>
+            <DatePicker
+              value={dayjs.unix(startTime)}
+              onChange={changeStartTime}
+              disabled={deleted}
+            />
+          </div>
+        </div>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+            <DoubleLeftOutlined /> Время прекращения действия графика
+          </div>
+          <div className={'sk-w-60'}>
+            <DatePicker
+              value={dayjs.unix(endTime)}
+              onChange={changeEndTime}
+              disabled={deleted}
+            />
+          </div>
+        </div>
+
+        </div>
+
+
+        { idSkudScheduleType === 1 ? (
+          <div className={"sk-form-group"}>
+
+          <div className={'sk-flex-sides sk-flex-form-row'}>
+            <div className={'sk-w-40'}>
+            <ClockCircleOutlined /> Количество рабочих <strong>часов</strong> в учетную единицу времени. Для указания минут, используйте десятичные дроби.
+            </div>
+
+                <div className="sk-w-60" >
+
+                    <InputNumber
+                      defaultValue="1"
+                      min="0.1"
+                      max="160"
+                      step="0.1"
+                      onChange={onChangeTargetTime}
+                      disabled={deleted}
+                      value={targetTime / 60 / 60}
+                    />
+                </div>
+              </div>
+                      
+              <div className={'sk-flex-sides sk-flex-form-row'}>
+              <div className={'sk-w-40'}>
+              <UnderlineOutlined /> Учётная единица измерения рабочего времени
+              </div>
+              <div className="sk-w-60" >
+                <Select
+                className="sk-w-100"
+                width={150}
+                onChange={(val)=>{setTargetUnit(val)}}
+                options={DS_SCHED_UNITS}
+                disabled={deleted}
+                value={targetUnit}
+                />
+              </div>
+     
+          </div>
+          </div>
+                      ) : ""}
+        
+
+          { idSkudScheduleType === 1 ? (
+             <div className={"sk-form-group"}>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <DoubleRightOutlined /> Время начала обеденного периода
+          </div>
+          <div className={'sk-w-60'}>
+          <TimePicker type={'time'} 
+            showSecond={false}
+            onChange={ChangeLunchStart}
+            disabled={deleted}
+            value={secondsValueToGlobalTime(lunchStart)}
+          />
+          </div>
+        </div>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <DoubleLeftOutlined/> Время окончания обеденного периода
+          </div>
+          <div className={'sk-w-60'}>
+          <TimePicker 
+            type={'time'} 
+            showSecond={false}
+            onChange={ChangeLunchEnd}
+            disabled={deleted}
+            value={secondsValueToGlobalTime(lunchEnd)}
+           />
+          </div>
+        </div>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+            <ClockCircleOutlined/> Максимальная продолжительность обеда в <strong>минутах</strong>.
+          </div>
+          <div className={'sk-w-60'}>
+          <InputNumber
+                      className="sk-w-100"
+                    value={lunchTime / 60}
+                    defaultValue="45"
+                    min="1"
+                    max="180"
+                    step="1"
+                    onChange={ChangeLunchDuration}
+                    disabled={deleted}
+                  />
+          </div>
+        </div>
+        </div>
+      ) : ""} 
+
+
 
 
 
         <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
+          <div className={'sk-w-40'}>
             { deleted ? (<CheckCircleOutlined />) : (<DeleteOutlined />)} График актуален, действует
           </div>
-          <div className={'sk-w-70'}>
+          <div className={'sk-w-60'}>
             <Switch 
               checked={deleted ? false : true}
               checkedChildren="АКТИВЕН" unCheckedChildren="АРХИВИРОВАН" defaultChecked
@@ -481,10 +505,10 @@ const SchedModalEditor = (props)=>{
         </div>
 
         {/* <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-30'}>
+          <div className={'sk-w-40'}>
             Hello
           </div>
-          <div className={'sk-w-70'}>
+          <div className={'sk-w-60'}>
           <TimePicker type={'time'} 
             showSecond={false}
           onChange={(value) => console.log(value)} />
@@ -642,7 +666,7 @@ const Scheditor_one = (props) => {
             console.log('me: ', response);
             // setOrganizations(organizations_response.data.org_list)
             // setTotal(organizations_response.data.total_count)
-            setHistory(response.data);
+            setHistory(response.data.data);
         } catch (e) {
             console.log(e)
         } finally {
@@ -676,8 +700,8 @@ const Scheditor_one = (props) => {
       <div className={'ant-table-container'}>
               <div className={'ant-table-content'}>
         
-
-      <table className={'sk-table-table'}>
+      {table.length ? (
+        <table className={'sk-table-table'}>
         <thead className={'ant-table-thead'}>
           <tr>
             <th></th>
@@ -699,6 +723,9 @@ const Scheditor_one = (props) => {
           ))}
         </tbody>
       </table>
+      ) : (
+      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
+
 
       </div>
       </div>
@@ -713,7 +740,7 @@ const Scheditor_one = (props) => {
         <br/>
     <div className={'sk-flex-sides'}>
         <div className={'sk-w-33'} style={{paddingLeft: 12}}>
-          <Form.Item label="Начало действия установленного времени" name="layout">
+          <Form.Item label="Дата активации интервала" name="layout">
               <DatePicker
                 type="date"
                 disabled={disabled}

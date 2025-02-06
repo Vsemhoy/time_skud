@@ -43,3 +43,16 @@
     background-color: #1677ff49;
     font-weight: 600;
 }
+
+.sk-form-group {
+    border: #b7b7b7 1px solid;
+    margin-bottom: 12px;
+    border-radius: 9px;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.sk-collaptor .ant-collapse-content {
+    min-height: 150px;
+    background: #d4ddea;
+}
