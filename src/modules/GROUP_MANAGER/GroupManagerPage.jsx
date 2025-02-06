@@ -130,7 +130,10 @@ const GroupManagerPage = (props)=>{
       try {
           let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/users_get', 
             {
-                data: {},
+                data: {
+                    status: 0,
+                    deleted: 0,
+                },
                 _token: CSRF_TOKEN
             });
             setBaseUserList(response.data.data);
