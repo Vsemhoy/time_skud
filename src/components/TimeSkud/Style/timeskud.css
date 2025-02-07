@@ -16,6 +16,11 @@
     display: flex;
     grid-gap: 12px;
 }
+.sk-flex-space {
+    display: flex;
+    grid-gap: 12px;
+    justify-content: space-between;
+}
 
 .sk-w-33 {
     width: 33%;

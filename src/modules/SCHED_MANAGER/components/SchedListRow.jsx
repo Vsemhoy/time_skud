@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './style/schedlistrow.css';
-import { Button, Flex } from "antd";
+import { Button, Flex, Tag } from "antd";
 import { BorderlessTableOutlined, BranchesOutlined, ClusterOutlined, CopyOutlined, EditOutlined, HistoryOutlined, InboxOutlined, StarOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { Space, Typography } from 'antd';
 import dayjs from "dayjs";
@@ -99,9 +99,25 @@ const SchedListRow = (props)=>{
         }
     }
 
+    const handleDoubleClick = (event) => {
+        if (event.ctrlKey){
+            if (props.onOpenUserManager)
+                {
+                    props.onOpenUserManager(itemId);
+                }
+        } else {
+            if (props.onOpenEditorModal)
+                {
+                    props.onOpenEditorModal(itemId);
+                }
+        }
+    }
+
 
     return (
-        <div className={'sk-schedule-list-row'}>
+        <div className={'sk-schedule-list-row'}
+            onDoubleClick={handleDoubleClick}
+        >
             <div className="sk-row, sk-first-row">
                 <div>
                     <div><Sched_type_icon>{itemData.skud_schedule_type_id}</Sched_type_icon></div>
@@ -145,13 +161,15 @@ const SchedListRow = (props)=>{
                 </div>
             </div>
             <div className="sk-row, sk-second-row">
-                <div>
-                    2025
+                <div className={"sk-flex"} style={{paddingLeft: 12}}>
+                    
+                    <span><Tag color={itemData.company_color} >{itemData.company_name}</Tag></span>
+                    <span><Tag color="blue">{ dayjs.unix(itemData.start_time).format('YYYY') }</Tag></span>
                 </div>
                 <div>
                     <Text type="secondary" className={'sk-flex'}>
-                        <div title={'пользователей'}>17 <UserOutlined /></div>
-                        <div title={'групп'}>3 <InboxOutlined /></div>
+                        <div title={'пользователей'}>{props.group_count} <UserOutlined /></div>
+                        <div title={'групп'}>{props.user_count} <InboxOutlined /></div>
                     </Text>
                 </div>
                 <div>

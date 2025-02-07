@@ -1,4 +1,4 @@
-import { Button, DatePicker, Select } from "antd";
+import { Button, DatePicker, Input, Select } from "antd";
 import React, { useState, useEffect, use } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DS_SCHED_TYPES, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
@@ -16,7 +16,8 @@ const SchedToolbar = (props) =>{
     const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
     const [usedType, setUsedType] = useState(null);
 
-
+    const [filterText, setFiltertext] = useState(null);
+    const [filterDateInterval, setFilterDateInterval] = useState([dayjs().startOf('year'), dayjs().endOf('year')]);
 
 
 
@@ -107,14 +108,29 @@ const SchedToolbar = (props) =>{
 
             ) : ""}
             <div>
-                
+                <DatePicker.RangePicker 
+                    value={filterDateInterval}
+                    onChange={(value)=>{setFilterDateInterval(value)}}
+                />
             </div>
         </div>
+
+
+        <div className={"sk-flex-gap"}>
+
+            <Input
+                placeholder={'Поиск по названию или имени пользователя/группы в графике'}
+                allowClear={true}
+                value={filterText}
+                onChange={(event)=> {setFiltertext(event.target.value)}}
+            />
+        </div>
+
 
         <div className={"sk-flex-gap"}>
         <Button 
             onClick={clickNew}
-        >Добавить новый</Button>
+        >Создать график</Button>
             </div>
 
         </div>

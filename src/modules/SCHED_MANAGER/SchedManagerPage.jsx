@@ -59,7 +59,7 @@ const SchedManagerPage = (props) => {
     useEffect(() => {
         if (!PRODMODE) {
             // getScheduleList(); // Загружаем данные только если не в режиме продакшн
-            get_userList();
+            get_entityList();
             get_schedule_types();
             get_schedules();
             get_calendarList();
@@ -99,13 +99,13 @@ const SchedManagerPage = (props) => {
     /** ------------------ FETCHES ---------------- */
 
     /**
-     * Получение списка пользователей
+     * Получение сущностей
      * @param {*} req 
      * @param {*} res 
      */
-    const get_userList = async (req, res) => {
+    const get_entityList = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/users_get', 
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/entities_get', 
             {
                 data: {
                     status: 0,
@@ -144,7 +144,7 @@ const SchedManagerPage = (props) => {
           }
 
               /**
-       * Получение списка пользователей
+       * Получение типов графиков
        * @param {*} req 
        * @param {*} res 
        */
@@ -161,7 +161,7 @@ const SchedManagerPage = (props) => {
             }
 
         /**
-         * Получение списка отделов
+         * Получение графиков
          * @param {*} req 
          * @param {*} res 
          */
@@ -307,7 +307,6 @@ const SchedManagerPage = (props) => {
         setEditedId(null);
         setEditedItem(
             {
-
                 created_at: dayjs().unix(),
                 id_company: userdata.user.id_company,
                 // company_name: "Arstel",
@@ -328,7 +327,6 @@ const SchedManagerPage = (props) => {
                 skud_prod_calendar_id: 0,
             }
         );
-
         setEditorModalOpen(true);
     }
 
@@ -343,6 +341,55 @@ const SchedManagerPage = (props) => {
         setEditedId(null);
         setEditedItem(null);
         setEditorModalOpen(false);
+    }
+
+    const saveLinks = (data) => {
+        console.log("set",data);
+
+        let entities = JSON.parse(JSON.stringify( baseEntityList ));
+        
+        let sched_id = data[0];
+        let toUpdate = data[1];
+        let toDelete = data[2];
+
+        for (let i = 0; i < entities.length; i++) {
+            const element = entities[i];
+            if (element.type === 3){
+                for (const item of toUpdate) {
+                    if (item.type === 3 && item.id === element.id){
+                        entities[i].schedule_id = sched_id;
+                        console.log("added item id " + element.id + " to " + sched_id);
+                        break;
+                    }
+                }
+                for (const item of toDelete) {
+                    if (item.type === 3 && item.id === element.id){
+                        entities[i].schedule_id = 0;
+                        console.log("rem item id " + element.id + " to " + sched_id);
+                        break;
+                    }
+                }
+            }
+            if (element.type === 2){
+                for (const item of toUpdate) {
+                    if (item.type === 2 && item.id === element.id){
+                        entities[i].schedule_id = sched_id;
+                        console.log("added item id " + element.id + " to " + sched_id);
+                        break;
+                    }
+                }
+                for (const item of toDelete) {
+                    if (item.type === 2 && item.id === element.id){
+                        entities[i].schedule_id = 0;
+                        console.log("re item id " + element.id + " to " + sched_id);
+                        break;
+                    }
+                }
+            }
+        }
+        console.log(entities);
+        setBaseEntityList(entities);
+        setUserManagerModalOpen(false);
     }
 
     return (
@@ -364,12 +411,12 @@ const SchedManagerPage = (props) => {
                         dataSchedules={scheduleList}
                         onOpenEditorModal={openEditorModal}
                         onOpenUserManager={openUserModal}
+                        entityList={baseEntityList}
                     />
                 </div>
 
             </div>
 
-            <div>modal</div>
 
             <SchedModalEditor
                 open={editorModalOpen}
@@ -384,8 +431,10 @@ const SchedManagerPage = (props) => {
 
             <SchedModalUsers
                 open={userManagerModalOpen}
+                on_save={saveLinks}
                 on_cancel={cancelUsersModal}
                 target_id={editedId}
+                group_data={editedIdtem}
                 data={baseEntityList}
                 userData={userdata}
                 schedTypes={scheduleTypes}

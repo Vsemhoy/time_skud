@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Flex, Modal, Transfer } from "antd";
+import { Badge, Button, Empty, Flex, Modal, Tag, Transfer } from "antd";
 import { Space, Typography } from 'antd';
 
 import './style/schedmodalusers.css';
@@ -21,29 +21,30 @@ const SchedModalUsers = (props)=>{
       const [name, setName] = useState('New item');
       const [EntityList, setEntityList] = useState([]);
       const [userCount, setUserCount] = useState(0);
-  
-  
-      useEffect(()=>{
-          setEntityList(props.data);
-      },[props.data]);
-      
-      // useEffect(()=>{
-      //   console.log(props.data);
-      //   if (props.data != null){
 
-      //     setName(props.data.name);
-      //   }
-      // },[props.data]);
+      const [dataToUpdate, setDataToupdate] = useState([]);
+  
   
       useEffect(()=>{
-        setOpen(props.opened);
-       },[props.opened]);
+        if (props.open){
+          setTargetId(props.target_id);
+          setOpen(props.open);
+          setEntityList(props.data);
+        }
+      },[props.data, props.open, props.target_id]);
+      
+
+  
+      // useEffect(()=>{
+      //   setOpen(props.open);
+      //  },[props.open]);
   
       useEffect(()=>{
-        console.log(props);
+        console.log(targetId, "TARGET_ID")
+        console.log("pre-getmock" , EntityList);
         getMock(); 
   
-        }, [EntityList]);
+        }, [EntityList, targetId]);
   
       const [mockData, setMockData] = useState([]);
       const [targetKeys, setTargetKeys] = useState([]);
@@ -57,20 +58,23 @@ const SchedModalUsers = (props)=>{
   
       for (let i = 0; i < EntityList.length; i++) {
           const element = EntityList[i];
+          if (element.id_company !== props.group_data.id_company){ continue;}
           let mockup = {};
-          let key = `mocky_${element.id}`;
-          if (element.user_group_id === targetId){
+          let key = element.type === 3 ? `user_${element.id}` : `group_${element.id}` ;
+          if (element.schedule_id === props.target_id){
               mockup.chosen = true;
-              mockup.title = ShortName(element.surname, element.name, element.patronymic);
-              mockup.description = element.surname + " " + element.name + " " + element.patronymic;
+              mockup.title = element.type === 3 ? ShortName(element.surname, element.name, element.patronymic) : element.name;
+              mockup.description = element.type === 3 ? (element.surname + " " + element.name + " " + element.patronymic) : element.name;
               mockup.key = key;
+              mockup.type = element.type;
               newMockData.push(mockup);
               newTargetKeys.push(key);
               userco++;
-            } else if (element.user_group_id === 0){
+            } else if (element.schedule_id === 0){
               mockup.chosen = false;
-              mockup.title =  ShortName(element.surname, element.name, element.patronymic);
-              mockup.description = element.surname + " " + element.name + " " + element.patronymic;
+              mockup.type = element.type;
+              mockup.title = element.type === 3 ? ShortName(element.surname, element.name, element.patronymic) : element.name;
+              mockup.description = element.type === 3 ? (element.surname + " " + element.name + " " + element.patronymic) : element.name;
               mockup.key = key;
               newMockData.push(mockup);
               // userco++;
@@ -99,9 +103,9 @@ const SchedModalUsers = (props)=>{
     };
 
     const onSave = ()=>{
-      setOpen(false);
+      console.log('HELLO WOLF');
       if (props.on_save){
-        props.on_save();
+        props.on_save(dataToUpdate);
       };
     };
 
@@ -121,7 +125,7 @@ const SchedModalUsers = (props)=>{
 
 
     const handleChange = (newTargetKeys, direction, moveKeys) => {
-      const addedKeys = direction === 'right' ? moveKeys : [];
+      const addedKeys = direction === 'right' ? moveKeys  : [];
       const removedKeys = direction === 'left' ? moveKeys : [];
     
       console.log('Только что привязанные:', addedKeys);
@@ -129,15 +133,26 @@ const SchedModalUsers = (props)=>{
     
       // Здесь можно обновить состояние, если нужно
       setTargetKeys(newTargetKeys);
-      if (props.on_link_update){
-        props.on_link_update(targetId,
+    
+        setDataToupdate([targetId,
            addedKeys.map((item)=>{
-          return parseInt(item.replace('mocky_', ''));
+            console.log(item);
+            if (item.includes('group')){
+              return {type: 2, id: parseInt(item.replace('group_', ''))};
+            } else if (item.includes('user'))
+            {
+              return {type: 3, id: parseInt(item.replace('user_', ''))};
+            }
         }), 
         removedKeys.map((item)=>{
-          return parseInt(item.replace('mocky_', ''));
-        }));
-      }
+          if (item.includes('group')){
+            return {type: 2, id: parseInt(item.replace('group_', ''))};
+          } else if (item.includes('user'))
+          {
+            return {type: 3, id: parseInt(item.replace('user_', ''))};
+          }
+        })]);
+      
     };
 
     const localFilter = (inputValue, option) => {
@@ -159,26 +174,26 @@ const SchedModalUsers = (props)=>{
       >
         <div>
         <Transfer
-                    dataSource={mockData}
-                    showSearch
-                    filterOption={localFilter}
-                    showSelectAll={false}
-                    locale={{ itemUnit: 'Чел.', itemsUnit:'', searchPlaceholder: 'Поиск сотрудника', notFoundContent: <div>{'NF'}</div> }}
-                    listStyle={{
-                        
-                        height: 500,
-                    }}
-                    operations={[ 'Добавить', 'Удалить']}
-                    titles={['Пользователи без группы','Пользователи в группе']}
-                    targetKeys={targetKeys}
-                    onChange={handleChange}
-                    render={(item) => (
-                      <span title={item.description}>
-                        {item.title}
-                      </span>
-                    )}
-                    
-                    />
+          dataSource={mockData}
+          showSearch
+          filterOption={localFilter}
+          showSelectAll={false}
+          locale={{ itemUnit: 'ед.', itemsUnit:'', searchPlaceholder: 'Поиск сущности', notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
+          listStyle={{
+              
+              height: 500,
+          }}
+          operations={[ 'Добавить', 'Удалить']}
+          titles={['Сотрудники и группы без графика','Сущности с графиком']}
+          targetKeys={targetKeys}
+          onChange={handleChange}
+          render={(item) => (
+            <span className={'sk-flex-space'} title={item.description}>
+              {item.title} {item.type === 3 ? (<Tag color="volcano">Group</Tag>) : (<Tag color="cyan">USER</Tag>)}
+            </span>
+          )}
+          
+          />
         </div>
       </Modal>
     )

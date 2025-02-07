@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Tag, Transfer } from "antd";
+import { Button, Card, Checkbox, Empty, Tag, Transfer } from "antd";
 import React, { useEffect, useState } from "react";
 import "./style/groupcard.css";
 import { DownOutlined, EditOutlined, UpOutlined } from "@ant-design/icons";
@@ -181,7 +181,8 @@ const GroupCardItem = (props)=>{
                     showSearch
                     filterOption={localFilter}
                     showSelectAll={false}
-                    locale={{ itemUnit: 'Чел.', itemsUnit:'', searchPlaceholder: 'Поиск сотрудника', notFoundContent: <div>{'NF'}</div> }}
+                    locale={{ itemUnit: 'Чел.', itemsUnit:'', searchPlaceholder: 'Поиск сотрудника', notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
+
                     listStyle={{
                         
                         height: 500,

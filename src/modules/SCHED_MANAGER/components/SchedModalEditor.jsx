@@ -55,10 +55,13 @@ const SchedModalEditor = (props)=>{
 
     useEffect(()=>{
         setOpen(props.open);
-        setTargetId(props.target_id);
+        if (props.open){
+          setTargetId(props.target_id);
+        }
     },[props])
 
     useEffect(()=>{
+      if (props.open){
         console.log('props.data', props.data)
         setIdSkudScheduleType(props.data ? props.data.skud_schedule_type_id : 1);
         
@@ -92,7 +95,7 @@ const SchedModalEditor = (props)=>{
 
         console.log(props.schedTypes);
         setUsedSchedType(props.schedTypes.find((el)=> el.value === (props.data ? parseInt(props.data.skud_schedule_type_id) : 1)));
-
+      }
     }, [targetId, props]);
 
 

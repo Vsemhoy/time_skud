@@ -10,7 +10,7 @@ const { Text, Link } = Typography;
 
 
 const SchedList = (props)=>{
-    const {userData, companies, dataSchedules} = props;
+    const {userData, companies, dataSchedules, entityList} = props;
     const [scheduleList, setScheduleList] = useState(dataSchedules);
 
     useEffect(()=>{
@@ -25,6 +25,13 @@ const SchedList = (props)=>{
     // const openEditorModal = (id)=>{
     //     setEditorModalOpen(true);
     // }
+
+    const getUserCount = (sched_id) => {
+        return entityList.filter(x => x.schedule_id === sched_id && x.type === 3).length;
+    }
+    const getGroupCount = (sched_id) => {
+        return entityList.filter(x => x.schedule_id === sched_id && x.type === 2).length;
+    }
 
     return (
         <div className={'sk-schedule-list'}>
@@ -74,6 +81,8 @@ const SchedList = (props)=>{
                 <SchedListRow key={index} data={item}
                     onOpenEditorModal={props.onOpenEditorModal}
                     onOpenUserManager={props.onOpenUserManager}
+                    group_count={getGroupCount(item.id)}
+                    user_count={getUserCount(item.id)}
                  />
             )) }
             </div>
