@@ -57,10 +57,6 @@ const SchedList = (props)=>{
                         <div>
                             Целев. время
                         </div>
-
-                        <div>
-                            Единица расчета
-                        </div>
     
                         <div>
                             Время обеда

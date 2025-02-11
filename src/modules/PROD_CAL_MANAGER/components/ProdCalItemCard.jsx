@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
 import './style/prodcalitemcard.css';
 import { Badge, Button, Flex, Select, Tag, Typography } from 'antd';
 
@@ -51,48 +50,34 @@ const [ calData, setCalData] = useState(data);
     }, [data]);
 
     return (
-        <div className={'sk-cal-card'}> 
-            <Badge.Ribbon text={calData.company_name}  style={{background:calData.company_color}}>
+        <div className={`sk-cal-card ${calData.archieved === 1 ? "skc-archieved ": ""}`}> 
+          
             <Card className="">
-            <div className="ant-card-head">
-                <div className="ant-card-head-wrapper">
+                <div className={'sk-cal-first-row'}>
                     <div className="ant-card-head-title sk-cal-item-head">
-                    <strong>{calData.year}</strong></div>
-                    <Button 
-                        onClick={openModalClick}
-                     icon={(<EditOutlined />)}></Button>
-                    <div className="sk-cal-filler"></div>
+                        <strong>{calData.year}</strong>
                     </div>
+ 
+                    <div className={'sk-cal-stats'}><span>{calData.schedule.total}</span> всего дней</div>
+                    <div className={'sk-cal-stats'}><span>{calData.schedule.wtotal}</span> рабочих</div>
+                    <div className={'sk-cal-stats'}><span>{calData.schedule.htotal}</span> выходных</div>
                 </div>
-                <div className="sk-cal-card-grid">
-
-
-
-
-                <Card.Grid hoverable={false} className="padding-remove">
-                    <div className={'sk-cal-stats'}>
-                        <div><span>{calData.schedule.total}</span> всего дней</div>
-                        <div><span>{calData.schedule.wtotal}</span> рабочих дней</div>
-                        <div><span>{calData.schedule.htotal}</span> выходных</div>
-                        {/* <div><span>365</span> всего</div> */}
-                    </div>
-                </Card.Grid>
-                <Card.Grid hoverable={false} >
-                    {/* <div className={'sk-cal-description'}>
-                    Auto collapse to tag with responsive case. Not recommend use in large form case since responsive calculation has a perf cost.
-                    </div> */}
-                    <br />
-                    <div className={'sk-cal-butts'}>
+                <div className={"sk-row sk-cal-second-row"}>
+                    <div>
                     <Flex gap={'4px 0'} wrap>
+                        <span><Tag color={calData.company_color} >{calData.company_name.toUpperCase()}</Tag></span>
                         { calData.count_links ? (
                             <Tag color="#108ee9">Графики: {calData.count_links}</Tag>
                         ) : "" }
                         
                     </Flex>
+                    </div>
+                    <div className={'sk-cal-butts'}>
+
                     {/* <Flex gap={'4px 0'} wrap>
                         <Tag color="blue">Глинтерник М.</Tag>
                     </Flex> */}
-                    <span className={'sk-dead-text'}>{calData.schedule.year} год</span>
+                    {/* <span className={'sk-dead-text'}>{calData.schedule.year} год</span> */}
  
                     <Flex gap={'4px 0'} wrap style={{}}>
                         { calData.archieved == 0 ? (
@@ -110,19 +95,16 @@ const [ calData, setCalData] = useState(data);
                             архивирован
                         </Tag>
                         ) : "" }   
-                        
-
-
-
-
-
                     </Flex>
                     </div>
-                </Card.Grid>
+                    <Button color="default" variant="text"
+                        onClick={openModalClick}
+                     icon={(<EditOutlined />)}></Button>
+
                 </div>
 
             </Card>
-            </Badge.Ribbon>
+         
         </div>
     )
 };

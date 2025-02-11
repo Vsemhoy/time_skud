@@ -1,3 +1,32 @@
+.sk-cal-first-row {
+   display: grid;
+   grid-template-columns: auto 100px 100px 100px;
+}
+
+.sk-cal-first-row > div {
+   padding: 6px 12px;
+   border-left: 1px solid rgb(226, 226, 226);
+}
+.sk-cal-first-row > div:first-child {
+   padding-left: 18px;
+   border-left: none;
+}
+
+.sk-cal-second-row {
+   display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 0.5px solid  rgb(226, 226, 226);
+    padding: 3px 12px;
+}
+
+.skc-archieved {
+   background-color: #108ee9;
+}
+.skc-archieved > div {
+   opacity: 0.95;
+}
+
 .sk-cal-description {
     text-align: left;
 }
@@ -12,6 +41,7 @@
  .sk-cal-stats span {
     font-weight: 500;
     color: #108ee9;
+    font-size: larger;
  }
  .sk-cal-title-1 {
     text-align: center;
@@ -73,7 +103,7 @@
 
  }
  .sk-calendar-list {
-    margin-bottom: 40vh;
+    padding-bottom: 40vh;
  }
 
  .sk-dead-text {

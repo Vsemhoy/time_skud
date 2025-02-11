@@ -743,7 +743,7 @@ const Scheditor_one = (props) => {
         <br/>
     <div className={'sk-flex-sides'}>
         <div className={'sk-w-33'} style={{paddingLeft: 12}}>
-          <Form.Item label="Дата активации интервала" name="layout">
+          <Form.Item label="Дата начала действия" name="layout">
               <DatePicker
                 type="date"
                 disabled={disabled}

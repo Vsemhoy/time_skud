@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Modal, Select, Drawer, Checkbox, Badge, Tag, Radio } from 'antd';
+import { Button, Input, Modal, Select, Drawer, Checkbox, Badge, Tag, Radio, Alert, Flex } from 'antd';
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
 import isLeapYear from 'dayjs/plugin/isLeapYear';
@@ -8,9 +8,10 @@ import { generateYearOptions, getMonthName } from "../../../GlobalComponents/Hel
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
 import { months } from "moment";
+import { ClockCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 dayjs.extend(isLeapYear);
 
-const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, onDelete }) => {
+const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, onDelete, data_list }) => {
     const [open, setOpen] = useState(is_open);
     const [calendarData, setCalendarData] = useState(data);
 
@@ -22,9 +23,11 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
     const [callToSaveDay , setCallToSaveDay] = useState(false);
     const [archievedState , setArchievedState] = useState(data.archieved);
 
+    const [disableSave, setDisableSave] = useState(false);
+
     const [allowDelete, setAllowDelete] = useState(allow_delete === true ? true : false);
 
-const [companies, setCompanies] = useState(
+    const [companies, setCompanies] = useState(
             
             userData.companies.map((com) => ({
                 key: com.id,
@@ -53,6 +56,7 @@ const [companies, setCompanies] = useState(
         defSched.year = dayjs().year();
         setJobCalendar(data.schedule ? data.schedule : defSched);
         setAllowDelete(allow_delete === true ? true : false);
+        setRepeatCheck(data.year ? data.year : dayjs().year()  , data.id_company ? data.id_company : userData.user.id_company);
     },[data]);
 
     const [saveMode, setSaveMode] = useState(false);
@@ -158,6 +162,9 @@ const [companies, setCompanies] = useState(
 
     /** Сохранение календаря */
     const handleOk = () => {
+        if (disableSave){
+            return;
+        }
         setSaveMode(true);
         // подсчёт РД и ВД
         let holDays = 0;
@@ -193,6 +200,24 @@ const [companies, setCompanies] = useState(
     };
 
 
+    const setRepeatCheck = (year, company) =>
+    {
+        console.log(calendarData.id);
+        if (data.id === null)
+        {
+            console.log(data_list);
+            console.log(year, company);
+            for (let i = 0; i < data_list.length; i++) {
+                const element = data_list[i];
+                if (parseInt(element.year) == year && element.id_company == company){
+                    setDisableSave(true);
+                    return;
+                }
+            }
+
+        }
+        setDisableSave(false);
+    }
 
 
     const handleMonthChange = (value) => {
@@ -201,6 +226,7 @@ const [companies, setCompanies] = useState(
     const handleYearChange = (value) => {
         setCalendarName(value);
         setSelectedYear(value);
+        setRepeatCheck(value, selectedCompany);
     }
 
 
@@ -389,6 +415,7 @@ const [companies, setCompanies] = useState(
 
     const handleUsedCompanyChange = (value)=>{
         setSelectedCompany(value);
+        setRepeatCheck(selectedYear, value);
     };
 
     const updateCalendarName = (ev) => {
@@ -421,22 +448,27 @@ const [companies, setCompanies] = useState(
     return (
         <>
             <Modal
-                title={NEW_ITEM ? "Новый производственный календарь" : "Редактирвоание календаря"}
+                title={NEW_ITEM ? `Новый производственный календарь на ${calendarName} год` :   `Редактирвоание календаря на ${calendarName} год` }
                 centered
                 open={open}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={1000}
                 cancelText="Закрыть"
-                okText={"Сохранить"}
+                okText={disableSave ? "Не сохранять" : "Сохранить" }
             >
-                <div className='sk-cal-modal-head'>
+                {/* <div className='sk-cal-modal-head'>
                 <Input type="text" maxLength={6} title="" placeholder="Название..." 
                     value={calendarName}
                     onChange={updateCalendarName}
 
                 />
-                </div>
+                </div> */}
+                {disableSave ? (
+                    <Alert type="error" message={`Календарь для этой компании на ${calendarName} год уже существует!`} banner />
+                ): ""}
+
+
                 <br/>
                 <div className='sk-cal-modal-toolbar'>
                     <div>
@@ -478,12 +510,37 @@ const [companies, setCompanies] = useState(
                                 Удалить график
                                 </Button>
                             ): ''}
-                            <Select
+                            {/* <Select
                                 value={archievedState}
                                 options={ARCH_STATES}
                                 onChange={(value) => {setArchievedState(value)}}
-                                />
+                                /> */}
+                            <Flex gap={'4px 0'} wrap >
+                                { archievedState == 0 ? (
+                                    <Tag icon={<SyncOutlined spin />} color="#87d068" style={{padding: 6, fontSize: 'medium'}}>
+                                    активен
+                                </Tag>
+                                ) : "" }
+                                { archievedState == -1 ? (
+                                    <Tag icon={<ClockCircleOutlined />} color="#f78533" style={{padding: 6, fontSize: 'medium'}}>
+                                    ожидает
+                                </Tag>
+                                ) : "" }
+                                { archievedState == 1 ? (
+                                    <Tag icon={<MinusCircleOutlined />} color="default" style={{padding: 6, fontSize: 'medium'}}>
+                                    архивирован
+                                </Tag>
+                                ) : "" }   
+                            </Flex>
+
+
                         <Tag className={'sk-cal-modal-badge'} color={data.company_color}>{data.company_name}</Tag>
+                        { parseInt(calendarName) === dayjs().add(1, 'year').year() ? (
+                            <Button
+                            color="danger" variant="solid"
+                            onClick={loadOfficialPublicCalendar}
+                         >Загрузить официальный график</Button>
+                        ) : ""}
                         </div>
                     )}
                 </div>

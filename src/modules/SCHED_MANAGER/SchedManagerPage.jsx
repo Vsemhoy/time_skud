@@ -5,7 +5,7 @@ import SchedCardItem from "./components/SchedCardItem";
 import SchedEntityCard from "./components/SchedEntityCard";
 import './components/style/schedmanager.css';
 import TabPane from "antd/es/tabs/TabPane";
-import { Tabs } from "antd";
+import { Empty, Tabs } from "antd";
 import SchedListRow from "./components/SchedListRow";
 import SchedList from "./components/SchedList";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
@@ -85,6 +85,47 @@ const SchedManagerPage = (props) => {
                 const filter = filters[i];
                 if (filter.type === 'filter'){
                     filteredData = filteredData.filter((item)=> item[filter.key] == filter.value);
+                }
+                if (filter.type === 'text_filter'){
+                    let newFiltered = [];
+                    for (let n = 0; n < filteredData.length; n++) {
+                        const group = filteredData[n];
+                        let found = false;
+                        if (group.name.toUpperCase().includes(filter.value.toUpperCase()) ||
+                        group.description.toUpperCase().includes(filter.value.toUpperCase()) ){
+                            found = true;
+                            console.log('I found em', filter.value);
+                        };
+
+                        if (!found){
+                            // если нет совпадений в schedule, ищем в entity
+                            for (let index = 0; index < baseEntityList.length; index++) {
+                                const entity = baseEntityList[index];
+                                if (entity === null){ continue; }
+                                // if (entity.name.toUpperCase() !== null){
+                                //     console.log(entity);
+                                // }
+                                if (entity.name.toUpperCase().includes(filter.value.toUpperCase())
+                                || (entity.surname && entity.surname.toUpperCase().includes(filter.value.toUpperCase())) ||
+                                (entity.description && entity.description.toUpperCase().includes(filter.value.toUpperCase())) ||
+                                (entity.patronymic && entity.patronymic.toUpperCase().includes(filter.value.toUpperCase()))
+                                ){
+                                    console.log(entity);
+                                    if (group.id === entity.schedule_id){
+                                        found = true;
+                                        console.log('FOUND', entity);
+                                        break;
+                                    }
+                                };
+                            }
+                        }
+
+
+                        if (found){
+                            newFiltered.push(group);
+                        }
+                    }
+                    filteredData = newFiltered;
                 }
             }
             setScheduleList(filteredData);
@@ -414,6 +455,9 @@ const SchedManagerPage = (props) => {
                         entityList={baseEntityList}
                     />
                 </div>
+                {scheduleList.length === 0 ? (
+                    <Empty description={"Ничего не найдено"}/>
+                ): ""}
 
             </div>
 

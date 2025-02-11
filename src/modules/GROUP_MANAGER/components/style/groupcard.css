@@ -23,8 +23,8 @@
     overflow: hidden;
     /* border-radius: 0px !important; */
 }
-.ant-card:last-child {
-    margin-bottom: 40vh;
+.sk-group-1col-body{
+    padding-bottom: 40vh;
 }
 .sk-grp-card-head {
     color: rgba(0, 0, 0, 0.88);

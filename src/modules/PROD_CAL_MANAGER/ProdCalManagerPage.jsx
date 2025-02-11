@@ -5,6 +5,8 @@ import ProdCalToolbar from "./components/ProdCalToolbar";
 import ProdCalItemCard from "./components/ProdCalItemCard";
 import ProdCalModal from "./components/ProdCalModal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import dayjs from "dayjs";
+import { Empty } from "antd";
 
 const ProdCalManagerPage = (props) => {
     const { userdata } = props;
@@ -95,6 +97,22 @@ const ProdCalManagerPage = (props) => {
                 _token: CSRF_TOKEN
             });
             setBaseCalendarList(response.data);
+            // Обновление состояния archieved календарей в соответствии с текущим годом
+            for (let i = 0; i < response.data.length; i++) {
+                const element = response.data[i];
+                if (parseInt(element.year) === dayjs().year() && element.archieved !== 0){
+                    element.archieved = 0;
+                    update_calendar(element);
+                } else if (parseInt(element.year) < dayjs().year() && element.archieved !== 1){
+                    element.archieved = 1;
+                    update_calendar(element);
+                } else if (parseInt(element.year) > dayjs().year() && element.archieved !== -1){
+                    element.archieved = -1;
+                    update_calendar(element);
+                };
+            }
+
+
             console.log('get_calendarList => ', response.data);
       } catch (e) {
           console.log(e)
@@ -256,7 +274,9 @@ const ProdCalManagerPage = (props) => {
                         />
                     ))
                 }
-
+                {calendarList.length === 0 ? (
+                    <Empty description={"Ничего не найдено"}/>
+                ): ""}
 
             </div>
 
@@ -268,7 +288,7 @@ const ProdCalManagerPage = (props) => {
                 onSave={saveCalendar}
                 allow_delete={allowDelete}
                 onDelete={delete_calendar}
-                
+                data_list={baseCalendarList}
             />
         </div>
     )

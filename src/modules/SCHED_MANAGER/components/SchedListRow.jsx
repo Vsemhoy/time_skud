@@ -40,10 +40,10 @@ const Sched_type_icon = (type) => {
             return (<img src={HOST_COMPONENT_ROOT + SchedFreeSVG}  title='Свободный график'/>);
         break;
         case 4:
-            return (<img  src={HOST_COMPONENT_ROOT + SchedShiftSVG}  title='Сменный график'/>);
+            return (<img  src={HOST_COMPONENT_ROOT + SchedShiftSVG} title='Сменный график'/>);
         break;
         case 5:
-            return (<img src={HOST_COMPONENT_ROOT + SchedSumSVG} title='Суммированный график'/>);
+            return (<img src={HOST_COMPONENT_ROOT + SchedSumSVG}    title='Суммированный график'/>);
         break;
         default:
 
@@ -67,7 +67,7 @@ const SchedListRow = (props)=>{
     const [unitType,  setUinitType] = useState('');
     const [unitTime,  setUnitTime] = useState('');
 
-    
+    const [itemType, setItemType] = useState(1);
 
     useEffect(()=>{
         setItemData(props.data)
@@ -77,10 +77,13 @@ const SchedListRow = (props)=>{
 
         setLunchStart(FTIME(itemData.lunch_start));
         setLunchEnd(FTIME(itemData.lunch_end));
-        setLunchTime(FTIME(itemData.lunch_time));
+        setLunchTime(FTIME( itemData.lunch_time));
 
-        setUnitTime(FTIME(itemData.target_time));
+        setUnitTime(itemData.target_time);
         setUinitType(DS_SCHED_UNITS[itemData.target_unit + 1].label);
+
+        setItemType(props.data.skud_schedule_type_id);
+
 
     },[props.data]);
 
@@ -134,7 +137,21 @@ const SchedListRow = (props)=>{
                 </div>
 
                 <div>
-                    Grafik
+                    {itemData.skud_schedule_type_id === 1 ? (
+                        <span className={"sk-slr-name"}>Пятидневнй страндартный</span>
+                    ): ""}
+                                        {itemData.skud_schedule_type_id === 2 ? (
+                        <span className={"sk-slr-name"}>Гибкий</span>
+                    ): ""}
+                                        {itemData.skud_schedule_type_id === 3 ? (
+                        <span className={"sk-slr-name"}>Свободный</span>
+                    ): ""}
+                                        {itemData.skud_schedule_type_id === 4 ? (
+                        <span className={"sk-slr-name"}>Сменный</span>
+                    ): ""}
+                                        {itemData.skud_schedule_type_id === 5 ? (
+                        <span className={"sk-slr-name"}>Суммированный</span>
+                    ): ""}
                 </div>
 
                 <div>
@@ -143,12 +160,11 @@ const SchedListRow = (props)=>{
                 </div>
 
                 <div>
-                    <div>{unitTime}</div>
+                    <div>{unitTime > 0 ? (<span><strong>{unitTime / 60 / 60}</strong> часов</span>) : ""}</div>
+                    <div>{unitTime > 0 ? "в " + (unitType.toLowerCase()) : ""}</div>
                 </div>
 
-                <div>
-                    <div>{unitType}</div>
-                </div>
+
 
                 <div>
                     <div className={'sk-sched-listitem-starttime'}>с {lunchStart}</div>
@@ -157,13 +173,13 @@ const SchedListRow = (props)=>{
 
 
                 <div>
-                    <div>{lunchTime}</div>
+                    <div>{itemType < 3 ? lunchTime : ""}</div>
                 </div>
             </div>
             <div className="sk-row, sk-second-row">
                 <div className={"sk-flex"} style={{paddingLeft: 12}}>
                     
-                    <span><Tag color={itemData.company_color} >{itemData.company_name}</Tag></span>
+                    <span><Tag color={itemData.company_color} >{itemData.company_name.toUpperCase()}</Tag></span>
                     <span><Tag color="blue">{ dayjs.unix(itemData.start_time).format('YYYY') }</Tag></span>
                 </div>
                 <div>
@@ -179,11 +195,10 @@ const SchedListRow = (props)=>{
                     title="Назначить пользователей">
                         <UserSwitchOutlined />
                     </Button>
-                    <Button color="default" variant="link"
-
+                    {/* <Button color="default" variant="link"
                     title="Скопировать">
                         <CopyOutlined />
-                    </Button>
+                    </Button> */}
                     <Button color="default" variant="link"
                         onClick={openEditor}
                     title="Редактировать">

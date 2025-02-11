@@ -35,13 +35,18 @@ const SchedToolbar = (props) =>{
                 let fil1 = {type: 'filter', key: 'id_company', value: usedCompany};
                 filters.push(fil1);
             }
+            if (filterText != null && filterText.trim() !== "" && filterText.trim().length > 1)
+            {
+                let fil1 = {type: 'text_filter', key: 'name', value: filterText};
+                filters.push(fil1);
+            }
             if (onChangeFilter){
                 onChangeFilter(filters);
             }
         }, 100);
         return () => clearTimeout(t);
         
-    }, [usedType, usedCompany]);
+    }, [usedType, usedCompany, filterText]);
 
 
     const changeAddressBarParam = (key, value, deleteOn = [null]) =>
@@ -108,22 +113,25 @@ const SchedToolbar = (props) =>{
 
             ) : ""}
             <div>
-                <DatePicker.RangePicker 
-                    value={filterDateInterval}
-                    onChange={(value)=>{setFilterDateInterval(value)}}
-                />
-            </div>
-        </div>
 
-
-        <div className={"sk-flex-gap"}>
 
             <Input
                 placeholder={'Поиск по названию или имени пользователя/группы в графике'}
                 allowClear={true}
                 value={filterText}
                 onChange={(event)=> {setFiltertext(event.target.value)}}
+                style={{width: '100%'}}
             />
+            </div>
+        </div>
+
+
+        <div className={"sk-flex-gap"} >
+            <DatePicker.RangePicker 
+                    value={filterDateInterval}
+                    onChange={(value)=>{setFilterDateInterval(value)}}
+                />
+
         </div>
 
 

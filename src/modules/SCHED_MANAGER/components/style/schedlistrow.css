@@ -42,7 +42,7 @@
 
 .sk-first-row {
     display: grid;
-    grid-template-columns: 80px auto 100px 100px 70px 70px 80px 80px;
+    grid-template-columns: 80px auto 130px 100px 80px 80px 80px;
 }
 
 .sk-first-row > div {

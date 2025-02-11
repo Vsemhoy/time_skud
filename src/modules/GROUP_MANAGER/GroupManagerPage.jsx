@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GroupPageToolbar from "./components/grouppagetoolbar";
-import { Button, Flex, Input, Splitter, Typography } from 'antd';
+import { Button, Empty, Flex, Input, Splitter, Typography } from 'antd';
 import GroupCardItem from "./components/groupcarditem";
 import GroupUserCardItem from "./components/groupusercarditem";
 
@@ -390,6 +390,9 @@ const GroupManagerPage = (props)=>{
                 ))}
 
             </div>
+            {groupList.length === 0 ? (
+                    <Empty description={"Ничего не найдено"}/>
+                ): ""}
 
             </div>
 
