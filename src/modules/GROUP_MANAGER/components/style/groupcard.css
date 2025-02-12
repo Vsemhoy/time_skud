@@ -47,7 +47,7 @@
 
 .sk-grp-card-head {
     display: grid;
-    grid-template-columns: 20px auto 30px 30px 30px;
+    grid-template-columns: 26px auto 30px 30px 30px;
     grid-gap: 9px;
 }
 

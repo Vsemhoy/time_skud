@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SchedToolbar from "./components/SchedToolbar";
 import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_ENTITIES, DS_SCHEDULE_LIST, DS_USER } from "../../CONFIG/DEFAULTSTATE";
-import SchedCardItem from "./components/SchedCardItem";
-import SchedEntityCard from "./components/SchedEntityCard";
+
 import './components/style/schedmanager.css';
 import TabPane from "antd/es/tabs/TabPane";
 import { Empty, Tabs } from "antd";

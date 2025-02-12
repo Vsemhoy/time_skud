@@ -7,6 +7,7 @@ import { Badge, Button, Flex, Select, Tag, Typography } from 'antd';
 import { Card } from 'antd';
 
 import { CheckCircleFilled, ClockCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, MinusCircleFilled, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import ChineseZodiac from "./ChineseZodiac";
 
 
  
@@ -54,10 +55,13 @@ const [ calData, setCalData] = useState(data);
           
             <Card className="">
                 <div className={'sk-cal-first-row'}>
+                    <div>
+                        <ChineseZodiac year={calData.year}></ChineseZodiac>
+                    </div>
                     <div className="ant-card-head-title sk-cal-item-head">
                         <strong>{calData.year}</strong>
                     </div>
- 
+
                     <div className={'sk-cal-stats'}><span>{calData.schedule.total}</span> всего дней</div>
                     <div className={'sk-cal-stats'}><span>{calData.schedule.wtotal}</span> рабочих</div>
                     <div className={'sk-cal-stats'}><span>{calData.schedule.htotal}</span> выходных</div>

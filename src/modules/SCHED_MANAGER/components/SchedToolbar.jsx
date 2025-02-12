@@ -127,10 +127,10 @@ const SchedToolbar = (props) =>{
 
 
         <div className={"sk-flex-gap"} >
-            <DatePicker.RangePicker 
+            {/* <DatePicker.RangePicker 
                     value={filterDateInterval}
                     onChange={(value)=>{setFilterDateInterval(value)}}
-                />
+                /> */}
 
         </div>
 

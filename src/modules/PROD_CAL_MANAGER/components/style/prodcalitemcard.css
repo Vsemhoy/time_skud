@@ -1,6 +1,6 @@
 .sk-cal-first-row {
    display: grid;
-   grid-template-columns: auto 100px 100px 100px;
+   grid-template-columns: 80px auto 100px 100px 100px;
 }
 
 .sk-cal-first-row > div {
@@ -8,8 +8,11 @@
    border-left: 1px solid rgb(226, 226, 226);
 }
 .sk-cal-first-row > div:first-child {
-   padding-left: 18px;
+   /* padding-left: 18px; */
    border-left: none;
+}
+.sk-cal-first-row > div:first-child  img {
+   width: 100%;
 }
 
 .sk-cal-second-row {
