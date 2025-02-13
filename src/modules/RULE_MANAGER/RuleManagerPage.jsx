@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { DS_PROD_CALENDARS, DS_RULE_TYPES, DS_RULES, DS_SCHEDULE_ENTITIES, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import RuleToolbar from "./components/RuleToolbar";
-import { PRODMODE } from "../../CONFIG/config";
+import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import RuleCardItem from "./components/rulecarditem";
 import RuleEditorModal from "./components/ruleeditormodal";
+import './components/style/rulemanager.css';
+import { PROD_AXIOS_INSTANCE } from "../../API/API";
 
 
 const RuleManagerPage = (props) => {
@@ -42,6 +44,7 @@ const RuleManagerPage = (props) => {
 
     useEffect(()=>{
         setEntityList(baseEntityList);
+        console.log(baseEntityList);
     },[baseEntityList]);
 
     useEffect(() => {
@@ -100,36 +103,42 @@ const RuleManagerPage = (props) => {
 
 
 
+
+
+    /**
+     * Перелинковка юзеров с гурппами
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const update_links = async (body, req, res) => {
+            console.log('body',body);
+            try {
+                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/links/' + body.rule_id,
+                    {   
+                        data: body, 
+                        _token: CSRF_TOKEN
+                    }
+                );
+                console.log('users', response);
+                // setBaseUserListData(response.data.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // setBaseCalendarList(prevList => 
+                //     prevList.map(item => 
+                //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                //     )
+                // );
+            }
+        }
+  /** ------------------ FETCHES END ---------------- */
+
+
     const openModal = () => {
         setEditedRuleId(null);
         setEditorOpened(true);
     }
 
-
-    const updateUserLinks = (group_id, added, removed) => {
-        let newUsers = [];
-        // for (let i = 0; i < baseUserList.length; i++) {
-        //     const user = baseUserList[i];
-        //     if (added.includes( user.id ))
-        //     {
-        //         user.user_group_id = group_id;
-        //         console.log('first', group_id)
-        //     }
-        //     if (removed.includes( user.id ))
-        //     {
-        //         user.user_group_id = 0;
-        //         console.log('second', group_id)
-        //     }
-        //     newUsers.push(user);   
-        // }
-        // update_links(
-        // {
-        //     group_id: group_id,
-        //     linked_users : added,
-        //     unlinked_users: removed,
-        // });
-        // setBaseUserList(newUsers);
-    }
 
     const openModalEditor = (group_id, event) => {
         if (event.ctrlKey){
@@ -173,6 +182,76 @@ const RuleManagerPage = (props) => {
         setFilters(filters);
     }
 
+    const updateEntityLinks = (data) => {
+        console.log("updated" , data);
+        const rule_id = data[0];
+        const rule_type = data[1];
+        const toUpdate = data[2];
+        const toDelete = data[3];
+
+        console.log("toUpdatae", toUpdate);
+
+        const addUsers = [];
+        const addGroups = [];
+        const rmUsers = [];
+        const rmGroups = [];
+
+        let baseClone = JSON.parse(JSON.stringify(baseEntityList));
+
+        for (let i = 0; i < baseEntityList.length; i++) {
+            const element = baseEntityList[i];
+            if (element.type === 3){
+                for (const item of toUpdate) {
+                    
+                    if (item.type === 3 && item.entity_id === element.id){
+
+                        addUsers.push(baseEntityList[i].id);
+                        baseClone[i].rule_links.push({type: rule_type, rule_id: rule_id});
+                        console.log(baseClone[i]);
+                        break;
+                    }
+                }
+                for (const item of toDelete) {
+                    if (item.type === 3 && item.entity_id === element.id){
+                        rmUsers.push(baseEntityList[i].id);
+                        baseClone[i].rule_links = baseClone[i].rule_links.filter((elem)=> elem.type !== rule_type);
+                        break;
+                    }
+                }
+            }
+            if (element.type === 2){
+                for (const item of toUpdate) {
+                    if (item.type === 2 && item.entity_id === element.id){
+                        addGroups.push(baseEntityList[i].id);
+                        baseClone[i].rule_links.push({type: rule_type, rule_id: rule_id});
+                        break;
+                    }
+                }
+                for (const item of toDelete) {
+                    if (item.type === 2 && item.entity_id === element.id){
+                        rmGroups.push(baseEntityList[i].id);
+                        baseClone[i].rule_links = baseClone[i].rule_links.filter((elem)=> elem.type !== rule_type);
+                        break;
+                    }
+                }
+            }
+        }
+        setBaseEntityList(baseClone);
+
+        update_links(
+            {
+                rule_id: rule_id,
+                linked_users : addUsers,
+                unlinked_users: rmUsers,
+                linked_groups : addGroups,
+                unlinked_groups: rmGroups,
+            });
+    }
+
+        useEffect(()=>{
+            console.log("BLM", baseEntityList);
+        },[baseEntityList]);
+
     return (
         <div className={'sk-mw-1000'}>
             <br/>
@@ -199,16 +278,17 @@ const RuleManagerPage = (props) => {
                         data={group}
                         opened={openedCooxer === group.id}
                         on_open_cooxer={(value)=>{setOpenedCooxer(value)}}
-                        base_users={entityList}
-                        on_link_update={updateUserLinks}
+                        base_entities={baseEntityList}
+                        on_link_update={updateEntityLinks}
                         on_open_editor={openModalEditor}
+                        on_manage_entities={updateEntityLinks}
                         />
                     ))
                 }
 
 
             </div>
-            <RuleEditorModal
+                <RuleEditorModal
                     open={editorOpened}
                     item_list={baseRuleList}
                     target_id={editedRuleId}

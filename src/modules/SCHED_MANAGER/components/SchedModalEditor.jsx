@@ -570,22 +570,22 @@ const Scheditor_one = (props) => {
   const [history, setHistory] = useState([]);
   const [historyTable, setHistoryTable] = useState("");
 
-  useEffect(()=>{
-    if (props.data.length > 0 ){
-      // Входные данные в data - ['2020-03-18',1738968722,1738968722], 
-      // что означает [дата начала действия, время начала смены от начала дня, время конца смены от к.д.]
-      console.log(props.data);
-      setSetDate(props.data[0]);
-      setStartTime(props.data[1]);
-      setEndTime(props.data[2]);
-    } else {
-      setStartTime(60 * 60 * 13);
-      setEndTime(60 * 60 * 15);
-      setSetDate(dayjs().format('YYYY-MM-DD'));
-    }
+  // useEffect(()=>{
+  //   if (props.data.length > 0 ){
+  //     // Входные данные в data - ['2020-03-18',1738968722,1738968722], 
+  //     // что означает [дата начала действия, время начала смены от начала дня, время конца смены от к.д.]
+  //     console.log(props.data);
+  //     setSetDate(props.data[0]);
+  //     setStartTime(props.data[1]);
+  //     setEndTime(props.data[2]);
+  //   } else {
+  //     setStartTime(60 * 60 * 13);
+  //     setEndTime(60 * 60 * 15);
+  //     setSetDate(dayjs().format('YYYY-MM-DD'));
+  //   }
 
-    setDisabled(props.disabled);
-  },[props]);
+  //   setDisabled(props.disabled);
+  // },[props]);
 
   useEffect(()=>{
     const t = setTimeout(() => {

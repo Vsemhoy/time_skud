@@ -7,20 +7,20 @@ import RuleIcons from "./RuleIcons";
 const { Text, Link } = Typography;
 
 const RuleCardItem = (props)=>{
-    const group_id = props.data.id;
+    const rule_id = props.data.id;
     const [opened, setOpened] = useState(false);
     const [editName, setEditName] = useState(false);
 
     const [name, setName] = useState('New item');
-    const [userList, setUserList] = useState([]);
+    const [entityList, setEntityList] = useState([]);
     const [userCount, setUserCount] = useState(props.data.user_count);
     const [groupCount, setGroupCount] = useState(props.data.group_count);
     const [ruleType, setRuleType] = useState(props.data.rule_type_id);
 
 
     useEffect(()=>{
-        setUserList(props.base_users);
-    },[props.base_users]);
+        setEntityList(props.base_entities);
+    },[props.base_entities]);
     
     useEffect(()=>{
         setName(props.data.name);
@@ -33,7 +33,7 @@ const RuleCardItem = (props)=>{
     useEffect(()=>{
       getMock(); 
 
-      }, [userList]);
+      }, [entityList]);
 
     const [mockData, setMockData] = useState([]);
     const [targetKeys, setTargetKeys] = useState([]);
@@ -44,21 +44,32 @@ const RuleCardItem = (props)=>{
     let newMockData   = [];
     let newTargetKeys = [];
     let userco = 0;
+    let groupco = 0;
 
-    for (let i = 0; i < userList.length; i++) {
-        const element = userList[i];
+    for (let i = 0; i < entityList.length; i++) {
+        const element = entityList[i];
+        if (element.id_company !== props.data.id_company){ continue;}
         let mockup = {};
-        let key = `mocky_${element.id}`;
-        if (element.user_group_id === group_id){
+        let key = element.type === 3 ? `user_${element.id}` : `group_${element.id}` ;
+
+        let foundType = element.rule_links.find((el)=>el.type === ruleType);
+      
+        if (foundType && foundType.rule_id === rule_id){
             mockup.chosen = true;
             mockup.title = ShortName(element.surname, element.name, element.patronymic);
             mockup.description = element.surname + " " + element.name + " " + element.patronymic;
+            mockup.type = element.type;
             mockup.key = key;
             newMockData.push(mockup);
             newTargetKeys.push(key);
-            userco++;
-          } else if (element.user_group_id === 0){
+            if (element.type === 3){
+              userco++;
+            } else {
+              groupco++;
+            }
+          } else if (foundType === null || foundType === undefined){
             mockup.chosen = false;
+            mockup.type = element.type;
             mockup.title =  ShortName(element.surname, element.name, element.patronymic);
             mockup.description = element.surname + " " + element.name + " " + element.patronymic;
             mockup.key = key;
@@ -66,25 +77,18 @@ const RuleCardItem = (props)=>{
             // userco++;
         };
     };
+    setGroupCount(groupco);
     setMockData(newMockData);
     setTargetKeys(newTargetKeys);
     setUserCount(userco);
+
   };
 
 
 
 
-  // const handleChange = (newTargetKeys) => {
-  //   // требо выявить кто из них изменил состояние
-  //   let linked = [];
-  //   let unlinked = [];
-
-  //   let a  = Array.divv
 
 
-  //   console.log('new', newTargetKeys)
-  //   setTargetKeys(newTargetKeys);
-  // };
 
   const handleChange = (newTargetKeys, direction, moveKeys) => {
     const addedKeys = direction === 'right' ? moveKeys : [];
@@ -95,14 +99,28 @@ const RuleCardItem = (props)=>{
   
     // Здесь можно обновить состояние, если нужно
     setTargetKeys(newTargetKeys);
-    if (props.on_link_update){
-      props.on_link_update(group_id,
-         addedKeys.map((item)=>{
-        return parseInt(item.replace('mocky_', ''));
-      }), 
+
+
+    if (props.on_manage_entities){
+      props.on_manage_entities([rule_id, ruleType, 
+        addedKeys.map((item) => {
+          console.log(item);
+          if (item.includes('group')){
+            return {type: 2, entity_id: parseInt(item.replace('group_', ''))};
+          } else if (item.includes('user'))
+          {
+            return {type: 3, entity_id: parseInt(item.replace('user_', ''))};
+          }
+      }),
       removedKeys.map((item)=>{
-        return parseInt(item.replace('mocky_', ''));
-      }));
+        if (item.includes('group')){
+          return {type: 2, entity_id: parseInt(item.replace('group_', ''))};
+        } else if (item.includes('user'))
+        {
+          return {type: 3, entity_id: parseInt(item.replace('user_', ''))};
+        }
+      })
+      ]);
     }
   };
   
@@ -124,7 +142,7 @@ const RuleCardItem = (props)=>{
     console.log('open modal')
     event.preventDefault();
     if (props.on_open_editor){
-      props.on_open_editor(group_id, event);
+      props.on_open_editor(rule_id, event);
     }
   }
 
@@ -181,19 +199,19 @@ const RuleCardItem = (props)=>{
                     showSearch
                     filterOption={localFilter}
                     showSelectAll={false}
-                    locale={{ itemUnit: 'Чел.', itemsUnit:'', searchPlaceholder: 'Поиск сотрудника', notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
+                    locale={{ itemUnit: 'Сущностей.', itemsUnit:'', searchPlaceholder: 'Поиск сущности', notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
 
                     listStyle={{
                         
                         height: 500,
                     }}
                     operations={[ 'Добавить', 'Удалить']}
-                    titles={['Пользователи без группы','Пользователи в группе']}
+                    titles={['Сущности без группы','Сущности в группе']}
                     targetKeys={targetKeys}
                     onChange={handleChange}
                     render={(item) => (
-                      <span title={item.description}>
-                        {item.title}
+                      <span className={'sk-flex-space'} title={item.description}>
+                        {item.title} {item.type === 2 ? (<Tag color="volcano">Group</Tag>) : (<Tag color="cyan">USER</Tag>)}
                       </span>
                     )}
                     
@@ -204,7 +222,7 @@ const RuleCardItem = (props)=>{
                 </div>
             </div>
         </div>
-            </Card>
+        </Card>
     )
 
 }

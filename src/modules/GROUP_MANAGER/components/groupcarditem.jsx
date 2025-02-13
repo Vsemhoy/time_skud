@@ -42,7 +42,8 @@ const GroupCardItem = (props)=>{
     let userco = 0;
 
     for (let i = 0; i < userList.length; i++) {
-        const element = userList[i];
+      const element = userList[i];
+      if (element.id_company !== props.data.id_company){ continue;}
         let mockup = {};
         let key = `mocky_${element.id}`;
         if (element.user_group_id === group_id){

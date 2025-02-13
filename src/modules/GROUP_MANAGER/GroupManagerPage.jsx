@@ -155,7 +155,9 @@ const GroupManagerPage = (props)=>{
             try {
                 let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups_get', 
                   {
-                      data: {},
+                      data: {
+                        id_company: null
+                      },
                       _token: CSRF_TOKEN
                   });
                   setBaseGroupList(response.data.data);
@@ -246,7 +248,7 @@ const GroupManagerPage = (props)=>{
             const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/links/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/links/' + body.group_id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -349,6 +351,7 @@ const GroupManagerPage = (props)=>{
             // update
             update_group(group);
         }
+        setEditorOpened(false);
         console.log(group);
     }
 

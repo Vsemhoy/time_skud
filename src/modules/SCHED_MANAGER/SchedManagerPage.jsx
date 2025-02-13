@@ -238,7 +238,7 @@ const SchedManagerPage = (props) => {
         }
 
 
-    /**
+    /** Создание графика в бж
        * 
        * @param {*} req 
        * @param {*} res 
@@ -260,7 +260,7 @@ const SchedManagerPage = (props) => {
         }
     }
 
-    /**
+    /** Обновление данных графика
        *  
        * @param {*} req 
        * @param {*} res 
@@ -286,8 +286,8 @@ const SchedManagerPage = (props) => {
                 );
             }
         }
-
-    /**
+ 
+    /** Удаление графика с постановкой deleted=1
        *  
        * @param {*} req 
        * @param {*} res 
@@ -313,6 +313,36 @@ const SchedManagerPage = (props) => {
         setEditorModalOpen(false);
         // setAllowDelete(false);
     }
+
+
+
+    /**
+     * Перелинковка cущностей с графиками
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const update_links = async (body, req, res) => {
+            console.log('body',body);
+            try {
+                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/schedule/links/' + body.schedule_id,
+                    {   
+                        data: body, 
+                        _token: CSRF_TOKEN
+                    }
+                );
+                console.log('users', response);
+                // setBaseUserListData(response.data.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // setBaseCalendarList(prevList => 
+                //     prevList.map(item => 
+                //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                //     )
+                // );
+            }
+        }
+
     /** ------------------ FETCHES END ---------------- */
 
     
@@ -392,11 +422,17 @@ const SchedManagerPage = (props) => {
         let toUpdate = data[1];
         let toDelete = data[2];
 
+        const addUsers = [];
+        const addGroups = [];
+        const rmUsers = [];
+        const rmGroups = [];
+
         for (let i = 0; i < entities.length; i++) {
             const element = entities[i];
             if (element.type === 3){
                 for (const item of toUpdate) {
                     if (item.type === 3 && item.id === element.id){
+                        addUsers.push(entities[i].id);
                         entities[i].schedule_id = sched_id;
                         console.log("added item id " + element.id + " to " + sched_id);
                         break;
@@ -404,6 +440,7 @@ const SchedManagerPage = (props) => {
                 }
                 for (const item of toDelete) {
                     if (item.type === 3 && item.id === element.id){
+                        rmUsers.push(entities[i].id);
                         entities[i].schedule_id = 0;
                         console.log("rem item id " + element.id + " to " + sched_id);
                         break;
@@ -413,6 +450,7 @@ const SchedManagerPage = (props) => {
             if (element.type === 2){
                 for (const item of toUpdate) {
                     if (item.type === 2 && item.id === element.id){
+                        addGroups.push(entities[i].id);
                         entities[i].schedule_id = sched_id;
                         console.log("added item id " + element.id + " to " + sched_id);
                         break;
@@ -420,6 +458,7 @@ const SchedManagerPage = (props) => {
                 }
                 for (const item of toDelete) {
                     if (item.type === 2 && item.id === element.id){
+                        rmGroups.push(entities[i].id);
                         entities[i].schedule_id = 0;
                         console.log("re item id " + element.id + " to " + sched_id);
                         break;
@@ -427,6 +466,15 @@ const SchedManagerPage = (props) => {
                 }
             }
         }
+        update_links(
+        {
+            schedule_id: sched_id,
+            linked_users : addUsers,
+            unlinked_users: rmUsers,
+            linked_groups : addGroups,
+            unlinked_groups: rmGroups,
+        });
+
         console.log(entities);
         setBaseEntityList(entities);
         setUserManagerModalOpen(false);

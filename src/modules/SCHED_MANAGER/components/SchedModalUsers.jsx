@@ -23,13 +23,17 @@ const SchedModalUsers = (props)=>{
       const [userCount, setUserCount] = useState(0);
 
       const [dataToUpdate, setDataToupdate] = useState([]);
-  
+
+  const [ entToUnlink, setEntToUnlink] = useState([]);
+  const [ entToLink, setEntToLink] = useState([]);
   
       useEffect(()=>{
         if (props.open){
           setTargetId(props.target_id);
           setOpen(props.open);
           setEntityList(props.data);
+          setEntToLink([]);
+          setEntToUnlink([]);
         }
       },[props.data, props.open, props.target_id]);
       
@@ -124,17 +128,11 @@ const SchedModalUsers = (props)=>{
     };
 
 
-    const handleChange = (newTargetKeys, direction, moveKeys) => {
-      const addedKeys = direction === 'right' ? moveKeys  : [];
-      const removedKeys = direction === 'left' ? moveKeys : [];
-    
-      console.log('Только что привязанные:', addedKeys);
-      console.log('Только что отвязанные:', removedKeys);
-    
-      // Здесь можно обновить состояние, если нужно
-      setTargetKeys(newTargetKeys);
-    
-        setDataToupdate([targetId,
+    useEffect(()=>{
+      const addedKeys = entToLink;
+      const removedKeys = entToUnlink;
+      setDataToupdate([
+        targetId,
            addedKeys.map((item)=>{
             console.log(item);
             if (item.includes('group')){
@@ -152,7 +150,24 @@ const SchedModalUsers = (props)=>{
             return {type: 3, id: parseInt(item.replace('user_', ''))};
           }
         })]);
-      
+     },[entToLink, entToUnlink]);
+
+
+    const handleChange = (newTargetKeys, direction, moveKeys) => {
+      const addedKeys = direction === 'right' ? moveKeys  : [];
+      const removedKeys = direction === 'left' ? moveKeys : [];
+    
+      // console.log('Только что привязанные:', addedKeys);
+      // console.log('Только что отвязанные:', removedKeys);
+
+      const filteredAdd_prev = entToLink.filter((item) => !removedKeys.includes(item));
+      const filteredRmv_prev = entToUnlink.filter((item) => !addedKeys.includes(item));
+
+      setEntToLink(filteredAdd_prev.concat(addedKeys));
+      setEntToUnlink(filteredRmv_prev.concat(removedKeys));
+    
+      // Здесь можно обновить состояние, если нужно
+      setTargetKeys(newTargetKeys);
     };
 
     const localFilter = (inputValue, option) => {
@@ -189,7 +204,7 @@ const SchedModalUsers = (props)=>{
           onChange={handleChange}
           render={(item) => (
             <span className={'sk-flex-space'} title={item.description}>
-              {item.title} {item.type === 3 ? (<Tag color="volcano">Group</Tag>) : (<Tag color="cyan">USER</Tag>)}
+              {item.title} {item.type === 2 ? (<Tag color="volcano">Group</Tag>) : (<Tag color="cyan">USER</Tag>)}
             </span>
           )}
           

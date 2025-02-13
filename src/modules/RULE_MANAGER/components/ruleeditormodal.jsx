@@ -52,6 +52,14 @@ const RuleEditorModal = (props) => {
         setEditedItem(null);
       }
     }
+    for (let i = 0; i < props.type_list.length; i++) {
+      const el = props.type_list[i];
+      if (el.id === ruleType){
+          setVarText1(el.variable_a);
+          setVarText2(el.variable_b);
+          break;
+      }
+    }
   }, [props, form]);
 
 
@@ -81,7 +89,6 @@ const RuleEditorModal = (props) => {
             setVarText2(el.variable_b);
             break;
         }
-        
     }
   },[ruleType]);
 
@@ -233,6 +240,7 @@ const RuleEditorModal = (props) => {
         </Form.Item>
 
         <Form.Item
+          className={'sk-rule-mark'}
           label={varText1}
           name="variable_a"
           type="boolean"
@@ -242,6 +250,7 @@ const RuleEditorModal = (props) => {
         </Form.Item>
 
         <Form.Item
+          className={'sk-rule-mark'}
           label={varText2}
           name="variable_b"
           type="boolean"
