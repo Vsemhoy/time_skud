@@ -4,7 +4,7 @@ import React from 'react';
 import Snake from "../../../media/zodiac/snake-svgrepo-com.svg";
 import Rabbit from "../../../media/zodiac/rabbit-shape-svgrepo-com.svg";
 import Dragon from "../../../media/zodiac/tyrannosaurus-rex-silhouette-svgrepo-com.svg";
-import Pig from "../../../media/zodiac/rabbit-shape-svgrepo-com.svg";
+import Pig from "../../../media/zodiac/pig-side-view-silhouette-svgrepo-com.svg";
 import Bull from "../../../media/zodiac/bull-silhouette-svgrepo-com.svg";
 import Monkey from "../../../media/zodiac/monkey-svgrepo-com.svg";
 import Dog from "../../../media/zodiac/running-dog-silhouette-svgrepo-com.svg";
