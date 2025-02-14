@@ -31,7 +31,7 @@ const GroupManagerPage = (props)=>{
     const [groupList, setGroupList] = useState([]);
 
     const [openedCooxer, setOpenedCooxer] = useState(0);
-    const [ctrKey, setCtrlKey] = useState(false);
+    const [ctrlKey, setCtrlKey] = useState(false);
 
     const [editorOpened, setEditorOpened] = useState(false);
     const [editedGroupId, setEditedGroupId] = useState(0);
@@ -133,6 +133,7 @@ const GroupManagerPage = (props)=>{
                 data: {
                     status: 0,
                     deleted: 0,
+                    id_company: null,
                 },
                 _token: CSRF_TOKEN
             });
@@ -146,7 +147,7 @@ const GroupManagerPage = (props)=>{
     }
 
 
-        /**
+    /**
      * Получение списка групп
      * @param {*} req 
      * @param {*} res 
@@ -275,7 +276,7 @@ const GroupManagerPage = (props)=>{
     const delete_group = async (group_id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/groups/' + group_id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/groups/' + group_id,
                 {   
                     data: { "id" : group_id}, 
                     _token: CSRF_TOKEN
@@ -323,7 +324,7 @@ const GroupManagerPage = (props)=>{
     }
 
     const openModalEditor = (group_id, event) => {
-        if (event.ctrlKey){
+        if (event && event.ctrlKey){
             setCtrlKey(true);
         } else {
             setCtrlKey(false);
@@ -341,6 +342,8 @@ const GroupManagerPage = (props)=>{
     const deleteGroup = (group_id) => {
         console.log('delete group', group_id);
         delete_group(group_id);
+        setCtrlKey(false);
+        setEditorOpened(false);
     }
 
     const saveGroup = (group) => {
@@ -389,6 +392,7 @@ const GroupManagerPage = (props)=>{
                         base_users={userList}
                         on_link_update={updateUserLinks}
                         on_open_editor={openModalEditor}
+                        user_data={userData}
                         />
                 ))}
 
@@ -405,7 +409,7 @@ const GroupManagerPage = (props)=>{
                     item_list={baseGroupList}
                     target_id={editedGroupId}
                     on_cancel={cancelModalEditor}
-                    ctrl_key={ctrKey}
+                    ctrl_key={ctrlKey}
                     on_delete={deleteGroup}
                     user_data={userData}
                     on_save={saveGroup}

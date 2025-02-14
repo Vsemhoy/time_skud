@@ -10,7 +10,7 @@ const RuleEditorModal = (props) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [targetId, setTargetId] = useState(null);
-  const [ctrKey, setCtrlKey] = useState(false);
+  const [ctrlKey, setCtrlKey] = useState(false);
   const [ruleType, setRuleType] = useState(1);
   const [usedCompany, setUsedCompany] = useState(0);
 
@@ -18,6 +18,9 @@ const RuleEditorModal = (props) => {
   const [varText2, setVarText2] = useState("Условие 2");
 
   const [editedItem, setEditedItem] = useState(null);
+
+  const [_durationTime, _setDurationTime] = useState(0);
+
 
   useEffect(() => {
     setOpen(props.open);
@@ -37,6 +40,7 @@ const RuleEditorModal = (props) => {
           variable_a: targetItem.variable_a,
           variable_b: targetItem.variable_b,
         });
+        _setDurationTime(targetItem.duration_time !== 0 ? targetItem.duration_time / 60 : 0);
         get_groupItem();
         console.log('element', targetItem);
       } else {
@@ -50,13 +54,14 @@ const RuleEditorModal = (props) => {
           variable_b: 0,
         });
         setEditedItem(null);
+        _setDurationTime(60);
       }
     }
     for (let i = 0; i < props.type_list.length; i++) {
       const el = props.type_list[i];
       if (el.id === ruleType){
-          setVarText1(el.variable_a);
-          setVarText2(el.variable_b);
+          setVarText1(el.variable_a.replace('{###}', _durationTime));
+          setVarText2(el.variable_b.replace('{###}', _durationTime));
           break;
       }
     }
@@ -85,12 +90,16 @@ const RuleEditorModal = (props) => {
     for (let i = 0; i < props.type_list.length; i++) {
         const el = props.type_list[i];
         if (el.id === ruleType){
-            setVarText1(el.variable_a);
-            setVarText2(el.variable_b);
+          setVarText1(el.variable_a.replace('{###}', _durationTime));
+          setVarText2(el.variable_b.replace('{###}', _durationTime));
             break;
         }
     }
-  },[ruleType]);
+  },[ruleType, _durationTime]);
+
+  useEffect(()=>{
+    console.log(form);
+   },[form]);
 
 
 
@@ -138,22 +147,29 @@ const RuleEditorModal = (props) => {
     const value = e.target.value;
     if (value.length <= maxLength) {
       form.setFieldsValue({ [e.target.id]: value });
+      _setDurationTime(parseInt(value));
     } else {
       form.setFieldsValue({ [e.target.id]: value.slice(0, maxLength) });
+      _setDurationTime(parseInt(value.slice(0, maxLength)));
     }
   };
 
-  const deleteGroup = () => {
-    if (props.on_delete)
-    {
-      props.on_delete(targetId);
-    }
-  }
+
 
 
   const changeRuleType = (value) => {
     setRuleType(value);
   }
+
+  const deleteRule = () => {
+    if (window.confirm("Действительно удалить группу?")){
+      if (props.on_delete)
+      {
+        props.on_delete(targetId);
+      }
+    }
+  }
+
 
   return (
     <Modal
@@ -227,7 +243,7 @@ const RuleEditorModal = (props) => {
         </Form.Item>
 
         <Form.Item
-          label="Временной интервал в минутах"
+          label="Временной интервал в минутах / ограничение времени выполнения действия"
           name="duration_time"
           type="number"
           rules={[
@@ -260,15 +276,7 @@ const RuleEditorModal = (props) => {
         </Form.Item>
 
 
-        {ctrKey ? (
-          <Form.Item
 
-          >
-            <Button  type="primary"
-              onClick={deleteGroup}
-              danger>Удалить группу и отвязать всех пользователей</Button>
-          </Form.Item>
-        ) : ""}
         
       </Form>
       {editedItem ? (
@@ -292,7 +300,13 @@ const RuleEditorModal = (props) => {
 
       </div>
       ) : ""}
-
+        {ctrlKey ? (
+          <div style={{marginTop: 22}}>
+                <Button  type="primary"
+                  onClick={deleteRule} 
+                  danger>Удалить правило и отвязать всех пользователей</Button>
+                  </div>
+              ) : ""}
     </Modal>
   );
 };

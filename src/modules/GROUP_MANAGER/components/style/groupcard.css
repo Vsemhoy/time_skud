@@ -38,18 +38,16 @@
 .sk-gruser-card {
     display: grid;
     grid-template-columns: 30px auto 100px 100px;
-    
-
 }
-.sk-group-card {
 
-}
+
 
 .sk-grp-card-head {
     display: grid;
-    grid-template-columns: 26px auto 30px 30px 30px;
+    grid-template-columns: 60px auto 30px 30px 30px;
     grid-gap: 9px;
 }
+
 
 .ant-card:hover {
     box-shadow: 0 5px 10px 0px #223c5050;
@@ -134,7 +132,3 @@
 }
 
 
-.sk-card-id-tag {
-    font-size: medium;
-    color: gray;
-}

@@ -1,7 +1,7 @@
 import { Button, Card, Checkbox, Empty, Tag, Transfer } from "antd";
 import React, { useEffect, useState } from "react";
 import "./style/groupcard.css";
-import { DownOutlined, EditOutlined, UpOutlined } from "@ant-design/icons";
+import { DownOutlined, EditOutlined, UpOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
 
 const GroupCardItem = (props)=>{
@@ -104,16 +104,25 @@ const GroupCardItem = (props)=>{
   };
   
 
-
+  const onDoubleClick = (event) =>{
+    if (event.ctrlKey){
+      if (props.on_open_editor){
+        props.on_open_editor(group_id);
+      }
+      setOpened(false);
+    } else {
+      if (!opened && props.on_open_cooxer){
+          props.on_open_cooxer(props.data.id);
+      }
+    }
+  }
 
 
   const onOpenCooxer = (event) => {
     if (event.target.closest('.ant-transfer')){ return; };
-    console.log('open cooxer')
-    if (!opened && props.on_open_cooxer){
-        props.on_open_cooxer(props.data.id);
-    }
-    setOpened(!opened);
+      if (!opened && props.on_open_cooxer){
+          props.on_open_cooxer(props.data.id);
+      }
   }
 
   
@@ -132,14 +141,17 @@ const GroupCardItem = (props)=>{
 
     return (
         <Card className={"ant-card-small"} 
-        onDoubleClick={onOpenCooxer}
+        onDoubleClick={onDoubleClick}
         > 
         <div className={`sk-group-card ${opened ? "opened" : "cooxed"}`}
         >
             <div className={'sk-grp-card-head'}>
-            <div>
-                <span className={'sk-card-id-tag'}>{group_id}</span>
-                    </div>
+            <div className="sk-com-tag">
+                { props.user_data && props.user_data.companies.length > 1? (
+                  <Tag title={group_id} color={props.data.company_color} >{props.data.company_name.toUpperCase()}</Tag>
+                ) : (<span className={'sk-card-id-tag'}>{group_id}</span>)
+                }
+            </div>
                     <div>
                         {name}
                     </div>
@@ -165,7 +177,7 @@ const GroupCardItem = (props)=>{
                             onClick={onOpenCooxer}
                         >
                             <div className={'sk-card-cooxer-cooxed'}>
-                                <DownOutlined />
+                              <UserSwitchOutlined />
                             </div>
                             <div className={'sk-card-cooxer-opened'}>
                                 <UpOutlined />

@@ -91,7 +91,7 @@ const SchedListRow = (props)=>{
     const openEditor = (event) => {
         if (props.onOpenEditorModal)
         {
-            props.onOpenEditorModal(itemId);
+            props.onOpenEditorModal(itemId, event);
         }
     }
 
@@ -103,18 +103,22 @@ const SchedListRow = (props)=>{
     }
 
     const handleDoubleClick = (event) => {
-        if (event.ctrlKey){
+        if (!event.ctrlKey){
             if (props.onOpenUserManager)
-                {
-                    props.onOpenUserManager(itemId);
-                }
+            {
+                props.onOpenUserManager(itemId);
+            }
         } else {
             if (props.onOpenEditorModal)
-                {
-                    props.onOpenEditorModal(itemId);
-                }
+            {
+                props.onOpenEditorModal(itemId);
+            }
         }
     }
+
+    // const onDoubleClick = (event) => {
+
+    // }
 
 
     return (

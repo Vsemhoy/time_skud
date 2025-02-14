@@ -43,6 +43,8 @@ const SchedModalEditor = (props)=>{
   const [idSkudProdCalendar, setIdSkudProdCalendar] = useState(null);
   const [creatorId, setCreatorId]                   = useState(null);
 
+    const [ctrlKey, setCtrlKey] = useState(false);
+
   const [usedSchedType, setUsedSchedType]           = useState(1);
 
   const [prodCalendars, setProdCalendars] = useState(DS_PROD_CALENDARS);
@@ -64,7 +66,7 @@ const SchedModalEditor = (props)=>{
       if (props.open){
         console.log('props.data', props.data)
         setIdSkudScheduleType(props.data ? props.data.skud_schedule_type_id : 1);
-        
+        setCtrlKey(props.ctrl_key);
         let COM_ID = props.data && props.id_company ? props.data.id_company : props.userData.companies.reverse()[0].id;
         setIdCompany(COM_ID);
 
@@ -232,7 +234,16 @@ const SchedModalEditor = (props)=>{
     }
 
 
+    const deleteSchedule = () => {
+      if (window.confirm("Точно удалить группу?")){
+        if (props.on_delete)
+        {
+          props.on_delete(targetId);
+        }
+      }
 
+
+    }
 
 
 
@@ -266,20 +277,20 @@ const SchedModalEditor = (props)=>{
             options={props.schedTypes}
             disabled={deleted}
           />
-
+        
         {/* <div>
           <Alert message="Обычный пятидневный график."
            description="Установите начало и конец рабочего дня с учётом входящего времени обеда."
            type="warning" />
         </div> */}
 
-          { usedSchedType ? (
+
+          { !ctrlKey ?? usedSchedType ? (
             <Collapse
               style={{width:'100%'}}
               size="small"
               items={[{ key: '1', label: 'График: ' + usedSchedType.label, children: <p>
                 {usedSchedType.description}
-                
               </p> }]}
             />
 
@@ -538,6 +549,14 @@ const SchedModalEditor = (props)=>{
               data={schedule}  schedule_id={targetId}
               updater={updateSchedule} />):""}
         </div>
+        
+        {ctrlKey ? (
+          <div style={{marginTop: 22}}>
+                <Button  type="primary"
+                  onClick={deleteSchedule} 
+                  danger>Удалить график и отвязать всех пользователей</Button>
+                  </div>
+              ) : ""}
       </Modal>
     )
 };

@@ -29,7 +29,7 @@ const SchedManagerPage = (props) => {
 
     const [scheduleList, setScheduleList] = useState([]);
     const [scheduleTypes, setScheduleTypes] = useState([]);
-
+    const [ctrlKey, setCtrlKey] = useState(false);
 
     const [userManagerModalOpen, setUserManagerModalOpen] = useState(false);
     const [editorModalOpen, setEditorModalOpen] = useState(false);
@@ -145,7 +145,7 @@ const SchedManagerPage = (props) => {
      */
     const get_entityList = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/entities_get', 
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/entities_get', 
             {
                 data: {
                     status: 0,
@@ -295,10 +295,15 @@ const SchedManagerPage = (props) => {
     const delete_schedule = async (body, req, res) => {
         console.log('body',body);
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/schedule/schedule/' + body.id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/schedule/schedule/' + body + '?_token=' + CSRF_TOKEN,
                 {   
-                    data: body, 
-                    _token: CSRF_TOKEN
+                    data: {
+                         data: {
+                            id: body
+                        },
+                        _token: CSRF_TOKEN
+                    }
+      
                 }
             );
             console.log('response.data', response.data);
@@ -358,13 +363,19 @@ const SchedManagerPage = (props) => {
     }
 
     
-    const openEditorModal = (id)=>{
+    const openEditorModal = (id, event)=>{
+        if (event && event.ctrlKey){
+            setCtrlKey(true);
+        } else {
+            setCtrlKey(false);
+        }
         setEditedId(id);
         setEditedItem(baseScheduleList.find((el)=> el.id === id));
         setEditorModalOpen(true);
     }
     const cancelEditorModal = ()=>{
         setEditorModalOpen(false);
+        setCtrlKey(false);
     }
 
 
@@ -480,6 +491,13 @@ const SchedManagerPage = (props) => {
         setUserManagerModalOpen(false);
     }
 
+
+    const deleteSchedule = (group_id) => {
+        console.log('delete sch', group_id);
+        delete_schedule(group_id);
+        setCtrlKey(false);
+    }
+
     return (
         <div className={'sk-mw-1400'}>
             <br />
@@ -518,6 +536,8 @@ const SchedManagerPage = (props) => {
                 userData={userdata}
                 prodCalendars={baseProdCalendars}
                 schedTypes={scheduleTypes}
+                on_delete={deleteSchedule}
+                ctrl_key={ctrlKey}
                 />
 
             <SchedModalUsers

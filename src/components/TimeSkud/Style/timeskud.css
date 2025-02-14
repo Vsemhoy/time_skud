@@ -238,3 +238,41 @@ font-size: smaller;
 .sk-form-group > input {
     width: 100%;
 }
+
+.ant-card .sk-com-tag {
+    opacity: 0.7;
+    transition: 0.3s;
+}
+.ant-card:hover .sk-com-tag {
+    opacity: 1;
+}
+.sk-com-tag {
+    overflow: hidden;
+    width: 100%;
+}
+.sk-card-id-tag {
+    font-size: medium;
+    color: rgb(82, 82, 82);
+    width: 100%;
+    max-width: 45px;
+    display: block;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    line-height: normal;
+}
+
+.sk-modal-stat {
+    background-color: #f1f1f1;
+    border: 1px solid #cfcfcf;
+    color: #4b4b4b;
+    border-radius: 3px;
+    padding: 6px;
+}
+.sk-modal-stat td {
+    border-bottom: 1px solid #cfcfcf;
+}
+.sk-modal-stat table {
+    width: 100%;
+}

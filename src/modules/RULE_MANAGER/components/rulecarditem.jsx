@@ -1,7 +1,7 @@
 import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import "./style/rulecard.css";
-import { DownOutlined, EditOutlined, InboxOutlined, UpOutlined, UserOutlined } from "@ant-design/icons";
+import { DownOutlined, EditOutlined, InboxOutlined, UpOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
 import RuleIcons from "./RuleIcons";
 const { Text, Link } = Typography;
@@ -146,6 +146,20 @@ const RuleCardItem = (props)=>{
     }
   }
 
+  const onDoubleClick = (event) =>{
+    if (event.ctrlKey){
+      if (props.on_open_editor){
+        props.on_open_editor(rule_id);
+      }
+      setOpened(false);
+    } else {
+      if (!opened && props.on_open_cooxer){
+          props.on_open_cooxer(props.data.id);
+      }
+    }
+  }
+
+
   const localFilter = (inputValue, option) => {
     return option.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1 ||
          option.description.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
@@ -153,7 +167,7 @@ const RuleCardItem = (props)=>{
 
     return (
         <Card className={`ant-card-small sk-rule-type-${ruleType}`} 
-        onDoubleClick={onOpenCooxer}
+        onDoubleClick={onDoubleClick}
         > 
         <div className={`sk-rule-card ${opened ? "opened" : "cooxed"}`}
         >
@@ -164,6 +178,12 @@ const RuleCardItem = (props)=>{
                     <div>
                         {name}
                     </div>
+                      <div className="sk-com-tag">
+                          { props.user_data && props.user_data.companies.length > 1? (
+                            <Tag title={rule_id} color={props.data.company_color} >{props.data.company_name.toUpperCase()}</Tag>
+                          ) : (<span className={'sk-card-id-tag'}>{rule_id}</span>)
+                          }
+                      </div>
                     <div>
                     <Text type="secondary" className={'sk-flex'}>
                         <div title={'пользователей'}>{userCount} <UserOutlined /></div>
@@ -182,7 +202,7 @@ const RuleCardItem = (props)=>{
                             onClick={onOpenCooxer}
                         >
                             <div className={'sk-card-cooxer-cooxed'}>
-                                <DownOutlined />
+                              <UserSwitchOutlined />
                             </div>
                             <div className={'sk-card-cooxer-opened'}>
                                 <UpOutlined />

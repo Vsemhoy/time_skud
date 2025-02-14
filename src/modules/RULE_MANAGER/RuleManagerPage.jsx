@@ -26,7 +26,7 @@ const RuleManagerPage = (props) => {
     const [ruleList, setRuleList] = useState([]);
 
         const [openedCooxer, setOpenedCooxer] = useState(0);
-        const [ctrKey, setCtrlKey] = useState(false);
+        const [ctrlKey, setCtrlKey] = useState(false);
     
         const [editorOpened, setEditorOpened] = useState(false);
         const [editedRuleId, setEditedRuleId] = useState(0);
@@ -103,6 +103,80 @@ const RuleManagerPage = (props) => {
 
 
 
+  /** ------------------ FETCHES ---------------- */
+    /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_groupList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get', 
+                  {
+                      data: {
+                        id_company: null
+                      },
+                      _token: CSRF_TOKEN
+                  });
+                  setBaseRuleList(response.data.data);
+                  console.log('get_calendarList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+            }
+          }
+
+
+    /**
+         * создание правила
+         * @param {*} req 
+         * @param {*} res 
+         */
+        const create_rule = async (body, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules',
+                {
+                    data: body, 
+                    _token: CSRF_TOKEN
+                });
+            console.log('users', response);
+            // setBaseUserListData(response.data.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            get_groupList();
+        }
+    }
+    
+  
+    /**
+     *  Обновление данных правила
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const update_group = async (body, req, res) => {
+        console.log('body',body);
+        try {
+            let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/rules/' + body.id,
+                {   
+                    data: body, 
+                    _token: CSRF_TOKEN
+                }
+            );
+            console.log('users', response);
+            // setBaseUserListData(response.data.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setBaseRuleList(prevList => 
+                prevList.map(item => 
+                    item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                )
+            );
+        }
+    }
+
 
 
     /**
@@ -131,6 +205,32 @@ const RuleManagerPage = (props) => {
                 // );
             }
         }
+
+    /**
+       * удаление правила
+       * @param {*} req 
+       * @param {*} res 
+       */
+    const delete_rule = async (group_id, req, res) => {
+
+        try {
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/groups/' + group_id + '?_token=' + CSRF_TOKEN,
+                {   
+                    data: { "id" : group_id}, 
+                    _token: CSRF_TOKEN
+                }
+            );
+            console.log('response.data', response.data);
+            if (response.data.status === 0){
+                get_groupList();
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setBaseRuleList(baseRuleList.filter((item)=>{return item.id !== group_id}));
+        }
+    }
+
   /** ------------------ FETCHES END ---------------- */
 
 
@@ -141,7 +241,7 @@ const RuleManagerPage = (props) => {
 
 
     const openModalEditor = (group_id, event) => {
-        if (event.ctrlKey){
+        if (event && event.ctrlKey){
             setCtrlKey(true);
         } else {
             setCtrlKey(false);
@@ -156,20 +256,20 @@ const RuleManagerPage = (props) => {
         setEditorOpened(false);
     }
 
-    const deleteGroup = (group_id) => {
+    const deleteRule = (group_id) => {
         console.log('delete group', group_id);
         // delete_group(group_id);
     }
 
-    const saveGroup = (group) => {
-        if (group.id == null || group.id == 0){
+    const saveRule = (data) => {
+        if (data.id == null || data.id == 0){
             // create
             // create_group(group);
         } else {
             // update
             // update_group(group);
         }
-        console.log(group);
+        console.log('data to save', data);
     }
 
     const openBlankEditor = () => {
@@ -282,6 +382,7 @@ const RuleManagerPage = (props) => {
                         on_link_update={updateEntityLinks}
                         on_open_editor={openModalEditor}
                         on_manage_entities={updateEntityLinks}
+                        user_data={userdata}
                         />
                     ))
                 }
@@ -293,10 +394,10 @@ const RuleManagerPage = (props) => {
                     item_list={baseRuleList}
                     target_id={editedRuleId}
                     on_cancel={cancelModalEditor}
-                    ctrl_key={ctrKey}
-                    on_delete={deleteGroup}
+                    ctrl_key={ctrlKey}
+                    on_delete={deleteRule}
                     user_data={userdata}
-                    on_save={saveGroup}
+                    on_save={saveRule}
                     type_list={ruleTypes}
             />
         </div>

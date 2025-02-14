@@ -162,11 +162,11 @@ function App() {
             </MenuItem>
 
 
-            <MenuItem>
+            {/* <MenuItem>
               <Link 
               onClick={()=>{ setLocation('admin/schedules')}}
               >Заявки на смену графика</Link>
-            </MenuItem>
+            </MenuItem> */}
 
             <MenuItem>
               <Link 

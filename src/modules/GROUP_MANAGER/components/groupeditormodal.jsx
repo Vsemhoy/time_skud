@@ -10,7 +10,7 @@ const GroupEditorModal = (props) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [targetId, setTargetId] = useState(null);
-  const [ctrKey, setCtrlKey] = useState(false);
+  const [ctrlKey, setCtrlKey] = useState(false);
   const [usedCompany, setUsedCompany] = useState(0);
 
   const [editedItem, setEditedItem] = useState(null);
@@ -29,7 +29,9 @@ const GroupEditorModal = (props) => {
           description: targetItem.description,
           id_company: targetItem.id_company
         });
-        get_groupItem();
+        if (props.target_id){
+          get_groupItem(props.target_id);
+        }
         console.log('element', targetItem);
       } else {
         form.setFieldsValue({
@@ -68,7 +70,7 @@ const GroupEditorModal = (props) => {
      */
     const get_groupItem = async (item_id, req, res ) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get/' + item_id, 
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups/' + item_id, 
                 {
                     data: {},
                     _token: CSRF_TOKEN
@@ -95,6 +97,7 @@ const GroupEditorModal = (props) => {
       setOpen(false);
       values.id = targetId;
       values.deleted = 0;
+      values.description = values.description || "";
       if (props.on_save) {
         props.on_save(values);
       }
@@ -112,9 +115,11 @@ const GroupEditorModal = (props) => {
   };
 
   const deleteGroup = () => {
-    if (props.on_delete)
-    {
-      props.on_delete(targetId);
+    if (window.confirm("Действительно удалить группу?")){
+      if (props.on_delete)
+      {
+        props.on_delete(targetId);
+      }
     }
   }
 
@@ -180,7 +185,7 @@ const GroupEditorModal = (props) => {
                 ) : ''}
 
 
-        {ctrKey ? (
+        {ctrlKey ? (
           <Form.Item
 
           >
@@ -196,16 +201,24 @@ const GroupEditorModal = (props) => {
           <table>
             <tbody>
               <tr>
+                <td>id</td>
+                <td>{editedItem.id}</td>
+              </tr>
+              <tr>
                 <td>Создатель</td>
-                <td>{editedItem.surname} {editedItem.name} {editedItem.patronymic}</td>
+                <td>{editedItem.creator_surname} {editedItem.creator_name} {editedItem.creator_patronymic}</td>
               </tr>
               <tr>
                 <td>Дата создания</td>
-                <td>{editedItem.created_at}</td>
+                <td>{ dayjs(editedItem.created_at).format("DD-MM-YYYY HH:mm")}</td>
               </tr>
               <tr>
                 <td>Последнее обновление</td>
-                <td>{editedItem.updated_at}</td>
+                <td>{ dayjs(editedItem.updated_at).format("DD-MM-YYYY HH:mm")}</td>
+              </tr>
+              <tr>
+                <td>Целевое подразделение</td>
+                <td>{editedItem.company_name}</td>
               </tr>
             </tbody>
           </table>
