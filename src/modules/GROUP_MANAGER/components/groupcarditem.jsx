@@ -109,7 +109,7 @@ const GroupCardItem = (props)=>{
       if (props.on_open_editor){
         props.on_open_editor(group_id);
       }
-      setOpened(false);
+      // setOpened(false);
     } else {
       if (!opened && props.on_open_cooxer){
           props.on_open_cooxer(props.data.id);
