@@ -36,11 +36,11 @@ const RuleEditorModal = (props) => {
           name: targetItem.name,
           rule_type_id: targetItem.rule_type_id,
           id_company: targetItem.id_company,
-          duration_time: targetItem.duration_time !== 0 ? targetItem.duration_time / 60 : 0,
+          duration_time: targetItem.duration_time !== 0 ? (targetItem.duration_time / 60).toFixed() : 0,
           variable_a: targetItem.variable_a,
           variable_b: targetItem.variable_b,
         });
-        _setDurationTime(targetItem.duration_time !== 0 ? targetItem.duration_time / 60 : 0);
+        _setDurationTime(targetItem.duration_time !== 0 ? (targetItem.duration_time / 60).toFixed() : 0);
         get_groupItem();
         console.log('element', targetItem);
       } else {
@@ -60,8 +60,8 @@ const RuleEditorModal = (props) => {
     for (let i = 0; i < props.type_list.length; i++) {
       const el = props.type_list[i];
       if (el.id === ruleType){
-          setVarText1(el.variable_a.replace('{###}', _durationTime));
-          setVarText2(el.variable_b.replace('{###}', _durationTime));
+          setVarText1(el.variable_a.replace('{###}', _durationTime).replace('{###}', _durationTime));
+          setVarText2(el.variable_b.replace('{###}', _durationTime).replace('{###}', _durationTime));
           break;
       }
     }

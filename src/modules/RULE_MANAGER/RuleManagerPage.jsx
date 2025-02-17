@@ -35,10 +35,14 @@ const RuleManagerPage = (props) => {
 
     useEffect(()=>{
         if (PRODMODE){
-        }
-        setBaseEntityList(DS_SCHEDULE_ENTITIES);
-        setRuleTypes(DS_RULE_TYPES);
-        setBaseRuleList(DS_RULES);
+            setBaseEntityList(DS_SCHEDULE_ENTITIES);
+            setRuleTypes(DS_RULE_TYPES);
+            setBaseRuleList(DS_RULES);
+        } else {
+            get_ruleTypes();
+            get_entityList();
+            get_ruleList();
+        } 
     },[]);
 
 
@@ -105,11 +109,58 @@ const RuleManagerPage = (props) => {
 
   /** ------------------ FETCHES ---------------- */
     /**
+     * Получение сущностей
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_entityList = async (req, res) => {
+      try {
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/entities_get', 
+            {
+                data: {
+                    status: 0,
+                    deleted: 0,
+                },
+                _token: CSRF_TOKEN
+            });
+            setBaseEntityList(response.data.data);
+            console.log('get_calendarList => ', response.data);
+      } catch (e) {
+          console.log(e)
+      } finally {
+          
+      }
+    }
+
+    /**
      * Получение списка правил
      * @param {*} req 
      * @param {*} res 
      */
-        const get_groupList = async (req, res) => {
+    const get_ruleTypes = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/types_get', 
+              {
+                  data: {
+                    deleted: 0
+                  },
+                  _token: CSRF_TOKEN
+              });
+              setRuleTypes(response.data.data);
+              console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+    /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_ruleList = async (req, res) => {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get', 
                   {
@@ -125,7 +176,7 @@ const RuleManagerPage = (props) => {
             } finally {
                 
             }
-          }
+        }
 
 
     /**
@@ -141,11 +192,11 @@ const RuleManagerPage = (props) => {
                     _token: CSRF_TOKEN
                 });
             console.log('users', response);
-            // setBaseUserListData(response.data.data);
+            setBaseRuleList([...baseRuleList, response.data.data]);
         } catch (e) {
             console.log(e)
         } finally {
-            get_groupList();
+            get_ruleList();
         }
     }
     
@@ -155,7 +206,7 @@ const RuleManagerPage = (props) => {
      * @param {*} req 
      * @param {*} res 
      */
-    const update_group = async (body, req, res) => {
+    const update_rule = async (body, req, res) => {
         console.log('body',body);
         try {
             let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/rules/' + body.id,
@@ -198,11 +249,7 @@ const RuleManagerPage = (props) => {
             } catch (e) {
                 console.log(e)
             } finally {
-                // setBaseCalendarList(prevList => 
-                //     prevList.map(item => 
-                //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
-                //     )
-                // );
+
             }
         }
 
@@ -222,7 +269,7 @@ const RuleManagerPage = (props) => {
             );
             console.log('response.data', response.data);
             if (response.data.status === 0){
-                get_groupList();
+                get_ruleList();
             }
         } catch (e) {
             console.log(e)
@@ -256,18 +303,21 @@ const RuleManagerPage = (props) => {
         setEditorOpened(false);
     }
 
-    const deleteRule = (group_id) => {
-        console.log('delete group', group_id);
-        // delete_group(group_id);
+    const deleteRule = (rule_id) => {
+        console.log('delete rule', rule_id);
+        deleteRule(rule_id);
     }
 
     const saveRule = (data) => {
-        if (data.id == null || data.id == 0){
+        if (data.duration_time !== 0){
+            data.duration_time = data.duration_time * 60;
+        }
+        if (data.id === null || data.id === 0){
             // create
-            // create_group(group);
+            create_rule(data);
         } else {
             // update
-            // update_group(group);
+            update_rule(data);
         }
         console.log('data to save', data);
     }
@@ -339,13 +389,13 @@ const RuleManagerPage = (props) => {
         setBaseEntityList(baseClone);
 
         update_links(
-            {
-                rule_id: rule_id,
-                linked_users : addUsers,
-                unlinked_users: rmUsers,
-                linked_groups : addGroups,
-                unlinked_groups: rmGroups,
-            });
+        {
+            rule_id: rule_id,
+            linked_users : addUsers,
+            unlinked_users: rmUsers,
+            linked_groups : addGroups,
+            unlinked_groups: rmGroups,
+        });
     }
 
         useEffect(()=>{

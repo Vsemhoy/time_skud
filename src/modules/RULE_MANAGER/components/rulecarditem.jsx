@@ -226,7 +226,7 @@ const RuleCardItem = (props)=>{
                         height: 500,
                     }}
                     operations={[ 'Добавить', 'Удалить']}
-                    titles={['Сущности без группы','Сущности в группе']}
+                    titles={['Не связанные Юзеры/Группы','Юзеры/Группы связанные с правилом']}
                     targetKeys={targetKeys}
                     onChange={handleChange}
                     render={(item) => (

@@ -276,3 +276,15 @@ font-size: smaller;
 .sk-modal-stat table {
     width: 100%;
 }
+
+.sk-2col-body {
+    display: grid;
+    grid-template-columns: auto 300px;
+    grid-gap: 12px;
+}
+
+.sk-2col-body > div {
+    /* background-color: lightgray; */
+    min-height: 200px;
+    /* background-color: #1677ff; */
+}

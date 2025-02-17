@@ -22,6 +22,7 @@ import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
 import ProdCalManagerPage from './modules/PROD_CAL_MANAGER/ProdCalManagerPage';
 import GroupManagerPage from './modules/GROUP_MANAGER/GroupManagerPage';
 import EventRandomixer from './modules/EVENT_RANDOMIXER/EventRandomixer';
+import AccountPage from './modules/ACCOUNT/AccountPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -136,6 +137,12 @@ function App() {
             </MenuItem>
 
             <MenuItem>
+              <Link
+                onClick={()=>{ setLocation('me')}}
+              >Моё</Link>
+            </MenuItem>
+
+            <MenuItem>
               <Link 
                 onClick={()=>{ setLocation('userlist')}}
               >Сотрудники</Link>
@@ -211,6 +218,7 @@ function App() {
         <div>
             {location === '' && <HomePage />}
             {location === 'home' && <HomePage />}
+            {location === 'me' && <AccountPage userdata={userAct} />}
             {location === 'admin' && <AdminPage />}
             {location === 'admin/rules' && <RuleManagerPage userdata={userAct} />}
             {location === 'admin/schedules' && <SchedManagerPage userdata={userAct} />}

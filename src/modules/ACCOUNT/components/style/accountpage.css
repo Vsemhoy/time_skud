@@ -1,0 +1,14 @@
+.sk-homepage-control {
+
+    padding-bottom: 22px;
+}
+.sk-ap-tab-title {
+    font-size: large;
+    border-bottom: 1px solid #0062cb;
+    color: #0264cd;
+}
+.sk-ap-btn-stack {
+    display: flex;
+    grid-gap: 12px;
+    flex-direction: column;
+}
