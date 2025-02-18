@@ -258,12 +258,12 @@ const RuleManagerPage = (props) => {
        * @param {*} req 
        * @param {*} res 
        */
-    const delete_rule = async (group_id, req, res) => {
+    const delete_rule = async (rule_id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/groups/' + group_id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/rules/' + rule_id,
                 {   
-                    data: { "id" : group_id}, 
+                    data: { "id" : rule_id}, 
                     _token: CSRF_TOKEN
                 }
             );
@@ -274,7 +274,7 @@ const RuleManagerPage = (props) => {
         } catch (e) {
             console.log(e)
         } finally {
-            setBaseRuleList(baseRuleList.filter((item)=>{return item.id !== group_id}));
+            setBaseRuleList(baseRuleList.filter((item)=>{return item.id !== rule_id}));
         }
     }
 
@@ -304,8 +304,9 @@ const RuleManagerPage = (props) => {
     }
 
     const deleteRule = (rule_id) => {
-        console.log('delete rule', rule_id);
-        deleteRule(rule_id);
+        delete_rule(rule_id);
+        setEditedRuleId(0);
+        setEditorOpened(false);
     }
 
     const saveRule = (data) => {
@@ -319,7 +320,8 @@ const RuleManagerPage = (props) => {
             // update
             update_rule(data);
         }
-        console.log('data to save', data);
+        setEditedRuleId(0);
+        setEditorOpened(false);
     }
 
     const openBlankEditor = () => {

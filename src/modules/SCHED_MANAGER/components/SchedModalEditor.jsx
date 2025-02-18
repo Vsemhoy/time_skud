@@ -5,7 +5,7 @@ import { Space, Typography } from 'antd';
 
 import './style/schedmodaleditor.css';
 import dayjs, { Dayjs } from "dayjs";
-import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS, SKUD_SCHED_HISTORY } from "../../../CONFIG/DEFAULTSTATE";
+import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS, DS_SCHEDULE_LIST, SKUD_SCHED_HISTORY } from "../../../CONFIG/DEFAULTSTATE";
 import { globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import TextArea from "antd/es/input/TextArea";
 import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined, UnderlineOutlined } from "@ant-design/icons";
@@ -13,6 +13,7 @@ import SchedCalendar from "./SchedCalendar";
 import Panel from "antd/es/splitter/Panel";
 import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
+import SchedModalSection1 from "./SchedModalSection1";
 
 const { Text, Link } = Typography;
 
@@ -22,6 +23,8 @@ const SchedModalEditor = (props)=>{
   
   const [open, setOpen] = useState(false);
   const [targetId, setTargetId] = useState(null);
+
+  const [editedItem, setEditedItem] = useState({});
 
   const [createdAt, setCreatedAt]                   = useState(null);
   const [idCompany, setIdCompany]                   = useState(null);
@@ -63,47 +66,93 @@ const SchedModalEditor = (props)=>{
     },[props])
 
     useEffect(()=>{
+      // console.log(props);
+      if (props.target_id !== null && props.target_id !== 0) {
+        setTargetId(props.target_id);
+        if (!PRODMODE)
+        {
+          get_schedItem(props.target_id);
+
+        } else {
+          let item = DS_SCHEDULE_LIST.find((item) => item.id === props.target_id);
+          setEditedItem(item);
+        }
+        
+      } else {
+        setEditedItem(null);
+        setTargetId(null);
+      }
+      
+    }, [props]);
+
+    useEffect(()=>{
       if (props.open){
-        console.log('props.data', props.data)
-        setIdSkudScheduleType(props.data ? props.data.skud_schedule_type_id : 1);
+        setFormData();
+      }
+    },[editedItem]);
+
+
+    const setFormData = () => {
+        setIdSkudScheduleType(editedItem ? editedItem.skud_schedule_type_id : 1);
         setCtrlKey(props.ctrl_key);
-        let COM_ID = props.data && props.id_company ? props.data.id_company : props.userData.companies.reverse()[0].id;
+        let COM_ID = editedItem && props.id_company ? editedItem.id_company : props.userData.companies.reverse()[0].id;
         setIdCompany(COM_ID);
 
-        setCreatorId(props.data ? props.data.creator_id : props.userData.id);
-        setName(props.data ? props.data.name : "График " + dayjs().year());
-        setDescription(props.data ? props.data.description : "Опишите график тут на всякий...");
-        setCompanyName(props.company_name ? props.data.company_name : props.userData.companies[0].name);
-        setCompanyColor(props.company_color ? props.data.company_color : props.userData.companies[0].color);
+        setCreatorId(editedItem ? editedItem.creator_id : props.userData.id);
+        setName(editedItem ? editedItem.name : "График " + dayjs().year());
+        setDescription(editedItem ? editedItem.description : "Опишите график тут на всякий...");
+        setCompanyName(props.company_name ? editedItem.company_name : props.userData.companies[0].name);
+        setCompanyColor(props.company_color ? editedItem.company_color : props.userData.companies[0].color);
         
-        setStartTime(props.data ? props.data.start_time : dayjs().unix());
-        setEndTime(props.data ? props.data.end_time : dayjs().unix());
+        setStartTime(editedItem ? editedItem.start_time : dayjs().unix());
+        setEndTime(editedItem ? editedItem.end_time : dayjs().unix());
 
-        setTargetTime(props.data ? props.data.target_time : (60 * 60 * 8));
-        setTargetUnit(props.data ? props.data.target_unit : 1);
+        setTargetTime(editedItem ? editedItem.target_time : (60 * 60 * 8));
+        setTargetUnit(editedItem ? editedItem.target_unit : 1);
         
-        setLunchStart(props.data ? props.data.lunch_start : (60 * 60 * 13));
-        setLunchEnd(props.data ? props.data.lunch_end : (60 * 60 * 15));
-        setLunchTime(props.data ? props.data.lunch_time : (60 * 45));
+        setLunchStart(editedItem ? editedItem.lunch_start : (60 * 60 * 13));
+        setLunchEnd(editedItem ? editedItem.lunch_end : (60 * 60 * 15));
+        setLunchTime(editedItem ? editedItem.lunch_time : (60 * 45));
 
-        setNextId(props.data ? props.data.next_id : null);
-        setDeleted(props.data ? props.data.deleted : 0);
-        setIdSkudProdCalendar(props.data ? props.data.skud_prod_calendar_id : props.prodCalendars[0] ? props.prodCalendars[0].id : 0);
-        setCreatorId(props.data ? props.data.creator_id : props.userData.id);
-        setCreatedAt(props.data ? props.data.creator_id : dayjs().unix());
-        setSchedule(props.data ? props.data.schedule : []);
+        setNextId(editedItem ? editedItem.next_id : null);
+        setDeleted(editedItem ? editedItem.deleted : 0);
+        setIdSkudProdCalendar(editedItem ? editedItem.skud_prod_calendar_id : props.prodCalendars[0] ? props.prodCalendars[0].id : 0);
+        setCreatorId(editedItem ? editedItem.creator_id : props.userData.id);
+        setCreatedAt(editedItem ? editedItem.creator_id : dayjs().unix());
+        setSchedule(editedItem ? editedItem.schedule : []);
 
         setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === COM_ID));
 
-        console.log(props.schedTypes);
-        setUsedSchedType(props.schedTypes.find((el)=> el.value === (props.data ? parseInt(props.data.skud_schedule_type_id) : 1)));
-      }
-    }, [targetId, props]);
+        // console.log(props.schedTypes);
+        setUsedSchedType(props.schedTypes.find((el)=> el.value === (editedItem ? parseInt(editedItem.skud_schedule_type_id) : 1)));
+
+    }
+     /* Получение одной группы
+     * @param {*} req 
+     * @param {*} res 
+     */
+     const get_schedItem = async (item_id, req, res ) => {
+      // console.log(item_id);
+      if (!item_id){ return ; }
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get/' + item_id, 
+                {
+                    data: {},
+                    _token: CSRF_TOKEN
+                });
+            // console.log('departs', response);
+            setEditedItem(response.data.data);
+        } catch (e) {
+            // console.log(e)
+        } finally {
+            
+        }
+    }
 
 
 
     const saveForm = () =>{
-      console.log(idSkudProdCalendar, "Hl");
+      // console.log(idSkudProdCalendar, "Hl");
       let data = {
 
         id_company: idCompany,
@@ -129,12 +178,12 @@ const SchedModalEditor = (props)=>{
         data.id = targetId;
       }
 
-      // console.log(data);
+      // // console.log(data);
   
       if (props.on_save){
         props.on_save(data);
       };
-      // console.log('saveform');
+      // // console.log('saveform');
     }
 
 
@@ -151,9 +200,9 @@ const SchedModalEditor = (props)=>{
     }
 
     const handleIdSkudScheduleTypeChange = (value)=>{
-      console.log('value', value)
+      // console.log('value', value)
       setIdSkudScheduleType(value);
-      console.log(props.schedTypes.find((el)=> el.value === parseInt(value)));
+      // console.log(props.schedTypes.find((el)=> el.value === parseInt(value)));
       setUsedSchedType(props.schedTypes.find((el)=> el.value === parseInt(value)));
     }
 
@@ -162,13 +211,13 @@ const SchedModalEditor = (props)=>{
       setTargetTime(value * 60 * 60);
     }
     const ChangeDeleted = (event)=> {
-      console.log(event);
+      // console.log(event);
       setDeleted(event ? 0 : 1);
     }
     const ChangeCompany = (event) => {
       setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === event));
       setIdSkudProdCalendar(props.prodCalendars.filter((el)=>el.id_company === event).length ? props.prodCalendars.filter((el)=>el.id_company === event)[0].id : null);
-      console.log(event);
+      // console.log(event);
       setIdCompany(event);
     }
     const ChangeName = (event) => {
@@ -180,7 +229,7 @@ const SchedModalEditor = (props)=>{
     }
     const ChangeUnitCount = (event) => {
         setTargetTime(parseFloat(event));
-      console.log(event);
+      // console.log(event);
     }
     const ChangeUnitMeasure = (event) => {
       setTargetUnit(event);
@@ -209,7 +258,7 @@ const SchedModalEditor = (props)=>{
           providedDate = providedDate.year(cdate.year());
         }
         setStartTime(providedDate.unix());
-        console.log(providedDate); // Output adjusted date
+        // console.log(providedDate); // Output adjusted date
       }
     }
 
@@ -229,7 +278,7 @@ const SchedModalEditor = (props)=>{
 
         // Update end time state with the adjusted date
         setEndTime(providedDate.unix());
-        console.log(providedDate.format()); // Output adjusted date
+        // console.log(providedDate.format()); // Output adjusted date
       }
     }
 
@@ -525,7 +574,7 @@ const SchedModalEditor = (props)=>{
           <div className={'sk-w-60'}>
           <TimePicker type={'time'} 
             showSecond={false}
-          onChange={(value) => console.log(value)} />
+          onChange={(value) => // console.log(value)} />
           </div>
         </div> */}
 
@@ -533,19 +582,19 @@ const SchedModalEditor = (props)=>{
         <br/>
           
         <div>
-          { idSkudScheduleType === 1 ? (<Scheditor_one   
+          { props.open && idSkudScheduleType === 1 ? (<SchedModalSection1   
               data={schedule} schedule_id={targetId}
               disabled={deleted} updater={updateSchedule} />):""}
-          { idSkudScheduleType === 2 ? (<Scheditor_two   
+          { props.open && idSkudScheduleType === 2 ? (<Scheditor_two   
               data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
-          { idSkudScheduleType === 3 ? (<Scheditor_three 
+          { props.open && idSkudScheduleType === 3 ? (<Scheditor_three 
               data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
-          { idSkudScheduleType === 4 ? (<Scheditor_four  
+          { props.open && idSkudScheduleType === 4 ? (<Scheditor_four  
               data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
-          { idSkudScheduleType === 5 ? (<Scheditor_five  
+          { props.open && idSkudScheduleType === 5 ? (<Scheditor_five  
               data={schedule}  schedule_id={targetId}
               updater={updateSchedule} />):""}
         </div>
@@ -571,253 +620,6 @@ export default SchedModalEditor;
 
 
 
-
-
-
-
-
-
-
-const Scheditor_one = (props) => {
-  const [startTime, setStartTime] = useState(60 * 60 * 13);
-  const [endTime, setEndTime] = useState(60 * 60 * 15);
-
-  const [disabled, setDisabled] = useState(props.disabled);
-
-  const [setDate, setSetDate] = useState(null);
-
-  const [history, setHistory] = useState([]);
-  const [historyTable, setHistoryTable] = useState("");
-
-  // useEffect(()=>{
-  //   if (props.data.length > 0 ){
-  //     // Входные данные в data - ['2020-03-18',1738968722,1738968722], 
-  //     // что означает [дата начала действия, время начала смены от начала дня, время конца смены от к.д.]
-  //     console.log(props.data);
-  //     setSetDate(props.data[0]);
-  //     setStartTime(props.data[1]);
-  //     setEndTime(props.data[2]);
-  //   } else {
-  //     setStartTime(60 * 60 * 13);
-  //     setEndTime(60 * 60 * 15);
-  //     setSetDate(dayjs().format('YYYY-MM-DD'));
-  //   }
-
-  //   setDisabled(props.disabled);
-  // },[props]);
-
-  useEffect(()=>{
-    const t = setTimeout(() => {
-      if (props.updater){
-        let today = dayjs().format('YYYY-MM-DD');
-
-        let lpd = [];
-          
-        if (setDate == null || startTime == null || endTime == null){
-          lpd = [];
-        } else {
-          lpd.push(setDate);
-          lpd.push(startTime);
-          lpd.push(endTime);
-        }
-
-          props.updater(lpd);
-      }
-    }, 500);
-    
-    return () => clearTimeout(t);
-  },[startTime, endTime, setDate] );
-
-
-  const changeStartTime = (value) => {
-    console.log(value);
-    if (value == null){
-      setStartTime(60 * 60 * 13);
-    } else {
-      setStartTime(globalTimeToDaySeconds(value));
-    }
-  }
-
-  const changeEndtTime = (value) => {
-    if (value == null){
-      setEndTime(60 * 60 * 15);
-    } else {
-      setEndTime(globalTimeToDaySeconds(value));
-    }
-  }
-
-  const changeSetDate = (getDate) => {
-    let now = dayjs();
-    if (getDate != null && getDate.unix() < now.unix())
-    {
-      getDate = now;
-    };
-    if (getDate === null){
-      setSetDate(null);
-    } else {
-
-      setSetDate(getDate.format("YYYY-MM-DD"));
-    }
-  }
-
-
-
-  /** ------------------ FETCHES ---------------- */
-      /**
-       * Получение списка строк временных интервалов рабочего времени
-       * @param {*} req
-       * @param {*} res
-       */
-      const get_schedule_history = async (req, res) => {
-        if (PRODMODE){
-          setHistory(SKUD_SCHED_HISTORY);
-          return;
-        }
-        try {
-            // setLoadingOrgs(true)
-            const format_data = {
-                CSRF_TOKEN,
-                data: {
-                    schedule_id: props.schedule_id
-                    // active_date: get_unix_by_datearray(filters.active_date)
-                }
-            }
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedulehistory/schedulehistory_get_by_id?_token=' + CSRF_TOKEN, 
-              format_data
-            );
-            console.log('me: ', response);
-            // setOrganizations(organizations_response.data.org_list)
-            // setTotal(organizations_response.data.total_count)
-            setHistory(response.data.data);
-        } catch (e) {
-            console.log(e)
-        } finally {
-            // setLoadingOrgs(false)
-            // setPageLoaded(true);
-        }
-    }
-    /** ------------------ FETCHES END ---------------- */
-    
-
-  useEffect(()=>{
-    if (props.schedule_id == null){
-      setHistoryTable("");
-      return;
-    }
-
-    let table = history.reverse();
-    let activeIndex = -1;
-    if (table.length > 0){
-      if (dayjs(table[0].enabled_at).unix() < dayjs().unix()){
-        activeIndex = 0;
-      }
-    }
-    if (activeIndex < 0 && table.length > 1){
-      if (dayjs(table[1].enabled_at).unix() < dayjs().unix()){
-        activeIndex = 1;
-      }
-    }
-
-    setHistoryTable(
-      <div className={'ant-table-container'}>
-              <div className={'ant-table-content'}>
-        
-      {table.length ? (
-        <table className={'sk-table-table'}>
-        <thead className={'ant-table-thead'}>
-          <tr>
-            <th></th>
-            <th>Вступление в действие</th>
-            <th>Начало рабочего дня</th>
-            <th>Конец рабочего дня</th>
-            <th>Интервал</th>
-          </tr>
-        </thead>
-        <tbody className={'ant-table-tbody'}>
-          { table.map((item, index)=>(
-            <tr className={(index === activeIndex ? "sk-trow-current" : "")}>
-              <td>{(index === activeIndex ? <CheckOutlined /> : dayjs(item.enabled_at).unix() > dayjs().unix()  ? <LoadingOutlined /> : <MinusOutlined />  )}</td>
-              <td>{item.enabled_at}</td>
-              <td>{secondsValueToGlobalTime(item.start_time).format('HH:mm')}</td>
-              <td>{secondsValueToGlobalTime(item.end_time).format('HH:mm')}</td>
-              <td>{secondsValueToGlobalTime(item.end_time - item.start_time).format('HH:mm')}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      ) : (
-      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}
-
-
-      </div>
-      </div>
-    );
-   },[history]);
-
-
-
-
-  return (
-    <div className="sk-form-frame">
-        <br/>
-    <div className={'sk-flex-sides'}>
-        <div className={'sk-w-33'} style={{paddingLeft: 12}}>
-          <Form.Item label="Дата начала действия" name="layout">
-              <DatePicker
-                type="date"
-                disabled={disabled}
-                value={dayjs(setDate)}
-                onChange={changeSetDate}
-
-              ></DatePicker>
-                </Form.Item>
-            </div>
-        <div className={'sk-w-33'}>
-          <Form.Item label="Время начала рабочего дня" name="layout">
-            <TimePicker type={'time'} 
-                showSecond={false}
-                onChange={changeStartTime}
-                value={secondsValueToGlobalTime(60 * 60 * 13)}
-                defaultValue={secondsValueToGlobalTime(60 * 60 * 13)}
-                disabled={disabled}
-                />
-                </Form.Item>
-            </div>
-            <div className={'sk-w-33'}>
-              <Form.Item label="Время окончания рабочего дня" name="layout">
-              <TimePicker type={'time'} 
-              defaultValue={secondsValueToGlobalTime(60 * 60 * 15)}
-              showSecond={false}
-              onChange={changeEndtTime}
-              value={secondsValueToGlobalTime(60 * 60 * 15)}
-              disabled={disabled}
-              />
-            </Form.Item>
-
-            </div>
-        </div>
-
-        {props.schedule_id ? (
-          <div className={'sk-collaptor'}>
-          <Collapse  onChange={get_schedule_history}
-            items={[{
-              key: '1',
-              label: 'История изменений графика:',
-              children: historyTable
-            ,
-            }]}
-          >
-          </Collapse>
-          </div>
-        ) : ""}
-
-    </div>
-  );
-}
-
-
-
-
 const Scheditor_two = (props) => {
   const [startTime, setStartTime] = useState(60 * 60 * 13);
   const [endTime, setEndTime] = useState(60 * 60 * 15);
@@ -825,13 +627,13 @@ const Scheditor_two = (props) => {
   const [disabled, setDisabled] = useState(props.disabled);
 
   useEffect(()=>{
-    if (props.data.length > 0){
+  
       // setStartTime(props.data.schedule[0][0]);
       // setEndTime(props.data.schedule[0][1]);
-    } else {
+
       setStartTime(60 * 60 * 13);
       setEndTime(60 * 60 * 15);
-    }
+
 
     setDisabled(props.disabled);
   },[props]);
@@ -839,7 +641,7 @@ const Scheditor_two = (props) => {
 
 
   const changeStartTime = (value) => {
-    console.log(value);
+    // console.log(value);
     if (value == null){
       setStartTime(60 * 60 * 13);
     } else {
@@ -856,8 +658,8 @@ const Scheditor_two = (props) => {
   }
 
   useEffect(()=>{
-    console.log(startTime);
-    console.log(endTime);
+    // console.log(startTime);
+    // console.log(endTime);
   }, [startTime, endTime]);
 
   return (

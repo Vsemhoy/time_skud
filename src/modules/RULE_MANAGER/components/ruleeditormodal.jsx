@@ -41,7 +41,7 @@ const RuleEditorModal = (props) => {
           variable_b: targetItem.variable_b,
         });
         _setDurationTime(targetItem.duration_time !== 0 ? (targetItem.duration_time / 60).toFixed() : 0);
-        get_groupItem();
+        get_ruleItem();
         console.log('element', targetItem);
       } else {
         setRuleType(1);
@@ -107,9 +107,10 @@ const RuleEditorModal = (props) => {
      * @param {*} req 
      * @param {*} res 
      */
-    const get_groupItem = async (item_id, req, res ) => {
+    const get_ruleItem = async (item_id, req, res ) => {
+      if (!item_id){ return ; }
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get/' + item_id, 
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get/' + item_id, 
                 {
                     data: {},
                     _token: CSRF_TOKEN
@@ -188,8 +189,8 @@ const RuleEditorModal = (props) => {
           name="name"
           rules={[
             { required: true, message: 'Введите название правила' },
-            {    min: 9, 
-                message: 'Минимум 9 символов'
+            {    min: 3, 
+                message: 'Минимум 3 символа'
             },
             {   max: 120, 
                 message: 'Максимум 120 символов'

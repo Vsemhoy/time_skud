@@ -55,14 +55,10 @@ const items = [
 const HomePage = () => {
     const [selectedFullDate, setSelectedFullDate] = useState(dayjs());
 
-    const [selectedYear, setSelectedYear] = useState(dayjs().year());
-    const [selectedMonth, setSelectedMonth] = useState(dayjs().month());
-    const [selectedDate, setSelectedDate] = useState(dayjs().date());
 
 
 
     const changeFullDate = (date) => {
-        console.log(date);
         setSelectedFullDate(date);
     }
 

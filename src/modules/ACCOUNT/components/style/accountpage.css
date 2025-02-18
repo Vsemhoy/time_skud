@@ -12,3 +12,12 @@
     grid-gap: 12px;
     flex-direction: column;
 }
+.ant-tabs-nav {
+    width: 195px;
+}
+.ant-tabs-tab {
+    padding: 6px !important;
+    padding-left: 0px !important;
+    font-size: larger ;
+    /* border-bottom: 1px solid #d9d9d9 !important */
+}

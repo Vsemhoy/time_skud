@@ -244,6 +244,7 @@ const SchedManagerPage = (props) => {
        * @param {*} res 
        */
         const create_schedule = async (body, req, res) => {
+            console.log(body);
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule',
                 {
@@ -251,14 +252,58 @@ const SchedManagerPage = (props) => {
                     _token: CSRF_TOKEN
                 },
             );
-            console.log('users', response);
-            // setBaseEntityListData(response.data.data);
+            console.log('response', response);
+            if (response.data.data){
+                // setBaseEntityListData(response.data.data);
+                if (body.skud_schedule_type_id < 3){
+                    let data = {};
+                    data.start_time = body.schedule[1];
+                    data.end_time = body.schedule[2];
+                    data.enabled_at = body.schedule[0];
+                    data.skud_schedule_id = response.data.data.id;
+                    data.skud_schedule_type_id = body.skud_schedule_type_id;
+
+                    update_history(data);
+                };
+            }
+            
         } catch (e) {
             console.log(e)
         } finally {
             get_schedules();
         }
     }
+
+
+
+    /** Обновление итстории графика
+       *  
+       * @param {*} req 
+       * @param {*} res 
+       */
+        const update_history = async (body, req, res) => {
+            console.log('body',body);
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedulehistory/schedulehistory',
+                    {   
+                        data: body, 
+                        _token: CSRF_TOKEN
+                    }
+                );
+                console.log('users', response);
+                
+
+                // setBaseEntityListData(response.data.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // setBaseScheduleList(prevList => 
+                //     prevList.map(item => 
+                //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                //     )
+                // );
+            }
+        }
 
     /** Обновление данных графика
        *  
@@ -275,7 +320,20 @@ const SchedManagerPage = (props) => {
                     }
                 );
                 console.log('users', response);
-                // setBaseEntityListData(response.data.data);
+            
+                if (body.skud_schedule_type_id < 3 &&
+                    response.data ){
+                        console.log("I UPDATE HISTORY!!!");
+                    // setBaseEntityListData(response.data.data);
+                        let data = {};
+                        data.start_time = body.schedule[1];
+                        data.end_time = body.schedule[2];
+                        data.enabled_at = body.schedule[0];
+                        data.skud_schedule_id = response.data.id;
+                        data.skud_schedule_type_id = body.skud_schedule_type_id;
+                        console.log(data, body);
+                        update_history(data);
+                }
             } catch (e) {
                 console.log(e)
             } finally {
@@ -418,10 +476,10 @@ const SchedManagerPage = (props) => {
             update_schedule(item);
         } else {
             create_schedule(item);
+            setEditedId(null);
+            setEditedItem(null);
+            setEditorModalOpen(false);
         }
-        setEditedId(null);
-        setEditedItem(null);
-        setEditorModalOpen(false);
     }
 
     const saveLinks = (data) => {

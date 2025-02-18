@@ -18,12 +18,16 @@ const RuleCardItem = (props)=>{
     const [ruleType, setRuleType] = useState(props.data.rule_type_id);
 
 
+
     useEffect(()=>{
         setEntityList(props.base_entities);
     },[props.base_entities]);
     
     useEffect(()=>{
         setName(props.data.name);
+        setRuleType(props.data.rule_type_id);
+        setUserCount(props.data.user_count);
+        setGroupCount(props.data.group_count);
     },[props.data]);
 
     useEffect(()=>{
@@ -56,7 +60,7 @@ const RuleCardItem = (props)=>{
       
         if (foundType && foundType.rule_id === rule_id){
             mockup.chosen = true;
-            mockup.title = ShortName(element.surname, element.name, element.patronymic);
+            mockup.title =  element.type === 3 ? ShortName(element.surname, element.name, element.patronymic) : element.name;
             mockup.description = element.surname + " " + element.name + " " + element.patronymic;
             mockup.type = element.type;
             mockup.key = key;
@@ -70,7 +74,7 @@ const RuleCardItem = (props)=>{
           } else if (foundType === null || foundType === undefined){
             mockup.chosen = false;
             mockup.type = element.type;
-            mockup.title =  ShortName(element.surname, element.name, element.patronymic);
+            mockup.title =  element.type === 3 ? ShortName(element.surname, element.name, element.patronymic) : element.name;
             mockup.description = element.surname + " " + element.name + " " + element.patronymic;
             mockup.key = key;
             newMockData.push(mockup);
@@ -219,7 +223,8 @@ const RuleCardItem = (props)=>{
                     showSearch
                     filterOption={localFilter}
                     showSelectAll={false}
-                    locale={{ itemUnit: 'Сущностей.', itemsUnit:'', searchPlaceholder: 'Поиск сущности', notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
+                    locale={{ itemUnit: 'Сущностей.', itemsUnit:'', searchPlaceholder: 'Поиск сущности', 
+                      notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
 
                     listStyle={{
                         

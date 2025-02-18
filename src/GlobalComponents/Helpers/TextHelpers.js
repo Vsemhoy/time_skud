@@ -54,6 +54,7 @@ export const secondsValueToGlobalTime = (seconds) => {
     const startOfDay = currentDate.startOf('day');
     // return currentDate.diff(startOfDay, 'second');
     const timeForPicker = startOfDay.add(seconds, 'second');
+    // console.log('SVGT', seconds, timeForPicker);
     return timeForPicker;
 }
 

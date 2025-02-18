@@ -288,3 +288,7 @@ font-size: smaller;
     min-height: 200px;
     /* background-color: #1677ff; */
 }
+
+.sk-d-none {
+    display: none;
+}
