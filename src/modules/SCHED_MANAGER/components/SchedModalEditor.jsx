@@ -6,7 +6,7 @@ import { Space, Typography } from 'antd';
 import './style/schedmodaleditor.css';
 import dayjs, { Dayjs } from "dayjs";
 import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS, DS_SCHEDULE_LIST, SKUD_SCHED_HISTORY } from "../../../CONFIG/DEFAULTSTATE";
-import { globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { formatUnixToStringTime, globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import TextArea from "antd/es/input/TextArea";
 import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined, UnderlineOutlined } from "@ant-design/icons";
 import SchedCalendar from "./SchedCalendar";
@@ -24,13 +24,15 @@ const SchedModalEditor = (props)=>{
   const [open, setOpen] = useState(false);
   const [targetId, setTargetId] = useState(null);
 
+  const [editable, setEditable] = useState(true);
+
   const [editedItem, setEditedItem] = useState({});
 
   const [createdAt, setCreatedAt]                   = useState(null);
-  const [idCompany, setIdCompany]                   = useState(null);
+  const [idCompany, setIdCompany]                   = useState(1);
   const [companyName, setCompanyName]               = useState(null);
   const [companyColor, setCompanyColor]             = useState(null);
-  const [idSkudScheduleType, setIdSkudScheduleType] = useState(null);
+  const [idSkudScheduleType, setIdSkudScheduleType] = useState(1);
   const [name, setName]                             = useState(null);
   const [description, setDescription]               = useState(null);
   const [startTime, setStartTime]                   = useState(null);
@@ -45,12 +47,13 @@ const SchedModalEditor = (props)=>{
   const [deleted, setDeleted]                       = useState(null);
   const [idSkudProdCalendar, setIdSkudProdCalendar] = useState(null);
   const [creatorId, setCreatorId]                   = useState(null);
+  const [prodCalendar, setProdCalendar]             = useState(null);
 
     const [ctrlKey, setCtrlKey] = useState(false);
 
   const [usedSchedType, setUsedSchedType]           = useState(1);
 
-  const [prodCalendars, setProdCalendars] = useState(DS_PROD_CALENDARS);
+  const [prodCalendars, setProdCalendars] = useState(props.prodCalendars);
 
   const [scheduleTypes, setScheduleTypes] = useState(props.schedTypes);
   // Пример использования геттеров и сеттеров
@@ -104,6 +107,7 @@ const SchedModalEditor = (props)=>{
         setCompanyName(props.company_name ? editedItem.company_name : props.userData.companies[0].name);
         setCompanyColor(props.company_color ? editedItem.company_color : props.userData.companies[0].color);
         
+        
         setStartTime(editedItem ? editedItem.start_time : dayjs().unix());
         setEndTime(editedItem ? editedItem.end_time : dayjs().unix());
 
@@ -118,7 +122,7 @@ const SchedModalEditor = (props)=>{
         setDeleted(editedItem ? editedItem.deleted : 0);
         setIdSkudProdCalendar(editedItem ? editedItem.skud_prod_calendar_id : props.prodCalendars[0] ? props.prodCalendars[0].id : 0);
         setCreatorId(editedItem ? editedItem.creator_id : props.userData.id);
-        setCreatedAt(editedItem ? editedItem.creator_id : dayjs().unix());
+        setCreatedAt(editedItem ? editedItem.created_at : dayjs().unix());
         setSchedule(editedItem ? editedItem.schedule : []);
 
         setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === COM_ID));
@@ -126,7 +130,29 @@ const SchedModalEditor = (props)=>{
         // console.log(props.schedTypes);
         setUsedSchedType(props.schedTypes.find((el)=> el.value === (editedItem ? parseInt(editedItem.skud_schedule_type_id) : 1)));
 
+        let edittcom = editedItem && editedItem.id_company ? editedItem.id_company : props.userData.id_company;
+        console.log(edittcom);
+        setProdCalendar(prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === edittcom)}));
+
     }
+
+    useEffect(()=>{
+      setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : props.userData.id_company) )}));
+      setCompanyName(props.userData.companies.find((el)=>{return el.id === idCompany}).name);
+    },[idCompany]);
+
+    useEffect(()=>{
+      console.log(createdAt);
+      let a = dayjs.unix(createdAt).startOf('day').unix();
+      let b = dayjs().add(1,'day').startOf('day').unix();
+      if (!createdAt || a > b )
+      {
+        setEditable(true);
+      } else {
+        setEditable(false);
+      }
+    },[createdAt]);
+
      /* Получение одной группы
      * @param {*} req 
      * @param {*} res 
@@ -148,6 +174,7 @@ const SchedModalEditor = (props)=>{
             
         }
     }
+
 
 
 
@@ -220,6 +247,7 @@ const SchedModalEditor = (props)=>{
       // console.log(event);
       setIdCompany(event);
     }
+
     const ChangeName = (event) => {
       setName(event.target.value);
     }
@@ -247,38 +275,29 @@ const SchedModalEditor = (props)=>{
 
 
     const changeStartTime = (value) => {
-      let cdate = dayjs(); // Current date
       if (value) {
         let providedDate = dayjs(value); // Convert input to Day.js object
-        let yearDifference = providedDate.diff(cdate, 'year'); // Calculate year difference
-    
-        // Check if the year difference is greater than 2
-        if (Math.abs(yearDifference) > 2) {
-          // Set providedDate to current year
-          providedDate = providedDate.year(cdate.year());
-        }
-        setStartTime(providedDate.unix());
-        // console.log(providedDate); // Output adjusted date
+       if (globalTimeToDaySeconds(providedDate) > endTime)
+       {
+        setStartTime(endTime);
+       } else {
+         setStartTime(globalTimeToDaySeconds(providedDate));
+
+       }
       }
     }
 
     const changeEndTime = (value) => {
       // Convert startTime to a Day.js object
-      let startDate = dayjs.unix(startTime); 
       if (value) {
         // Convert input value to a Day.js object
         let providedDate = dayjs(value); 
-        let yearDifference = providedDate.diff(startDate, 'year'); // Calculate year difference
-
-        // Check if the year is different or if provided date is earlier than startDate
-        if (Math.abs(yearDifference) > 0 || providedDate.isBefore(startDate)) {
-          // Set providedDate to December 31 of the provided year
-          providedDate = providedDate.endOf('year');
+        if (globalTimeToDaySeconds(providedDate) < startTime){
+          setEndTime(startTime);
+        } else {
+          // Update end time state with the adjusted date
+          setEndTime(globalTimeToDaySeconds(providedDate));
         }
-
-        // Update end time state with the adjusted date
-        setEndTime(providedDate.unix());
-        // console.log(providedDate.format()); // Output adjusted date
       }
     }
 
@@ -296,7 +315,7 @@ const SchedModalEditor = (props)=>{
 
 
 
-
+    console.log(props.schedTypes);
 
 
 
@@ -314,18 +333,21 @@ const SchedModalEditor = (props)=>{
         maskClosable={false}
       >
         <div className={'sk-sme-toolbar, sk-flex-gap'}>
-          <Select
-            // defaultValue="lucy"
-            style={{
-                width: 220,
-                fontsize: 'larger',
-            }}
-            size="large"
-            value={idSkudScheduleType}
-            onChange={handleIdSkudScheduleTypeChange}
-            options={props.schedTypes}
-            disabled={deleted}
-          />
+          { editable ? (
+            <Select
+              // defaultValue="lucy"
+              style={{
+                  width: 220,
+                  fontsize: 'larger',
+              }}
+              size="large"
+              value={idSkudScheduleType}
+              onChange={handleIdSkudScheduleTypeChange}
+              options={props.schedTypes}
+              disabled={deleted}
+            />
+          ) : ""}
+
         
         {/* <div>
           <Alert message="Обычный пятидневный график."
@@ -358,7 +380,8 @@ const SchedModalEditor = (props)=>{
           <RadarChartOutlined /> Подразделение, филиал, компания
           </div>
           <div className={'sk-w-60'}>
-            <Select 
+            { targetId === null || editable ? (
+                          <Select 
                   options={props.userData.companies.reverse().map((el)=>(
                     {
                       key: el.id,
@@ -371,6 +394,11 @@ const SchedModalEditor = (props)=>{
                   onChange={ChangeCompany}
                   // onChange={handleUsedCompanyChange}
               />
+            ) : (<span>{companyName}</span>)
+            
+            }
+
+
           </div>
         </div>
         ) : ''}
@@ -409,7 +437,18 @@ const SchedModalEditor = (props)=>{
           <CalendarOutlined /> Производственный календарь
           </div>
           <div className={'sk-w-60'}>
-            <Select
+            <span>
+            {
+              prodCalendar ? prodCalendar.year + " " + companyName : (<span style={{color: 'red'}}>Создайте производственный календарь!</span>)
+            }
+
+            {/* {prodCalendars.find((cal) => ({
+                key: cal.id,
+                value: Number(cal.id),
+                label: cal.year + " - " + cal.company_name + "  (" + cal.id + ")",
+              }))} */}
+            </span>
+            {/* <Select
               value={idSkudProdCalendar}
               options={prodCalendars.map((cal) => ({
                 key: cal.id,
@@ -418,7 +457,7 @@ const SchedModalEditor = (props)=>{
               }))} 
               onChange={(val)=>{setIdSkudProdCalendar(val)}}
               disabled={deleted}
-            />
+            /> */}
           </div>
         </div>
 
@@ -429,27 +468,39 @@ const SchedModalEditor = (props)=>{
 
         <div className={'sk-flex-sides sk-flex-form-row'}>
           <div className={'sk-w-40'}>
-          <DoubleRightOutlined /> Время начала действия графика
+          
+          <DoubleRightOutlined /> Время начала рабочего дня
           </div>
           <div className={'sk-w-60'}>
-            <DatePicker
-              value={dayjs.unix(startTime)}
+          { targetId === null || editable ? (
+            <TimePicker
+            showSecond={false}
+              value={secondsValueToGlobalTime(startTime)}
               onChange={changeStartTime}
               disabled={deleted}
             />
+          ) : (
+            <span>{formatUnixToStringTime(startTime)}</span>
+          ) }
           </div>
         </div>
 
         <div className={'sk-flex-sides sk-flex-form-row'}>
           <div className={'sk-w-40'}>
-            <DoubleLeftOutlined /> Время прекращения действия графика
+            <DoubleLeftOutlined /> Время прекращения рабочего дня
           </div>
           <div className={'sk-w-60'}>
-            <DatePicker
-              value={dayjs.unix(endTime)}
+          { targetId === null || editable ? (
+                        <TimePicker
+            showSecond={false}
+              value={secondsValueToGlobalTime(endTime)}
               onChange={changeEndTime}
               disabled={deleted}
             />
+          ) : (
+            <span>{formatUnixToStringTime(endTime)}</span>
+          ) }
+
           </div>
         </div>
 
@@ -465,8 +516,8 @@ const SchedModalEditor = (props)=>{
             </div>
 
                 <div className="sk-w-60" >
-
-                    <InputNumber
+                { targetId === null || editable ? (
+                                      <InputNumber
                       defaultValue="1"
                       min="0.1"
                       max="160"
@@ -475,6 +526,10 @@ const SchedModalEditor = (props)=>{
                       disabled={deleted}
                       value={targetTime / 60 / 60}
                     />
+                ) : (
+            <span>{targetTime / 60 / 60}</span>
+          ) }
+
                 </div>
               </div>
                       
@@ -483,7 +538,8 @@ const SchedModalEditor = (props)=>{
               <UnderlineOutlined /> Учётная единица измерения рабочего времени
               </div>
               <div className="sk-w-60" >
-                <Select
+              { targetId === null || editable ? (
+                                <Select
                 className="sk-w-100"
                 width={150}
                 onChange={(val)=>{setTargetUnit(val)}}
@@ -491,6 +547,10 @@ const SchedModalEditor = (props)=>{
                 disabled={deleted}
                 value={targetUnit}
                 />
+              ) : (
+                <span>{DS_SCHED_UNITS.find((item)=>{return item.value === targetUnit})?.label}</span>
+              )}
+
               </div>
      
           </div>
@@ -506,12 +566,17 @@ const SchedModalEditor = (props)=>{
           <DoubleRightOutlined /> Время начала обеденного периода
           </div>
           <div className={'sk-w-60'}>
-          <TimePicker type={'time'} 
+          { targetId === null || editable ? (
+                      <TimePicker type={'time'} 
             showSecond={false}
             onChange={ChangeLunchStart}
             disabled={deleted}
             value={secondsValueToGlobalTime(lunchStart)}
           />
+          ) : (
+            <span>{formatUnixToStringTime(lunchStart)}</span>
+          ) }
+
           </div>
         </div>
 
@@ -520,13 +585,18 @@ const SchedModalEditor = (props)=>{
           <DoubleLeftOutlined/> Время окончания обеденного периода
           </div>
           <div className={'sk-w-60'}>
-          <TimePicker 
+          { targetId === null || editable ? (
+                      <TimePicker 
             type={'time'} 
             showSecond={false}
             onChange={ChangeLunchEnd}
             disabled={deleted}
             value={secondsValueToGlobalTime(lunchEnd)}
            />
+          ) : (
+            <span>{formatUnixToStringTime(lunchEnd)}</span>
+          ) }
+
           </div>
         </div>
 
@@ -535,7 +605,8 @@ const SchedModalEditor = (props)=>{
             <ClockCircleOutlined/> Максимальная продолжительность обеда в <strong>минутах</strong>.
           </div>
           <div className={'sk-w-60'}>
-          <InputNumber
+          { targetId === null || editable ? (
+                                  <InputNumber
                       className="sk-w-100"
                     value={lunchTime / 60}
                     defaultValue="45"
@@ -545,6 +616,12 @@ const SchedModalEditor = (props)=>{
                     onChange={ChangeLunchDuration}
                     disabled={deleted}
                   />
+          )
+
+            : (
+            <span>{lunchTime / 60}</span>
+          ) }
+
           </div>
         </div>
         </div>
@@ -554,7 +631,7 @@ const SchedModalEditor = (props)=>{
 
 
 
-        <div className={'sk-flex-sides sk-flex-form-row'}>
+        {/* <div className={'sk-flex-sides sk-flex-form-row'}>
           <div className={'sk-w-40'}>
             { deleted ? (<CheckCircleOutlined />) : (<DeleteOutlined />)} График актуален, действует
           </div>
@@ -565,7 +642,7 @@ const SchedModalEditor = (props)=>{
               onChange={ChangeDeleted}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* <div className={'sk-flex-sides sk-flex-form-row'}>
           <div className={'sk-w-40'}>
@@ -582,19 +659,21 @@ const SchedModalEditor = (props)=>{
         <br/>
           
         <div>
-          { props.open && idSkudScheduleType === 1 ? (<SchedModalSection1   
+          {/* { props.open && idSkudScheduleType === 1 ? (<SchedModalSection1   
               data={schedule} schedule_id={targetId}
-              disabled={deleted} updater={updateSchedule} />):""}
-          { props.open && idSkudScheduleType === 2 ? (<Scheditor_two   
-              data={schedule} schedule_id={targetId}
-              updater={updateSchedule} />):""}
-          { props.open && idSkudScheduleType === 3 ? (<Scheditor_three 
+              disabled={deleted} updater={updateSchedule} />):""} */}
+          { props.open && idSkudScheduleType === 2 ? (<ScheditorTwo   
               data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
-          { props.open && idSkudScheduleType === 4 ? (<Scheditor_four  
+          { props.open && idSkudScheduleType === 3 ? (<ScheditorThree 
               data={schedule} schedule_id={targetId}
               updater={updateSchedule} />):""}
-          { props.open && idSkudScheduleType === 5 ? (<Scheditor_five  
+          { props.open && idSkudScheduleType === 4 ? (
+              <div className="sk-form-frame">
+                <SchedCalendar />
+              </div>
+          ):""}
+          { props.open && idSkudScheduleType === 5 ? (<SchedirorFive  
               data={schedule}  schedule_id={targetId}
               updater={updateSchedule} />):""}
         </div>
@@ -620,7 +699,7 @@ export default SchedModalEditor;
 
 
 
-const Scheditor_two = (props) => {
+const ScheditorTwo = (props) => {
   const [startTime, setStartTime] = useState(60 * 60 * 13);
   const [endTime, setEndTime] = useState(60 * 60 * 15);
 
@@ -698,7 +777,7 @@ const Scheditor_two = (props) => {
   );
 }
 
-const Scheditor_three = (props) => {
+const ScheditorThree = (props) => {
 
   return (
     <div className="sk-form-frame">
@@ -717,7 +796,7 @@ const Scheditor_four = (props) => {
   );
 }
 
-const Scheditor_five = (props) => {
+const SchedirorFive = (props) => {
 
   return (
     <div className="sk-form-frame">

@@ -63,3 +63,8 @@ export const globalTimeToDaySeconds = (daytime) => {
     let start = daytime.startOf('day').unix();
     return seconds - start;
 }
+
+export const formatUnixToStringTime = (time)=>{
+    let timeObj = dayjs.unix(time);
+    return timeObj.format("HH:mm");
+}

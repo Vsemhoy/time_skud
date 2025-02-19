@@ -1439,7 +1439,7 @@ export const DS_SCHEDULE_LIST = [
         "next_id": null,
         "deleted": 0,
         "skud_prod_calendar_id": 3,
-        "created_at": 1738968722,
+        "created_at": 1739895051,
         "creator_id": 377
     },
     {
