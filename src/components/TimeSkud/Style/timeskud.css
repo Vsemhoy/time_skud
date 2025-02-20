@@ -292,3 +292,35 @@ font-size: smaller;
 .sk-d-none {
     display: none;
 }
+
+.sk-mark-name {
+    color: #1677ff;
+}
+.sk-mark-id {
+    margin-left: 12px;
+    color: #ff4e21;
+    border: 1px solid rgba(165, 42, 42, 0.158);
+    background-color: rgba(250, 128, 114, 0.185);
+    padding: 3px;
+    border-radius: 3px;
+}
+.sk-padding-bottom-3 {
+ padding-bottom: 3px;
+}
+.sk-padding-bottom-6 {
+    padding-bottom: 6px;
+}
+.sk-await-gradient {
+    background: linear-gradient(111deg, #c5cfd367 0%, #c5cfd367 32.9%, #ffffff79 33%, #ffffff79 71%, #c5cfd367 73%, #c5cfd367 100%);
+    background-size: 44px;
+}
+.sk-await-gradient:hover {
+    background: linear-gradient(111deg, #c5cfd367 0%, #c5cfd367 32.9%, #ffffff79 33%, #ffffff79 71%, #c5cfd367 73%, #c5cfd367 100%) !important;
+    background-size: 44px !important;
+    background-position: -22px 0px !important;
+}
+.sk-await-gradient:active {
+    background: linear-gradient(111deg, #d7dcdf 0%, #d7dcdf 32.9%, #ffffff79 33%, #ffffff79 71%, #d7dcdf 73%, #d7dcdf 100%) !important;
+    background-size: 44px !important;
+    background-position: -44px 0px !important;
+}

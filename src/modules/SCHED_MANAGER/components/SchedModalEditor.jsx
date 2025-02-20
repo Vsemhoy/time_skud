@@ -14,6 +14,7 @@ import Panel from "antd/es/splitter/Panel";
 import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import SchedModalSection1 from "./SchedModalSection1";
+import { DEF_SCHEDULE, OPENMODE } from "../../../CONFIG/DEFFORMS";
 
 const { Text, Link } = Typography;
 
@@ -22,16 +23,14 @@ const { Text, Link } = Typography;
 const SchedModalEditor = (props)=>{
   
   const [open, setOpen] = useState(false);
-  const [targetId, setTargetId] = useState(null);
+  const [item_id, setItem_id] = useState(null);
 
-  const [editable, setEditable] = useState(true);
+  const [openMode, setOpenMode] = useState(OPENMODE.VIEW);
 
-  const [editedItem, setEditedItem] = useState({});
 
   const [createdAt, setCreatedAt]                   = useState(null);
   const [idCompany, setIdCompany]                   = useState(1);
   const [companyName, setCompanyName]               = useState(null);
-  const [companyColor, setCompanyColor]             = useState(null);
   const [idSkudScheduleType, setIdSkudScheduleType] = useState(1);
   const [name, setName]                             = useState(null);
   const [description, setDescription]               = useState(null);
@@ -49,7 +48,7 @@ const SchedModalEditor = (props)=>{
   const [creatorId, setCreatorId]                   = useState(null);
   const [prodCalendar, setProdCalendar]             = useState(null);
 
-    const [ctrlKey, setCtrlKey] = useState(false);
+  const [ctrlKey, setCtrlKey] = useState(false);
 
   const [usedSchedType, setUsedSchedType]           = useState(1);
 
@@ -63,93 +62,115 @@ const SchedModalEditor = (props)=>{
 
     useEffect(()=>{
         setOpen(props.open);
-        if (props.open){
-          setTargetId(props.target_id);
-        }
-    },[props])
-
-    useEffect(()=>{
-      // console.log(props);
-      if (props.target_id !== null && props.target_id !== 0) {
-        setTargetId(props.target_id);
-        if (!PRODMODE)
-        {
-          get_schedItem(props.target_id);
-
+        if (props.open && !open){
+          setOpen(true);
+          if (props.target_id === null){
+           setItem_id(null);
+           setOpenMode(OPENMODE.CREATE);
+           setFormData(DEF_SCHEDULE);
+          } else {
+            setOpenMode(OPENMODE.READ);
+            setItem_id(props.target_id);
+            get_schedItem(props.target_id);
+          }
         } else {
-          let item = DS_SCHEDULE_LIST.find((item) => item.id === props.target_id);
-          setEditedItem(item);
+          setOpen(false);
         }
-        
-      } else {
-        setEditedItem(null);
-        setTargetId(null);
-      }
-      
-    }, [props]);
-
-    useEffect(()=>{
-      if (props.open){
-        setFormData();
-      }
-    },[editedItem]);
+    },[props]);
 
 
-    const setFormData = () => {
-        setIdSkudScheduleType(editedItem ? editedItem.skud_schedule_type_id : 1);
+    // useEffect(()=>{
+    //   if (props.open){
+    //     if (item_id){
+    //       get_schedItem();
+    //     } else  {
+    //       setFormData(DEF_SCHEDULE);
+    //     }
+    //   }
+    // },[item_id]);
+
+
+
+    const setFormData = (sourceData) => {
+      console.log(sourceData);
+        setIdSkudScheduleType(sourceData.skud_schedule_type_id);
         setCtrlKey(props.ctrl_key);
-        let COM_ID = editedItem && props.id_company ? editedItem.id_company : props.userData.companies.reverse()[0].id;
+        let COM_ID = sourceData && sourceData.id_company ? sourceData.id_company : props.userData.companies.reverse()[0].id;
         setIdCompany(COM_ID);
 
-        setCreatorId(editedItem ? editedItem.creator_id : props.userData.id);
-        setName(editedItem ? editedItem.name : "График " + dayjs().year());
-        setDescription(editedItem ? editedItem.description : "Опишите график тут на всякий...");
-        setCompanyName(props.company_name ? editedItem.company_name : props.userData.companies[0].name);
-        setCompanyColor(props.company_color ? editedItem.company_color : props.userData.companies[0].color);
-        
-        
-        setStartTime(editedItem ? editedItem.start_time : dayjs().unix());
-        setEndTime(editedItem ? editedItem.end_time : dayjs().unix());
+        setCreatorId(sourceData.creator_id ? sourceData.creator_id : props.userData.id_company);
+        setName(sourceData.name ? sourceData.name : "График " + dayjs().year());
+        setDescription(sourceData.description);
+        setCompanyName(sourceData.company_name ? sourceData.company_name : props.userData.companies[0].name);
+        // setCompanyColor(sourceData.company_color ? sourceData.company_color : props.userData.companies[0].color);
 
-        setTargetTime(editedItem ? editedItem.target_time : (60 * 60 * 8));
-        setTargetUnit(editedItem ? editedItem.target_unit : 1);
         
-        setLunchStart(editedItem ? editedItem.lunch_start : (60 * 60 * 13));
-        setLunchEnd(editedItem ? editedItem.lunch_end : (60 * 60 * 15));
-        setLunchTime(editedItem ? editedItem.lunch_time : (60 * 45));
+        
+        setStartTime(sourceData.start_time);
+        setEndTime(sourceData.end_time);
 
-        setNextId(editedItem ? editedItem.next_id : null);
-        setDeleted(editedItem ? editedItem.deleted : 0);
-        setIdSkudProdCalendar(editedItem ? editedItem.skud_prod_calendar_id : props.prodCalendars[0] ? props.prodCalendars[0].id : 0);
-        setCreatorId(editedItem ? editedItem.creator_id : props.userData.id);
-        setCreatedAt(editedItem ? editedItem.created_at : dayjs().unix());
-        setSchedule(editedItem ? editedItem.schedule : []);
+        setTargetTime(sourceData.target_time);
+        setTargetUnit(sourceData.target_unit);
+        
+        setLunchStart(sourceData.lunch_start);
+        setLunchEnd(sourceData.lunch_end);
+        setLunchTime(sourceData.lunch_time);
+
+        setNextId(sourceData.next_id);
+        setDeleted(sourceData.deleted);
+        let ProdCalId = sourceData.skud_prod_calendar_id;
+        if (!sourceData.skud_prod_calendar_id){
+          // Если продкалендарь не определен, подставить автоматически
+          let item = props.prodCalendars.find((el)=> {return parseInt(el.year) === dayjs().year && el.id_company === COM_ID});
+          console.log(item);
+          console.log(dayjs().year);
+          console.log(props.prodCalendars);
+          if (item)
+          {
+            ProdCalId = item.id;
+            console.log("foundProdcal ", ProdCalId);
+          }
+        }
+
+        setIdSkudProdCalendar(ProdCalId);
+
+        setCreatedAt(sourceData.created_at ? sourceData.created_at : dayjs().unix());
+        setSchedule(sourceData.schedule);
 
         setProdCalendars(props.prodCalendars.filter((el)=>el.id_company === COM_ID));
 
         // console.log(props.schedTypes);
-        setUsedSchedType(props.schedTypes.find((el)=> el.value === (editedItem ? parseInt(editedItem.skud_schedule_type_id) : 1)));
+        setUsedSchedType(props.schedTypes.find((el)=> el.value === sourceData.skud_schedule_type_id));
 
-        let edittcom = editedItem && editedItem.id_company ? editedItem.id_company : props.userData.id_company;
+        let edittcom = sourceData && sourceData.id_company ? sourceData.id_company : props.userData.id_company;
         console.log(edittcom);
         setProdCalendar(prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === edittcom)}));
-
     }
+
 
     useEffect(()=>{
       setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : props.userData.id_company) )}));
       setCompanyName(props.userData.companies.find((el)=>{return el.id === idCompany}).name);
+
     },[idCompany]);
 
+
     useEffect(()=>{
-      console.log(createdAt);
-      let a = dayjs.unix(createdAt).startOf('day').unix();
-      let b = dayjs().add(1,'day').startOf('day').unix();
-      if (!createdAt || a > b )
+      console.log("CREATED AT");
+      let a = dayjs.unix(createdAt).add(1,'day').unix();
+      let b = dayjs().startOf('day').unix();
+      console.log('item time', a, b, 'today time');
+      if (item_id && a > b )
       {
-        setEditable(true);
-      } else {
-        setEditable(false);
+        console.log("edited", deleted);
+        setOpenMode(OPENMODE.EDIT);
+      } else if (item_id === null) {
+        console.log("created", deleted);
+        setOpenMode(OPENMODE.CREATE);
+      }
+      else {
+        console.log("deleted", deleted);
+        setOpenMode(deleted ? OPENMODE.READ : OPENMODE.SHORTEDIT);
       }
     },[createdAt]);
 
@@ -167,7 +188,7 @@ const SchedModalEditor = (props)=>{
                     _token: CSRF_TOKEN
                 });
             // console.log('departs', response);
-            setEditedItem(response.data.data);
+            setFormData(response.data.data);
         } catch (e) {
             // console.log(e)
         } finally {
@@ -199,10 +220,10 @@ const SchedModalEditor = (props)=>{
         // deleted: 0,
         skud_prod_calendar_id: idSkudProdCalendar,
       };
-      if (targetId == null){
+      if (item_id == null){
         data.creator_id = props.userData.user.id
       } else {
-        data.id = targetId;
+        data.id = item_id;
       }
 
       // // console.log(data);
@@ -263,11 +284,21 @@ const SchedModalEditor = (props)=>{
       setTargetUnit(event);
     }
     const ChangeLunchStart = (value) => {
-        setLunchStart(globalTimeToDaySeconds(value));
+        setLunchStart(value ? globalTimeToDaySeconds(value) : 0);
+        let providedDate = dayjs(value); // Convert input to Day.js object
+        if (globalTimeToDaySeconds(providedDate) > lunchEnd)
+        {
+         setLunchEnd(globalTimeToDaySeconds(providedDate));
+        } 
       }
       
     const ChangeLunchEnd = (value) => {
-      setEndTime(globalTimeToDaySeconds(value));
+      setLunchEnd(value ? globalTimeToDaySeconds(value) : 0);
+      let providedDate = dayjs(value); // Convert input to Day.js object
+      if (globalTimeToDaySeconds(providedDate) < lunchStart)
+      {
+       setLunchStart(globalTimeToDaySeconds(providedDate));
+      } 
     }
     const ChangeLunchDuration = (value) => {
       setLunchTime(value * 60);
@@ -279,11 +310,9 @@ const SchedModalEditor = (props)=>{
         let providedDate = dayjs(value); // Convert input to Day.js object
        if (globalTimeToDaySeconds(providedDate) > endTime)
        {
-        setStartTime(endTime);
-       } else {
-         setStartTime(globalTimeToDaySeconds(providedDate));
-
-       }
+        setEndTime(globalTimeToDaySeconds(providedDate));
+       } 
+      setStartTime(globalTimeToDaySeconds(providedDate));
       }
     }
 
@@ -293,11 +322,9 @@ const SchedModalEditor = (props)=>{
         // Convert input value to a Day.js object
         let providedDate = dayjs(value); 
         if (globalTimeToDaySeconds(providedDate) < startTime){
-          setEndTime(startTime);
-        } else {
-          // Update end time state with the adjusted date
-          setEndTime(globalTimeToDaySeconds(providedDate));
-        }
+          setStartTime(globalTimeToDaySeconds(providedDate));
+        } 
+        setEndTime(globalTimeToDaySeconds(providedDate));
       }
     }
 
@@ -306,23 +333,18 @@ const SchedModalEditor = (props)=>{
       if (window.confirm("Точно удалить группу?")){
         if (props.on_delete)
         {
-          props.on_delete(targetId);
+          props.on_delete(item_id);
         }
       }
-
-
     }
 
-
-
-    console.log(props.schedTypes);
 
 
 
 
     return (
         <Modal
-        title={targetId == null ? "Новый график" :  "Редактирование графика " + targetId}
+        title={item_id == null ? "Новый график" :  (<span>Редактирование графика: <span className={'sk-mark-name'}>{name}</span> <span className={'sk-mark-id'}>#{item_id}</span></span>)}
         centered
         open={open}
         onOk={saveForm}
@@ -333,7 +355,7 @@ const SchedModalEditor = (props)=>{
         maskClosable={false}
       >
         <div className={'sk-sme-toolbar, sk-flex-gap'}>
-          { editable ? (
+          { openMode === OPENMODE.CREATE ? (
             <Select
               // defaultValue="lucy"
               style={{
@@ -354,7 +376,6 @@ const SchedModalEditor = (props)=>{
            description="Установите начало и конец рабочего дня с учётом входящего времени обеда."
            type="warning" />
         </div> */}
-
 
           { !ctrlKey ?? usedSchedType ? (
             <Collapse
@@ -380,7 +401,7 @@ const SchedModalEditor = (props)=>{
           <RadarChartOutlined /> Подразделение, филиал, компания
           </div>
           <div className={'sk-w-60'}>
-            { targetId === null || editable ? (
+            { openMode === OPENMODE.CREATE ? (
                           <Select 
                   options={props.userData.companies.reverse().map((el)=>(
                     {
@@ -441,23 +462,7 @@ const SchedModalEditor = (props)=>{
             {
               prodCalendar ? prodCalendar.year + " " + companyName : (<span style={{color: 'red'}}>Создайте производственный календарь!</span>)
             }
-
-            {/* {prodCalendars.find((cal) => ({
-                key: cal.id,
-                value: Number(cal.id),
-                label: cal.year + " - " + cal.company_name + "  (" + cal.id + ")",
-              }))} */}
             </span>
-            {/* <Select
-              value={idSkudProdCalendar}
-              options={prodCalendars.map((cal) => ({
-                key: cal.id,
-                value: Number(cal.id),
-                label: cal.year + " - " + cal.company_name + "  (" + cal.id + ")",
-              }))} 
-              onChange={(val)=>{setIdSkudProdCalendar(val)}}
-              disabled={deleted}
-            /> */}
           </div>
         </div>
 
@@ -472,7 +477,7 @@ const SchedModalEditor = (props)=>{
           <DoubleRightOutlined /> Время начала рабочего дня
           </div>
           <div className={'sk-w-60'}>
-          { targetId === null || editable ? (
+          { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
             <TimePicker
             showSecond={false}
               value={secondsValueToGlobalTime(startTime)}
@@ -490,7 +495,7 @@ const SchedModalEditor = (props)=>{
             <DoubleLeftOutlined /> Время прекращения рабочего дня
           </div>
           <div className={'sk-w-60'}>
-          { targetId === null || editable ? (
+          { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
                         <TimePicker
             showSecond={false}
               value={secondsValueToGlobalTime(endTime)}
@@ -504,6 +509,75 @@ const SchedModalEditor = (props)=>{
           </div>
         </div>
 
+        { idSkudScheduleType === 1 ? (
+             <>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <DoubleRightOutlined /> Время начала обеденного периода
+          </div>
+          <div className={'sk-w-60'}>
+          { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
+                      <TimePicker type={'time'} 
+            showSecond={false}
+            onChange={ChangeLunchStart}
+            disabled={deleted}
+            value={secondsValueToGlobalTime(lunchStart)}
+          />
+          ) : (
+            <span>{formatUnixToStringTime(lunchStart)}</span>
+          ) }
+
+          </div>
+        </div>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+          <DoubleLeftOutlined/> Время окончания обеденного периода
+          </div>
+          <div className={'sk-w-60'}>
+          { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
+                      <TimePicker 
+            type={'time'} 
+            showSecond={false}
+            onChange={ChangeLunchEnd}
+            disabled={deleted}
+            value={secondsValueToGlobalTime(lunchEnd)}
+           />
+          ) : (
+            <span>{formatUnixToStringTime(lunchEnd)}</span>
+          ) }
+
+          </div>
+        </div>
+
+        <div className={'sk-flex-sides sk-flex-form-row'}>
+          <div className={'sk-w-40'}>
+            <ClockCircleOutlined/> Максимальная продолжительность обеда в <strong>минутах</strong>.
+          </div>
+          <div className={'sk-w-60'}>
+          { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
+                                  <InputNumber
+                      className="sk-w-100"
+                    value={lunchTime / 60}
+                    defaultValue="45"
+                    min="1"
+                    max="180"
+                    step="1"
+                    onChange={ChangeLunchDuration}
+                    disabled={deleted}
+                  />
+          )
+
+            : (
+            <span>{lunchTime / 60}</span>
+          ) }
+
+          </div>
+        </div>
+        </>
+      ) : ""} 
+
         </div>
 
 
@@ -516,7 +590,7 @@ const SchedModalEditor = (props)=>{
             </div>
 
                 <div className="sk-w-60" >
-                { targetId === null || editable ? (
+                { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
                                       <InputNumber
                       defaultValue="1"
                       min="0.1"
@@ -538,7 +612,7 @@ const SchedModalEditor = (props)=>{
               <UnderlineOutlined /> Учётная единица измерения рабочего времени
               </div>
               <div className="sk-w-60" >
-              { targetId === null || editable ? (
+              { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
                                 <Select
                 className="sk-w-100"
                 width={150}
@@ -558,74 +632,7 @@ const SchedModalEditor = (props)=>{
                       ) : ""}
         
 
-          { idSkudScheduleType === 1 ? (
-             <div className={"sk-form-group"}>
 
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-40'}>
-          <DoubleRightOutlined /> Время начала обеденного периода
-          </div>
-          <div className={'sk-w-60'}>
-          { targetId === null || editable ? (
-                      <TimePicker type={'time'} 
-            showSecond={false}
-            onChange={ChangeLunchStart}
-            disabled={deleted}
-            value={secondsValueToGlobalTime(lunchStart)}
-          />
-          ) : (
-            <span>{formatUnixToStringTime(lunchStart)}</span>
-          ) }
-
-          </div>
-        </div>
-
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-40'}>
-          <DoubleLeftOutlined/> Время окончания обеденного периода
-          </div>
-          <div className={'sk-w-60'}>
-          { targetId === null || editable ? (
-                      <TimePicker 
-            type={'time'} 
-            showSecond={false}
-            onChange={ChangeLunchEnd}
-            disabled={deleted}
-            value={secondsValueToGlobalTime(lunchEnd)}
-           />
-          ) : (
-            <span>{formatUnixToStringTime(lunchEnd)}</span>
-          ) }
-
-          </div>
-        </div>
-
-        <div className={'sk-flex-sides sk-flex-form-row'}>
-          <div className={'sk-w-40'}>
-            <ClockCircleOutlined/> Максимальная продолжительность обеда в <strong>минутах</strong>.
-          </div>
-          <div className={'sk-w-60'}>
-          { targetId === null || editable ? (
-                                  <InputNumber
-                      className="sk-w-100"
-                    value={lunchTime / 60}
-                    defaultValue="45"
-                    min="1"
-                    max="180"
-                    step="1"
-                    onChange={ChangeLunchDuration}
-                    disabled={deleted}
-                  />
-          )
-
-            : (
-            <span>{lunchTime / 60}</span>
-          ) }
-
-          </div>
-        </div>
-        </div>
-      ) : ""} 
 
 
 
@@ -660,13 +667,13 @@ const SchedModalEditor = (props)=>{
           
         <div>
           {/* { props.open && idSkudScheduleType === 1 ? (<SchedModalSection1   
-              data={schedule} schedule_id={targetId}
+              data={schedule} schedule_id={item_id}
               disabled={deleted} updater={updateSchedule} />):""} */}
           { props.open && idSkudScheduleType === 2 ? (<ScheditorTwo   
-              data={schedule} schedule_id={targetId}
+              data={schedule} schedule_id={item_id}
               updater={updateSchedule} />):""}
           { props.open && idSkudScheduleType === 3 ? (<ScheditorThree 
-              data={schedule} schedule_id={targetId}
+              data={schedule} schedule_id={item_id}
               updater={updateSchedule} />):""}
           { props.open && idSkudScheduleType === 4 ? (
               <div className="sk-form-frame">
@@ -674,7 +681,7 @@ const SchedModalEditor = (props)=>{
               </div>
           ):""}
           { props.open && idSkudScheduleType === 5 ? (<SchedirorFive  
-              data={schedule}  schedule_id={targetId}
+              data={schedule}  schedule_id={item_id}
               updater={updateSchedule} />):""}
         </div>
         

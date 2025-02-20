@@ -1,8 +1,8 @@
-import { Button, Card, Checkbox, Empty, Tag, Transfer } from "antd";
+import { Button, Card, Checkbox, Dropdown, Empty, Tag, Transfer } from "antd";
 import React, { useEffect, useState } from "react";
 import "./style/groupcard.css";
-import { DownOutlined, EditOutlined, UpOutlined, UserSwitchOutlined } from "@ant-design/icons";
-import { ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { ArrowRightOutlined, BorderBottomOutlined, ClockCircleOutlined, DownOutlined, EditOutlined, UpOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { generateGradientBackground, ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
 
 const GroupCardItem = (props)=>{
     const group_id = props.data.id;
@@ -13,6 +13,8 @@ const GroupCardItem = (props)=>{
     const [userList, setUserList] = useState([]);
     const [userCount, setUserCount] = useState(0);
 
+
+    const [ruleColors, setRuleColors] = useState(["#ff000069", "#ff91004b", "#7c550069","#00a2ff69","#00f5ab69"]);
 
     useEffect(()=>{
         setUserList(props.base_users);
@@ -69,7 +71,54 @@ const GroupCardItem = (props)=>{
   };
 
 
+  const setOpenUserModal = () => {
+    if (props.open_user_modal)
+    {
+      props.open_user_modal();
+    }
+  }
 
+  const setOpenScheduleModal = () => {
+    if (props.open_schedule_modal)
+      {
+        props.open_schedule_modal();
+      }
+  }
+
+  const setOpenRuleModal = () => {
+    if (props.open_rule_modal)
+      {
+        props.open_rule_modal();
+      }
+  }
+
+
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          1st menu item
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+          2nd menu item
+        </a>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+          3rd menu item
+        </a>
+      ),
+    },
+  ];
 
   // const handleChange = (newTargetKeys) => {
   //   // требо выявить кто из них изменил состояние
@@ -154,6 +203,7 @@ const GroupCardItem = (props)=>{
             </div>
                     <div>
                         {name}
+                      
                     </div>
                     <div>
                       {userCount > 0 ? (
@@ -216,6 +266,65 @@ const GroupCardItem = (props)=>{
 
                 </div>
             </div>
+
+            <div className={'sk-card-body sk-flex-space'}>
+              <div>
+                <div className={'sk-padding-bottom-6'}>
+                    <Button  color="default" variant="filled"
+                      onClick={setOpenScheduleModal}
+                    >Нет графика...</Button>
+                    <Button color="secondary"
+                      style={{backgroundColor: "#FFFF99"}}
+                      onClick={setOpenScheduleModal}
+                    >Графи такой-то молавао аывфоа ао ова офвоафо автоматически</Button>
+                    <span> <ArrowRightOutlined /> </span>
+                    <div
+                      style={{backgroundColor: "#FFFF99", display: 'contents'}}
+                    >
+                    <Button
+                    onClick={setOpenScheduleModal}
+                      style={{backgroundColor: "#FFFF99"}}
+                      className={"sk-await-gradient"}
+                      icon={<ClockCircleOutlined />}
+                    >Следующий графк времениа периода времени ыав выявить</Button>
+                    </div>
+                </div>
+
+                <div  className={'sk-padding-bottom-6'}>
+                  <Button 
+                    onClick={setOpenRuleModal}
+                  color="default" variant="filled">Нет правил...</Button>
+                  <Dropdown
+                    menu={{items
+                      
+                    }}
+                    placement="bottomLeft"
+                    arrow
+                  >
+                    <Button 
+                      onClick={setOpenRuleModal}
+                    style={{ background: generateGradientBackground(ruleColors)}} >bottomLeft</Button>
+                  </Dropdown>
+                  <span> <ArrowRightOutlined /> </span>
+                    <div
+                      style={{backgroundColor: "#FFFF99", display: 'contents'}}
+                    >
+                    <Button
+                    onClick={setOpenRuleModal}
+                      style={{backgroundColor: "#FFFF99"}}
+                      className={"sk-await-gradient"}
+                      icon={<ClockCircleOutlined />}
+                    >Следующий графк времениа периода времени ыав выявить</Button>
+                    </div>
+                    
+                </div>
+
+              </div>
+              <div>
+                second col
+              </div>
+            
+            </div>
         </div>
             </Card>
     )
@@ -223,3 +332,15 @@ const GroupCardItem = (props)=>{
 }
 
 export default GroupCardItem;
+
+
+const GradientDiv = ({ colors }) => {
+  const backgroundStyle = generateGradientBackground(colors);
+
+  return (
+      <div style={{ background: backgroundStyle, display: "inline-block", fontSize: 13, fontWeight: 500, padding: 3, borderRadius: 4 }}>
+          {/* Ваш контент */}
+          <span>Правила...</span>
+      </div>
+  );
+};

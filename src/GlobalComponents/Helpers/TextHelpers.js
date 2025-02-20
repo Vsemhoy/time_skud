@@ -68,3 +68,25 @@ export const formatUnixToStringTime = (time)=>{
     let timeObj = dayjs.unix(time);
     return timeObj.format("HH:mm");
 }
+
+
+export const generateGradientBackground = (colors) => {
+    // Проверяем, что массив не пустой
+    if (!colors || colors.length === 0) {
+        return '';
+    }
+    let steps = 100 / colors.length;
+
+    let result = `linear-gradient(111deg, `;
+    result += colors[0] + " 0%, ";
+    for (let i = 1; i < colors.length; i++) {
+        const prev = colors[i - 1];
+        const current = colors[i];
+        result += prev + " " + (steps * i - 0.1) + "%, ";
+        result += current + " " + (steps * i) + "%, ";
+    }
+    result += colors[colors.length - 1] + " " + " 100%";
+    result += ")";
+    console.log(result);
+    return result;
+};

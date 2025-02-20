@@ -9,6 +9,9 @@ import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_SKUD_GROUPS, DS_USER } from "../..
 import GroupEditorModal from "./components/groupeditormodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import ScheduleManagerModal from "./components/schedulemanagermodal";
+import RulesManagerModal from "./components/rulesmanagermodal";
+import UserManagerModal from "./components/usermanagermodal";
 
 
 
@@ -38,7 +41,9 @@ const GroupManagerPage = (props)=>{
 
     const [filters, setFilters] = useState([]);
 
-    
+    const [openedUserModal, setOpenedUserModal]         = useState(false);
+    const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
+    const [openedRuleModal, setOpenedRuleModal]         = useState(false);
 
     useEffect(()=>{
         if (PRODMODE){
@@ -368,6 +373,19 @@ const GroupManagerPage = (props)=>{
         setFilters(filters);
     }
 
+    // const setOpenUserModal = () => {
+        
+    // }
+
+    // const setOpenScheduleModal = () => {
+        
+    // }
+
+    // const setOpenRuleModal = () => {
+        
+    // }
+
+
     return (
         <div className={'sk-mw-1400 sk-p-12'}>
             <br />
@@ -393,6 +411,10 @@ const GroupManagerPage = (props)=>{
                         on_link_update={updateUserLinks}
                         on_open_editor={openModalEditor}
                         user_data={userData}
+
+                        open_rule_modal={() => setOpenedRuleModal(true)}
+                        open_schedule_modal={() => setOpenedScheduleModal(true)}
+                        open_user_modal={() => setOpenedUserModal(true)}
                         />
                 ))}
 
@@ -413,6 +435,27 @@ const GroupManagerPage = (props)=>{
                     on_delete={deleteGroup}
                     user_data={userData}
                     on_save={saveGroup}
+                />
+                
+                <ScheduleManagerModal
+                    on_open={openedScheduleModal}
+                    base_users={false}
+                    on_update={false}
+                    on_close={()=>setOpenedScheduleModal(false)}
+                />
+
+                <RulesManagerModal
+                    on_open={openedRuleModal}
+                    base_users={false}
+                    on_update={false}
+                    on_close={()=>setOpenedRuleModal(false)}
+                />
+
+                <UserManagerModal
+                    on_open={openedUserModal}
+                    base_users={false}
+                    on_update={false}
+                    on_close={()=>setOpenedUserModal(false)}
                 />
             </div>
 
