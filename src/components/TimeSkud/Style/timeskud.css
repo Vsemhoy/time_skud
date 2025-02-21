@@ -324,3 +324,78 @@ font-size: smaller;
     background-size: 44px !important;
     background-position: -44px 0px !important;
 }
+
+.sk-grid-table {
+    width: 100%;
+}
+.sk-grid-table .sk-gt-table-row {
+    display: grid;
+}
+
+.sk-gt-schedules .sk-gt-table-row {
+    grid-template-columns: 36px 30px auto 140px 140px 30px 30px;
+}
+.sk-grid-table .sk-gt-table-row:nth-child(odd) {
+    background-color: rgb(228, 228, 228);
+}
+.sk-grid-table .sk-gt-table-row:nth-child(even) {
+    background-color: rgb(245, 245, 245);
+}
+.sk-grid-table .sk-gt-table-row:hover {
+    background-color: rgb(151, 199, 238) !important;
+}
+.sk-grid-table-head {
+    margin-bottom: 2px;
+}
+.sk-gt-table-row > div {
+    padding: 6px;
+    display: flex;
+    align-items: center;
+}
+.sk-gtm-trigger {
+    border: #d7dcdf 1px solid;
+    margin-bottom: 2px;
+    text-align: center;
+    font-weight: 500;
+    color: gray;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+.sk-gtm-trigger:hover {
+    border: #1677ff 1px solid;
+    color: #1677ff;
+}
+.sk-gtm-form {
+    display: grid;
+    align-items: center;
+    margin-bottom: 2px;
+}
+.sk-gt-schedules .sk-gtm-form {
+    grid-template-columns: 100px auto 120px 120px 30px  30px ;
+    grid-gap: 12px;
+    padding: 8px;
+    background-color: #4f91cf;
+}
+.sk-gt-schedules .sk-gtm-form > * {
+    width: 100%;
+}
+.sk-gtm-button {
+    font-size: x-large;
+    color: #cfcfcf;
+    cursor: pointer;
+}
+.sk-gtr-button {
+    cursor: pointer;
+    font-size: medium;
+    color: rgb(122, 122, 122);
+}
+.sk-gtm-button:hover {
+    color: white;
+}
+.sk-gtr-button:hover {
+    color: rgb(53, 53, 53);
+}
+.sk-gtr-button.active {
+    background-color: #1677ff;
+    color: white;
+}
