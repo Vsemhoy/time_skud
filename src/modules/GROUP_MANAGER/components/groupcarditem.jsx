@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Dropdown, Empty, Tag, Transfer } from "antd";
+import { Badge, Button, Card, Checkbox, Dropdown, Empty, Tag, Transfer } from "antd";
 import React, { useEffect, useState } from "react";
 import "./style/groupcard.css";
 import { ArrowRightOutlined, BorderBottomOutlined, ClockCircleOutlined, DownOutlined, EditOutlined, UpOutlined, UserSwitchOutlined } from "@ant-design/icons";
@@ -230,11 +230,15 @@ const GroupCardItem = (props)=>{
                         </div>
                     </div>
                     <div>
+                    <Badge  size="small" count={userCount}>
+
+
                         <div className={'sk-card-call-to-modal'}
                           onClick={onOpenModalUserEditor}
                         >
                           <UserSwitchOutlined />
                         </div>
+                        </Badge>
                     </div>
                     {/* <div>
                         <div className={'sk-card-cooxer'}
@@ -287,11 +291,13 @@ const GroupCardItem = (props)=>{
                     <Button  color="default" variant="filled"
                       onClick={setOpenScheduleModal}
                     >Нет графика...</Button>
+                    <Badge  size="small" count={userCount}>
                     <Button color="secondary"
-                      style={{backgroundColor: "#FFFF99"}}
+                      // style={{backgroundColor: "#FFFF99"}}
                       onClick={setOpenScheduleModal}
                     >Графи такой-то молавао аывфоа ао ова офвоафо автоматически</Button>
-                    <span> <ArrowRightOutlined /> </span>
+                    </Badge>
+                    {/* <span> <ArrowRightOutlined /> </span>
                     <div
                       style={{backgroundColor: "#FFFF99", display: 'contents'}}
                     >
@@ -301,13 +307,14 @@ const GroupCardItem = (props)=>{
                       className={"sk-await-gradient"}
                       icon={<ClockCircleOutlined />}
                     >Следующий графк времениа периода времени ыав выявить</Button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div  className={'sk-padding-bottom-6'}>
                   <Button 
                     onClick={setOpenRuleModal}
                   color="default" variant="filled">Нет правил...</Button>
+                  <Badge  size="small" count={userCount}>
                   <Dropdown
                     menu={{items
                       
@@ -319,17 +326,20 @@ const GroupCardItem = (props)=>{
                       onClick={setOpenRuleModal}
                     style={{ background: generateGradientBackground(ruleColors)}} >bottomLeft</Button>
                   </Dropdown>
-                  <span> <ArrowRightOutlined /> </span>
+                  <Dropdown.Button
+                      icon={<DownOutlined />}
+                      // loading={loadings[1]}
+                      menu={{ items }}
+                      // onClick={() => enterLoading(1)}
+                    >
+                      Submit
+                    </Dropdown.Button>
+                    </Badge>
+                  {/* <span> <ArrowRightOutlined /> </span>
                     <div
                       style={{backgroundColor: "#FFFF99", display: 'contents'}}
                     >
-                    <Button
-                    onClick={setOpenRuleModal}
-                      style={{backgroundColor: "#FFFF99"}}
-                      className={"sk-await-gradient"}
-                      icon={<ClockCircleOutlined />}
-                    >Следующий графк времениа периода времени ыав выявить</Button>
-                    </div>
+                    </div> */}
                     
                 </div>
 
