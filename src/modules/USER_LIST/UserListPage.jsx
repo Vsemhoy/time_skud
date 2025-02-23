@@ -17,17 +17,7 @@ const UserList = (props)=>{
   const [baseUserListData, setBaseUserListData] = useState(PRODMODE ? DS_DEFAULT_USERS : []);
   const [userListData, setUserListData] = useState(baseUserListData.sort((a, b) => b.department - a.department));
 
-  const [departments, setDepartments]  = useState([
-          { key: 0, value: 0, label: 'Все' },
-          // { key: 'dep_634567', value: userdata.user.id_departament, label: 'Мой отдел'},
-          ...DS_DEPARTMENTS.map((dep)=>
-              ({
-              key: `departament_${dep.id}`,
-              value: dep.id,
-              label: dep.name
-          })
-      )
-    ]);
+  const [departments, setDepartments]  = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortBy, setSortBy ] = useState(null);
@@ -167,8 +157,11 @@ const UserList = (props)=>{
     if (!PRODMODE){
       get_departments();
       get_users();
+    } else {
+      setDepartments(DS_DEPARTMENTS);
     }
-  },[PRODMODE])
+
+  },[])
 
 
       

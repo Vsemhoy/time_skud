@@ -34,6 +34,7 @@ const GroupManagerPage = (props)=>{
     const [groupList, setGroupList] = useState([]);
 
     const [openedCooxer, setOpenedCooxer] = useState(0);
+    const [openedGroup, setOpenedGroup] = useState(null);
     const [ctrlKey, setCtrlKey] = useState(false);
 
     const [editorOpened, setEditorOpened] = useState(false);
@@ -373,6 +374,13 @@ const GroupManagerPage = (props)=>{
         setFilters(filters);
     }
 
+    const openModalUserEditor = (group_id) => {
+        let usm = baseUserList.find((item)=> item.id === group_id);
+        setOpenedGroup(usm);
+        console.log('usm', usm)
+        setEditedGroupId(group_id);
+        setOpenedUserModal(true);
+    }
     // const setOpenUserModal = () => {
         
     // }
@@ -414,7 +422,7 @@ const GroupManagerPage = (props)=>{
 
                         open_rule_modal={() => setOpenedRuleModal(true)}
                         open_schedule_modal={() => setOpenedScheduleModal(true)}
-                        open_user_modal={() => setOpenedUserModal(true)}
+                        open_user_modal={openModalUserEditor}
                         />
                 ))}
 
@@ -453,9 +461,12 @@ const GroupManagerPage = (props)=>{
 
                 <UserManagerModal
                     on_open={openedUserModal}
-                    base_users={false}
+                    base_users={userList}
                     on_update={false}
                     on_close={()=>setOpenedUserModal(false)}
+                    data={openedGroup}
+                    target_id={editedGroupId}
+                    on_link_update={updateUserLinks}
                 />
             </div>
 

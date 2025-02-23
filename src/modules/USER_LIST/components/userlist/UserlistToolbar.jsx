@@ -101,9 +101,10 @@ const UserListToolbar = (props) => {
 
 
     useEffect(()=>{
+
         let deps = [{ key: 0, value: 0, label: 'Все отделы' },
                   { key: 'dep_634567', value: userData.user.id_departament, label: 'Мой отдел'},
-                  ...DS_DEPARTMENTS.map((dep)=>
+                  ...props.departments.map((dep)=>
                       ({
                       key: `departament_${dep.id}`,
                       value: dep.id,
@@ -111,7 +112,7 @@ const UserListToolbar = (props) => {
                   })
               )];
         setDepartments(deps);
-    }, [departments]);
+    }, [props.departments]);
 
     const [usedDate, setUsedDate] = useState(dayjs());
 

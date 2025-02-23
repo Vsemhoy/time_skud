@@ -29,7 +29,7 @@ const GroupEditorModal = (props) => {
           description: targetItem.description,
           id_company: targetItem.id_company
         });
-        if (props.target_id){
+        if (props.target_id && open){
           get_groupItem(props.target_id);
         }
         console.log('element', targetItem);

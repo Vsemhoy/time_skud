@@ -30,7 +30,6 @@ const GroupCardItem = (props)=>{
 
     useEffect(()=>{
       getMock(); 
-
       }, [userList]);
 
     const [mockData, setMockData] = useState([]);
@@ -183,6 +182,14 @@ const GroupCardItem = (props)=>{
     }
   }
 
+  const onOpenModalUserEditor = (event) => {
+    console.log('open modal')
+    event.preventDefault();
+    if (props.open_user_modal){
+      props.open_user_modal(group_id);
+    }
+  }
+
   const localFilter = (inputValue, option) => {
     return option.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1 ||
          option.description.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
@@ -223,6 +230,13 @@ const GroupCardItem = (props)=>{
                         </div>
                     </div>
                     <div>
+                        <div className={'sk-card-call-to-modal'}
+                          onClick={onOpenModalUserEditor}
+                        >
+                          <UserSwitchOutlined />
+                        </div>
+                    </div>
+                    {/* <div>
                         <div className={'sk-card-cooxer'}
                             onClick={onOpenCooxer}
                         >
@@ -234,7 +248,7 @@ const GroupCardItem = (props)=>{
                             </div>
                         </div>
                         
-                    </div>
+                    </div> */}
             </div>
             <div className={'sk-grp-card-body'}>
                 <div className={'sk-grp-user-items-stack'}>

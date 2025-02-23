@@ -76,6 +76,7 @@ const SchedModalEditor = (props)=>{
         } else {
           setOpen(false);
         }
+        console.log('props.prodCalendars', props.prodCalendars)
     },[props]);
 
 
@@ -92,6 +93,7 @@ const SchedModalEditor = (props)=>{
 
 
     const setFormData = (sourceData) => {
+      console.log(" SET FORM DATA ");
       console.log(sourceData);
         setIdSkudScheduleType(sourceData.skud_schedule_type_id);
         setCtrlKey(props.ctrl_key);
@@ -119,19 +121,15 @@ const SchedModalEditor = (props)=>{
         setNextId(sourceData.next_id);
         setDeleted(sourceData.deleted);
         let ProdCalId = sourceData.skud_prod_calendar_id;
-        if (!sourceData.skud_prod_calendar_id){
+
           // Если продкалендарь не определен, подставить автоматически
-          let item = props.prodCalendars.find((el)=> {return parseInt(el.year) === dayjs().year && el.id_company === COM_ID});
-          console.log(item);
-          console.log(dayjs().year);
-          console.log(props.prodCalendars);
+          let item = props.prodCalendars.find((el)=> parseInt(el.year) == dayjs().year() && el.id_company == COM_ID);
           if (item)
           {
             ProdCalId = item.id;
-            console.log("foundProdcal ", ProdCalId);
           }
-        }
-
+      
+        // Автоматически присетапливаем продуктовый календарь, если изменился год или типо того
         setIdSkudProdCalendar(ProdCalId);
 
         setCreatedAt(sourceData.created_at ? sourceData.created_at : dayjs().unix());
@@ -144,7 +142,8 @@ const SchedModalEditor = (props)=>{
 
         let edittcom = sourceData && sourceData.id_company ? sourceData.id_company : props.userData.id_company;
         console.log(edittcom);
-        setProdCalendar(prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === edittcom)}));
+        // setProdCalendar(prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === edittcom)}));
+        setProdCalendar(item);
     }
 
 

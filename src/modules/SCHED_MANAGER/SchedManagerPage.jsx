@@ -162,7 +162,7 @@ const SchedManagerPage = (props) => {
       }
     }
 
-        /**
+    /**
      * Получение списка календарей
      * @param {*} req 
      * @param {*} res 
@@ -181,9 +181,10 @@ const SchedManagerPage = (props) => {
             } finally {
                 
             }
-          }
+        }
 
-              /**
+
+        /**
        * Получение типов графиков
        * @param {*} req 
        * @param {*} res 
