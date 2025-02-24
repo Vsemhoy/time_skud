@@ -32,7 +32,6 @@ const GroupEditorModal = (props) => {
         if (props.target_id && open){
           get_groupItem(props.target_id);
         }
-        console.log('element', targetItem);
       } else {
         form.setFieldsValue({
           name: "Группа_" + dayjs().unix(),

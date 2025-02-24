@@ -12,10 +12,11 @@ import SchedFlexSVG from "../../../media/schedule-flex.svg";
 import SchedFreeSVG from "../../../media/schedule-free.svg";
 import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
+import SchedEmptySVG from "../../../media/schedule-empty.svg";
 
 const { Text, Link } = Typography;
 
-
+ 
 
 const FDATE = (timestamp) => {
     return dayjs.unix(timestamp).format('DD-MM-YYYY')
@@ -47,7 +48,7 @@ const Sched_type_icon = (type) => {
         break;
         default:
 
-            return "";
+        return (<img src={HOST_COMPONENT_ROOT + SchedEmptySVG}    title='Нет графика'/>);
     }
 }
 
@@ -125,7 +126,7 @@ const SchedListRow = (props)=>{
         <div className={'sk-schedule-list-row'}
             onDoubleClick={handleDoubleClick}
         >
-            <div className="sk-row, sk-first-row">
+            <div className="sk-row sk-first-row">
                 <div>
                     <div><Sched_type_icon>{itemData.skud_schedule_type_id}</Sched_type_icon></div>
                     
@@ -180,7 +181,7 @@ const SchedListRow = (props)=>{
                     <div>{itemType < 3 ? lunchTime : ""}</div>
                 </div>
             </div>
-            <div className="sk-row, sk-second-row">
+            <div className="sk-row sk-second-row">
                 <div className={"sk-flex"} style={{paddingLeft: 12}}>
                     
                     <span><Tag color={itemData.company_color} >{itemData.company_name.toUpperCase()}</Tag></span>

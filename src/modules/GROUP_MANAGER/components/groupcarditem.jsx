@@ -1,8 +1,56 @@
 import { Badge, Button, Card, Checkbox, Dropdown, Empty, Tag, Transfer } from "antd";
 import React, { useEffect, useState } from "react";
-import "./style/groupcard.css";
-import { ArrowRightOutlined, BorderBottomOutlined, ClockCircleOutlined, DownOutlined, EditOutlined, UpOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import "./style/groupcarditem.css";
+import { ArrowDownOutlined, ArrowRightOutlined, BorderBottomOutlined, ClockCircleOutlined, DownOutlined, EditOutlined, PlusCircleOutlined, PlusOutlined, UpOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { generateGradientBackground, ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import dayjs from "dayjs";
+
+import SchedStdSVG from "../../../media/schedule-std.svg";
+import SchedFlexSVG from "../../../media/schedule-flex.svg";
+import SchedFreeSVG from "../../../media/schedule-free.svg";
+import SchedShiftSVG from "../../../media/schedule-shift.svg";
+import SchedSumSVG from "../../../media/schedule-sum.svg";
+import SchedEmptySVG from "../../../media/schedule-empty.svg";
+import { HOST_COMPONENT_ROOT } from "../../../CONFIG/config";
+import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+
+
+
+ 
+
+const FDATE = (timestamp) => {
+    return dayjs.unix(timestamp).format('DD-MM-YYYY')
+};
+const FTIME = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+
+const Sched_type_icon = (type) => {
+    
+    switch (type.children) {
+        case 1:
+            return ( <img src={HOST_COMPONENT_ROOT + SchedStdSVG} title='Пятидневка график'/>);
+        break;
+        case 2:
+            return (<img src={HOST_COMPONENT_ROOT + SchedFlexSVG}  title='Гибкий график'/>);
+        break;
+        case 3:
+            return (<img src={HOST_COMPONENT_ROOT + SchedFreeSVG}  title='Свободный график'/>);
+        break;
+        case 4:
+            return (<img  src={HOST_COMPONENT_ROOT + SchedShiftSVG} title='Сменный график'/>);
+        break;
+        case 5:
+            return (<img src={HOST_COMPONENT_ROOT + SchedSumSVG}    title='Суммированный график'/>);
+        break;
+        default:
+
+        return (<img src={HOST_COMPONENT_ROOT + SchedEmptySVG}    title='Нет графика'/>);
+    }
+}
 
 const GroupCardItem = (props)=>{
     const group_id = props.data.id;
@@ -13,8 +61,13 @@ const GroupCardItem = (props)=>{
     const [userList, setUserList] = useState([]);
     const [userCount, setUserCount] = useState(0);
 
+    const [itemData, setItemData] = useState({});
+    const [totalInQueue, setTotalInQueue] = useState(0);
 
     const [ruleColors, setRuleColors] = useState(["#ff000069", "#ff91004b", "#7c550069","#00a2ff69","#00f5ab69"]);
+
+
+    const [linkedRules, setLinkedRules] = useState([]);
 
     useEffect(()=>{
         setUserList(props.base_users);
@@ -22,6 +75,7 @@ const GroupCardItem = (props)=>{
     
     useEffect(()=>{
         setName(props.data.name);
+        setItemData(props.data);
     },[props.data]);
 
     useEffect(()=>{
@@ -73,21 +127,21 @@ const GroupCardItem = (props)=>{
   const setOpenUserModal = () => {
     if (props.open_user_modal)
     {
-      props.open_user_modal();
+      props.open_user_modal(group_id);
     }
   }
 
   const setOpenScheduleModal = () => {
     if (props.open_schedule_modal)
       {
-        props.open_schedule_modal();
+        props.open_schedule_modal(group_id);
       }
   }
 
   const setOpenRuleModal = () => {
     if (props.open_rule_modal)
       {
-        props.open_rule_modal();
+        props.open_rule_modal(group_id);
       }
   }
 
@@ -127,7 +181,6 @@ const GroupCardItem = (props)=>{
   //   let a  = Array.divv
 
 
-  //   console.log('new', newTargetKeys)
   //   setTargetKeys(newTargetKeys);
   // };
 
@@ -175,7 +228,6 @@ const GroupCardItem = (props)=>{
 
   
   const onOpenModalEditor = (event) => {
-    console.log('open modal')
     event.preventDefault();
     if (props.on_open_editor){
       props.on_open_editor(group_id, event);
@@ -183,12 +235,30 @@ const GroupCardItem = (props)=>{
   }
 
   const onOpenModalUserEditor = (event) => {
-    console.log('open modal')
     event.preventDefault();
     if (props.open_user_modal){
       props.open_user_modal(group_id);
     }
   }
+
+  const dblClickOnSchedule = (event) => {
+    event.preventDefault();
+    if (props.open_schedule_modal)
+      {
+        props.open_schedule_modal();
+      }
+    }
+
+  const dblClickOnRule = (event) => {
+    event.preventDefault();
+        if (props.open_rule_modal)
+      {
+        props.open_rule_modal();
+      }
+  }
+
+
+  
 
   const localFilter = (inputValue, option) => {
     return option.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1 ||
@@ -196,50 +266,83 @@ const GroupCardItem = (props)=>{
   };
 
     return (
-        <Card className={"ant-card-small"} 
-        onDoubleClick={onDoubleClick}
-        > 
+
+        <div className={"sk-group-list-row"}>
         <div className={`sk-group-card ${opened ? "opened" : "cooxed"}`}
         >
-            <div className={'sk-grp-card-head'}>
-            <div className="sk-com-tag">
-                { props.user_data && props.user_data.companies.length > 1? (
-                  <Tag title={group_id} color={props.data.company_color} >{props.data.company_name.toUpperCase()}</Tag>
-                ) : (<span className={'sk-card-id-tag'}>{group_id}</span>)
-                }
-            </div>
-                    <div>
-                        {name}
-                      
+            <div className={'sk-row sk-first-row-4group sk-grp-card-head'}>
+              <div>
+              <div><Sched_type_icon>{itemData.linked_schedule && itemData.linked_schedule.type ? itemData.linked_schedule.type : 0}</Sched_type_icon></div>
+              </div>
+                <div>
+                    <div className={'sk-schedule-list-title'}>
+                        {name} {itemData.id}
                     </div>
-                    <div>
-                      {userCount > 0 ? (
+                    {itemData.linked_schedule && itemData.linked_schedule.id > 0 ? (
+                    <div onDoubleClick={dblClickOnSchedule} className={'sk-group-flexer-in-row'}>
+                      <div></div>
+                      <div>{itemData.linked_schedule.name}</div>
+                      <div>{itemData.linked_schedule.start}</div>
+                      <div>{itemData.linked_schedule.end}</div>
+                      <div><strong>2</strong> в очереди</div>
+                      <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
+                    </div> 
+                    ) : (
+                      <div onDoubleClick={dblClickOnSchedule} className={'sk-group-flexer-in-row'}>
+                        <div></div>
+                        <div>Нет графика...</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
+                      </div>  
+                    )}
 
-                      <Tag color="blue">{userCount}</Tag>
-                      ) : (
 
-                      <Tag color="default">{userCount}</Tag>
-                      )}
-
-                    </div>
-                    <div>
-                        <div className={'sk-card-call-to-modal'}
-                          onClick={onOpenModalEditor}
-                        >
-                          <EditOutlined />
+                    {itemData.linked_rules && itemData.linked_rules.length > 0 ? (
+                      <div>
+                        <div className={'sk-group-flexer-in-row'} onDoubleClick={dblClickOnRule} >
+                        <span onClick={()=>setOpened(!opened)}> {opened ?  (<UpOutlined />) : (<DownOutlined />)}</span>
+                          
+                            <div>
+                            Прикреплено првил: <strong>{itemData.linked_rules && itemData.linked_rules.length}</strong> </div>
+                          <div>12.22.2003</div>
+                          <div>12.22.2033</div>
+                          <div><strong>2</strong> в очереди</div>
+                          <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
                         </div>
-                    </div>
-                    <div>
-                    <Badge  size="small" count={userCount}>
+                        {opened && (
+                          <div className={'sk-groupcard-graystack'}>
+                            {itemData.linked_rules.map((row)=>{return (
+                              <div key={`${row.id}_n_${row.type}`} className={'sk-group-flexer-in-row'} onDoubleClick={dblClickOnRule} >
+                                <span><RuleIcons type={row.type}/></span>
+                                <div onClick={setOpenRuleModal}>  {row.name}</div>
+                                <div>{row.start}</div>
+                                <div>{row.end}</div>
+                                <div>{row.next_count > 0 ? (
+                                  <span><strong>{row.next_count}</strong> в очереди</span>
+                                ):('-')}</div>
+                              </div>
+                            )})}
+                          </div>
+                        )}
 
+                      </div>
+                    ) : (
+                      <div onDoubleClick={dblClickOnRule}  className={'sk-group-flexer-in-row'}>
+                        <div></div>
+                        <div>Нет правил...</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
+                      </div>
+                    )}
 
-                        <div className={'sk-card-call-to-modal'}
-                          onClick={onOpenModalUserEditor}
-                        >
-                          <UserSwitchOutlined />
-                        </div>
-                        </Badge>
-                    </div>
+                   
+
+                </div>
+
                     {/* <div>
                         <div className={'sk-card-cooxer'}
                             onClick={onOpenCooxer}
@@ -254,103 +357,53 @@ const GroupCardItem = (props)=>{
                         
                     </div> */}
             </div>
-            <div className={'sk-grp-card-body'}>
-                <div className={'sk-grp-user-items-stack'}>
-                  {opened ? (
-                    <Transfer
-                    dataSource={mockData}
-                    showSearch
-                    filterOption={localFilter}
-                    showSelectAll={false}
-                    locale={{ itemUnit: 'Чел.', itemsUnit:'', searchPlaceholder: 'Поиск сотрудника', notFoundContent: <div>{(<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />)}</div> }}
-
-                    listStyle={{
-                        
-                        height: 500,
-                    }}
-                    operations={[ 'Добавить', 'Удалить']}
-                    titles={['Пользователи без группы','Пользователи в группе']}
-                    targetKeys={targetKeys}
-                    onChange={handleChange}
-                    render={(item) => (
-                      <span title={item.description}>
-                        {item.title}
-                      </span>
-                    )}
-                    
-                    />
-                  ) : ""}  
 
 
+            <div className={'sk-row sk-row sk-second-row sk-second-row-group'}>
+              <div className={'sk-flex'} style={{paddingLeft: 12}}>
+                <div className="sk-com-tag">
+                  { props.user_data && props.user_data.companies.length > 1? (
+                    <Tag title={group_id} color={props.data.company_color} >{props.data.company_name.toUpperCase()}</Tag>
+                  ) : (<span className={'sk-card-id-tag'}>{group_id}</span>)
+                  }
                 </div>
-            </div>
+              </div>
 
-            <div className={'sk-card-body sk-flex-space'}>
               <div>
-                <div className={'sk-padding-bottom-6'}>
-                    <Button  color="default" variant="filled"
-                      onClick={setOpenScheduleModal}
-                    >Нет графика...</Button>
-                    <Badge  size="small" count={userCount}>
-                    <Button color="secondary"
-                      // style={{backgroundColor: "#FFFF99"}}
-                      onClick={setOpenScheduleModal}
-                    >Графи такой-то молавао аывфоа ао ова офвоафо автоматически</Button>
-                    </Badge>
-                    {/* <span> <ArrowRightOutlined /> </span>
-                    <div
-                      style={{backgroundColor: "#FFFF99", display: 'contents'}}
-                    >
-                    <Button
-                    onClick={setOpenScheduleModal}
-                      style={{backgroundColor: "#FFFF99"}}
-                      className={"sk-await-gradient"}
-                      icon={<ClockCircleOutlined />}
-                    >Следующий графк времениа периода времени ыав выявить</Button>
-                    </div> */}
-                </div>
 
-                <div  className={'sk-padding-bottom-6'}>
-                  <Button 
-                    onClick={setOpenRuleModal}
-                  color="default" variant="filled">Нет правил...</Button>
-                  <Badge  size="small" count={userCount}>
-                  <Dropdown
-                    menu={{items
-                      
-                    }}
-                    placement="bottomLeft"
-                    arrow
-                  >
-                    <Button 
-                      onClick={setOpenRuleModal}
-                    style={{ background: generateGradientBackground(ruleColors)}} >bottomLeft</Button>
-                  </Dropdown>
-                  <Dropdown.Button
-                      icon={<DownOutlined />}
-                      // loading={loadings[1]}
-                      menu={{ items }}
-                      // onClick={() => enterLoading(1)}
-                    >
-                      Submit
-                    </Dropdown.Button>
-                    </Badge>
-                  {/* <span> <ArrowRightOutlined /> </span>
-                    <div
-                      style={{backgroundColor: "#FFFF99", display: 'contents'}}
-                    >
-                    </div> */}
-                    
-                </div>
+
 
               </div>
-              <div>
-                second col
+              <div className={'sk-flex sk-groupcard-foot-triggs'} >
+                {/* <div>
+                      {userCount > 0 ? (
+
+                      <Tag color="blue">{userCount}</Tag>
+                      ) : (
+
+                      <Tag color="default">{userCount}</Tag>
+                      )}
+
+                    </div> */}
+                    <div onClick={onOpenModalEditor}>
+                        <div className={'sk-card-call-to-modal'}
+                        >
+                          <EditOutlined />
+                        </div>
+                    </div>
+                    <div onClick={onOpenModalUserEditor}>
+                    <Badge  size="small" count={userCount}>
+                        <div className={'sk-card-call-to-modal'}
+                        >
+                          <UserSwitchOutlined />
+                        </div>
+                        </Badge>
+                    </div>
               </div>
             
             </div>
         </div>
-            </Card>
+        </div>
     )
 
 }

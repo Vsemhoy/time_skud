@@ -31,7 +31,7 @@ const RuleIcons = ({ type }) => {
                 return ( <img src={HOST_COMPONENT_ROOT + Pig} title='Накопление времени'/>);
 
             default:
-                return ( <img src={HOST_COMPONENT_ROOT + Owl} title='Не тот год'/>);
+                return ( <img src={HOST_COMPONENT_ROOT + Owl} title='Не тот бот'/>);
         }
     };
 

@@ -4,8 +4,8 @@ import { Button, Empty, Flex, Input, Splitter, Typography } from 'antd';
 import GroupCardItem from "./components/groupcarditem";
 import GroupUserCardItem from "./components/groupusercarditem";
 
-import "./components/style/groupcard.css";
-import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
+// import "./components/style/groupcard.css";
+import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_RULE_TYPES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import GroupEditorModal from "./components/groupeditormodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
@@ -32,6 +32,7 @@ const GroupManagerPage = (props)=>{
     const [userList, setUserList] = useState([]);
     const [baseGroupList, setBaseGroupList] = useState([]);
     const [groupList, setGroupList] = useState([]);
+    const [ruleTypes, setRuleTypes] = useState([]);
 
     const [openedCooxer, setOpenedCooxer] = useState(0);
     const [openedGroup, setOpenedGroup] = useState(null);
@@ -46,13 +47,25 @@ const GroupManagerPage = (props)=>{
     const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
     const [openedRuleModal, setOpenedRuleModal]         = useState(false);
 
+        const [scheduleList, setScheduleList] = useState([]);
+        const [scheduleTypes, setScheduleTypes] = useState([]);
+
+
+
     useEffect(()=>{
         if (PRODMODE){
+
             setBaseUserList(DS_GROUP_USERS);
             setBaseGroupList(DS_SKUD_GROUPS);
+            setRuleTypes(DS_RULE_TYPES);
+            setScheduleTypes(DS_SCHED_TYPES);
+            setScheduleList(DS_SCHEDULE_LIST);
         } else {
             get_userList();
+            get_ruleTypes();
             get_groupList();
+            get_schedule_types();
+            get_schedules();
         }
 
     },[]);
@@ -88,7 +101,6 @@ const GroupManagerPage = (props)=>{
                         if (group.name.toUpperCase().includes(filter.value.toUpperCase()) ||
                         group.description.toUpperCase().includes(filter.value.toUpperCase()) ){
                             found = true;
-                            console.log('I found em', filter.value);
                         };
 
                         if (!found){
@@ -102,7 +114,6 @@ const GroupManagerPage = (props)=>{
                                 ){
                                     if (group.id === user.user_group_id){
                                         found = true;
-                                        console.log('FOUND', user);
                                         break;
                                     }
                                 };
@@ -127,6 +138,68 @@ const GroupManagerPage = (props)=>{
 
 
   /** ------------------ FETCHES ---------------- */
+
+
+    /**
+     * Получение типов графиков
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_schedule_types = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/scheduletype/scheduletypes_get?_token=' + CSRF_TOKEN);
+            console.log('users', response);
+            setScheduleTypes(response.data.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+    /**
+     * Получение графиков
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_schedules = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get?_token=' + CSRF_TOKEN);
+            console.log('departs', response.data);
+            // setOrganizations(organizations_response.data.org_list)
+            // setTotal(organizations_response.data.total_count)
+            setScheduleList(response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+    /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_ruleTypes = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/types_get', 
+              {
+                  data: {
+                    deleted: 0
+                  },
+                  _token: CSRF_TOKEN
+              });
+              setRuleTypes(response.data.data);
+            //   console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+
     /**
      * Получение списка пользователей
      * @param {*} req 
@@ -225,7 +298,7 @@ const GroupManagerPage = (props)=>{
        * @param {*} res 
        */
         const update_group = async (body, req, res) => {
-            console.log('body',body);
+            // console.log('body',body);
             try {
                 let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/groups/' + body.id,
                     {   
@@ -288,7 +361,6 @@ const GroupManagerPage = (props)=>{
                     _token: CSRF_TOKEN
                 }
             );
-            console.log('response.data', response.data);
             if (response.data.status === 0){
                 get_groupList();
             }
@@ -346,7 +418,6 @@ const GroupManagerPage = (props)=>{
     }
 
     const deleteGroup = (group_id) => {
-        console.log('delete group', group_id);
         delete_group(group_id);
         setCtrlKey(false);
         setEditorOpened(false);
@@ -375,9 +446,11 @@ const GroupManagerPage = (props)=>{
     }
 
     const openModalUserEditor = (group_id) => {
-        let usm = baseUserList.find((item)=> item.id === group_id);
+        // let usm = baseUserList.find((item)=> item.id === group_id);
+
+        let usm = baseGroupList.find((item)=> item.id === group_id);
+        console.log(group_id, usm);
         setOpenedGroup(usm);
-        console.log('usm', usm)
         setEditedGroupId(group_id);
         setOpenedUserModal(true);
     }
@@ -392,6 +465,16 @@ const GroupManagerPage = (props)=>{
     // const setOpenRuleModal = () => {
         
     // }
+
+    const openScheduleEditor = (value) => {
+        setEditedGroupId(value);
+        setOpenedScheduleModal(true);
+    }
+
+    const openRulesEditor = (value) => {
+        setEditedGroupId(value);
+        setOpenedRuleModal(true);
+    }
 
 
     return (
@@ -408,7 +491,7 @@ const GroupManagerPage = (props)=>{
             <br/>
 
             <div className={'sk-group-1col-body'}>
-            <div>
+            <div className={'sk-group-list'}>
                 { groupList.map((group)=>(
                     <GroupCardItem
                         key={`grocard_${group.id}`}
@@ -419,9 +502,10 @@ const GroupManagerPage = (props)=>{
                         on_link_update={updateUserLinks}
                         on_open_editor={openModalEditor}
                         user_data={userData}
+                        rule_types={ruleTypes}
 
-                        open_rule_modal={() => setOpenedRuleModal(true)}
-                        open_schedule_modal={() => setOpenedScheduleModal(true)}
+                        open_rule_modal={openRulesEditor}
+                        open_schedule_modal={openScheduleEditor}
                         open_user_modal={openModalUserEditor}
                         />
                 ))}
@@ -435,6 +519,7 @@ const GroupManagerPage = (props)=>{
 
             <div>
                 <GroupEditorModal
+                    data={openedGroup}
                     open={editorOpened}
                     item_list={baseGroupList}
                     target_id={editedGroupId}
@@ -446,6 +531,9 @@ const GroupManagerPage = (props)=>{
                 />
                 
                 <ScheduleManagerModal
+                    target_id={editedGroupId}
+                    schedule_types={scheduleTypes}
+                    schedule_list={scheduleList}
                     on_open={openedScheduleModal}
                     base_users={false}
                     on_update={false}
@@ -453,7 +541,11 @@ const GroupManagerPage = (props)=>{
                 />
 
                 <RulesManagerModal
+                    target_id={editedGroupId}
+                    open={openRulesEditor}
                     on_open={openedRuleModal}
+                    schedule_types={scheduleTypes}
+                    schedule_list={scheduleList}
                     base_users={false}
                     on_update={false}
                     on_close={()=>setOpenedRuleModal(false)}

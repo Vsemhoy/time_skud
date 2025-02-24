@@ -19,11 +19,11 @@ const items = [
       label: 'Navigation Three - Submenu',
       key: 'SubMenu',
       icon: <SettingOutlined />,
-      children: [
+      items: [
         {
           type: 'group',
           label: 'Item 1',
-          children: [
+          items: [
             {
               label: 'Option 1',
               key: 'setting:1',
@@ -37,7 +37,7 @@ const items = [
         {
           type: 'group',
           label: 'Item 2',
-          children: [
+          items: [
             {
               label: 'Option 3',
               key: 'setting:3',

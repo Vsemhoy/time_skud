@@ -33,9 +33,7 @@ const { Header, Content, Footer } = Layout;
 
 function App() {
   const menuItems = [
-    {id: 'dfajsd', name: 'Home', to: '/'},
-    {id: 'ddfjsd', name: 'User List', to: '/'},
-    {id: 'dassdd', name: 'User Page', to: '/'},
+
   ];
 
   const [userAct, setUserAct] = useState(PRODMODE ? DS_USER : []);
@@ -130,31 +128,36 @@ function App() {
           style={{ flex: 1, minWidth: 0 }}
         >
 
-            <MenuItem>
+            <MenuItem
+              key={'menu_5234'}>
               <Link
                 onClick={()=>{ setLocation('home')}}
               >Home</Link>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_52d34'}>
               <Link
                 onClick={()=>{ setLocation('me')}}
               >Моё</Link>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_52s34'}>
               <Link 
                 onClick={()=>{ setLocation('userlist')}}
               >Сотрудники</Link>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_52342'}>
               <Link 
               onClick={()=>{ setLocation('admin/rules')}}
               >Правила</Link>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_5234qq'}>
               <Link 
               onClick={()=>{ setLocation('admin/schedules')}}
               >Графики</Link>
@@ -162,7 +165,8 @@ function App() {
 
 
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_235234'}>
               <Link 
               onClick={()=>{ setLocation('admin/prodcals')}}
               >Календари</Link>
@@ -175,13 +179,15 @@ function App() {
               >Заявки на смену графика</Link>
             </MenuItem> */}
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_5234765'}>
               <Link 
               onClick={()=>{ setLocation('admin/groups')}}
               >Группы пользоваателей</Link>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem
+            key={'menu_5235644'}>
               <Link 
               onClick={()=>{ setLocation('superadmin/randomixer')}}
               >RMXR</Link>

@@ -1573,6 +1573,49 @@ export const DS_SKUD_GROUPS = [
         company_name: "Arstel",
         company_color: "#ee7700",
         id_company: 1,
+        linked_schedule: null,
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 2,
@@ -1581,6 +1624,16 @@ export const DS_SKUD_GROUPS = [
         id_company: 1,
         company_name: "Arstel",
         company_color: "#ee7700",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+        ]
     },
     {
         id: 3,
@@ -1589,6 +1642,41 @@ export const DS_SKUD_GROUPS = [
         id_company: 1,
         company_name: "Arstel",
         company_color: "#ee7700",
+        linked_schedule: {
+            "id": 5,
+            "type": 2,
+            "name": "Grafir grafik simple simple",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 4,
@@ -1597,6 +1685,56 @@ export const DS_SKUD_GROUPS = [
         id_company: 1,
         company_name: "Arstel",
         company_color: "#ee7700",
+        linked_schedule: {
+            "id": 5,
+            "type": 5,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 71,
@@ -1605,6 +1743,56 @@ export const DS_SKUD_GROUPS = [
         id_company: 1,
         company_name: "Arstel",
         company_color: "#ee7700",
+        linked_schedule: {
+            "id": 5,
+            "type": 4,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 5,
@@ -1613,6 +1801,56 @@ export const DS_SKUD_GROUPS = [
         id_company: 2,
         company_name: "RONDO",
         company_color: "#44bb00",
+        linked_schedule: {
+            "id": 5,
+            "type": 3,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 6,
@@ -1621,6 +1859,9 @@ export const DS_SKUD_GROUPS = [
         id_company: 2,
         company_name: "Rondo",
         company_color: "#44bb00",
+        linked_schedule: null,
+        "linked_rules": [
+        ]
     },
     {
         id: 7,
@@ -1629,6 +1870,56 @@ export const DS_SKUD_GROUPS = [
         id_company: 2,
         company_name: "RONDO",
         company_color: "#44bb00",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
 ];
 

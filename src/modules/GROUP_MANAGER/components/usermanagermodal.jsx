@@ -4,7 +4,7 @@ import { generateGradientBackground, ShortName } from "../../../GlobalComponents
 
 const UserManagerModal= (props) => {
     const [open, setOpen] = useState(false);
-    const group_id = props.target_id;
+    const [group_id, setGroup_id] = useState(null);
 
 ;
     const [name, setName] = useState('New item');
@@ -17,6 +17,7 @@ const UserManagerModal= (props) => {
     useEffect(()=>{
         if (props.on_open){
             setOpen(true);  
+            console.log(props);
         }
     },[props.on_open]);
 
@@ -28,8 +29,12 @@ const UserManagerModal= (props) => {
     }
 
     useEffect(()=>{
-      setUserList(props.base_users);
-  },[props.base_users]);
+      if (props.data !== null){
+        setGroup_id(props.data.id);
+        setUserList(props.base_users);
+
+      }
+  },[props.base_users, props.data]);
 
   useEffect(()=>{
     if (props.data){
@@ -42,6 +47,10 @@ const UserManagerModal= (props) => {
     let newMockData   = [];
     let newTargetKeys = [];
     let userco = 0;
+
+    console.log('userlist', userList);
+    console.log(group_id);
+    console.log('props.data.id_company', props.data.id_company)
 
     for (let i = 0; i < userList.length; i++) {
       const element = userList[i];
@@ -99,9 +108,7 @@ const UserManagerModal= (props) => {
     <Flex vertical gap="middle" align="flex-start">
       {/* Basic */}
 
-      <Button type="primary" onClick={() => setOpen(false)}>
-        Open Modal of responsive width
-      </Button>
+
       <Modal
         title="Менеджер пользователей"
         centered

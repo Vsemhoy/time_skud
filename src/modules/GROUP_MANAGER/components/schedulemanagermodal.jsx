@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Button, DatePicker, Flex, Modal, Select } from 'antd';
+import { Button, DatePicker, Flex, Modal, Select, message } from 'antd';
 
 import SchedStdSVG from "../../../media/schedule-std.svg";
 import SchedFlexSVG from "../../../media/schedule-flex.svg";
 import SchedFreeSVG from "../../../media/schedule-free.svg";
 import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
-import { HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
+import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
 import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, DeleteOutlined, EditOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 
 
 
@@ -40,6 +41,7 @@ const Sched_type_icon = (type) => {
 
 
 const ScheduleManagerModal= (props) => {
+  const [messageApi, contextHolder] = message.useMessage();
     const [open, setOpen] = useState(false);
     const [item_id, setItem_id] = useState(null);
     const [closeAllEditorRows, setCloseAllEditorRows] = useState(0);
@@ -48,6 +50,8 @@ const ScheduleManagerModal= (props) => {
     const [schedules, setSchedules] = useState([]);
 
     const [baseLinks, setBaseLinks] = useState([]);
+    const [links, setLinks] = useState([]);
+
 
     const [schedTypes, setSchedTypes] = useState([]);
 
@@ -55,7 +59,13 @@ const ScheduleManagerModal= (props) => {
     const [page_num, setPage_num] = useState(1);
     const [page_offset, setPage_offset] = useState(30);
     const [hasMoreRows, setHasMoreRows] = useState(false);
+    const [totalLinks, setTotalLinks] = useState(0);
 
+
+    const [formSched, setFormSched] = useState(1);
+    const [formType, setFormType] = useState(null);
+    const [formStart, setFormStart] = useState(dayjs().startOf('day').add(1, 'day'));
+    const [formEnd, setFormEnd] = useState(dayjs().add(1, 'month'));
 
     useEffect(()=>{
         if (props.on_open){
@@ -64,9 +74,15 @@ const ScheduleManagerModal= (props) => {
 
               setBaseSchedules(DS_SCHEDULE_LIST);
             } else {
-
+              setHasMoreRows(false);
+              setPage_num(1);
+              setPage_offset(30);
+              setTotalLinks(0);
+              setBaseLinks([]);
+              get_links();
             }
         }
+        console.log(props);
     },[props.on_open]);
 
     useEffect(()=>{
@@ -82,22 +98,232 @@ const ScheduleManagerModal= (props) => {
         }
     }
 
+    useEffect(()=>{
+      if (openAddSection){
+        if (formStart && formStart.unix() < dayjs().unix()){
+          setFormStart(dayjs().startOf('day').add(1, 'day'));
+          error();
+        }
+  
+          let a = formStart.unix();
+          let b = formEnd.unix();
+          console.log('item time', a, b, 'today time');
+          if (formEnd && a > b )
+          {
+            setFormEnd(formStart);
+          }
+      }
+    },[formStart]);
+  
+    useEffect(()=>{
+      if (openAddSection){
+        if (formStart.unix() < dayjs().unix()){
+
+          setFormStart(dayjs().startOf('day').add(1, 'day'));
+        };
+  
+          let a = formStart.unix();
+          let b = dayjs().startOf('day').unix();
+          console.log('item time', a, b, 'today time');
+          if (formEnd && a > b )
+          {
+            setFormStart(formEnd);
+          } 
+      }
+    },[formEnd]);
+
   const onOpenEditorRow = (id)=>{
     setOpenAddSection(false);
     setCloseAllEditorRows(id);
   }
 
+  const error = () => {
+    alert('Начало действия графика может быть установлено только с завтрашнего дня');
+    // alert()
+  };
+
   const loadMoreAction = ()=>{
     setPage_num(page_num + 1);
+    setTimeout(() => {
+      get_links();
+    }, 500);
   }
+
+  const changeType = (ev)=>{
+    console.log(ev);
+  }
+  const changeSchedule = (ev)=>{
+    console.log(ev);
+  }
+
+  useEffect(()=>{
+    setFormSched( props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
+   },[formType]);
+
+   useEffect(()=>{
+    if (typeof baseLinks === 'object'){
+      
+    } else {
+      setLinks(baseLinks.sort((a, b)=> a.start > b.start));
+
+    }
+   },[baseLinks]);
+
+
+    /**
+     * Получение графиков
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_links = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules_get/' + props.target_id, 
+              {   
+                data: {
+                  page: page_num,
+                  limit: page_offset,
+                  orderby: ["id", "ASC"],
+                }, 
+                _token: CSRF_TOKEN
+            }
+            );
+            console.log('departs', response.data);
+
+            setBaseLinks(...baseLinks, response.data.data);
+            setTotalLinks(response.data.total);
+            // setOrganizations(organizations_response.data.org_list)
+            // setTotal(organizations_response.data.total_count)
+
+            // setScheduleList(response.data);
+            if (page_offset + page_num < totalLinks){
+              setHasMoreRows(true);
+            } else {
+              setHasMoreRows(false);
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+
+  const createNewLink = () => {
+    if (formSched && formStart){
+      const data = {
+        group_id: props.target_id,
+        schedule_id: formSched,
+        start: formStart.unix(),
+        end: formEnd.unix()
+      };
+      create_links(data);
+    }
+  }
+
+
+      /**
+     * Перелинковка юзеров с гурппами
+     * @param {*} req 
+     * @param {*} res 
+     */
+          const create_links = async (body, req, res) => {
+              console.log('body',body);
+              try {
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules',
+                      {   
+                          data: body, 
+                          _token: CSRF_TOKEN
+                      }
+                  );
+                  console.log('users', response);
+                  setBaseLinks([...baseLinks, response.data.data]);
+                  // setBaseUserListData(response.data.data);
+              } catch (e) {
+                  console.log(e)
+              } finally {
+                  // setBaseCalendarList(prevList => 
+                  //     prevList.map(item => 
+                  //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                  //     )
+                  // );
+            }
+        }
+
+
+      const updateOldLink = (data) => {
+        if (data){
+          const data_up = {
+            group_id: props.target_id,
+            schedule_id: formSched,
+            id: data.id,
+            start: data.start.unix(),
+            end: data.end.unix()
+          };
+          update_links(data_up);
+        }
+      }
+
+      /**
+     * Перелинковка юзеров с гурппами
+     * @param {*} req 
+     * @param {*} res 
+     */
+              const update_links = async (body, req, res) => {
+                console.log('body',body);
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/schedules/' + body.id,
+                        {   
+                            data: body, 
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    console.log('users', response);
+                    // setBaseUserListData(response.data.data);
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    setBaseLinks(prevList => 
+                        prevList.map(item => 
+                            item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                        )
+                    );
+              }
+        }
+
+    const deleteOldItem = (id) => {
+      delete_link({id: id});
+    }
+
+    /**
+     * удаление линка
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const delete_link = async (body, req, res) => {
+
+        try {
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/schedules/' + body.id,
+                {   
+                    data: { "id" : body.id}, 
+                    _token: CSRF_TOKEN
+                }
+            );
+            if (response.data.status === 0){
+                // get_groupList();
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setBaseLinks(baseLinks.filter((item)=>{return item.id !== body.id}));
+        }
+    }
+
 
   return (
     <Flex vertical gap="middle" align="flex-start">
       {/* Basic */}
 
-      <Button type="primary" onClick={() => setOpen(false)}>
-        Open Modal of responsive width
-      </Button>
+
       <Modal
         title="Менеджер графиков"
         centered
@@ -130,65 +356,64 @@ const ScheduleManagerModal= (props) => {
               <div className={'sk-gtm-form'}>
               <div>
                 <Select
-                  showSearch
-                  placeholder="Select a person"
-                  optionFilterProp="label"
-                  // onChange={onChange}
+                  
+                  placeholder="Тип графика"
+                  // optionFilterProp="label"
+                  onChange={(value)=>setFormType(value)}
                   // onSearch={onSearch}
                   style={{ width: '100%' }}
                   options={[
                     {
-                      value: 'jack',
-                      label: 'Jack',
+                        key: 'schedtype0',
+                        value: null,
+                        label: 'Все графики',
                     },
-                    {
-                      value: 'lucy',
-                      label: 'Lucy',
-                    },
-                    {
-                      value: 'tom',
-                      label: 'Tom',
-                    },
-                  ]}
+                    ...props.schedule_types
+                ]
+                    }
+                  value={formType}
                 />
               </div>
               <div>
               <Select
                   showSearch
-                  placeholder="Select a person"
+                  placeholder="Выберите график"
                   optionFilterProp="label"
                   style={{ width: '100%' }}
-                  // onChange={onChange}
+                  onChange={(vel)=>setFormSched(vel)}
                   // onSearch={onSearch}
-                  options={[
-                    {
-                      value: 'jack',
-                      label: 'Jack',
-                    },
-                    {
-                      value: 'lucy',
-                      label: 'Lucy',
-                    },
-                    {
-                      value: 'tom',
-                      label: 'Tom',
-                    },
-                  ]}
+                  options={
+                    props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)
+                    .map((typ)=>
+                      { 
+                        return {
+                      key: `shtlist_${typ.id}`,
+                      value: typ.id,
+                      label: typ.name
+                    }
+                  }
+                  )}
+                  value={formSched}
                 />
               </div>
               <div>
                 <DatePicker
-style={{ width: '100%' }}
+                  allowClear={false}
+                  style={{ width: '100%' }}
+                  onChange={(value)=>{setFormStart(value)}}
+                  value={formStart}
                 />
               </div>
               <div>
                 <DatePicker
-style={{ width: '100%' }}
+                style={{ width: '100%' }}
+                onChange={(value)=>{setFormEnd(value)}}
+                value={formEnd}
                 />
               </div>
               <div>
                 <PlusSquareOutlined
-                  
+                  onClick={createNewLink}
                 className={'sk-gtm-button'}/>
               </div>
               <div>
@@ -208,55 +433,39 @@ style={{ width: '100%' }}
             
           </div>
             <div className={'sk-grid-table-body'}>
-              <TableRowItem 
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf", type: 1, id: 324}}
-              />
-              <TableRowItem 
+              {links.map(item => (
+                  <TableRowItem
+                    on_delete={deleteOldItem}
+                    on_save_data={updateOldLink}
+                    open_editor={onOpenEditorRow}
+                    close_edit={closeAllEditorRows}
+                  data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
+                  />
+              ))}
+              {/* <TableRowItem 
+              on_delete={deleteOldItem}
+              on_save_data={updateOldLink}
                 open_editor={onOpenEditorRow}
                 close_edit={closeAllEditorRows}
               data={{start: 1738068722, end: 1738068722, name: "Hello wolf2", type: 2, id: 645}}
               />
               <TableRowItem 
+              on_delete={deleteOldItem}
+              on_save_data={updateOldLink}
                 open_editor={onOpenEditorRow}
                 close_edit={closeAllEditorRows}
               data={{start: 1738068722, end: 1738068722, name: "Hello wolf3", type: 3, id: 6445}}
               />
               <TableRowItem 
+              on_delete={deleteOldItem}
+              on_save_data={updateOldLink}
                 open_editor={onOpenEditorRow}
                 close_edit={closeAllEditorRows}
               data={{start: 1738068722, end: 1738068722, name: "Hello wolf4", type: 3, id: 445}}
-              />
+              /> */}
 
 
-              <div className={'sk-gt-table-row'}>
-                <div><Sched_type_icon>{1}</Sched_type_icon></div>
-                <div>id</div>
-                <div>name</div>
-                <div>start</div>
-                <div>end</div>
-                <div><EditOutlined /></div>
-                <div><DeleteOutlined /></div>
-              </div>
-              <div className={'sk-gt-table-row'}>
-                <div><Sched_type_icon>{2}</Sched_type_icon></div>
-                <div>id</div>
-                <div>name</div>
-                <div>start</div>
-                <div>end</div>
-                <div></div>
-                <div><LockOutlined /></div>
-              </div>
-              <div className={'sk-gt-table-row'}>
-                <div><Sched_type_icon>{2}</Sched_type_icon></div>
-                <div>id</div>
-                <div>name</div>
-                <div>start</div>
-                <div>end</div>
-                <div></div>
-                <div><LockOutlined /></div>
-              </div>
+
             </div>
             <div className={'sk-grid-table-bottom'}>
               {hasMoreRows ? (
@@ -348,6 +557,13 @@ const TableRowItem = (props) => {
   const onSaveItem = ()=>{
     setEditMode(false);
     setHasChanges(false);
+    if (props.on_save_data){
+      props.on_save_data({
+        id: item_id,
+        start: startTime,
+        end: endTime,
+      })
+    }
   }
 
   const onOpenEditor = ()=>{

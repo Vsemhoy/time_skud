@@ -1,6 +1,6 @@
 import { Card, Checkbox, Tag } from "antd";
 import React from "react";
-import "./style/groupcard.css";
+// import "./style/groupcard.css";
 
 const GroupUserCardItem = (props)=>{
 
