@@ -11,7 +11,7 @@ import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, DeleteOutlined, EditOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
-
+import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
 
 
 
@@ -46,8 +46,8 @@ const RulesManagerModal= (props) => {
     const [item_id, setItem_id] = useState(null);
     const [closeAllEditorRows, setCloseAllEditorRows] = useState(0);
 
-    const [baseSchedules, setBaseSchedules] = useState([]);
-    const [schedules, setSchedules] = useState([]);
+    const [baseRules, setBaseRules] = useState([]);
+    const [rules, setRules] = useState([]);
 
     const [baseLinks, setBaseLinks] = useState([]);
     const [links, setLinks] = useState([]);
@@ -72,7 +72,7 @@ const RulesManagerModal= (props) => {
             setOpen(true); 
             if (PRODMODE){
 
-              setBaseSchedules(DS_SCHEDULE_LIST);
+              setBaseRules(DS_SCHEDULE_LIST);
             } else {
               setHasMoreRows(false);
               setPage_num(1);
@@ -80,6 +80,7 @@ const RulesManagerModal= (props) => {
               setTotalLinks(0);
               setBaseLinks([]);
               get_links();
+              setBaseRules(props.rule_list)
             }
         }
         console.log(props);
@@ -157,7 +158,7 @@ const RulesManagerModal= (props) => {
   }
 
   useEffect(()=>{
-    setFormSched( props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
+    setFormSched( props.rule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
    },[formType]);
 
    useEffect(()=>{
@@ -165,7 +166,6 @@ const RulesManagerModal= (props) => {
       
     } else {
       setLinks(baseLinks.sort((a, b)=> a.start > b.start));
-
     }
    },[baseLinks]);
 
@@ -229,7 +229,7 @@ const RulesManagerModal= (props) => {
           const create_links = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules',
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/rules',
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
@@ -271,7 +271,7 @@ const RulesManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/schedules/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/rules/' + body.id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -302,7 +302,7 @@ const RulesManagerModal= (props) => {
     const delete_link = async (body, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/schedules/' + body.id,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/rules/' + body.id,
                 {   
                     data: { "id" : body.id}, 
                     _token: CSRF_TOKEN
@@ -325,7 +325,7 @@ const RulesManagerModal= (props) => {
 
 
       <Modal
-        title="Менеджер графиков"
+        title="Менеджер правил учёта рабочего времени"
         centered
         open={open}
         cancelText={''}
@@ -337,7 +337,7 @@ const RulesManagerModal= (props) => {
           md: '90%',
           lg: '80%',
           xl: '70%',
-          xxl: '60%',
+          xxl:'60%',
         }}
       >
         <div className={'sk-grid-table sk-gt-schedules'}>
@@ -355,43 +355,42 @@ const RulesManagerModal= (props) => {
             {openAddSection ? (
               <div className={'sk-gtm-form'}>
               <div>
-                <Select
-                  
-                  placeholder="Тип графика"
-                  // optionFilterProp="label"
-                  onChange={(value)=>setFormType(value)}
-                  // onSearch={onSearch}
-                  style={{ width: '100%' }}
-                  options={[
-                    {
-                        key: 'schedtype0',
-                        value: null,
-                        label: 'Все графики',
-                    },
-                    ...props.schedule_types
-                ]
-                    }
-                  value={formType}
-                />
+              <Select
+                placeholder="Тип правила"
+                onChange={(value) => setFormType(value)}
+                style={{ width: '100%' }}
+                options={[
+                  {
+                    key: 'schedtype0',
+                    value: null,
+                    label: 'Все правила',
+                  },
+                  ...props.rule_types.map((item) => ({
+                    key: `rtkey_${item.id}`,
+                    value: item.id,
+                    label: item.name,
+                  })),
+                ]}
+                value={formType}
+              />
               </div>
               <div>
               <Select
                   showSearch
-                  placeholder="Выберите график"
+                  placeholder="Выберите правило"
                   optionFilterProp="label"
                   style={{ width: '100%' }}
                   onChange={(vel)=>setFormSched(vel)}
                   // onSearch={onSearch}
                   options={
-                    props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)
+                    props.rule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)
                     .map((typ)=>
-                      { 
-                        return {
-                      key: `shtlist_${typ.id}`,
+                       ({
+                      key: `rulist_${typ.id}`,
                       value: typ.id,
                       label: typ.name
-                    }
-                  }
+                    })
+                  
                   )}
                   value={formSched}
                 />
@@ -426,7 +425,7 @@ const RulesManagerModal= (props) => {
             <div
               onClick={()=>{setOpenAddSection(true)}}
             className={'sk-gtm-trigger'}>
-              Добавить график
+              Добавить правило
             </div>
             )}
 

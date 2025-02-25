@@ -74,9 +74,9 @@ const ScheduleManagerModal= (props) => {
 
               setBaseSchedules(DS_SCHEDULE_LIST);
             } else {
+
               setHasMoreRows(false);
               setPage_num(1);
-              setPage_offset(30);
               setTotalLinks(0);
               setBaseLinks([]);
               get_links();
@@ -96,6 +96,9 @@ const ScheduleManagerModal= (props) => {
         if (props.on_close){
             props.on_close();
         }
+        setBaseLinks([]);
+        setLinks([]);
+        setPage_num(1);
     }
 
     useEffect(()=>{
@@ -118,17 +121,19 @@ const ScheduleManagerModal= (props) => {
     useEffect(()=>{
       if (openAddSection){
         if (formStart.unix() < dayjs().unix()){
-
           setFormStart(dayjs().startOf('day').add(1, 'day'));
         };
   
+        if (formEnd){
           let a = formStart.unix();
-          let b = dayjs().startOf('day').unix();
+          let b = formEnd.unix();
           console.log('item time', a, b, 'today time');
-          if (formEnd && a > b )
+          if (a > b )
           {
-            setFormStart(formEnd);
+            setFormEnd(formStart);
           } 
+
+        }
       }
     },[formEnd]);
 
@@ -144,29 +149,32 @@ const ScheduleManagerModal= (props) => {
 
   const loadMoreAction = ()=>{
     setPage_num(page_num + 1);
-    setTimeout(() => {
-      get_links();
-    }, 500);
-  }
+    // setTimeout(() => {
+    //   get_links();
+    // }, 500);
 
-  const changeType = (ev)=>{
-    console.log(ev);
+    
   }
-  const changeSchedule = (ev)=>{
-    console.log(ev);
-  }
+  useEffect(()=>{ 
+    if (page_num > 1 && open){
+      get_links();
+    }
+  },[page_num]);
+
 
   useEffect(()=>{
     setFormSched( props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
    },[formType]);
 
    useEffect(()=>{
-    if (typeof baseLinks === 'object'){
-      
-    } else {
-      setLinks(baseLinks.sort((a, b)=> a.start > b.start));
+    if (baseLinks.length){
+      console.log('use sort');
+      let sorted = baseLinks.sort((a, b)=> {return  dayjs(b.start).unix() - dayjs(a.start).unix()});
+      setLinks(sorted);
+      console.log(sorted);
 
     }
+
    },[baseLinks]);
 
 
@@ -189,13 +197,9 @@ const ScheduleManagerModal= (props) => {
             );
             console.log('departs', response.data);
 
-            setBaseLinks(...baseLinks, response.data.data);
+            setBaseLinks([...baseLinks, ...response.data.data]);
             setTotalLinks(response.data.total);
-            // setOrganizations(organizations_response.data.org_list)
-            // setTotal(organizations_response.data.total_count)
-
-            // setScheduleList(response.data);
-            if (page_offset + page_num < totalLinks){
+            if (page_offset * page_num < response.data.total){
               setHasMoreRows(true);
             } else {
               setHasMoreRows(false);
@@ -214,7 +218,7 @@ const ScheduleManagerModal= (props) => {
         group_id: props.target_id,
         schedule_id: formSched,
         start: formStart.unix(),
-        end: formEnd.unix()
+        end: !formEnd ? null : formEnd.unix()
       };
       create_links(data);
     }
@@ -235,8 +239,21 @@ const ScheduleManagerModal= (props) => {
                           _token: CSRF_TOKEN
                       }
                   );
-                  console.log('users', response);
-                  setBaseLinks([...baseLinks, response.data.data]);
+                  console.log('__ RS --------', response);
+                  console.log(props.schedule_list);
+                  let object = response.data.data;
+                  console.log(object);
+
+                  for (let i = 0; i < props.schedule_list.length; i++) {
+                    if (props.schedule_list[i].id === body.schedule_id){
+                      object.schedule_name = props.schedule_list[i].name;
+                      object.schedule_type = props.schedule_list[i].type;
+                      console.log(object);
+                      break;
+                    }
+                  }
+
+                  setBaseLinks([...baseLinks, object]);
                   // setBaseUserListData(response.data.data);
               } catch (e) {
                   console.log(e)
@@ -291,7 +308,7 @@ const ScheduleManagerModal= (props) => {
         }
 
     const deleteOldItem = (id) => {
-      delete_link({id: id});
+      delete_link(id);
     }
 
     /**
@@ -299,22 +316,22 @@ const ScheduleManagerModal= (props) => {
      * @param {*} req 
      * @param {*} res 
      */
-    const delete_link = async (body, req, res) => {
+    const delete_link = async (id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/schedules/' + body.id,
-                {   
-                    data: { "id" : body.id}, 
-                    _token: CSRF_TOKEN
-                }
-            );
-            if (response.data.status === 0){
-                // get_groupList();
-            }
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/schedules/' + id + '?_token=' + CSRF_TOKEN,
+              {   
+                  data: id, 
+                  _token: CSRF_TOKEN
+              }
+          );
+                        if (response.data.status === 0){
+                            // get_groupList();
+                        }
         } catch (e) {
             console.log(e)
         } finally {
-            setBaseLinks(baseLinks.filter((item)=>{return item.id !== body.id}));
+            setBaseLinks(baseLinks.filter((item)=>{return item.id !== id}));
         }
     }
 
@@ -425,7 +442,7 @@ const ScheduleManagerModal= (props) => {
             ):(
             <div
               onClick={()=>{setOpenAddSection(true)}}
-            className={'sk-gtm-trigger'}>
+              className={'sk-gtm-trigger'}>
               Добавить график
             </div>
             )}
@@ -433,7 +450,8 @@ const ScheduleManagerModal= (props) => {
             
           </div>
             <div className={'sk-grid-table-body'}>
-              {links.map(item => (
+              {links.map(item => 
+                {return item.id !== undefined ? (
                   <TableRowItem
                     on_delete={deleteOldItem}
                     on_save_data={updateOldLink}
@@ -441,28 +459,9 @@ const ScheduleManagerModal= (props) => {
                     close_edit={closeAllEditorRows}
                   data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
                   />
-              ))}
-              {/* <TableRowItem 
-              on_delete={deleteOldItem}
-              on_save_data={updateOldLink}
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf2", type: 2, id: 645}}
-              />
-              <TableRowItem 
-              on_delete={deleteOldItem}
-              on_save_data={updateOldLink}
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf3", type: 3, id: 6445}}
-              />
-              <TableRowItem 
-              on_delete={deleteOldItem}
-              on_save_data={updateOldLink}
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf4", type: 3, id: 445}}
-              /> */}
+                ):""}
+
+              )}
 
 
 
@@ -488,19 +487,22 @@ export default ScheduleManagerModal;
 
 
 const TableRowItem = (props) => {
+  
   const [archieved, setArchieved] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   const [startTime, setStartTime] = useState(props.data.start ? dayjs(props.data.start) : null);
-  const [endTime, setEndTime] = useState(props.data.end ? dayjs(props.data.start) : null);
+  const [endTime, setEndTime] = useState(props.data.end ? dayjs(props.data.end) : null);
   const [_startTime] = useState(props.data.start ? dayjs(props.data.start) : null);
-  const [_endTime] = useState(props.data.end ? dayjs(props.data.start) : null);
+  const [_endTime] = useState(props.data.end ? dayjs(props.data.end) : null);
 
   const [hasChanges, setHasChanges] = useState(false);
 
   const [item_id, setItem_id] = useState(props.data.id);
   const [item_name, setItem_name] = useState(props.data.name);
   const [item_type, setItem_type] = useState(props.data.type);
+
+  const [currentDate, setCurrentDate] = useState(false);
 
   useEffect(()=>{
     if (props.close_edit !== item_id){
@@ -512,13 +514,20 @@ const TableRowItem = (props) => {
   useEffect(()=>{
     if (editMode){
 
-      if (startTime.unix() != _startTime.unix()
+      if (startTime.unix() !== _startTime.unix()
       || JSON.stringify(endTime) != JSON.stringify(_endTime)
       ) {
         setHasChanges(true);
       } else {
         setHasChanges(false);
       };
+    }
+
+    if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() < dayjs().unix()))
+    {
+      setCurrentDate(true);
+    } else {
+      setCurrentDate(false);
     }
   },[startTime, endTime]);
 
@@ -544,13 +553,15 @@ const TableRowItem = (props) => {
         setStartTime(dayjs().startOf('day').add(1, 'day'));
       };
 
+      if (endTime){
         let a = startTime.unix();
-        let b = dayjs().startOf('day').unix();
-        console.log('item time', a, b, 'today time');
-        if (endTime && a > b )
+        let b = endTime.unix();
+        if (a > b)
         {
-          setStartTime(endTime);
+          setEndTime(startTime);
         } 
+
+      }
     }
   },[endTime]);
 
@@ -590,9 +601,9 @@ const TableRowItem = (props) => {
   }
 
   return (
-    <div className={'sk-gt-table-row'}>
+    <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""}`}>
       <div><Sched_type_icon>{item_type}</Sched_type_icon></div>
-      <div>id</div>
+      <div>{item_id}</div>
       <div>{item_name}</div>
       <div>
         {editMode ? (

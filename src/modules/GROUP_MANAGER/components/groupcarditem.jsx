@@ -245,7 +245,7 @@ const GroupCardItem = (props)=>{
     event.preventDefault();
     if (props.open_schedule_modal)
       {
-        props.open_schedule_modal();
+        props.open_schedule_modal(group_id);
       }
     }
 

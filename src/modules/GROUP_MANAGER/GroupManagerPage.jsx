@@ -5,7 +5,7 @@ import GroupCardItem from "./components/groupcarditem";
 import GroupUserCardItem from "./components/groupusercarditem";
 
 // import "./components/style/groupcard.css";
-import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_RULE_TYPES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
+import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_RULE_TYPES, DS_RULES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import GroupEditorModal from "./components/groupeditormodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
@@ -47,9 +47,10 @@ const GroupManagerPage = (props)=>{
     const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
     const [openedRuleModal, setOpenedRuleModal]         = useState(false);
 
-        const [scheduleList, setScheduleList] = useState([]);
-        const [scheduleTypes, setScheduleTypes] = useState([]);
+    const [scheduleList, setScheduleList] = useState([]);
+    const [scheduleTypes, setScheduleTypes] = useState([]);
 
+    const [ruleList, setRuleList] = useState([]);
 
 
     useEffect(()=>{
@@ -60,12 +61,14 @@ const GroupManagerPage = (props)=>{
             setRuleTypes(DS_RULE_TYPES);
             setScheduleTypes(DS_SCHED_TYPES);
             setScheduleList(DS_SCHEDULE_LIST);
+            setRuleList(DS_RULES);
         } else {
             get_userList();
             get_ruleTypes();
             get_groupList();
             get_schedule_types();
             get_schedules();
+            get_ruleList();
         }
 
     },[]);
@@ -139,6 +142,28 @@ const GroupManagerPage = (props)=>{
 
   /** ------------------ FETCHES ---------------- */
 
+    /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_ruleList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get', 
+                  {
+                      data: {
+                        id_company: null
+                      },
+                      _token: CSRF_TOKEN
+                  });
+                  ruleList(response.data.data);
+                  console.log('get_calendarList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+            }
+        }
 
     /**
      * Получение типов графиков
@@ -540,16 +565,19 @@ const GroupManagerPage = (props)=>{
                     on_close={()=>setOpenedScheduleModal(false)}
                 />
 
+
+
                 <RulesManagerModal
                     target_id={editedGroupId}
                     open={openRulesEditor}
                     on_open={openedRuleModal}
-                    schedule_types={scheduleTypes}
-                    schedule_list={scheduleList}
+                    rule_types={ruleTypes}
+                    rule_list={ruleList}
                     base_users={false}
                     on_update={false}
                     on_close={()=>setOpenedRuleModal(false)}
                 />
+
 
                 <UserManagerModal
                     on_open={openedUserModal}
