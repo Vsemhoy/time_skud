@@ -8,9 +8,10 @@ import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
 import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
 import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
-import { CloseOutlined, DeleteOutlined, EditOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
+import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
 
 
 
@@ -163,14 +164,44 @@ const ScheduleManagerModal= (props) => {
 
 
   useEffect(()=>{
-    setFormSched( props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
+    console.log(props.schedule_list);
+    setFormSched( props.schedule_list
+      .filter((item)=> item.id_company === props.data.id_company)
+      .filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
    },[formType]);
 
    useEffect(()=>{
     if (baseLinks.length){
       console.log('use sort');
       let sorted = baseLinks.sort((a, b)=> {return  dayjs(b.start).unix() - dayjs(a.start).unix()});
-      setLinks(sorted);
+
+      let result = [sorted[0]];
+
+      // Итерация по отсортированному массиву
+      for (let i = 1; i < sorted.length; i++) {
+          let prevStart = dayjs(sorted[i - 1].start);
+          let nextEnd = dayjs(sorted[i].end);
+
+          // Проверка наличия разрыва
+          if (prevStart.unix() - nextEnd.unix() > 86400) { // 86400 секунд = 1 день
+              // Создание нового объекта для заполнения разрыва
+              let newObject = {
+                  id: null, // или любое другое значение по умолчанию
+                  start: nextEnd.add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+                  end: prevStart.subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+                  creator_id: sorted[i - 1].creator_id, // или любое другое значение по умолчанию
+                  // Добавьте другие свойства по умолчанию, если необходимо
+              };
+
+              // Добавление нового объекта в массив
+              result.push(newObject);
+          }
+
+          // Добавление следующей записи
+          result.push(sorted[i]);
+      }
+
+    setLinks(result);
       console.log(sorted);
 
     }
@@ -400,7 +431,8 @@ const ScheduleManagerModal= (props) => {
                   onChange={(vel)=>setFormSched(vel)}
                   // onSearch={onSearch}
                   options={
-                    props.schedule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)
+                    props.schedule_list.filter((item)=> item.id_company === props.data.id_company).
+                    filter((item)=>formType === null || item.skud_schedule_type_id === formType)
                     .map((typ)=>
                       { 
                         return {
@@ -451,7 +483,7 @@ const ScheduleManagerModal= (props) => {
           </div>
             <div className={'sk-grid-table-body'}>
               {links.map(item => 
-                {return item.id !== undefined ? (
+                {return item.id !== undefined && item.id !== null ? (
                   <TableRowItem
                     on_delete={deleteOldItem}
                     on_save_data={updateOldLink}
@@ -459,7 +491,7 @@ const ScheduleManagerModal= (props) => {
                     close_edit={closeAllEditorRows}
                   data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
                   />
-                ):""}
+                ):(<BreakIn start={item.start} end={item.end} />)}
 
               )}
 
@@ -523,7 +555,7 @@ const TableRowItem = (props) => {
       };
     }
 
-    if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() < dayjs().unix()))
+    if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() > dayjs().unix()))
     {
       setCurrentDate(true);
     } else {
@@ -534,8 +566,11 @@ const TableRowItem = (props) => {
   useEffect(()=>{
     if (editMode){
       if (endTime && endTime.unix() < dayjs().unix()){
-        setEndTime(dayjs().startOf('day').add(1, 'day'));
+        setEndTime(dayjs().endOf('day'));
       }
+      if (startTime.unix() < dayjs().unix()){
+        setStartTime(dayjs().startOf('day').add(1, 'day'));
+      };
 
         let a = startTime.unix();
         let b = endTime.unix();
@@ -549,16 +584,16 @@ const TableRowItem = (props) => {
 
   useEffect(()=>{
     if (editMode){
-      if (startTime.unix() < dayjs().unix()){
-        setStartTime(dayjs().startOf('day').add(1, 'day'));
-      };
+      // if (startTime.unix() < dayjs().unix()){
+      //   setStartTime(dayjs().startOf('day').add(1, 'day'));
+      // };
 
       if (endTime){
         let a = startTime.unix();
         let b = endTime.unix();
         if (a > b)
         {
-          setEndTime(startTime);
+          setEndTime(startTime.endOf('day'));
         } 
 
       }
@@ -571,8 +606,8 @@ const TableRowItem = (props) => {
     if (props.on_save_data){
       props.on_save_data({
         id: item_id,
-        start: startTime,
-        end: endTime,
+        start: startTime.startOf('day'),
+        end: endTime.endOf('day'),
       })
     }
   }
@@ -606,7 +641,8 @@ const TableRowItem = (props) => {
       <div>{item_id}</div>
       <div>{item_name}</div>
       <div>
-        {editMode ? (
+        {/* we cannot edit rows where start in past */}
+        {editMode && startTime.unix() > dayjs().unix() ? (
           <DatePicker
             allowClear={false}
             value={startTime}
@@ -646,7 +682,12 @@ const TableRowItem = (props) => {
           <div className={"sk-gtr-button"} 
             onClick={onCloseRow} ><CloseOutlined /></div>
         ): (
-          <div className={"sk-gtr-button"} onClick={onDeleteItem}><DeleteOutlined /></div>
+          <>
+          {startTime.unix() > dayjs().unix() ? (
+            <div className={"sk-gtr-button"} onClick={onDeleteItem}><DeleteOutlined /></div>
+          ): "" }
+          
+          </>
         )}
         </>
       
@@ -655,3 +696,32 @@ const TableRowItem = (props) => {
     </div>
   );
 }
+
+ const BreakIn = ({start, end}) => {
+  
+  const gap =  (dayjs(end).unix() - dayjs(start).unix()) / (24*60*60);
+  return (
+    <div className='sk-gt-table-row sk-gt-row-gap'>
+
+        <div style={{textAlign: 'center'}}>
+          <EllipsisOutlined />
+        </div>
+        <div>
+
+        </div>
+        <div>
+          Разрыв {gap.toFixed()} {WordDayNumerate(gap.toFixed())}
+        </div>
+        <div>
+          {dayjs(start).format("DD-MM-YYYY")}
+        </div>
+        <div>
+          {dayjs(end).format("DD-MM-YYYY")}
+        </div>
+        <div>
+          
+        </div>
+
+    </div>
+  )
+ }

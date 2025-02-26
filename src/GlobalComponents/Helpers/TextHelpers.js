@@ -90,3 +90,14 @@ export const generateGradientBackground = (colors) => {
     console.log(result);
     return result;
 };
+
+
+export const WordDayNumerate = (value) => {
+    if (value % 10 === 1 && value % 100 !== 11) {
+        return "день";
+    } else if (value % 10 >= 2 && value % 10 <= 4 && (value % 100 < 10 || value % 100 >= 20)) {
+        return "дня";
+    } else {
+        return "дней";
+    }
+}

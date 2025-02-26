@@ -1,43 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Button, DatePicker, Flex, Modal, Select, message } from 'antd';
 
-import SchedStdSVG from "../../../media/schedule-std.svg";
-import SchedFlexSVG from "../../../media/schedule-flex.svg";
-import SchedFreeSVG from "../../../media/schedule-free.svg";
-import SchedShiftSVG from "../../../media/schedule-shift.svg";
-import SchedSumSVG from "../../../media/schedule-sum.svg";
+
 import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
-import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
+import { DS_RULES, DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, DeleteOutlined, EditOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
 
 
-
-const Sched_type_icon = (type) => {
-    
-  switch (type.children) {
-      case 1:
-          return ( <img src={HOST_COMPONENT_ROOT + SchedStdSVG} title='Пятидневка график'/>);
-      break;
-      case 2:
-          return (<img src={HOST_COMPONENT_ROOT + SchedFlexSVG}  title='Гибкий график'/>);
-      break;
-      case 3:
-          return (<img src={HOST_COMPONENT_ROOT + SchedFreeSVG}  title='Свободный график'/>);
-      break;
-      case 4:
-          return (<img  src={HOST_COMPONENT_ROOT + SchedShiftSVG} title='Сменный график'/>);
-      break;
-      case 5:
-          return (<img src={HOST_COMPONENT_ROOT + SchedSumSVG}    title='Суммированный график'/>);
-      break;
-      default:
-
-          return "";
-  }
-}
 
 
 const RulesManagerModal= (props) => {
@@ -62,7 +34,7 @@ const RulesManagerModal= (props) => {
     const [totalLinks, setTotalLinks] = useState(0);
 
 
-    const [formSched, setFormSched] = useState(1);
+    const [formRul, setFormRul] = useState(1);
     const [formType, setFormType] = useState(null);
     const [formStart, setFormStart] = useState(dayjs().startOf('day').add(1, 'day'));
     const [formEnd, setFormEnd] = useState(dayjs().add(1, 'month'));
@@ -71,8 +43,7 @@ const RulesManagerModal= (props) => {
         if (props.on_open){
             setOpen(true); 
             if (PRODMODE){
-
-              setBaseRules(DS_SCHEDULE_LIST);
+              setBaseRules(props.rule_list);
             } else {
               setHasMoreRows(false);
               setPage_num(1);
@@ -80,13 +51,13 @@ const RulesManagerModal= (props) => {
               setTotalLinks(0);
               setBaseLinks([]);
               get_links();
-              setBaseRules(props.rule_list)
+              setBaseRules(props.rule_list);
             }
         }
         console.log(props);
     },[props.on_open]);
 
-    useEffect(()=>{
+   useEffect(()=>{
       if (openAddSection){
         setCloseAllEditorRows(0);
       }
@@ -97,6 +68,9 @@ const RulesManagerModal= (props) => {
         if (props.on_close){
             props.on_close();
         }
+        setBaseLinks([]);
+        setLinks([]);
+        setPage_num(1);
     }
 
     useEffect(()=>{
@@ -119,17 +93,19 @@ const RulesManagerModal= (props) => {
     useEffect(()=>{
       if (openAddSection){
         if (formStart.unix() < dayjs().unix()){
-
           setFormStart(dayjs().startOf('day').add(1, 'day'));
         };
   
+        if (formEnd){
           let a = formStart.unix();
-          let b = dayjs().startOf('day').unix();
+          let b = formEnd.unix();
           console.log('item time', a, b, 'today time');
-          if (formEnd && a > b )
+          if (a > b )
           {
-            setFormStart(formEnd);
+            setFormEnd(formStart);
           } 
+
+        }
       }
     },[formEnd]);
 
@@ -138,28 +114,34 @@ const RulesManagerModal= (props) => {
     setCloseAllEditorRows(id);
   }
 
+
   const error = () => {
-    alert('Начало действия графика может быть установлено только с завтрашнего дня');
+    alert('Начало действия правила может быть установлено только с завтрашнего дня');
     // alert()
   };
 
   const loadMoreAction = ()=>{
     setPage_num(page_num + 1);
-    setTimeout(() => {
-      get_links();
-    }, 500);
   }
 
-  const changeType = (ev)=>{
-    console.log(ev);
-  }
-  const changeSchedule = (ev)=>{
-    console.log(ev);
-  }
+  useEffect(()=>{ 
+    if (page_num > 1 && open){
+      get_links();
+    }
+  },[page_num]);
+
+
+
 
   useEffect(()=>{
-    setFormSched( props.rule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)[0]?.id);
+    console.log(props.rule_types);
+    console.log(baseRules);
+    console.log(formType);
+    setFormRul( baseRules
+      .filter((item)=> item.id_company === props.data.id_company)
+      .filter((item)=>formType === null || item.rule_type_id === formType)[0]?.id);
    },[formType]);
+
 
    useEffect(()=>{
     if (typeof baseLinks === 'object'){
@@ -177,7 +159,7 @@ const RulesManagerModal= (props) => {
      */
     const get_links = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules_get/' + props.target_id, 
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/rules_get/' + props.target_id, 
               {   
                 data: {
                   page: page_num,
@@ -209,10 +191,11 @@ const RulesManagerModal= (props) => {
 
 
   const createNewLink = () => {
-    if (formSched && formStart){
+    if (formRul && formStart){
       const data = {
         group_id: props.target_id,
-        schedule_id: formSched,
+        rule_id: formRul,
+        rule_type: formType,
         start: formStart.unix(),
         end: formEnd.unix()
       };
@@ -254,7 +237,8 @@ const RulesManagerModal= (props) => {
         if (data){
           const data_up = {
             group_id: props.target_id,
-            schedule_id: formSched,
+            rule_id: formRul,
+            // rule_type: formType,
             id: data.id,
             start: data.start.unix(),
             end: data.end.unix()
@@ -380,10 +364,11 @@ const RulesManagerModal= (props) => {
                   placeholder="Выберите правило"
                   optionFilterProp="label"
                   style={{ width: '100%' }}
-                  onChange={(vel)=>setFormSched(vel)}
+                  onChange={(vel)=>setFormRul(vel)}
                   // onSearch={onSearch}
                   options={
-                    props.rule_list.filter((item)=>formType === null || item.skud_schedule_type_id === formType)
+                    props.rule_list.filter((item)=> item.id_company === props.data.id_company).
+                    filter((item)=>formType === null || item.rule_type_id === formType)
                     .map((typ)=>
                        ({
                       key: `rulist_${typ.id}`,
@@ -392,7 +377,7 @@ const RulesManagerModal= (props) => {
                     })
                   
                   )}
-                  value={formSched}
+                  value={formRul}
                 />
               </div>
               <div>
@@ -438,7 +423,7 @@ const RulesManagerModal= (props) => {
                     on_save_data={updateOldLink}
                     open_editor={onOpenEditorRow}
                     close_edit={closeAllEditorRows}
-                  data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
+                  data={{start: item.start, end: item.end, name: item.rule_name, type: item.rule_type, id: item.id}}
                   />
               ))}
               {/* <TableRowItem 
@@ -487,19 +472,22 @@ export default RulesManagerModal;
 
 
 const TableRowItem = (props) => {
+  
   const [archieved, setArchieved] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   const [startTime, setStartTime] = useState(props.data.start ? dayjs(props.data.start) : null);
-  const [endTime, setEndTime] = useState(props.data.end ? dayjs(props.data.start) : null);
+  const [endTime, setEndTime] = useState(props.data.end ? dayjs(props.data.end) : null);
   const [_startTime] = useState(props.data.start ? dayjs(props.data.start) : null);
-  const [_endTime] = useState(props.data.end ? dayjs(props.data.start) : null);
+  const [_endTime] = useState(props.data.end ? dayjs(props.data.end) : null);
 
   const [hasChanges, setHasChanges] = useState(false);
 
   const [item_id, setItem_id] = useState(props.data.id);
   const [item_name, setItem_name] = useState(props.data.name);
   const [item_type, setItem_type] = useState(props.data.type);
+
+  const [currentDate, setCurrentDate] = useState(false);
 
   useEffect(()=>{
     if (props.close_edit !== item_id){
@@ -511,7 +499,7 @@ const TableRowItem = (props) => {
   useEffect(()=>{
     if (editMode){
 
-      if (startTime.unix() != _startTime.unix()
+      if (startTime.unix() !== _startTime.unix()
       || JSON.stringify(endTime) != JSON.stringify(_endTime)
       ) {
         setHasChanges(true);
@@ -519,12 +507,19 @@ const TableRowItem = (props) => {
         setHasChanges(false);
       };
     }
+
+    if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() < dayjs().unix()))
+    {
+      setCurrentDate(true);
+    } else {
+      setCurrentDate(false);
+    }
   },[startTime, endTime]);
 
   useEffect(()=>{
     if (editMode){
       if (endTime && endTime.unix() < dayjs().unix()){
-        setEndTime(dayjs().startOf('day').add(1, 'day'));
+        setEndTime(dayjs().endOf('day'));
       }
 
         let a = startTime.unix();
@@ -543,13 +538,15 @@ const TableRowItem = (props) => {
         setStartTime(dayjs().startOf('day').add(1, 'day'));
       };
 
+      if (endTime){
         let a = startTime.unix();
-        let b = dayjs().startOf('day').unix();
-        console.log('item time', a, b, 'today time');
-        if (endTime && a > b )
+        let b = endTime.unix();
+        if (a > b)
         {
-          setStartTime(endTime);
+          setEndTime(startTime.endOf('day'));
         } 
+
+      }
     }
   },[endTime]);
 
@@ -559,8 +556,8 @@ const TableRowItem = (props) => {
     if (props.on_save_data){
       props.on_save_data({
         id: item_id,
-        start: startTime,
-        end: endTime,
+        start: startTime.startOf('day'),
+        end: endTime.endOf('day'),
       })
     }
   }
@@ -589,12 +586,12 @@ const TableRowItem = (props) => {
   }
 
   return (
-    <div className={'sk-gt-table-row'}>
-      <div><Sched_type_icon>{item_type}</Sched_type_icon></div>
-      <div>id</div>
+    <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""}`}>
+      <div><RuleIcons type={item_type} /></div>
+      <div>{item_id}</div>
       <div>{item_name}</div>
       <div>
-        {editMode ? (
+        {editMode && startTime.unix() > dayjs().unix() ? (
           <DatePicker
             allowClear={false}
             value={startTime}

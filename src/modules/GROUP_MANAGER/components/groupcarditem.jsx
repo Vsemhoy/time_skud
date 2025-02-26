@@ -253,7 +253,7 @@ const GroupCardItem = (props)=>{
     event.preventDefault();
         if (props.open_rule_modal)
       {
-        props.open_rule_modal();
+        props.open_rule_modal(group_id);
       }
   }
 

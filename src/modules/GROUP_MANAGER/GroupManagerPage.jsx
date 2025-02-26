@@ -156,7 +156,7 @@ const GroupManagerPage = (props)=>{
                       },
                       _token: CSRF_TOKEN
                   });
-                  ruleList(response.data.data);
+                  setRuleList(response.data.data);
                   console.log('get_calendarList => ', response.data);
             } catch (e) {
                 console.log(e)
@@ -474,29 +474,22 @@ const GroupManagerPage = (props)=>{
         // let usm = baseUserList.find((item)=> item.id === group_id);
 
         let usm = baseGroupList.find((item)=> item.id === group_id);
-        console.log(group_id, usm);
         setOpenedGroup(usm);
         setEditedGroupId(group_id);
         setOpenedUserModal(true);
     }
-    // const setOpenUserModal = () => {
-        
-    // }
 
-    // const setOpenScheduleModal = () => {
-        
-    // }
-
-    // const setOpenRuleModal = () => {
-        
-    // }
 
     const openScheduleEditor = (value) => {
+        let usm = baseGroupList.find((item)=> item.id === value);
+        setOpenedGroup(usm);
         setEditedGroupId(value);
         setOpenedScheduleModal(true);
     }
 
     const openRulesEditor = (value) => {
+        let usm = baseGroupList.find((item)=> item.id === value);
+        setOpenedGroup(usm);
         setEditedGroupId(value);
         setOpenedRuleModal(true);
     }
@@ -555,7 +548,9 @@ const GroupManagerPage = (props)=>{
                     on_save={saveGroup}
                 />
                 
+                {openedGroup && (
                 <ScheduleManagerModal
+                    data={openedGroup}
                     target_id={editedGroupId}
                     schedule_types={scheduleTypes}
                     schedule_list={scheduleList}
@@ -564,10 +559,11 @@ const GroupManagerPage = (props)=>{
                     on_update={false}
                     on_close={()=>setOpenedScheduleModal(false)}
                 />
+                )}
 
-
-
-                <RulesManagerModal
+                {openedGroup && (
+                  <RulesManagerModal
+                    data={openedGroup}
                     target_id={editedGroupId}
                     open={openRulesEditor}
                     on_open={openedRuleModal}
@@ -577,6 +573,8 @@ const GroupManagerPage = (props)=>{
                     on_update={false}
                     on_close={()=>setOpenedRuleModal(false)}
                 />
+                )}
+
 
 
                 <UserManagerModal
