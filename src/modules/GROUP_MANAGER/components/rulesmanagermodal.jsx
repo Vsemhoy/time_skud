@@ -35,7 +35,7 @@ const RulesManagerModal= (props) => {
 
 
     const [formRul, setFormRul] = useState(1);
-    const [formType, setFormType] = useState(null);
+    const [formType, setFormType] = useState(1);
     const [formStart, setFormStart] = useState(dayjs().startOf('day').add(1, 'day'));
     const [formEnd, setFormEnd] = useState(dayjs().add(1, 'month'));
 
