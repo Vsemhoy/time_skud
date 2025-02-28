@@ -4,10 +4,11 @@ import { Button, DatePicker, Flex, Modal, Select, message } from 'antd';
 
 import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
 import { DS_RULES, DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
-import { CloseOutlined, DeleteOutlined, EditOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
 
 
 
@@ -171,7 +172,7 @@ const RulesManagerModal= (props) => {
             );
             console.log('departs', response.data);
 
-            setBaseLinks(...baseLinks, response.data.data);
+            setBaseLinks([...baseLinks, ...response.data.data]);
             setTotalLinks(response.data.total);
             // setOrganizations(organizations_response.data.org_list)
             // setTotal(organizations_response.data.total_count)
@@ -261,16 +262,17 @@ const RulesManagerModal= (props) => {
                             _token: CSRF_TOKEN
                         }
                     );
-                    console.log('users', response);
-                    // setBaseUserListData(response.data.data);
-                } catch (e) {
-                    console.log(e)
-                } finally {
                     setBaseLinks(prevList => 
                         prevList.map(item => 
                             item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
                         )
                     );
+                    // setBaseUserListData(response.data.data);
+                } catch (e) {
+                    console.log(e)
+                    alert(e.response.data.message);
+                } finally {
+
               }
         }
 
@@ -292,13 +294,11 @@ const RulesManagerModal= (props) => {
                     _token: CSRF_TOKEN
                 }
             );
-            if (response.data.status === 0){
-                // get_groupList();
-            }
+            setBaseLinks(baseLinks.filter((item)=>{return item.id !== body.id}));
         } catch (e) {
             console.log(e)
+            alert(e.response.data.message);
         } finally {
-            setBaseLinks(baseLinks.filter((item)=>{return item.id !== body.id}));
         }
     }
 
@@ -417,36 +417,20 @@ const RulesManagerModal= (props) => {
             
           </div>
             <div className={'sk-grid-table-body'}>
-              {links.map(item => (
+            {links.map((item, index) => 
+                {return item.id !== undefined && item.id !== null ? (
                   <TableRowItem
+                    key={"rowrul_" + item.id} 
                     on_delete={deleteOldItem}
                     on_save_data={updateOldLink}
                     open_editor={onOpenEditorRow}
                     close_edit={closeAllEditorRows}
-                  data={{start: item.start, end: item.end, name: item.rule_name, type: item.rule_type, id: item.id}}
+                  data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
                   />
-              ))}
-              {/* <TableRowItem 
-              on_delete={deleteOldItem}
-              on_save_data={updateOldLink}
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf2", type: 2, id: 645}}
-              />
-              <TableRowItem 
-              on_delete={deleteOldItem}
-              on_save_data={updateOldLink}
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf3", type: 3, id: 6445}}
-              />
-              <TableRowItem 
-              on_delete={deleteOldItem}
-              on_save_data={updateOldLink}
-                open_editor={onOpenEditorRow}
-                close_edit={closeAllEditorRows}
-              data={{start: 1738068722, end: 1738068722, name: "Hello wolf4", type: 3, id: 445}}
-              /> */}
+                ):(<BreakIn
+                    key={"rowrulgap_" + index}
+                   start={item.start} end={item.end} />)}
+              )}
 
 
 
@@ -640,3 +624,32 @@ const TableRowItem = (props) => {
     </div>
   );
 }
+
+const BreakIn = ({start, end}) => {
+  
+  const gap =  (dayjs(end).unix() - dayjs(start).unix()) / (24*60*60);
+  return (
+    <div className='sk-gt-table-row sk-gt-row-gap'>
+
+        <div style={{textAlign: 'center'}}>
+          <EllipsisOutlined />
+        </div>
+        <div>
+
+        </div>
+        <div>
+          Разрыв {gap.toFixed()} {WordDayNumerate(gap.toFixed())}
+        </div>
+        <div>
+          {dayjs(start).format("DD-MM-YYYY")}
+        </div>
+        <div>
+          {dayjs(end).format("DD-MM-YYYY")}
+        </div>
+        <div>
+          
+        </div>
+
+    </div>
+  )
+ }

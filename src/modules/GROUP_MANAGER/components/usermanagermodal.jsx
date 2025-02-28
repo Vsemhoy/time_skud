@@ -26,37 +26,40 @@ const UserManagerModal= (props) => {
         if (props.on_close){
             props.on_close();
         }
+        setOpen(false);
     }
 
     useEffect(()=>{
       if (props.data !== null){
-        setGroup_id(props.data.id);
         setUserList(props.base_users);
-
+        setGroup_id(props.target_id);
       }
-  },[props.base_users, props.data]);
+  },[props.base_users, props.data, props.target_id]);
+
+
 
   useEffect(()=>{
     if (props.data){
 
       getMock(); 
     }
-  }, [userList]);
+  }, [userList, group_id]);
 
   const getMock = () => {
+
     let newMockData   = [];
     let newTargetKeys = [];
     let userco = 0;
 
     console.log('userlist', userList);
-    console.log(group_id);
+    console.log('GRP ID ' ,group_id);
     console.log('props.data.id_company', props.data.id_company)
 
     for (let i = 0; i < userList.length; i++) {
       const element = userList[i];
       if (element.id_company !== props.data.id_company){ continue;}
         let mockup = {};
-        let key = `mocky_${element.id}`;
+        let key = `mocky_${element.id}_${group_id}`;
         if (element.user_group_id === group_id){
             mockup.chosen = true;
             mockup.title = ShortName(element.surname, element.name, element.patronymic);

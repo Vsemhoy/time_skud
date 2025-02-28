@@ -473,9 +473,9 @@ const GroupManagerPage = (props)=>{
     const openModalUserEditor = (group_id) => {
         // let usm = baseUserList.find((item)=> item.id === group_id);
 
+        setEditedGroupId(group_id);
         let usm = baseGroupList.find((item)=> item.id === group_id);
         setOpenedGroup(usm);
-        setEditedGroupId(group_id);
         setOpenedUserModal(true);
     }
 

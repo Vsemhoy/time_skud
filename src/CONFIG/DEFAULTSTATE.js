@@ -2207,7 +2207,7 @@ export const DS_SCHEDULE_ENTITIES = [
 ];
 
 
-export const DS_RULE_TYPES = [
+    export const DS_RULE_TYPES = [
     {
         "id": 1,
         "name": "Опоздание",
@@ -2254,6 +2254,9 @@ export const DS_RULE_TYPES = [
         "color" : "#00f5ab69"
     },
 ];
+
+
+// [ {"id": 1, "color": "#ff000069"},{"id": 2, "color": "#ff91004b"},{"id": 3, "color": "#7c550069"},{"id": 4, "color": "#00a2ff69"},{"id": 5, "color": "#00f5ab69"}]
 
 // export const DS_RULE_TYPES = [
 //     {
@@ -2427,3 +2430,111 @@ export const DS_RULES = [
     },
 ]
 
+
+
+export const DS_RULE_LINKS_INGROUP =
+{
+    "data": [
+        {
+            "id": 8,
+            "start": "2025-05-01 00:00:00",
+            "end": "2025-05-31 23:59:59",
+            "creator_id": 377,
+            "creator_name": "Всеволод",
+            "creator_surname": "Суворов",
+            "created_at": "2025-02-25 14:20:41",
+            "deleted": false,
+            "rule_name": "Правило не для всех",
+            "rule_type": 2,
+            "rule_id": 2,
+        },
+        {
+            "id": 18,
+            "start": "2025-02-26 00:00:00",
+            "end": "2025-02-28 23:59:59",
+            "creator_id": 377,
+            "creator_name": "Всеволод",
+            "creator_surname": "Суворов",
+            "created_at": "2025-02-25 17:11:24",
+            "deleted": false,
+            "rule_name": "Правило не для всех",
+            "rule_type": 2,
+            "rule_id": 2,
+        },
+        {
+            "id": 79,
+            "start": "2025-03-29 00:00:00",
+            "end": "2025-03-31 23:59:59",
+            "creator_id": 377,
+            "creator_name": "Всеволод",
+            "creator_surname": "Суворов",
+            "created_at": "2025-02-26 11:48:26",
+            "deleted": false,
+            "rule_name": "Правило не для всех",
+            "rule_type": 2,
+            "rule_id": 2,
+        },
+        {
+            "id": 80,
+            "start": "2025-03-29 00:00:00",
+            "end": "2025-03-31 23:59:59",
+            "creator_id": 377,
+            "creator_name": "Всеволод",
+            "creator_surname": "Суворов",
+            "created_at": "2025-02-26 11:49:32",
+            "deleted": false,
+            "rule_name": "Правило не для всех",
+            "rule_type": 2,
+            "rule_id": 2,
+        },
+        {
+            "id": 81,
+            "start": "2025-02-27 00:00:00",
+            "end": "2027-02-18 23:59:59",
+            "creator_id": 377,
+            "creator_name": "Всеволод",
+            "creator_surname": "Суворов",
+            "created_at": "2025-02-26 11:51:52",
+            "deleted": false,
+            "rule_name": "Правило не для всех",
+            "rule_type": 2,
+            "rule_id": 2,
+        }
+    ],
+    "total": 5, // Всего привязано правил всех типов
+    "status": 0,
+    "message": "OK"
+}
+
+
+export const DS_SKUD_FILIALS = 
+[
+    {
+        "id": 1,
+        "id_company": 1,
+        "name": "Без филиала",
+        "description": null,
+        "deleted": 0
+    },
+    {
+        "id": 2,
+        "id_company": 2,
+        "name": "Арстел главный",
+        "description": "Главный офис, склад и прочие места",
+        "deleted": 0
+    },
+    {
+        "id": 3,
+        "id_company": 2,
+        "name": "Северный офис",
+        "description": "Северный офис Арстел",
+        "deleted": 0
+    },
+    {
+        "id": 4,
+        "id_company": 3,
+        "name": "Рондо главный",
+        "description": "Основной офис рондо",
+        "deleted": 0
+    }
+]

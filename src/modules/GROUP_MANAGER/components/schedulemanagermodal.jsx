@@ -171,6 +171,7 @@ const ScheduleManagerModal= (props) => {
    },[formType]);
 
    useEffect(()=>{
+    setLinks([]);
     if (baseLinks.length){
       console.log('use sort');
       let sorted = baseLinks.sort((a, b)=> {return  dayjs(b.start).unix() - dayjs(a.start).unix()});
@@ -192,55 +193,51 @@ const ScheduleManagerModal= (props) => {
                   creator_id: sorted[i - 1].creator_id, // или любое другое значение по умолчанию
                   // Добавьте другие свойства по умолчанию, если необходимо
               };
-
               // Добавление нового объекта в массив
               result.push(newObject);
           }
-
           // Добавление следующей записи
           result.push(sorted[i]);
       }
-
-    setLinks(result);
+      setLinks(result);
       console.log(sorted);
-
     }
 
    },[baseLinks]);
 
 
-    /**
-     * Получение графиков
-     * @param {*} req 
-     * @param {*} res 
-     */
-    const get_links = async (req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules_get/' + props.target_id, 
-              {   
-                data: {
-                  page: page_num,
-                  limit: page_offset,
-                  orderby: ["id", "ASC"],
-                }, 
-                _token: CSRF_TOKEN
-            }
-            );
-            console.log('departs', response.data);
+  /**
+   * Получение графиков
+   * @param {*} req 
+   * @param {*} res 
+   */
+  const get_links = async (req, res) => {
+      try {
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules_get/' + props.target_id, 
+            {   
+              data: {
+                page: page_num,
+                limit: page_offset,
+                orderby: ["id", "ASC"],
+              }, 
+              _token: CSRF_TOKEN
+          }
+          );
+          console.log('departs', response.data);
 
-            setBaseLinks([...baseLinks, ...response.data.data]);
-            setTotalLinks(response.data.total);
-            if (page_offset * page_num < response.data.total){
-              setHasMoreRows(true);
-            } else {
-              setHasMoreRows(false);
-            }
-        } catch (e) {
-            console.log(e)
-        } finally {
-            // setLoadingOrgs(false)
-        }
-    }
+          setBaseLinks([...baseLinks, ...response.data.data]);
+          setTotalLinks(response.data.total);
+          if (page_offset * page_num < response.data.total){
+            setHasMoreRows(true);
+          } else {
+            setHasMoreRows(false);
+          }
+      } catch (e) {
+          console.log(e)
+      } finally {
+          // setLoadingOrgs(false)
+      }
+  }
 
 
   const createNewLink = () => {
@@ -256,7 +253,7 @@ const ScheduleManagerModal= (props) => {
   }
 
 
-      /**
+    /**
      * Перелинковка юзеров с гурппами
      * @param {*} req 
      * @param {*} res 
@@ -279,21 +276,15 @@ const ScheduleManagerModal= (props) => {
                     if (props.schedule_list[i].id === body.schedule_id){
                       object.schedule_name = props.schedule_list[i].name;
                       object.schedule_type = props.schedule_list[i].type;
-                      console.log(object);
+                      console.log('inserted object ',object);
                       break;
                     }
                   }
 
                   setBaseLinks([...baseLinks, object]);
-                  // setBaseUserListData(response.data.data);
               } catch (e) {
                   console.log(e)
               } finally {
-                  // setBaseCalendarList(prevList => 
-                  //     prevList.map(item => 
-                  //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
-                  //     )
-                  // );
             }
         }
 
@@ -326,15 +317,17 @@ const ScheduleManagerModal= (props) => {
                         }
                     );
                     console.log('users', response);
+                    setBaseLinks(prevList => 
+                      prevList.map(item => 
+                          item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                      )
+                  );
                     // setBaseUserListData(response.data.data);
                 } catch (e) {
                     console.log(e)
+                    alert(e.response.data.message);
                 } finally {
-                    setBaseLinks(prevList => 
-                        prevList.map(item => 
-                            item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
-                        )
-                    );
+
               }
         }
 
@@ -356,13 +349,12 @@ const ScheduleManagerModal= (props) => {
                   _token: CSRF_TOKEN
               }
           );
-                        if (response.data.status === 0){
-                            // get_groupList();
-                        }
+          setBaseLinks(baseLinks.filter((item)=>{return item.id !== id}));
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            alert(e.response.data.message);
         } finally {
-            setBaseLinks(baseLinks.filter((item)=>{return item.id !== id}));
+            
         }
     }
 
@@ -482,17 +474,19 @@ const ScheduleManagerModal= (props) => {
             
           </div>
             <div className={'sk-grid-table-body'}>
-              {links.map(item => 
+              {links.map((item, index) => 
                 {return item.id !== undefined && item.id !== null ? (
                   <TableRowItem
+                    key={"rowshed_" + item.id} 
                     on_delete={deleteOldItem}
                     on_save_data={updateOldLink}
                     open_editor={onOpenEditorRow}
                     close_edit={closeAllEditorRows}
                   data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
                   />
-                ):(<BreakIn start={item.start} end={item.end} />)}
-
+                ):(<BreakIn
+                    key={"rowshedgap_" + index}
+                   start={item.start} end={item.end} />)}
               )}
 
 
