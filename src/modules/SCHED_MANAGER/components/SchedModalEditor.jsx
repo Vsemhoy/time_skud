@@ -29,7 +29,7 @@ const SchedModalEditor = (props)=>{
 
 
   const [createdAt, setCreatedAt]                   = useState(null);
-  const [idCompany, setIdCompany]                   = useState(1);
+  const [idCompany, setIdCompany]                   = useState(props.userData.user.id_company);
   const [companyName, setCompanyName]               = useState(null);
   const [idSkudScheduleType, setIdSkudScheduleType] = useState(1);
   const [name, setName]                             = useState(null);
@@ -580,7 +580,7 @@ const SchedModalEditor = (props)=>{
         </div>
 
 
-        { idSkudScheduleType === 1 ? (
+        { idSkudScheduleType === 1 || idSkudScheduleType === 2 ? (
           <div className={"sk-form-group"}>
 
           <div className={'sk-flex-sides sk-flex-form-row'}>

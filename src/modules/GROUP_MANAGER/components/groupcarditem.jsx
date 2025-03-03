@@ -266,25 +266,30 @@ const GroupCardItem = (props)=>{
   };
 
     return (
-
+        
         <div className={"sk-group-list-row"}>
+          {itemData.id ? (
         <div className={`sk-group-card ${opened ? "opened" : "cooxed"}`}
         >
             <div className={'sk-row sk-first-row-4group sk-grp-card-head'}>
               <div>
-              <div><Sched_type_icon>{itemData.linked_schedule && itemData.linked_schedule.type ? itemData.linked_schedule.type : 0}</Sched_type_icon></div>
+              <div><Sched_type_icon>{itemData.linked_schedule.length && itemData.linked_schedule[0].type ? itemData.linked_schedule[0].type : 0}</Sched_type_icon></div>
               </div>
                 <div>
                     <div className={'sk-schedule-list-title'}>
                         {name} {itemData.id}
                     </div>
-                    {itemData.linked_schedule && itemData.linked_schedule.id > 0 ? (
+                    {itemData.linked_schedule.length && itemData.linked_schedule[0].id > 0 ? (
                     <div onDoubleClick={dblClickOnSchedule} className={'sk-group-flexer-in-row'}>
                       <div></div>
-                      <div>{itemData.linked_schedule.name}</div>
-                      <div>{itemData.linked_schedule.start}</div>
-                      <div>{itemData.linked_schedule.end}</div>
-                      <div><strong>2</strong> в очереди</div>
+                      <div>Текущий график: {itemData.linked_schedule[0].name}</div>
+                      <div>{itemData.linked_schedule[0].start}</div>
+                      <div>{itemData.linked_schedule[0].end}</div>
+                      <div>
+                        {itemData.linked_schedule[0].next_count ? (
+                          <span><strong>itemData.linked_schedule[0].next_count</strong> в очереди</span>
+                        ) : ""}
+                        </div>
                       <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
                     </div> 
                     ) : (
@@ -403,6 +408,7 @@ const GroupCardItem = (props)=>{
             
             </div>
         </div>
+             ):""}
         </div>
     )
 

@@ -248,6 +248,26 @@ const ScheduleManagerModal= (props) => {
         start: formStart.unix(),
         end: !formEnd ? null : formEnd.unix()
       };
+
+      for (let i  = 0; i < baseLinks.length ; i++){
+        const checkLink = baseLinks[i];
+        const startDate = dayjs(checkLink.start).unix();
+        const endDate = checkLink.end !== null ? dayjs(checkLink.end).unix() : null;
+
+        if (startDate < data.start && (endDate === null || (endDate > data.start ))){
+          // Обновляем найденную строку с пересечением - меняем дату окончания
+          checkLink.end = dayjs().unix(data.start).subtract(1, 'day').endOf('day').unix();
+          update_links(checkLink);
+        };
+
+        // if (startDate >= data.start && data.end !== null && data.end  (endDate === null || endDate <= data.))
+
+        console.log(checkLink);
+      }
+
+      data.id = dayjs().unix();
+      setBaseLinks([...baseLinks, data]);
+
       create_links(data);
     }
   }
