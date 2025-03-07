@@ -29,7 +29,7 @@ const FTIME = (seconds) => {
 
 
 const Sched_type_icon = (type) => {
-    
+    console.log(type);
     switch (type.children) {
         case 1:
             return ( <img src={HOST_COMPONENT_ROOT + SchedStdSVG} title='Пятидневка график'/>);
@@ -265,6 +265,7 @@ const GroupCardItem = (props)=>{
          option.description.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
   };
 
+  console.log(itemData);
     return (
         
         <div className={"sk-group-list-row"}>
@@ -273,21 +274,21 @@ const GroupCardItem = (props)=>{
         >
             <div className={'sk-row sk-first-row-4group sk-grp-card-head'}>
               <div>
-              <div><Sched_type_icon>{itemData.linked_schedule.length && itemData.linked_schedule[0].type ? itemData.linked_schedule[0].type : 0}</Sched_type_icon></div>
+              <div><Sched_type_icon>{itemData.linked_schedule && itemData.linked_schedule.type ? itemData.linked_schedule.type : 0}</Sched_type_icon></div>
               </div>
                 <div>
                     <div className={'sk-schedule-list-title'}>
                         {name} {itemData.id}
                     </div>
-                    {itemData.linked_schedule.length && itemData.linked_schedule[0].id > 0 ? (
+                    {itemData.linked_schedule && itemData.linked_schedule.id > 0 ? (
                     <div onDoubleClick={dblClickOnSchedule} className={'sk-group-flexer-in-row'}>
                       <div></div>
-                      <div>Текущий график: {itemData.linked_schedule[0].name}</div>
-                      <div>{itemData.linked_schedule[0].start}</div>
-                      <div>{itemData.linked_schedule[0].end}</div>
+                      <div>Текущий график: {itemData.linked_schedule.name}</div>
+                      <div>{itemData.linked_schedule.start  ? dayjs(itemData.linked_schedule.start).format("DD-MM-YYYY") : "..."}</div>
+                      <div>{itemData.linked_schedule.end ? dayjs(itemData.linked_schedule.end).format("DD-MM-YYYY") : "..."}</div>
                       <div>
-                        {itemData.linked_schedule[0].next_count ? (
-                          <span><strong>itemData.linked_schedule[0].next_count</strong> в очереди</span>
+                        {itemData.linked_schedule.next_count ? (
+                          <span><strong>itemData.linked_schedule.next_count</strong> в очереди</span>
                         ) : ""}
                         </div>
                       <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
@@ -322,8 +323,8 @@ const GroupCardItem = (props)=>{
                               <div key={`${row.id}_n_${row.type}`} className={'sk-group-flexer-in-row'} onDoubleClick={dblClickOnRule} >
                                 <span><RuleIcons type={row.type}/></span>
                                 <div onClick={setOpenRuleModal}>  {row.name}</div>
-                                <div>{row.start}</div>
-                                <div>{row.end}</div>
+                                <div>{row.start ? dayjs(row.start).format('DD-MM-YYYY') : "..."}</div>
+                                <div>{row.end ? dayjs(row.end).format("DD-MM-YYYY") : "..."}</div>
                                 <div>{row.next_count > 0 ? (
                                   <span><strong>{row.next_count}</strong> в очереди</span>
                                 ):('-')}</div>

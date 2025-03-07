@@ -160,7 +160,7 @@ const RulesManagerModal= (props) => {
      */
     const get_links = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/rules_get/' + props.target_id, 
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get/' + props.target_id, 
               {   
                 data: {
                   page: page_num,
@@ -206,14 +206,14 @@ const RulesManagerModal= (props) => {
 
 
       /**
-     * Перелинковка юзеров с гурппами
+     * Создание связи
      * @param {*} req 
      * @param {*} res 
      */
           const create_links = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/rules',
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/links',
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
@@ -249,14 +249,14 @@ const RulesManagerModal= (props) => {
       }
 
       /**
-     * Перелинковка юзеров с гурппами
+     * Обновление данных связи
      * @param {*} req 
      * @param {*} res 
      */
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/rules/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/links/' + body.id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -288,7 +288,7 @@ const RulesManagerModal= (props) => {
     const delete_link = async (body, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/rules/' + body.id,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/rules/' + body.id + "?_token=" + CSRF_TOKEN,
                 {   
                     data: { "id" : body.id}, 
                     _token: CSRF_TOKEN
