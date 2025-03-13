@@ -34,7 +34,7 @@ const RuleManagerPage = (props) => {
         const [filters, setFilters] = useState([]);
 
     useEffect(()=>{
-        if (PRODMODE){
+        if (!PRODMODE){
             setBaseEntityList(DS_SCHEDULE_ENTITIES);
             setRuleTypes(DS_RULE_TYPES);
             setBaseRuleList(DS_RULES);

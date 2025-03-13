@@ -14,7 +14,7 @@ const UserList = (props)=>{
   const { userdata } = props;
   const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
 
-  const [baseUserListData, setBaseUserListData] = useState(PRODMODE ? DS_DEFAULT_USERS : []);
+  const [baseUserListData, setBaseUserListData] = useState(!PRODMODE ? DS_DEFAULT_USERS : []);
   const [userListData, setUserListData] = useState(baseUserListData.sort((a, b) => b.department - a.department));
 
   const [departments, setDepartments]  = useState([]);
@@ -154,7 +154,7 @@ const UserList = (props)=>{
 
 
   useEffect(() => {
-    if (!PRODMODE){
+    if (PRODMODE){
       get_departments();
       get_users();
     } else {

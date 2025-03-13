@@ -23,8 +23,8 @@ const SchedManagerPage = (props) => {
             label: com.name,
         })),
     ]);
-    const [baseScheduleList, setBaseScheduleList] = useState(PRODMODE ? DS_SCHEDULE_LIST : []);
-    const [baseProdCalendars, setBaseProdCalendars] = useState(PRODMODE ? DS_PROD_CALENDARS : []);
+    const [baseScheduleList, setBaseScheduleList] = useState(!PRODMODE ? DS_SCHEDULE_LIST : []);
+    const [baseProdCalendars, setBaseProdCalendars] = useState(!PRODMODE ? DS_PROD_CALENDARS : []);
     const [baseEntityList, setBaseEntityList] = useState([]);
 
     const [scheduleList, setScheduleList] = useState([]);
@@ -56,7 +56,7 @@ const SchedManagerPage = (props) => {
 
     // Эффект для загрузки данных при монтировании компонента
     useEffect(() => {
-        if (!PRODMODE) {
+        if (PRODMODE) {
             // getScheduleList(); // Загружаем данные только если не в режиме продакшн
             get_entityList();
             get_schedule_types();

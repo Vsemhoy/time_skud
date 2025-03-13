@@ -54,7 +54,7 @@ const GroupManagerPage = (props)=>{
 
 
     useEffect(()=>{
-        if (PRODMODE){
+        if (!PRODMODE){
 
             setBaseUserList(DS_GROUP_USERS);
             setBaseGroupList(DS_SKUD_GROUPS);

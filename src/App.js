@@ -14,7 +14,7 @@ import MenuItem from 'antd/es/menu/MenuItem';
 import { useEffect, useState } from 'react';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
-import { CSRF_TOKEN, PRODMODE } from './CONFIG/config';
+import { CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
 import AdminPage from './modules/ADMIN/AdminPage';
 import CalendarPage from './modules/CALENDAR/CalendarPage';
 import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
@@ -36,13 +36,13 @@ function App() {
 
   ];
 
-  const [userAct, setUserAct] = useState(PRODMODE ? DS_USER : []);
+  const [userAct, setUserAct] = useState(!PRODMODE ? DS_USER : []);
   const [pageLoaded, setPageLoaded] = useState(false);
 
   /**
    * Текущий адрес страницы
    */
-  const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'home');
+  const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'me');
   
     // Чтение параметра из URL при монтировании компонента
     useEffect(() => {
@@ -109,7 +109,7 @@ function App() {
 
       // EFFECTS
       useEffect(() => {
-        !PRODMODE && get_userdata(setUserAct)
+        PRODMODE && get_userdata(setUserAct)
     }, []);
 
 
@@ -130,9 +130,7 @@ function App() {
 
             <MenuItem
               key={'menu_5234'}>
-              <Link
-                onClick={()=>{ setLocation('home')}}
-              >Home</Link>
+              <a href={HTTP_ROOT}>Home</a>
             </MenuItem>
 
             <MenuItem
@@ -220,10 +218,11 @@ function App() {
       <Content style={{ padding: '0 48px' }}>
         
         
-          { pageLoaded || PRODMODE ? (
+          { pageLoaded || !PRODMODE ? (
         <div>
-            {location === '' && <HomePage />}
-            {location === 'home' && <HomePage />}
+            {/* {location === '' && <HomePage />} */}
+            {/* {location === 'home' && <HomePage />} */}
+            {location === '' && <AccountPage userdata={userAct} />}
             {location === 'me' && <AccountPage userdata={userAct} />}
             {location === 'admin' && <AdminPage />}
             {location === 'admin/rules' && <RuleManagerPage userdata={userAct} />}

@@ -265,7 +265,6 @@ const GroupCardItem = (props)=>{
          option.description.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
   };
 
-  console.log(itemData);
     return (
         
         <div className={"sk-group-list-row"}>
@@ -287,8 +286,8 @@ const GroupCardItem = (props)=>{
                       <div>{itemData.linked_schedule.start  ? dayjs(itemData.linked_schedule.start).format("DD-MM-YYYY") : "..."}</div>
                       <div>{itemData.linked_schedule.end ? dayjs(itemData.linked_schedule.end).format("DD-MM-YYYY") : "..."}</div>
                       <div>
-                        {itemData.linked_schedule.next_count ? (
-                          <span><strong>itemData.linked_schedule.next_count</strong> в очереди</span>
+                        {itemData.schedules_in_queue ? (
+                          <span><strong>{itemData.schedules_in_queue}</strong> в очереди</span>
                         ) : ""}
                         </div>
                       <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
@@ -299,7 +298,10 @@ const GroupCardItem = (props)=>{
                         <div>Нет графика...</div>
                         <div>-</div>
                         <div>-</div>
-                        <div>-</div>
+                        <div>                        
+                          {itemData.schedules_in_queue ? (
+                          <span><strong>{itemData.schedules_in_queue}</strong> в очереди</span>
+                        ) : "-"}</div>
                         <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
                       </div>  
                     )}
@@ -312,9 +314,9 @@ const GroupCardItem = (props)=>{
                           
                             <div>
                             Прикреплено првил: <strong>{itemData.linked_rules && itemData.linked_rules.length}</strong> </div>
-                          <div>12.22.2003</div>
-                          <div>12.22.2033</div>
-                          <div><strong>2</strong> в очереди</div>
+                          <div></div>
+                          <div></div>
+                          <div><strong>{itemData?.rules_in_queue}</strong> в очереди</div>
                           <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
                         </div>
                         {opened && (
@@ -325,9 +327,7 @@ const GroupCardItem = (props)=>{
                                 <div onClick={setOpenRuleModal}>  {row.name}</div>
                                 <div>{row.start ? dayjs(row.start).format('DD-MM-YYYY') : "..."}</div>
                                 <div>{row.end ? dayjs(row.end).format("DD-MM-YYYY") : "..."}</div>
-                                <div>{row.next_count > 0 ? (
-                                  <span><strong>{row.next_count}</strong> в очереди</span>
-                                ):('-')}</div>
+                                <div></div>
                               </div>
                             )})}
                           </div>
@@ -428,3 +428,12 @@ const GradientDiv = ({ colors }) => {
       </div>
   );
 };
+
+// let arr = [
+//   ["manOp","Установка курса валюты","4","Редактирование валют","0"],
+//   ["manOp","Менеджер отдела продаж","4","Менеджер отд. продаж","0"],
+//   ["rukOp","Руководитель отдела продаж","4","Руководитель отд. продаж","0"],
+//   ["freeCoNotake","Запрещено брать кураторство","13","Запрет кураторства","0"],
+//   ["freeCoApprove","Требуется подтверждение взятия кураторства","13","Подтверждение кураторства","0"],
+//   ["freeCoShow","Показывать свободных клиентов","13","Карточки свободных клиентов","0"],
+// ]

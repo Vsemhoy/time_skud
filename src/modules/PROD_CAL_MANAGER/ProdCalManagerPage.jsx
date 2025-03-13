@@ -22,8 +22,8 @@ const ProdCalManagerPage = (props) => {
     const [callToOpen, setCallToOpen] = useState(false);
     const [editedItem, setEditedItem] = useState({id: null});
     const [selectedCompany, setSelectedCompany] = useState(0)
-    const [calendarList, setCalendarList] = useState(PRODMODE ? DS_PROD_CALENDARS : []);
-    const [baseCalendarList, setBaseCalendarList] = useState(PRODMODE ? DS_PROD_CALENDARS : []);
+    const [calendarList, setCalendarList] = useState(!PRODMODE ? DS_PROD_CALENDARS : []);
+    const [baseCalendarList, setBaseCalendarList] = useState(!PRODMODE ? DS_PROD_CALENDARS : []);
     const [allowDelete , setAllowDelete] = useState(false);
 
     
@@ -57,7 +57,7 @@ const ProdCalManagerPage = (props) => {
             return;
         }
 
-        if (PRODMODE){
+        if (!PRODMODE){
             let item = DS_PROD_CALENDARS.find((el)=>el.id === item_id);
             setEditedItem(item);
             setCallToOpen(true);

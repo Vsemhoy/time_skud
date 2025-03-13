@@ -43,8 +43,63 @@ const RulesManagerModal= (props) => {
     useEffect(()=>{
         if (props.on_open){
             setOpen(true); 
-            if (PRODMODE){
+            if (!PRODMODE){
               setBaseRules(props.rule_list);
+              setBaseLinks([
+                      {
+                          "id": 1,
+                          "start": "2025-03-01 05:27:26",
+                          "end": "2025-03-15 14:54:19",
+                          "creator_id": 47,
+                          "creator_name": "Валентина",
+                          "creator_surname": "Кошелева",
+                          "created_at": 1740914795,
+                          "deleted": false,
+                          "rule_name": "Правило_1741014647",
+                          "rule_type": 1,
+                          "rule_id": 1
+                      },
+                      {
+                          "id": 3,
+                          "start": "2025-03-02 00:00:00",
+                          "end": "2025-04-30 23:59:59",
+                          "creator_id": 46,
+                          "creator_name": "Александр",
+                          "creator_surname": "Кошелев",
+                          "created_at": 1740830052,
+                          "deleted": false,
+                          "rule_name": "Правило хорошего тона 2 - переработка",
+                          "rule_type": 2,
+                          "rule_id": 2
+                      },
+                      {
+                          "id": 33,
+                          "start": "2025-03-14 00:00:00",
+                          "end": "2025-04-13 23:59:59",
+                          "creator_id": 46,
+                          "creator_name": "Александр",
+                          "creator_surname": "Кошелев",
+                          "created_at": null,
+                          "deleted": false,
+                          "rule_name": "Правило_1741014647",
+                          "rule_type": 1,
+                          "rule_id": 1
+                      },
+                      {
+                          "id": 34,
+                          "start": "2025-03-14 00:00:00",
+                          "end": "2025-04-13 23:59:59",
+                          "creator_id": 46,
+                          "creator_name": "Александр",
+                          "creator_surname": "Кошелев",
+                          "created_at": null,
+                          "deleted": false,
+                          "rule_name": "Правило_1741014647",
+                          "rule_type": 1,
+                          "rule_id": 1
+                      }
+                  ]
+              );
             } else {
               setHasMoreRows(false);
               setPage_num(1);
@@ -145,12 +200,22 @@ const RulesManagerModal= (props) => {
 
 
    useEffect(()=>{
-    if (typeof baseLinks === 'object'){
-      
-    } else {
-      setLinks(baseLinks.sort((a, b)=> a.start > b.start));
-    }
+    console.log(baseLinks);
+
+      // setLinks(baseLinks.sort((a, b)=> dayjs(a.start).unix() > (b.start !== null ? dayjs(b.start).unix() : 9999999948) ));
+      let sorted = baseLinks.sort((a, b) => {
+        const startA = dayjs(a.start).unix();
+        const startB = b.start ? dayjs(b.start).unix() : Number.MAX_SAFE_INTEGER;
+    
+        console.log(startA, startB);
+        return startA - startB; // Sort ascending by start time
+      });
+      console.log(sorted);
+      setLinks(sorted);
+
+
    },[baseLinks]);
+
 
 
     /**
@@ -170,7 +235,6 @@ const RulesManagerModal= (props) => {
                 _token: CSRF_TOKEN
             }
             );
-            console.log('departs', response.data);
 
             setBaseLinks([...baseLinks, ...response.data.data]);
             setTotalLinks(response.data.total);
@@ -425,7 +489,7 @@ const RulesManagerModal= (props) => {
                     on_save_data={updateOldLink}
                     open_editor={onOpenEditorRow}
                     close_edit={closeAllEditorRows}
-                  data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
+                  data={{start: item.start, end: item.end, name: item.rule_name, type: item.rule_type, id: item.id}}
                   />
                 ):(<BreakIn
                     key={"rowrulgap_" + index}
@@ -470,6 +534,7 @@ const TableRowItem = (props) => {
   const [item_id, setItem_id] = useState(props.data.id);
   const [item_name, setItem_name] = useState(props.data.name);
   const [item_type, setItem_type] = useState(props.data.type);
+  console.log('props type', props.data);
 
   const [currentDate, setCurrentDate] = useState(false);
 
@@ -571,7 +636,7 @@ const TableRowItem = (props) => {
 
   return (
     <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""}`}>
-      <div><RuleIcons type={item_type} /></div>
+      <div className={'sk-micro-icon'}><RuleIcons type={item_type} /></div>
       <div>{item_id}</div>
       <div>{item_name}</div>
       <div>

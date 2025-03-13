@@ -399,3 +399,19 @@ font-size: smaller;
     background-color: #1677ff;
     color: white;
 }
+
+
+.sk-card-call-to-modal {
+    margin-right: 12px;
+}
+
+.sk-micro-icon {
+    width: 1.6rem;
+}
+.sk-micro-icon > img{
+    width: 100%;
+}
+
+.sk-gt-intersected {
+    background-color: #ff000052 !important;
+}

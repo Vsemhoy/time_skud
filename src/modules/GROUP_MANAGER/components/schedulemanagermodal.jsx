@@ -8,7 +8,7 @@ import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
 import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
 import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
-import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
+import { CloseOutlined, CloseSquareOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
@@ -68,12 +68,83 @@ const ScheduleManagerModal= (props) => {
     const [formStart, setFormStart] = useState(dayjs().startOf('day').add(1, 'day'));
     const [formEnd, setFormEnd] = useState(dayjs().add(1, 'month'));
 
+    const [editMode, setEditMode] = useState(false);
+
+    const [intersected, setIntersected] = useState([]);
+
     useEffect(()=>{
         if (props.on_open){
+          setIntersected([]);
             setOpen(true); 
-            if (PRODMODE){
+            setEditMode(false);
+            setOpenAddSection(false);
+            if (!PRODMODE){
 
               setBaseSchedules(DS_SCHEDULE_LIST);
+              setBaseLinks(
+                [
+                  {
+                      "id": 1,
+                      "start": "2025-03-01 00:00:00",
+                      "end": "2025-03-13 23:59:59",
+                      "creator_id": 46,
+                      "creator_name": "Александр",
+                      "creator_surname": "Кошелев",
+                      "created_at": "2025-03-03 07:51:30",
+                      "deleted": false,
+                      "schedule_name": "OXY ENNY GRFIK",
+                      "schedule_type": 1,
+                      "schedule_id": 1,
+                      "schedule_type_name": "Стандартный",
+                      "schedule_type_color": "#FFFF99"
+                  },
+                  {
+                      "id": 2,
+                      "start": "2025-04-01 00:00:00",
+                      "end": "2025-05-20 23:59:59",
+                      "creator_id": 46,
+                      "creator_name": "Александр",
+                      "creator_surname": "Кошелев",
+                      "created_at": "2025-03-03 08:38:59",
+                      "deleted": false,
+                      "schedule_name": "OXY ENNY GRFIK",
+                      "schedule_type": 1,
+                      "schedule_id": 1,
+                      "schedule_type_name": "Стандартный",
+                      "schedule_type_color": "#FFFF99"
+                  },
+                  {
+                      "id": 3,
+                      "start": "2025-03-14 00:00:00",
+                      "end": "2025-04-13 23:59:59",
+                      "creator_id": 46,
+                      "creator_name": "Александр",
+                      "creator_surname": "Кошелев",
+                      "created_at": "2025-03-13 07:11:55",
+                      "deleted": false,
+                      "schedule_name": "OXY ENNY GRFIK",
+                      "schedule_type": 1,
+                      "schedule_id": 1,
+                      "schedule_type_name": "Стандартный",
+                      "schedule_type_color": "#FFFF99"
+                  },
+                  {
+                      "id": 5,
+                      "start": "2025-05-21 00:00:00",
+                      "end": "2025-05-21 23:59:59",
+                      "creator_id": 46,
+                      "creator_name": "Александр",
+                      "creator_surname": "Кошелев",
+                      "created_at": "2025-03-13 10:15:52",
+                      "deleted": false,
+                      "schedule_name": "OXY ENNY GRFIK",
+                      "schedule_type": 1,
+                      "schedule_id": 1,
+                      "schedule_type_name": "Стандартный",
+                      "schedule_type_color": "#FFFF99"
+                  }
+              ]
+              )
             } else {
 
               setHasMoreRows(false);
@@ -100,6 +171,7 @@ const ScheduleManagerModal= (props) => {
         setBaseLinks([]);
         setLinks([]);
         setPage_num(1);
+        setEditMode(false);
     }
 
     useEffect(()=>{
@@ -124,6 +196,11 @@ const ScheduleManagerModal= (props) => {
         if (formStart.unix() < dayjs().unix()){
           setFormStart(dayjs().startOf('day').add(1, 'day'));
         };
+
+        if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
+          // setStartTime(dayjs().startOf('day').add(1, 'day'));
+          setFormEnd(dayjs().endOf('day'));
+        };
   
         if (formEnd){
           let a = formStart.unix();
@@ -137,6 +214,42 @@ const ScheduleManagerModal= (props) => {
         }
       }
     },[formEnd]);
+
+  useEffect(()=>{
+    if (!editMode){
+      setIntersected([]);
+      return;
+    }
+    let st = formStart.startOf('day').unix();
+    let end = formEnd ? formEnd.endOf('day').unix() : 9999999999999999;
+    setIntersected([]);
+    let inters = [];
+    for (let i = 0; i < baseLinks.length; i++) {
+      const element = links[i];
+      const chstart = dayjs(element.start).unix();
+      const chend   = element.end ? dayjs(element.end).unix() : 99999999999999;
+      if (chstart === st 
+        || chend === end
+        || (st > chstart && end < chend)
+        || (st > chstart && element.end === null)
+        || (st < chstart && element.end !== null && end >= chend)
+        || (st > chstart && element.end !== null && end <= chend)
+        || (element.end !== null && st >= chstart && st <= chend)
+        || (element.end !== null && st > chstart && st < chend)
+        || (element.end !== null && st >= chstart && end <= chend)
+        || (element.end !== null && end >= chstart && end <= chend)
+      ){
+          inters.push(element.id);
+        }
+      }
+
+    setIntersected(inters);
+    console.log(inters);
+  },[formStart, formEnd]);
+
+  useEffect(()=>{
+      setEditMode(openAddSection);
+  },[openAddSection]);
 
   const onOpenEditorRow = (id)=>{
     setOpenAddSection(false);
@@ -182,7 +295,7 @@ const ScheduleManagerModal= (props) => {
       for (let i = 1; i < sorted.length; i++) {
           let prevStart = dayjs(sorted[i - 1].start);
           let nextEnd = dayjs(sorted[i].end);
-
+          console.log(prevStart, nextEnd);
           // Проверка наличия разрыва
           if (prevStart.unix() - nextEnd.unix() > 86400) { // 86400 секунд = 1 день
               // Создание нового объекта для заполнения разрыва
@@ -200,7 +313,7 @@ const ScheduleManagerModal= (props) => {
           result.push(sorted[i]);
       }
       setLinks(result);
-      console.log(sorted);
+      console.log(result);
     }
 
    },[baseLinks]);
@@ -336,6 +449,10 @@ const ScheduleManagerModal= (props) => {
                             _token: CSRF_TOKEN
                         }
                     );
+                    body.start = dayjs().unix(body.start).format('YYYY-MM-DD HH:mm:ss');
+                    if (body.end){
+                      body.end = dayjs().unix(body.end).format('YYYY-MM-DD HH:mm:ss');
+                    }
                     console.log('users', response);
                     setBaseLinks(prevList => 
                       prevList.map(item => 
@@ -378,6 +495,61 @@ const ScheduleManagerModal= (props) => {
         }
     }
 
+
+    const handleKeyDown = (e, callback) => {
+      // If formStart is null, set it to today's date
+      let currentDate = e.target.value;
+      if (currentDate === ""){
+        currentDate = dayjs();
+      } else {
+        currentDate = dayjs(currentDate);
+      }
+      console.log(currentDate);
+  
+      switch (e.key) {
+        case "ArrowLeft":
+          // Subtract 1 day
+          currentDate = currentDate.subtract(1, "day");
+          break;
+        case "ArrowRight":
+          // Add 1 day
+          currentDate = currentDate.add(1, "day");
+          break;
+        case "ArrowUp":
+          // Add 1 month
+          currentDate = currentDate.add(1, "month");
+          break;
+        case "ArrowDown":
+          // Subtract 1 month
+          currentDate = currentDate.subtract(1, "month");
+          break;
+        default:
+          return; // Do nothing for other keys
+      }
+  
+      // Prevent default browser behavior for arrow keys
+      e.preventDefault();
+  
+      // Update the date picker value
+      if (callback){
+        callback(currentDate);
+      }
+    };
+
+
+    const setFormDateCallback = (start, end) =>
+    {
+      setFormStart(start);
+      setFormEnd(end);
+    };
+
+    const handleEditMode = (value) =>{
+      console.log('valuse', value);
+      console.log('editmode', editMode);
+      console.log('openeditor', openAddSection);
+      setEditMode(value);
+      
+    }
 
   return (
     <Flex vertical gap="middle" align="flex-start">
@@ -463,6 +635,7 @@ const ScheduleManagerModal= (props) => {
                   style={{ width: '100%' }}
                   onChange={(value)=>{setFormStart(value)}}
                   value={formStart}
+                  onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
                 />
               </div>
               <div>
@@ -470,16 +643,19 @@ const ScheduleManagerModal= (props) => {
                 style={{ width: '100%' }}
                 onChange={(value)=>{setFormEnd(value)}}
                 value={formEnd}
+                onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
                 />
               </div>
               <div>
-                <PlusSquareOutlined
-                  onClick={createNewLink}
-                className={'sk-gtm-button'}/>
+                {intersected.length === 0 ? (
+                  <PlusSquareOutlined
+                    onClick={createNewLink}
+                  className={'sk-gtm-button'}/>
+                ) : ""}
               </div>
               <div>
                 <CloseOutlined
-                onClick={()=>{setOpenAddSection(false)}}
+                onClick={()=>{setOpenAddSection(false); setIntersected([])}}
                 className={'sk-gtm-button'} />
               </div>
             </div>
@@ -502,7 +678,10 @@ const ScheduleManagerModal= (props) => {
                     on_save_data={updateOldLink}
                     open_editor={onOpenEditorRow}
                     close_edit={closeAllEditorRows}
-                  data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
+                    data={{start: item.start, end: item.end, name: item.schedule_name, type: item.schedule_type, id: item.id}}
+                    intersects={intersected}
+                    changeDatesCallback={setFormDateCallback}
+                    changeEditMode={handleEditMode}
                   />
                 ):(<BreakIn
                     key={"rowshedgap_" + index}
@@ -532,6 +711,8 @@ export default ScheduleManagerModal;
 
 
 
+
+
 const TableRowItem = (props) => {
   
   const [archieved, setArchieved] = useState(false);
@@ -549,6 +730,19 @@ const TableRowItem = (props) => {
   const [item_type, setItem_type] = useState(props.data.type);
 
   const [currentDate, setCurrentDate] = useState(false);
+
+  const [intersect, setintersect] = useState(false);
+
+  
+
+  useEffect(()=>{
+    if (!editMode && props.intersects != null && props.intersects.includes(item_id))
+    {
+      setintersect(true);
+    } else {
+      setintersect(false);
+    }
+  },[props.intersects]);
 
   useEffect(()=>{
     if (props.close_edit !== item_id){
@@ -575,7 +769,21 @@ const TableRowItem = (props) => {
     } else {
       setCurrentDate(false);
     }
+
+    if (editMode){
+      if (props.changeDatesCallback)
+      {
+        props.changeDatesCallback(startTime, endTime);
+      }
+    }
   },[startTime, endTime]);
+
+  useEffect(()=>{
+    if (props.changeDatesCallback)
+      {
+        props.changeDatesCallback(startTime, endTime);
+      }
+  },[editMode]);
 
   useEffect(()=>{
     if (editMode){
@@ -598,9 +806,10 @@ const TableRowItem = (props) => {
 
   useEffect(()=>{
     if (editMode){
-      // if (startTime.unix() < dayjs().unix()){
-      //   setStartTime(dayjs().startOf('day').add(1, 'day'));
-      // };
+      if (endTime.endOf('day').unix() < dayjs().endOf('day').unix()){
+        // setStartTime(dayjs().startOf('day').add(1, 'day'));
+        setEndTime(dayjs().endOf('day'));
+      };
 
       if (endTime){
         let a = startTime.unix();
@@ -624,7 +833,14 @@ const TableRowItem = (props) => {
         end: endTime.endOf('day'),
       })
     }
+
   }
+
+  useEffect(()=>{
+    if (props.changeEditMode){
+      props.changeEditMode(editMode)
+    }
+   },[editMode]);
 
   const onOpenEditor = ()=>{
     setEditMode(true);
@@ -649,8 +865,49 @@ const TableRowItem = (props) => {
     }
   }
 
+
+  const handleKeyDown = (e, callback) => {
+    // If formStart is null, set it to today's date
+    let currentDate = e.target.value;
+    if (currentDate === ""){
+      currentDate = dayjs();
+    } else {
+      currentDate = dayjs(currentDate);
+    }
+    console.log(currentDate);
+
+    switch (e.key) {
+      case "ArrowLeft":
+        // Subtract 1 day
+        currentDate = currentDate.subtract(1, "day");
+        break;
+      case "ArrowRight":
+        // Add 1 day
+        currentDate = currentDate.add(1, "day");
+        break;
+      case "ArrowUp":
+        // Add 1 month
+        currentDate = currentDate.add(1, "month");
+        break;
+      case "ArrowDown":
+        // Subtract 1 month
+        currentDate = currentDate.subtract(1, "month");
+        break;
+      default:
+        return; // Do nothing for other keys
+    }
+
+    // Prevent default browser behavior for arrow keys
+    e.preventDefault();
+
+    // Update the date picker value
+    if (callback){
+      callback(currentDate);
+    }
+  };
+
   return (
-    <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""}`}>
+    <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""} ${intersect ? "sk-gt-intersected" : ""}`   }>
       <div><Sched_type_icon>{item_type}</Sched_type_icon></div>
       <div>{item_id}</div>
       <div>{item_name}</div>
@@ -661,6 +918,7 @@ const TableRowItem = (props) => {
             allowClear={false}
             value={startTime}
             onChange={(val)=>{setStartTime(val)}}
+            onKeyDown={(event)=> {handleKeyDown(event, setStartTime)} }
           />
         ):(
           startTime.format("DD-MM-YYYY")
@@ -671,6 +929,7 @@ const TableRowItem = (props) => {
           <DatePicker 
             value={endTime}
             onChange={(val)=>{setEndTime(val)}}
+            onKeyDown={(event)=> {handleKeyDown(event, setEndTime)} }
           />
         ):(
           endTime ? endTime.format("DD-MM-YYYY") : " - - - "
@@ -680,9 +939,13 @@ const TableRowItem = (props) => {
         <div></div>
       ) : (
         <>
-        {editMode ? (
+        {editMode ? 
+          props.intersects != null && props.intersects.length > 1 ? (
+            <div className={"sk-gtr-button"} onClick={onOpenEditor} ><ExclamationCircleOutlined /></div>
+        ) : (
           <div className={`sk-gtr-button ${hasChanges && 'active'}`} onClick={onSaveItem} ><SaveOutlined /></div>
-        ): (
+        )
+        : (
           <div className={"sk-gtr-button"} onClick={onOpenEditor} ><EditOutlined /></div>
         )}
         </>
