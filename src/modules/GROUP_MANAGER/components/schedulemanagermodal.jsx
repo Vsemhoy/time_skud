@@ -548,7 +548,6 @@ const ScheduleManagerModal= (props) => {
       console.log('editmode', editMode);
       console.log('openeditor', openAddSection);
       setEditMode(value);
-      
     }
 
   return (
@@ -655,13 +654,13 @@ const ScheduleManagerModal= (props) => {
               </div>
               <div>
                 <CloseOutlined
-                onClick={()=>{setOpenAddSection(false); setIntersected([])}}
+                onClick={()=>{setOpenAddSection(false); setIntersected([]); setOpenMode(false)}}
                 className={'sk-gtm-button'} />
               </div>
             </div>
             ):(
             <div
-              onClick={()=>{setOpenAddSection(true)}}
+              onClick={()=>{setOpenAddSection(true);setOpenMode(true)}}
               className={'sk-gtm-trigger'}>
               Добавить график
             </div>
@@ -836,16 +835,13 @@ const TableRowItem = (props) => {
 
   }
 
-  useEffect(()=>{
-    if (props.changeEditMode){
-      props.changeEditMode(editMode)
-    }
-   },[editMode]);
-
   const onOpenEditor = ()=>{
     setEditMode(true);
     if (props.open_editor){
       props.open_editor(item_id);
+    }
+    if (props.changeEditMode){
+      props.changeEditMode(true);
     }
     console.log('setEditMode opened');
   }
@@ -854,6 +850,9 @@ const TableRowItem = (props) => {
     setEditMode(false);
     setStartTime(_startTime);
     setEndTime(_endTime);
+    if (props.changeEditMode){
+      props.changeEditMode(false);
+    }
   }
 
   const onDeleteItem = () => {
