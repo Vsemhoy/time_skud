@@ -73,10 +73,10 @@ const ScheduleManagerModal= (props) => {
     const [intersected, setIntersected] = useState([]);
 
     useEffect(()=>{
+      setEditMode(false);
         if (props.on_open){
           setIntersected([]);
             setOpen(true); 
-            setEditMode(false);
             setOpenAddSection(false);
             if (!PRODMODE){
 
@@ -216,6 +216,7 @@ const ScheduleManagerModal= (props) => {
     },[formEnd]);
 
   useEffect(()=>{
+    console.log('try to editmode', editMode);
     if (!editMode){
       setIntersected([]);
       return;
@@ -245,7 +246,7 @@ const ScheduleManagerModal= (props) => {
 
     setIntersected(inters);
     console.log(inters);
-  },[formStart, formEnd]);
+  },[baseLinks, formStart, formEnd, editMode]);
 
   useEffect(()=>{
       setEditMode(openAddSection);
@@ -539,6 +540,7 @@ const ScheduleManagerModal= (props) => {
 
     const setFormDateCallback = (start, end) =>
     {
+      setEditMode(true);
       setFormStart(start);
       setFormEnd(end);
     };
@@ -749,6 +751,8 @@ const TableRowItem = (props) => {
       console.log('setEditMode false');
     }
   },[props.close_edit]);
+
+
   
   useEffect(()=>{
     if (editMode){
@@ -762,6 +766,7 @@ const TableRowItem = (props) => {
       };
     }
 
+
     if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() > dayjs().unix()))
     {
       setCurrentDate(true);
@@ -769,13 +774,15 @@ const TableRowItem = (props) => {
       setCurrentDate(false);
     }
 
+
     if (editMode){
       if (props.changeDatesCallback)
       {
         props.changeDatesCallback(startTime, endTime);
       }
     }
-  },[startTime, endTime]);
+  },[startTime, endTime, editMode]);
+
 
   useEffect(()=>{
     if (props.changeDatesCallback)
