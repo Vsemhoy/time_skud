@@ -654,13 +654,13 @@ const ScheduleManagerModal= (props) => {
               </div>
               <div>
                 <CloseOutlined
-                onClick={()=>{setOpenAddSection(false); setIntersected([]); setOpenMode(false)}}
+                onClick={()=>{setOpenAddSection(false); setIntersected([]); setEditMode(false)}}
                 className={'sk-gtm-button'} />
               </div>
             </div>
             ):(
             <div
-              onClick={()=>{setOpenAddSection(true);setOpenMode(true)}}
+              onClick={()=>{setOpenAddSection(true);setEditMode(true)}}
               className={'sk-gtm-trigger'}>
               Добавить график
             </div>
