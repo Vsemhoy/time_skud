@@ -951,9 +951,10 @@ const TableRowItem = (props) => {
         ) : (
           <div className={`sk-gtr-button ${hasChanges && 'active'}`} onClick={onSaveItem} ><SaveOutlined /></div>
         )
-        : (
+        : endTime == null || dayjs().endOf('day').unix() < endTime.unix() ?
+        (
           <div className={"sk-gtr-button"} onClick={onOpenEditor} ><EditOutlined /></div>
-        )}
+        ) : ""}
         </>
       )}
       
