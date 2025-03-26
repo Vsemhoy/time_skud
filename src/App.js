@@ -9,7 +9,7 @@ import {
 import HomePage from './modules/DEFAULT_PAGE/HomePage';
 import UserListPage from './modules/USER_LIST/UserListPage';
 import UserPage from './modules/USER_PAGE/UserPage';
-import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar } from 'antd';
+import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar, Drawer, Button, Badge } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
 import { useEffect, useState } from 'react';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
@@ -24,7 +24,8 @@ import GroupManagerPage from './modules/GROUP_MANAGER/GroupManagerPage';
 import EventRandomixer from './modules/EVENT_RANDOMIXER/EventRandomixer';
 import AccountPage from './modules/ACCOUNT/AccountPage';
 import Search from 'antd/es/input/Search';
-import { HomeOutlined, LogoutOutlined, SettingOutlined, SmileOutlined, ThunderboltOutlined, UserOutlined } from '@ant-design/icons';
+import { HomeOutlined, LogoutOutlined, NotificationOutlined, SettingOutlined, SmileOutlined, ThunderboltOutlined, UserOutlined } from '@ant-design/icons';
+import NotifierPage from './modules/NOTIFIER/NotifierPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -40,6 +41,9 @@ function App() {
 
   const [userAct, setUserAct] = useState(!PRODMODE ? DS_USER : []);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [notificatorOpened, setNotificatorOpened] = useState(false);
+  const [notificatorLoading, setNotificatorLoading] = useState(true);
+  const [countOfNotifications, setCountOfNotifications] = useState(0);
 
   /**
    * Текущий адрес страницы
@@ -71,6 +75,15 @@ function App() {
 
 
 
+  const showNotyBar = () => {
+    setNotificatorOpened(true);
+    setNotificatorLoading(true);
+
+    // Simple loading mock. You should add cleanup logic in real world.
+    setTimeout(() => {
+      setNotificatorLoading(false);
+    }, 2000);
+  };
 
   
 /** ------------------ FETCHES ---------------- */
@@ -118,11 +131,16 @@ function App() {
     const userMenu = (
       <Menu>
         <Menu.Item key="status">Статус: Онлайн</Menu.Item>
-        <Menu.Item key="settings" icon={<SettingOutlined />}>
+        {/* <Menu.Item key="settings" icon={<SettingOutlined />}>
           Настройки
-        </Menu.Item>
-        <Menu.Item key="block" icon={<ThunderboltOutlined />}>
+        </Menu.Item> */}
+        {/* <Menu.Item key="block" icon={<ThunderboltOutlined />}>
           Заблокировать
+        </Menu.Item> */}
+        <Menu.Item key="block" icon={<ThunderboltOutlined />}>
+        <Link 
+              onClick={()=>{ setLocation('admin/notificator')}}
+              >Нотификатор</Link>
         </Menu.Item>
         <Menu.Item key="logout" icon={<LogoutOutlined />}>
           Выйти
@@ -135,105 +153,13 @@ function App() {
     <Layout style={{background: '#fff'}}>
           <Router>
           <div >
-      {/* <Header style={{ display: 'flex', alignItems: 'center', background: '#001529' }}
-      className={'sk-main-menu'}
-      >
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          style={{ flex: 1, minWidth: 0 }}
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-        >
-            <div>
-              <Search></Search>
-            </div>
-            <MenuItem
-              key={'menu_5234'}>
-              <a href={HTTP_ROOT}>Home</a>
-            </MenuItem>
-
-            <MenuItem
-            key={'menu_52d34'}>
-              <Link
-                onClick={()=>{ setLocation('me')}}
-              >Моё</Link>
-              
-            </MenuItem>
-
-            <MenuItem
-            key={'menu_52s34'}>
-              <Link 
-                onClick={()=>{ setLocation('userlist')}}
-              >Сотрудники</Link>
-            </MenuItem>
-
-            <MenuItem
-            key={'menu_52342'}>
-              <Link 
-              onClick={()=>{ setLocation('admin/rules')}}
-              >Правила</Link>
-            </MenuItem>
-
-            <MenuItem
-            key={'menu_5234qq'}>
-              <Link 
-              onClick={()=>{ setLocation('admin/schedules')}}
-              >Графики</Link>
-            </MenuItem>
-
-
-
-            <MenuItem
-            key={'menu_235234'}>
-              <Link 
-              onClick={()=>{ setLocation('admin/prodcals')}}
-              >Календари</Link>
-            </MenuItem>
-
-
-            {/* <MenuItem>
-              <Link 
-              onClick={()=>{ setLocation('admin/schedules')}}
-              >Заявки на смену графика</Link>
-            </MenuItem> */}
-
-            {/* <MenuItem
-            key={'menu_5234765'}>
-              <Link 
-              onClick={()=>{ setLocation('admin/groups')}}
-              >Группы пользоваателей</Link>
-            </MenuItem>
-
-            <MenuItem
-            key={'menu_5235644'}>
-              <Link 
-              onClick={()=>{ setLocation('superadmin/randomixer')}}
-              >RMXR</Link>
-            </MenuItem> */}
-
-
-            {/* <MenuItem>
-              <Link 
-              onClick={()=>{ setLocation('admin')}}
-              >Skud Admin</Link>
-            </MenuItem> */}
-
-            
-            {/* <MenuItem>
-              <Link 
-              onClick={()=>{ setLocation('admincalendar')}}
-              >Произв. календари</Link>
-            </MenuItem> 
-          </Menu>
-      </Header> */}
 
       <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         className={'sk-main-menu'}
       >
         {/* Первая группа */}
         <Menu mode="horizontal" style={{ background: '#00000000', flex: 1}}>
-          <Menu.Item key="home" icon={<HomeOutlined  style={{ fontSize: '20px', color: '#fff', marginTop: '6px',
+          <Menu.Item key="home" icon={<HomeOutlined  style={{ fontSize: '20px', color: '#3b3b3b', marginTop: '6px',
            textAlign: 'center', paddingLeft: '6px' }} />} ><a href={HTTP_ROOT}></a></Menu.Item>
           <Menu.SubMenu key="menu1" title="Персональный раздел">
             <MenuItem
@@ -299,21 +225,35 @@ function App() {
         </Menu>
 
         {/* Вторая группа */}
-        <Input.Search placeholder="Поиск" style={{ maxWidth: '300px', margin: '0 20px' }} />
+        {/* <Input.Search placeholder="Поиск" style={{ maxWidth: '200px', margin: '0 20px' }} /> */}
 
         {/* Третья группа */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Dropdown overlay={userMenu} trigger={['click']}>
-            <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-              <Avatar style={{ backgroundColor: '#87d068', marginRight: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center'}}>
+            <div onClick={showNotyBar} style={{ cursor: "pointer", marginRight: '24px'}}>
+            <Badge count={countOfNotifications} offset={[2, 24]}>
+            <Avatar style={{ backgroundColor: '#33333300', marginRight: '0px' }}>
                 { userAct ? (
-                  <SmileOutlined  style={{ fontSize: '36px', color: '#08c' }} />
+                  // <SmileOutlined  style={{ fontSize: '36px', color: '#08c' }} />
+                  <NotificationOutlined style={{ fontSize: '36px', color: '#3d3d3d' }} />
                 ) : (
                   <ThunderboltOutlined />
                 )}
               </Avatar>
+              </Badge>
+            </div>
+
+          <Dropdown overlay={userMenu} trigger={['hover']}>
+            <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              {/* <Avatar style={{ backgroundColor: '#87d068', marginRight: '8px' }}>
+                { userAct ? (
+                  // <SmileOutlined  style={{ fontSize: '36px', color: '#08c' }} />
+                  <NotificationOutlined />
+                ) : (
+                  <ThunderboltOutlined />
+                )}
+              </Avatar> */}
               { userAct ? (
-                <span>{userAct.user.name} {userAct.user.patronymic}</span>
+                <span style={{fontWeight: 500, color: "#3d3d3d"}}>{userAct.user.name} {userAct.user.patronymic}</span>
               ) : (
               <span>Пользователь</span>
 
@@ -339,6 +279,7 @@ function App() {
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
             {location === 'admin/groups' && <GroupManagerPage userdata={userAct} />}
             {location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
+            {location === 'admin/notificator' && <NotifierPage userdata={userAct} />}
 
           </div>
           ) : (
@@ -362,6 +303,23 @@ function App() {
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
+
+
+      <Drawer
+        closable
+        destroyOnClose
+        title={<p>Уведомления</p>}
+        placement="right"
+        open={notificatorOpened}
+        loading={notificatorLoading}
+        onClose={() => setNotificatorOpened(false)}
+      >
+        <Button type="primary" style={{ marginBottom: 16 }} onClick={showNotyBar}>
+          Reload
+        </Button>
+        <p>Новых уведомлений не найдено...</p>
+      </Drawer>
+
 
       </div>
     </Router>
