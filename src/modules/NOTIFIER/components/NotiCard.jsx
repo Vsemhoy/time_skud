@@ -4,7 +4,9 @@ import "./style/noticard.css";
 import { CheckCircleOutlined, CheckSquareOutlined, ExclamationOutlined, UpSquareOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
-import { CSRF_TOKEN } from "../../../CONFIG/config";
+import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import { DS_DEFAULT_USERS } from "../../../CONFIG/DEFAULTSTATE";
+import MDEditor from "@uiw/react-md-editor";
 
 
 const NotiCard = (props) => {
@@ -18,27 +20,8 @@ const NotiCard = (props) => {
 
     const [readAnimation, setReadAnimation] = useState(false);
 
-    const [baseUserListData, setBaseUserListData] = useState([]);
 
-  /** ------------------ FETCHES ---------------- */
 
-      /**
-       * Получение списка пользователей
-       * @param {*} req 
-       * @param {*} res 
-       */
-      const get_users = async (req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
-            console.log('users', response);
-            setBaseUserListData(response.data.data);
-        } catch (e) {
-            console.log(e)
-        } finally {
-            // setLoadingOrgs(false)
-        }
-    }
-  /** ------------------ FETCHES END ---------------- */
 
 
 
@@ -50,6 +33,7 @@ const NotiCard = (props) => {
                 setReadAnimation(false);
             }, 600);
             setUpdated(dayjs());
+            setColor('#b3b3b3');
         };
     }
 
@@ -61,6 +45,7 @@ const NotiCard = (props) => {
                 setReadAnimation(false);
             }, 600);
             setUpdated(dayjs());
+            setColor('#b3b3b3');
         };
     }
 
@@ -72,6 +57,10 @@ const NotiCard = (props) => {
         setName(props.data.name);
         setIsRead(false);
         setUpdated(null);
+        
+        if (isRead){
+            setColor('#b3b3b3');
+        }
      },[props.data]);
 
     return (
@@ -84,7 +73,7 @@ const NotiCard = (props) => {
                 {name && (
                     <div className="ma-notihead">{name}</div>
                 )}
-                {props.data.content}
+                <MDEditor.Markdown source={props.data.content} />
             </div>
             <div className={"ma-notfooter"}>
                 
@@ -103,7 +92,7 @@ const NotiCard = (props) => {
                     ) : ""}
                 
 
-                {updated ? (
+                {isRead ? (
                     <span>
                         <span style={{color: 'gray', fontStyle: 'italic'}}>Прочитано</span> {updated.format('DD-MM-YYYY')}
                     </span>

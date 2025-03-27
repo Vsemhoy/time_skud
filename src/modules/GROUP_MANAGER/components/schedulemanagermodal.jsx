@@ -76,6 +76,7 @@ const ScheduleManagerModal= (props) => {
       setEditMode(false);
         if (props.on_open){
           setIntersected([]);
+          setEditMode(false);
             setOpen(true); 
             setOpenAddSection(false);
             if (!PRODMODE){
@@ -380,7 +381,6 @@ const ScheduleManagerModal= (props) => {
       }
 
       data.id = dayjs().unix();
-      setBaseLinks([...baseLinks, data]);
 
       create_links(data);
     }
@@ -406,13 +406,17 @@ const ScheduleManagerModal= (props) => {
                   let object = response.data.data;
                   console.log(object);
 
-                  for (let i = 0; i < props.schedule_list.length; i++) {
-                    if (props.schedule_list[i].id === body.schedule_id){
-                      object.schedule_name = props.schedule_list[i].name;
-                      object.schedule_type = props.schedule_list[i].type;
-                      console.log('inserted object ',object);
-                      break;
-                    }
+                  // for (let i = 0; i < props.schedule_list.length; i++) {
+                  //   if (props.schedule_list[i].id === body.schedule_id){
+                  //     object.schedule_name = props.schedule_list[i].name;
+                  //     object.schedule_type = props.schedule_list[i].type;
+                  //     console.log('inserted object ',object);
+                  //     break;
+                  //   }
+                  // }
+
+                  if (object){
+                    object.schedule_type = formType;
                   }
 
                   setBaseLinks([...baseLinks, object]);
@@ -784,12 +788,6 @@ const TableRowItem = (props) => {
   },[startTime, endTime, editMode]);
 
 
-  useEffect(()=>{
-    if (props.changeDatesCallback)
-      {
-        props.changeDatesCallback(startTime, endTime);
-      }
-  },[editMode]);
 
   useEffect(()=>{
     if (editMode){

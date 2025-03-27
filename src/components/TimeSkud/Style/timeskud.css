@@ -398,16 +398,20 @@ font-size: smaller;
 }
 .sk-gtm-button {
     font-size: x-large;
-    color: #cfcfcf;
     cursor: pointer;
+    background: white;
+    padding: 3px;
+    color: #4f91cf;
+    border-radius: 3px;
+}
+.sk-gtm-button:hover {
+    color: rgb(6, 105, 151);
+    background: rgb(226, 226, 226);
 }
 .sk-gtr-button {
     cursor: pointer;
     font-size: medium;
     color: rgb(122, 122, 122);
-}
-.sk-gtm-button:hover {
-    color: white;
 }
 .sk-gtr-button:hover {
     color: rgb(53, 53, 53);

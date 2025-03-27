@@ -252,7 +252,7 @@ function App() {
                   <ThunderboltOutlined />
                 )}
               </Avatar> */}
-              { userAct ? (
+              { userAct && userAct.user ? (
                 <span style={{fontWeight: 500, color: "#3d3d3d"}}>{userAct.user.name} {userAct.user.patronymic}</span>
               ) : (
               <span>Пользователь</span>

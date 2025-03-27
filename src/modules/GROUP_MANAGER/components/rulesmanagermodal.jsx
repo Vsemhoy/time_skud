@@ -235,7 +235,7 @@ const RulesManagerModal= (props) => {
                 _token: CSRF_TOKEN
             }
             );
-
+            
             setBaseLinks([...baseLinks, ...response.data.data]);
             setTotalLinks(response.data.total);
             // setOrganizations(organizations_response.data.org_list)

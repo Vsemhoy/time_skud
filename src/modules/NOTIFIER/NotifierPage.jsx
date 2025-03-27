@@ -1,8 +1,12 @@
-import { Checkbox, Select } from "antd";
+import { Button, Checkbox, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NotiCard from "./components/NotiCard";
 import dayjs from "dayjs";
+import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import { DS_DEFAULT_USERS } from "../../CONFIG/DEFAULTSTATE";
+import MDEditor from "@uiw/react-md-editor";
 
 
 
@@ -10,23 +14,105 @@ const NotifierPage = (props) => {
     const [noteTypes, setNoteTypes] = useState([
         {
             id: 1, 
-            name: "Первый тип",
-            color: "#bbb",
+            name: "Системное сообщение",
+            color: "#ff4d4f",
         },
         {
             id: 2, 
-            name: "Второй тип",
-            color: "#111111",
+            name: "Обновление системы",
+            color: "#03a9f4",
         },
     ]);
 
     const [formRequired, setFormRequired] = useState(false);
     const [formType, setFormType] = useState(1);
-    const [formTypeColor, setFormTypeColor] = useState("#fff");
+    const [formTypeColor, setFormTypeColor] = useState("#999");
     const [formTypeName, setFormTypeName] = useState("Первый тип");
 
     const [formContent, setFormContent] = useState("Воздух эфир а значит, снег это белы шум...");
     const [formTargetUser, setTargetUser] = useState(46);
+
+    const [baseUserListData, setBaseUserListData] = useState([]);
+
+    const [selectedUsers, setSelectedUsers] = useState([]);
+
+  /** ------------------ FETCHES ---------------- */
+
+      /**
+       * Получение списка пользователей
+       * @param {*} req 
+       * @param {*} res 
+       */
+      const get_types = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.get('/api/notice/types?_token=' + CSRF_TOKEN);
+            console.log('users', response);
+            setNoteTypes(response.data.types);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+
+          /**
+       * Получение списка пользователей
+       * @param {*} req 
+       * @param {*} res 
+       */
+          const get_users = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
+                console.log('users', response);
+                setBaseUserListData(response.data.data.sort((a,b)=>{
+                    if (a.surname.toLowerCase() < b.surname.toLowerCase()) {
+                      return -1;
+                    }
+                    if (a.surname.toLowerCase() > b.surname.toLowerCase()) {
+                      return 1;
+                    }
+                    return 0;
+                  }));
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // setLoadingOrgs(false)
+            }
+        }
+
+          /**
+       * Получение списка пользователей
+       * @param {*} req 
+       * @param {*} res 
+       */
+        const sendNotes = async (body, req, res) => {
+        try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/notice/create',
+                        {   
+                            data: body, 
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    alert(response.data.message);
+                    // setBaseUserListData(response.data.data);
+                } catch (e) {
+                    console.log(e)
+                    alert(e.response.data.message);
+                } finally {
+
+              }
+        }
+  /** ------------------ FETCHES END ---------------- */
+
+  useEffect(()=>{
+    if (PRODMODE){
+        get_types();
+        get_users();
+    } else {
+        setBaseUserListData(DS_DEFAULT_USERS);
+    }
+  },[]);
 
     const changeFormRequired = () =>{
         setFormRequired(!formRequired);
@@ -43,6 +129,32 @@ const NotifierPage = (props) => {
             setFormTypeColor(needle.color);
             setFormTypeName(needle.name);
         }
+        setFormType(ev);
+    }
+
+    const reselectUsers = (ev)=> {
+        console.log(ev);
+        setSelectedUsers(ev);
+    }
+
+
+    const sendMessages = ()=>{
+        if (selectedUsers.length === 0 || formContent.trim() === ""){
+            return;
+        };
+        let su = [];
+        for (let i = 0; i < selectedUsers.length; i++) {
+            su.push(parseInt( selectedUsers[i]));
+        }
+
+        let body = {
+            "bo_type_notice_id": formType,
+            "content" : formContent,
+            "user_id": su,
+            "mandatory" : formRequired,
+        };
+
+        sendNotes(body);
     }
 
     return (
@@ -54,13 +166,13 @@ const NotifierPage = (props) => {
                     defaultValue={1}
                     style={{ width: 120 }}
                     onChange={changeType}
-                    options={noteTypes.map((item)=>{
-                        return {
+                    options={noteTypes.map((item)=>(
+                         {
                             key: `fooo${item.id}`,
                             value: item.id,
                             label: item.name
                         }
-                    })}
+                    ))}
             />
 
                     <TextArea 
@@ -68,9 +180,30 @@ const NotifierPage = (props) => {
                         placeholder="Cooбщение пользователю"
                             onChange={changeContent}
                         >
+                            Used for selecting multiple values from several options.
+                            If you use only one checkbox, it is the same as using Switch to toggle between two states. The difference is that Switch will trigger the state change directly, but Checkbox just marks the state as changed and this needs to be submitted.
                     </TextArea>
 
-                    <Checkbox checked={formRequired}  onChange={changeFormRequired}>Принудительное прочтение</Checkbox>
+                    <Checkbox checked={formRequired}  onChange={changeFormRequired}>Прочтение по нажатию кнопки</Checkbox>
+
+                    <Select
+                    mode={"multiple"}
+                    options={baseUserListData.map((item)=>({
+                            value: item.id,
+                            label: "(" +  item.id + ") " + item.surname + " " + item.name + " " + item.patronymic,
+                            key: `usern${item.id}`
+                        }
+                    ))}
+                    onChange={reselectUsers}
+                    placeholder={'пользователи'}
+                    value={selectedUsers}
+                    />
+
+                    <Button
+                        onClick={sendMessages}
+                    >
+                        Отправить
+                    </Button>
 
 
             </div>
