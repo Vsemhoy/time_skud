@@ -4,7 +4,7 @@ import { Button, DatePicker, Flex, Modal, Select, message } from 'antd';
 
 import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
 import { DS_RULES, DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
-import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
@@ -40,6 +40,12 @@ const RulesManagerModal= (props) => {
     const [formStart, setFormStart] = useState(dayjs().startOf('day').add(1, 'day'));
     const [formEnd, setFormEnd] = useState(dayjs().add(1, 'month'));
 
+    const [editMode, setEditMode] = useState(false);
+
+    const [intersected, setIntersected] = useState([]);
+    const [checkType, setCheckType] = useState(1);
+
+
     useEffect(()=>{
         if (props.on_open){
             setOpen(true); 
@@ -72,32 +78,6 @@ const RulesManagerModal= (props) => {
                           "rule_type": 2,
                           "rule_id": 2
                       },
-                      {
-                          "id": 33,
-                          "start": "2025-03-14 00:00:00",
-                          "end": "2025-04-13 23:59:59",
-                          "creator_id": 46,
-                          "creator_name": "Александр",
-                          "creator_surname": "Кошелев",
-                          "created_at": null,
-                          "deleted": false,
-                          "rule_name": "Правило_1741014647",
-                          "rule_type": 1,
-                          "rule_id": 1
-                      },
-                      {
-                          "id": 34,
-                          "start": "2025-03-14 00:00:00",
-                          "end": "2025-04-13 23:59:59",
-                          "creator_id": 46,
-                          "creator_name": "Александр",
-                          "creator_surname": "Кошелев",
-                          "created_at": null,
-                          "deleted": false,
-                          "rule_name": "Правило_1741014647",
-                          "rule_type": 1,
-                          "rule_id": 1
-                      }
                   ]
               );
             } else {
@@ -119,6 +99,7 @@ const RulesManagerModal= (props) => {
       }
     },[openAddSection]);
 
+
     const onCloseAction = ()=>{
         setOpen(false)
         if (props.on_close){
@@ -127,7 +108,9 @@ const RulesManagerModal= (props) => {
         setBaseLinks([]);
         setLinks([]);
         setPage_num(1);
+        setEditMode(false);
     }
+
 
     useEffect(()=>{
       if (openAddSection){
@@ -146,10 +129,15 @@ const RulesManagerModal= (props) => {
       }
     },[formStart]);
   
+
     useEffect(()=>{
       if (openAddSection){
         if (formStart.unix() < dayjs().unix()){
           setFormStart(dayjs().startOf('day').add(1, 'day'));
+        };
+
+        if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
+          setFormEnd(dayjs().endOf('day'));
         };
   
         if (formEnd){
@@ -164,6 +152,49 @@ const RulesManagerModal= (props) => {
         }
       }
     },[formEnd]);
+
+
+
+  useEffect(()=>{
+    console.log('try to editmode', editMode);
+    if (!editMode){
+      setIntersected([]);
+      return;
+    }
+    let st = formStart.startOf('day').unix();
+    let end = formEnd ? formEnd.endOf('day').unix() : 9999999999999999;
+    setIntersected([]);
+    let inters = [];
+    for (let i = 0; i < baseLinks.length; i++) {
+      const element = baseLinks[i];
+      const chstart = dayjs(element.start).unix();
+      const chend   = element.end ? dayjs(element.end).unix() : 99999999999999;
+      if (chstart === st 
+        || chend === end
+        || (st > chstart && end < chend)
+        || (st > chstart && element.end === null)
+        || (st < chstart && element.end !== null && end >= chend)
+        || (st > chstart && element.end !== null && end <= chend)
+        || (element.end !== null && st >= chstart && st <= chend)
+        || (element.end !== null && st > chstart && st < chend)
+        || (element.end !== null && st >= chstart && end <= chend)
+        || (element.end !== null && end >= chstart && end <= chend)
+      ){
+          inters.push(element.id);
+        }
+      }
+
+    setIntersected(inters);
+    console.log(inters);
+  },[baseLinks, formStart, formEnd, editMode]);
+
+
+  useEffect(()=>{
+    setEditMode(openAddSection);
+  },[openAddSection]);
+
+
+
 
   const onOpenEditorRow = (id)=>{
     setOpenAddSection(false);
@@ -199,27 +230,62 @@ const RulesManagerModal= (props) => {
    },[formType]);
 
 
-   useEffect(()=>{
-    console.log(baseLinks);
+  //  useEffect(()=>{
+  //   console.log(baseLinks);
 
-      // setLinks(baseLinks.sort((a, b)=> dayjs(a.start).unix() > (b.start !== null ? dayjs(b.start).unix() : 9999999948) ));
-      let sorted = baseLinks.sort((a, b) => {
-        const startA = dayjs(a.start).unix();
-        const startB = b.start ? dayjs(b.start).unix() : Number.MAX_SAFE_INTEGER;
+  //     // setLinks(baseLinks.sort((a, b)=> dayjs(a.start).unix() > (b.start !== null ? dayjs(b.start).unix() : 9999999948) ));
+  //     let sorted = baseLinks.sort((a, b) => {
+  //       const startA = dayjs(a.start).unix();
+  //       const startB = b.start ? dayjs(b.start).unix() : Number.MAX_SAFE_INTEGER;
     
-        console.log(startA, startB);
-        return startA - startB; // Sort ascending by start time
-      });
-      console.log(sorted);
-      setLinks(sorted);
+  //       console.log(startA, startB);
+  //       return startA - startB; // Sort ascending by start time
+  //     });
+  //     console.log(sorted);
+  //     setLinks(sorted);
 
 
-   },[baseLinks]);
+  //  },[baseLinks]);
 
+
+     useEffect(()=>{
+      setLinks([]);
+      if (baseLinks.length){
+        console.log('use sort');
+        let sorted = baseLinks.sort((a, b)=> {return  dayjs(b.start).unix() - dayjs(a.start).unix()});
+  
+        let result = [sorted[0]];
+  
+        // Итерация по отсортированному массиву
+        for (let i = 1; i < sorted.length; i++) {
+            let prevStart = dayjs(sorted[i - 1].start);
+            let nextEnd = dayjs(sorted[i].end);
+            console.log(prevStart, nextEnd);
+            // Проверка наличия разрыва
+            if (prevStart.unix() - nextEnd.unix() > 86400) { // 86400 секунд = 1 день
+                // Создание нового объекта для заполнения разрыва
+                let newObject = {
+                    id: null, // или любое другое значение по умолчанию
+                    start: nextEnd.add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+                    end: prevStart.subtract(1, 'day').endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+                    creator_id: sorted[i - 1].creator_id, // или любое другое значение по умолчанию
+                    // Добавьте другие свойства по умолчанию, если необходимо
+                };
+                // Добавление нового объекта в массив
+                result.push(newObject);
+            }
+            // Добавление следующей записи
+            result.push(sorted[i]);
+        }
+        setLinks(result);
+        console.log(result);
+      }
+  
+     },[baseLinks]);
 
 
     /**
-     * Получение графиков
+     * Получение правил линков
      * @param {*} req 
      * @param {*} res 
      */
@@ -242,7 +308,7 @@ const RulesManagerModal= (props) => {
             // setTotal(organizations_response.data.total_count)
 
             // setScheduleList(response.data);
-            if (page_offset + page_num < totalLinks){
+            if (page_offset * page_num < response.data.total){
               setHasMoreRows(true);
             } else {
               setHasMoreRows(false);
@@ -264,6 +330,31 @@ const RulesManagerModal= (props) => {
         start: formStart.unix(),
         end: formEnd.unix()
       };
+
+      for (let i = 0; i < props.rule_list.length; i++) {
+        const element = props.rule_list[i];
+        if (element.id === formRul)
+        {
+          data.rule_type = element.skud_rule_type_id;
+          data.rule_type_name = element.name;
+          break;
+        }
+      }
+
+      for (let i  = 0; i < baseLinks.length ; i++){
+        const checkLink = baseLinks[i];
+        const startDate = dayjs(checkLink.start).unix();
+        const endDate = checkLink.end !== null ? dayjs(checkLink.end).unix() : null;
+
+        if (startDate < data.start && (endDate === null || (endDate > data.start ))){
+          // Обновляем найденную строку с пересечением - меняем дату окончания
+          checkLink.end = dayjs().unix(data.start).subtract(1, 'day').endOf('day').unix();
+          update_links(checkLink);
+        };
+
+        console.log(checkLink);
+      }
+
       create_links(data);
     }
   }
@@ -284,7 +375,13 @@ const RulesManagerModal= (props) => {
                       }
                   );
                   console.log('users', response);
-                  setBaseLinks([...baseLinks, response.data.data]);
+                  let object = response.data.data;
+                  if (object){
+                    object.rule_type = body.rule_type;
+                    object.rule_name = body.rule_type_name;
+                  }
+
+                  setBaseLinks([...baseLinks, object]);
                   // setBaseUserListData(response.data.data);
               } catch (e) {
                   console.log(e)
@@ -365,6 +462,68 @@ const RulesManagerModal= (props) => {
         } finally {
         }
     }
+
+
+    const handleKeyDown = (e, callback) => {
+      // If formStart is null, set it to today's date
+      let currentDate = e.target.value;
+      if (currentDate === ""){
+        currentDate = dayjs();
+      } else {
+        currentDate = dayjs(currentDate);
+      }
+      console.log(currentDate);
+  
+      switch (e.key) {
+        case "ArrowLeft":
+          // Subtract 1 day
+          currentDate = currentDate.subtract(1, "day");
+          break;
+        case "ArrowRight":
+          // Add 1 day
+          currentDate = currentDate.add(1, "day");
+          break;
+        case "ArrowUp":
+          // Add 1 month
+          currentDate = currentDate.add(1, "month");
+          break;
+        case "ArrowDown":
+          // Subtract 1 month
+          currentDate = currentDate.subtract(1, "month");
+          break;
+        default:
+          return; // Do nothing for other keys
+      }
+  
+      // Prevent default browser behavior for arrow keys
+      e.preventDefault();
+  
+      // Update the date picker value
+      if (callback){
+        callback(currentDate);
+      }
+    };
+
+
+    const setFormDateCallback = (start, end) =>
+    {
+      setEditMode(true);
+      setFormStart(start);
+      setFormEnd(end);
+    };
+
+    const handleEditMode = (value) =>{
+      console.log('valuse', value);
+      console.log('editmode', editMode);
+      console.log('openeditor', openAddSection);
+      setEditMode(value);
+    }
+
+
+    const onCheckTypeSelect = (ev) => {
+      setCheckType(ev);
+    }
+
 
 
   return (
@@ -449,6 +608,7 @@ const RulesManagerModal= (props) => {
                   allowClear={false}
                   style={{ width: '100%' }}
                   onChange={(value)=>{setFormStart(value)}}
+                  onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
                   value={formStart}
                 />
               </div>
@@ -456,6 +616,7 @@ const RulesManagerModal= (props) => {
                 <DatePicker
                 style={{ width: '100%' }}
                 onChange={(value)=>{setFormEnd(value)}}
+                onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
                 value={formEnd}
                 />
               </div>
@@ -489,8 +650,13 @@ const RulesManagerModal= (props) => {
                     on_save_data={updateOldLink}
                     open_editor={onOpenEditorRow}
                     close_edit={closeAllEditorRows}
-                  data={{start: item.start, end: item.end, name: item.rule_name, type: item.rule_type, id: item.id}}
-                  />
+                    data={{start: item.start, end: item.end, name: item.rule_name, type: item.rule_type, id: item.id}}
+                    intersects={intersected}
+                    changeDatesCallback={setFormDateCallback}
+                    changeEditMode={handleEditMode}
+                    changeCheckType={onCheckTypeSelect}
+                    check_type={checkType}
+                />
                 ):(<BreakIn
                     key={"rowrulgap_" + index}
                    start={item.start} end={item.end} />)}
@@ -534,9 +700,25 @@ const TableRowItem = (props) => {
   const [item_id, setItem_id] = useState(props.data.id);
   const [item_name, setItem_name] = useState(props.data.name);
   const [item_type, setItem_type] = useState(props.data.type);
-  console.log('props type', props.data);
 
   const [currentDate, setCurrentDate] = useState(false);
+
+  const [intersect, setintersect] = useState(false);
+
+  const [checkType, setCheckType] = useState(props.check_type);
+
+  useEffect(()=>{
+    setCheckType(props.check_type);
+  },[props.check_type]);
+
+  useEffect(()=>{
+    if (!editMode && props.intersects != null && props.intersects.includes(item_id) && checkType === item_type)
+    {
+      setintersect(true);
+    } else {
+      setintersect(false);
+    }
+  },[props.intersects]);
 
   useEffect(()=>{
     if (props.close_edit !== item_id){
@@ -544,6 +726,8 @@ const TableRowItem = (props) => {
       console.log('setEditMode false');
     }
   },[props.close_edit]);
+
+
   
   useEffect(()=>{
     if (editMode){
@@ -557,19 +741,37 @@ const TableRowItem = (props) => {
       };
     }
 
-    if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() < dayjs().unix()))
+
+    if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() > dayjs().unix()))
     {
       setCurrentDate(true);
     } else {
       setCurrentDate(false);
     }
-  },[startTime, endTime]);
+
+
+    if (editMode){
+      if (props.changeDatesCallback)
+      {
+        props.changeDatesCallback(startTime, endTime);
+      }
+      if (props.changeCheckType)
+      {
+        props.changeCheckType(item_type);
+      }
+    }
+  },[startTime, endTime, editMode]);
+
+
 
   useEffect(()=>{
     if (editMode){
       if (endTime && endTime.unix() < dayjs().unix()){
         setEndTime(dayjs().endOf('day'));
       }
+      if (startTime.unix() < dayjs().unix()){
+        setStartTime(dayjs().startOf('day').add(1, 'day'));
+      };
 
         let a = startTime.unix();
         let b = endTime.unix();
@@ -583,8 +785,9 @@ const TableRowItem = (props) => {
 
   useEffect(()=>{
     if (editMode){
-      if (startTime.unix() < dayjs().unix()){
-        setStartTime(dayjs().startOf('day').add(1, 'day'));
+      if (endTime.endOf('day').unix() < dayjs().endOf('day').unix()){
+        // setStartTime(dayjs().startOf('day').add(1, 'day'));
+        setEndTime(dayjs().endOf('day'));
       };
 
       if (endTime){
@@ -609,12 +812,16 @@ const TableRowItem = (props) => {
         end: endTime.endOf('day'),
       })
     }
+
   }
 
   const onOpenEditor = ()=>{
     setEditMode(true);
     if (props.open_editor){
       props.open_editor(item_id);
+    }
+    if (props.changeEditMode){
+      props.changeEditMode(true);
     }
     console.log('setEditMode opened');
   }
@@ -623,6 +830,9 @@ const TableRowItem = (props) => {
     setEditMode(false);
     setStartTime(_startTime);
     setEndTime(_endTime);
+    if (props.changeEditMode){
+      props.changeEditMode(false);
+    }
   }
 
   const onDeleteItem = () => {
@@ -634,17 +844,59 @@ const TableRowItem = (props) => {
     }
   }
 
+
+  const handleKeyDown = (e, callback) => {
+    // If formStart is null, set it to today's date
+    let currentDate = e.target.value;
+    if (currentDate === ""){
+      currentDate = dayjs();
+    } else {
+      currentDate = dayjs(currentDate);
+    }
+    console.log(currentDate);
+
+    switch (e.key) {
+      case "ArrowLeft":
+        // Subtract 1 day
+        currentDate = currentDate.subtract(1, "day");
+        break;
+      case "ArrowRight":
+        // Add 1 day
+        currentDate = currentDate.add(1, "day");
+        break;
+      case "ArrowUp":
+        // Add 1 month
+        currentDate = currentDate.add(1, "month");
+        break;
+      case "ArrowDown":
+        // Subtract 1 month
+        currentDate = currentDate.subtract(1, "month");
+        break;
+      default:
+        return; // Do nothing for other keys
+    }
+
+    // Prevent default browser behavior for arrow keys
+    e.preventDefault();
+
+    // Update the date picker value
+    if (callback){
+      callback(currentDate);
+    }
+  };
+
   return (
-    <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""}`}>
-      <div className={'sk-micro-icon'}><RuleIcons type={item_type} /></div>
-      <div>{item_id}</div>
-      <div>{item_name}</div>
-      <div>
+      <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""} ${intersect ? "sk-gt-intersected" : ""}`   }>
+        <div className={'sk-micro-icon'}><RuleIcons type={item_type} /></div>
+        <div>{item_id}</div>
+        <div>{item_name}</div>
+        <div>
         {editMode && startTime.unix() > dayjs().unix() ? (
           <DatePicker
             allowClear={false}
             value={startTime}
             onChange={(val)=>{setStartTime(val)}}
+            onKeyDown={(event)=> {handleKeyDown(event, setStartTime)} }
           />
         ):(
           startTime.format("DD-MM-YYYY")
@@ -655,6 +907,7 @@ const TableRowItem = (props) => {
           <DatePicker 
             value={endTime}
             onChange={(val)=>{setEndTime(val)}}
+            onKeyDown={(event)=> {handleKeyDown(event, setEndTime)} }
           />
         ):(
           endTime ? endTime.format("DD-MM-YYYY") : " - - - "
@@ -664,11 +917,16 @@ const TableRowItem = (props) => {
         <div></div>
       ) : (
         <>
-        {editMode ? (
+        {editMode ? 
+          props.intersects != null && props.intersects.length > 1 ? (
+            <div className={"sk-gtr-button"} onClick={onOpenEditor} ><ExclamationCircleOutlined /></div>
+        ) : (
           <div className={`sk-gtr-button ${hasChanges && 'active'}`} onClick={onSaveItem} ><SaveOutlined /></div>
-        ): (
+        )
+        : endTime == null || dayjs().endOf('day').unix() < endTime.unix() ?
+        (
           <div className={"sk-gtr-button"} onClick={onOpenEditor} ><EditOutlined /></div>
-        )}
+        ) : ""}
         </>
       )}
       
@@ -680,17 +938,22 @@ const TableRowItem = (props) => {
           <div className={"sk-gtr-button"} 
             onClick={onCloseRow} ><CloseOutlined /></div>
         ): (
-          <div className={"sk-gtr-button"} onClick={onDeleteItem}><DeleteOutlined /></div>
+          <>
+          {startTime.unix() > dayjs().unix() ? (
+            <div className={"sk-gtr-button"} onClick={onDeleteItem}><DeleteOutlined /></div>
+          ): "" }
+          
+          </>
         )}
         </>
       
       )}
-      
-    </div>
-  );
-}
+        
+      </div>
+    );
+  }
 
-const BreakIn = ({start, end}) => {
+ const BreakIn = ({start, end}) => {
   
   const gap =  (dayjs(end).unix() - dayjs(start).unix()) / (24*60*60);
   return (
@@ -718,3 +981,206 @@ const BreakIn = ({start, end}) => {
     </div>
   )
  }
+
+
+
+
+// const TableRowItem = (props) => {
+  
+//   const [archieved, setArchieved] = useState(false);
+//   const [editMode, setEditMode] = useState(false);
+
+//   const [startTime, setStartTime] = useState(props.data.start ? dayjs(props.data.start) : null);
+//   const [endTime, setEndTime] = useState(props.data.end ? dayjs(props.data.end) : null);
+//   const [_startTime] = useState(props.data.start ? dayjs(props.data.start) : null);
+//   const [_endTime] = useState(props.data.end ? dayjs(props.data.end) : null);
+
+//   const [hasChanges, setHasChanges] = useState(false);
+
+//   const [item_id, setItem_id] = useState(props.data.id);
+//   const [item_name, setItem_name] = useState(props.data.name);
+//   const [item_type, setItem_type] = useState(props.data.type);
+//   console.log('props type', props.data);
+
+//   const [currentDate, setCurrentDate] = useState(false);
+
+//   useEffect(()=>{
+//     if (props.close_edit !== item_id){
+//       setEditMode(false);
+//       console.log('setEditMode false');
+//     }
+//   },[props.close_edit]);
+  
+//   useEffect(()=>{
+//     if (editMode){
+
+//       if (startTime.unix() !== _startTime.unix()
+//       || JSON.stringify(endTime) != JSON.stringify(_endTime)
+//       ) {
+//         setHasChanges(true);
+//       } else {
+//         setHasChanges(false);
+//       };
+//     }
+
+//     if (startTime.unix() < dayjs().unix() && (endTime === null || endTime.unix() < dayjs().unix()))
+//     {
+//       setCurrentDate(true);
+//     } else {
+//       setCurrentDate(false);
+//     }
+//   },[startTime, endTime]);
+
+//   useEffect(()=>{
+//     if (editMode){
+//       if (endTime && endTime.unix() < dayjs().unix()){
+//         setEndTime(dayjs().endOf('day'));
+//       }
+
+//         let a = startTime.unix();
+//         let b = endTime.unix();
+//         console.log('item time', a, b, 'today time');
+//         if (endTime && a > b )
+//         {
+//           setEndTime(startTime);
+//         }
+//     }
+//   },[startTime]);
+
+//   useEffect(()=>{
+//     if (editMode){
+//       if (startTime.unix() < dayjs().unix()){
+//         setStartTime(dayjs().startOf('day').add(1, 'day'));
+//       };
+
+//       if (endTime){
+//         let a = startTime.unix();
+//         let b = endTime.unix();
+//         if (a > b)
+//         {
+//           setEndTime(startTime.endOf('day'));
+//         } 
+
+//       }
+//     }
+//   },[endTime]);
+
+//   const onSaveItem = ()=>{
+//     setEditMode(false);
+//     setHasChanges(false);
+//     if (props.on_save_data){
+//       props.on_save_data({
+//         id: item_id,
+//         start: startTime.startOf('day'),
+//         end: endTime.endOf('day'),
+//       })
+//     }
+//   }
+
+//   const onOpenEditor = ()=>{
+//     setEditMode(true);
+//     if (props.open_editor){
+//       props.open_editor(item_id);
+//     }
+//     console.log('setEditMode opened');
+//   }
+
+//   const onCloseRow = () => {
+//     setEditMode(false);
+//     setStartTime(_startTime);
+//     setEndTime(_endTime);
+//   }
+
+//   const onDeleteItem = () => {
+//     // eslint-disable-next-line no-restricted-globals
+//     if (confirm("Действительно удалить запись?")){
+//       if (props.on_delete){
+//         props.on_delete(item_id);
+//       }
+//     }
+//   }
+
+//   return (
+//     <div className={`sk-gt-table-row ${currentDate ? "sk-gt-actual" : ""}`}>
+//       <div className={'sk-micro-icon'}><RuleIcons type={item_type} /></div>
+//       <div>{item_id}</div>
+//       <div>{item_name}</div>
+//       <div>
+//         {editMode && startTime.unix() > dayjs().unix() ? (
+//           <DatePicker
+//             allowClear={false}
+//             value={startTime}
+//             onChange={(val)=>{setStartTime(val)}}
+//           />
+//         ):(
+//           startTime.format("DD-MM-YYYY")
+//         )}
+//       </div>
+//       <div>
+//         {editMode ? (
+//           <DatePicker 
+//             value={endTime}
+//             onChange={(val)=>{setEndTime(val)}}
+//           />
+//         ):(
+//           endTime ? endTime.format("DD-MM-YYYY") : " - - - "
+//         )}
+//       </div>
+//       { archieved ? (
+//         <div></div>
+//       ) : (
+//         <>
+//         {editMode ? (
+//           <div className={`sk-gtr-button ${hasChanges && 'active'}`} onClick={onSaveItem} ><SaveOutlined /></div>
+//         ): (
+//           <div className={"sk-gtr-button"} onClick={onOpenEditor} ><EditOutlined /></div>
+//         )}
+//         </>
+//       )}
+      
+//       { archieved ? (
+//         <div className={"sk-gtr-button"}><LockOutlined /></div>
+//       ) : (
+//         <>
+//         {editMode ? (
+//           <div className={"sk-gtr-button"} 
+//             onClick={onCloseRow} ><CloseOutlined /></div>
+//         ): (
+//           <div className={"sk-gtr-button"} onClick={onDeleteItem}><DeleteOutlined /></div>
+//         )}
+//         </>
+      
+//       )}
+      
+//     </div>
+//   );
+// }
+
+// const BreakIn = ({start, end}) => {
+  
+//   const gap =  (dayjs(end).unix() - dayjs(start).unix()) / (24*60*60);
+//   return (
+//     <div className='sk-gt-table-row sk-gt-row-gap'>
+
+//         <div style={{textAlign: 'center'}}>
+//           <EllipsisOutlined />
+//         </div>
+//         <div>
+
+//         </div>
+//         <div>
+//           Разрыв {gap.toFixed()} {WordDayNumerate(gap.toFixed())}
+//         </div>
+//         <div>
+//           {dayjs(start).format("DD-MM-YYYY")}
+//         </div>
+//         <div>
+//           {dayjs(end).format("DD-MM-YYYY")}
+//         </div>
+//         <div>
+          
+//         </div>
+
+//     </div>
+//   )
+//  }

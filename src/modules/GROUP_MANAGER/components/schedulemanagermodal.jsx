@@ -68,6 +68,7 @@ const ScheduleManagerModal= (props) => {
     const [formStart, setFormStart] = useState(dayjs().startOf('day').add(1, 'day'));
     const [formEnd, setFormEnd] = useState(dayjs().add(1, 'month'));
 
+
     const [editMode, setEditMode] = useState(false);
 
     const [intersected, setIntersected] = useState([]);
@@ -114,36 +115,6 @@ const ScheduleManagerModal= (props) => {
                       "schedule_type_name": "Стандартный",
                       "schedule_type_color": "#FFFF99"
                   },
-                  {
-                      "id": 3,
-                      "start": "2025-03-14 00:00:00",
-                      "end": "2025-04-13 23:59:59",
-                      "creator_id": 46,
-                      "creator_name": "Александр",
-                      "creator_surname": "Кошелев",
-                      "created_at": "2025-03-13 07:11:55",
-                      "deleted": false,
-                      "schedule_name": "OXY ENNY GRFIK",
-                      "schedule_type": 1,
-                      "schedule_id": 1,
-                      "schedule_type_name": "Стандартный",
-                      "schedule_type_color": "#FFFF99"
-                  },
-                  {
-                      "id": 5,
-                      "start": "2025-05-21 00:00:00",
-                      "end": "2025-05-21 23:59:59",
-                      "creator_id": 46,
-                      "creator_name": "Александр",
-                      "creator_surname": "Кошелев",
-                      "created_at": "2025-03-13 10:15:52",
-                      "deleted": false,
-                      "schedule_name": "OXY ENNY GRFIK",
-                      "schedule_type": 1,
-                      "schedule_id": 1,
-                      "schedule_type_name": "Стандартный",
-                      "schedule_type_color": "#FFFF99"
-                  }
               ]
               )
             } else {
@@ -164,6 +135,7 @@ const ScheduleManagerModal= (props) => {
       }
     },[openAddSection]);
 
+
     const onCloseAction = ()=>{
         setOpen(false)
         if (props.on_close){
@@ -174,6 +146,7 @@ const ScheduleManagerModal= (props) => {
         setPage_num(1);
         setEditMode(false);
     }
+
 
     useEffect(()=>{
       if (openAddSection){
@@ -192,6 +165,7 @@ const ScheduleManagerModal= (props) => {
       }
     },[formStart]);
   
+
     useEffect(()=>{
       if (openAddSection){
         if (formStart.unix() < dayjs().unix()){
@@ -199,7 +173,6 @@ const ScheduleManagerModal= (props) => {
         };
 
         if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
-          // setStartTime(dayjs().startOf('day').add(1, 'day'));
           setFormEnd(dayjs().endOf('day'));
         };
   
@@ -216,6 +189,7 @@ const ScheduleManagerModal= (props) => {
       }
     },[formEnd]);
 
+
   useEffect(()=>{
     console.log('try to editmode', editMode);
     if (!editMode){
@@ -227,7 +201,7 @@ const ScheduleManagerModal= (props) => {
     setIntersected([]);
     let inters = [];
     for (let i = 0; i < baseLinks.length; i++) {
-      const element = links[i];
+      const element = baseLinks[i];
       const chstart = dayjs(element.start).unix();
       const chend   = element.end ? dayjs(element.end).unix() : 99999999999999;
       if (chstart === st 
@@ -249,9 +223,11 @@ const ScheduleManagerModal= (props) => {
     console.log(inters);
   },[baseLinks, formStart, formEnd, editMode]);
 
+
   useEffect(()=>{
-      setEditMode(openAddSection);
+    setEditMode(openAddSection);
   },[openAddSection]);
+
 
   const onOpenEditorRow = (id)=>{
     setOpenAddSection(false);
@@ -268,8 +244,6 @@ const ScheduleManagerModal= (props) => {
     // setTimeout(() => {
     //   get_links();
     // }, 500);
-
-    
   }
   useEffect(()=>{ 
     if (page_num > 1 && open){
@@ -364,6 +338,17 @@ const ScheduleManagerModal= (props) => {
         end: !formEnd ? null : formEnd.unix()
       };
 
+
+      for (let i = 0; i < props.schedule_list.length; i++) {
+        const element = props.schedule_list[i];
+        if (element.id === formSched)
+        {
+          data.schedule_type = element.skud_schedule_type_id;
+          data.schedule_type_name = element.name;
+          break;
+        }
+      }
+
       for (let i  = 0; i < baseLinks.length ; i++){
         const checkLink = baseLinks[i];
         const startDate = dayjs(checkLink.start).unix();
@@ -374,8 +359,6 @@ const ScheduleManagerModal= (props) => {
           checkLink.end = dayjs().unix(data.start).subtract(1, 'day').endOf('day').unix();
           update_links(checkLink);
         };
-
-        // if (startDate >= data.start && data.end !== null && data.end  (endDate === null || endDate <= data.))
 
         console.log(checkLink);
       }
@@ -406,17 +389,9 @@ const ScheduleManagerModal= (props) => {
                   let object = response.data.data;
                   console.log(object);
 
-                  // for (let i = 0; i < props.schedule_list.length; i++) {
-                  //   if (props.schedule_list[i].id === body.schedule_id){
-                  //     object.schedule_name = props.schedule_list[i].name;
-                  //     object.schedule_type = props.schedule_list[i].type;
-                  //     console.log('inserted object ',object);
-                  //     break;
-                  //   }
-                  // }
-
                   if (object){
-                    object.schedule_type = formType;
+                    object.schedule_type = body.schedule_type;
+                    object.schedule_name = body.schedule_type_name;
                   }
 
                   setBaseLinks([...baseLinks, object]);
