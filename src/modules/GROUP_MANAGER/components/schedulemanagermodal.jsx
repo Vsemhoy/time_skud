@@ -356,7 +356,7 @@ const ScheduleManagerModal= (props) => {
 
         if (startDate < data.start && (endDate === null || (endDate > data.start ))){
           // Обновляем найденную строку с пересечением - меняем дату окончания
-          checkLink.end = dayjs().unix(data.start).subtract(1, 'day').endOf('day').unix();
+          checkLink.end = dayjs.unix(data.start).subtract(1, 'day').endOf('day').unix();
           update_links(checkLink);
         };
 
@@ -429,9 +429,9 @@ const ScheduleManagerModal= (props) => {
                             _token: CSRF_TOKEN
                         }
                     );
-                    body.start = dayjs().unix(body.start).format('YYYY-MM-DD HH:mm:ss');
+                    body.start = dayjs.unix(body.start).format('YYYY-MM-DD HH:mm:ss');
                     if (body.end){
-                      body.end = dayjs().unix(body.end).format('YYYY-MM-DD HH:mm:ss');
+                      body.end = dayjs.unix(body.end).format('YYYY-MM-DD HH:mm:ss');
                     }
                     console.log('users', response);
                     setBaseLinks(prevList => 

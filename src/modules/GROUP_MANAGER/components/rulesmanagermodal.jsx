@@ -180,13 +180,15 @@ const RulesManagerModal= (props) => {
         || (element.end !== null && st >= chstart && end <= chend)
         || (element.end !== null && end >= chstart && end <= chend)
       ){
+        if (element.rule_type === checkType){
           inters.push(element.id);
+          }
         }
       }
 
     setIntersected(inters);
     console.log(inters);
-  },[baseLinks, formStart, formEnd, editMode]);
+  },[baseLinks, formStart, formEnd, editMode, checkType]);
 
 
   useEffect(()=>{
@@ -218,7 +220,9 @@ const RulesManagerModal= (props) => {
   },[page_num]);
 
 
-
+  useEffect(()=>{
+    setCheckType(formRul);
+  },[formRul]);
 
   useEffect(()=>{
     console.log(props.rule_types);
@@ -335,7 +339,7 @@ const RulesManagerModal= (props) => {
         const element = props.rule_list[i];
         if (element.id === formRul)
         {
-          data.rule_type = element.skud_rule_type_id;
+          data.rule_type = element.rule_type_id;
           data.rule_type_name = element.name;
           break;
         }
@@ -348,7 +352,9 @@ const RulesManagerModal= (props) => {
 
         if (startDate < data.start && (endDate === null || (endDate > data.start ))){
           // Обновляем найденную строку с пересечением - меняем дату окончания
-          checkLink.end = dayjs().unix(data.start).subtract(1, 'day').endOf('day').unix();
+
+            checkLink.end = dayjs.unix(data.start).subtract(1, 'day').endOf('day').unix(); 
+          
           update_links(checkLink);
         };
 
@@ -417,12 +423,16 @@ const RulesManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/links/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/' + body.id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
                         }
                     );
+                    body.start = dayjs.unix(body.start).format('YYYY-MM-DD HH:mm:ss');
+                    if (body.end){
+                      body.end = dayjs.unix(body.end).format('YYYY-MM-DD HH:mm:ss');
+                    }
                     setBaseLinks(prevList => 
                         prevList.map(item => 
                             item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
@@ -449,7 +459,7 @@ const RulesManagerModal= (props) => {
     const delete_link = async (body, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/rules/' + body.id + "?_token=" + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/links/' + body.id + "?_token=" + CSRF_TOKEN,
                 {   
                     data: { "id" : body.id}, 
                     _token: CSRF_TOKEN
@@ -621,9 +631,11 @@ const RulesManagerModal= (props) => {
                 />
               </div>
               <div>
-                <PlusSquareOutlined
-                  onClick={createNewLink}
-                className={'sk-gtm-button'}/>
+                {intersected.length === 0 ? (
+                  <PlusSquareOutlined
+                    onClick={createNewLink}
+                  className={'sk-gtm-button'}/>
+                ) : ""}
               </div>
               <div>
                 <CloseOutlined
