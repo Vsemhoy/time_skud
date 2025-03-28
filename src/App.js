@@ -139,7 +139,7 @@ function App() {
         </Menu.Item> */}
         <Menu.Item key="block" icon={<ThunderboltOutlined />}>
         <Link 
-              onClick={()=>{ setLocation('admin/notificator')}}
+              onClick={()=>{ setLocation('notificator')}}
               >Нотификатор</Link>
         </Menu.Item>
         <Menu.Item key="logout" icon={<LogoutOutlined />}>
@@ -181,14 +181,14 @@ function App() {
           <MenuItem
             key={'menu_52342'}>
               <Link 
-              onClick={()=>{ setLocation('admin/rules')}}
+              onClick={()=>{ setLocation('rulemanager')}}
               >Правила</Link>
             </MenuItem>
 
             <MenuItem
             key={'menu_5234qq'}>
               <Link 
-              onClick={()=>{ setLocation('admin/schedules')}}
+              onClick={()=>{ setLocation('schedulemanager')}}
               >Графики</Link>
             </MenuItem>
 
@@ -197,21 +197,21 @@ function App() {
             <MenuItem
             key={'menu_235234'}>
               <Link 
-              onClick={()=>{ setLocation('admin/prodcals')}}
+              onClick={()=>{ setLocation('prodcalendars')}}
               >Календари</Link>
             </MenuItem>
 
 
             <MenuItem>
               <Link 
-              onClick={()=>{ setLocation('admin/schedules')}}
+              onClick={()=>{ setLocation('schedulemanager')}}
               >Заявки на смену графика</Link>
             </MenuItem> 
 
             <MenuItem
             key={'menu_5234765'}>
               <Link 
-              onClick={()=>{ setLocation('admin/groups')}}
+              onClick={()=>{ setLocation('groupmanager')}}
               >Группы пользоваателей</Link>
             </MenuItem>
 
@@ -273,13 +273,13 @@ function App() {
             {location === '' && <AccountPage userdata={userAct} />}
             {location === 'me' && <AccountPage userdata={userAct} />}
             {location === 'admin' && <AdminPage />}
-            {location === 'admin/rules' && <RuleManagerPage userdata={userAct} />}
-            {location === 'admin/schedules' && <SchedManagerPage userdata={userAct} />}
-            {location === 'admin/prodcals' && <ProdCalManagerPage userdata={userAct} />}
+            {location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
+            {location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
+            {location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
-            {location === 'admin/groups' && <GroupManagerPage userdata={userAct} />}
+            {location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
             {location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
-            {location === 'admin/notificator' && <NotifierPage userdata={userAct} />}
+            {location === 'notificator' && <NotifierPage userdata={userAct} />}
 
           </div>
           ) : (

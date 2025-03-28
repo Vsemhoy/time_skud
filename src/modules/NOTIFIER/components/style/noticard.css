@@ -11,6 +11,10 @@
     grid-gap: 12px;
 }
 
+.ma-noticard * {
+    font-size: 85%;
+}
+
 .ma-notread {
     /* border: 1px dashed ; */
 
@@ -44,7 +48,7 @@
 .ma-notihead {
     color: #666;
     border-bottom: 1px solid #bbb;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     font-variant: all-small-caps;
     font-size: large;
 }
