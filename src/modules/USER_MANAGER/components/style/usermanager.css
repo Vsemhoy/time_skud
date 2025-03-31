@@ -1,0 +1,64 @@
+.sk-um-userlist {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 1rem;
+}
+
+.sk-um-card {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.103);
+    border-radius: 6px;
+}
+.sk-um-card:nth-child(odd){
+    background-color: rgb(245, 244, 234);
+}
+.sk-um-card > div {
+    transition: all 0.3s;
+
+}
+    .sk-um-card:hover > div {
+    background-color: rgba(24, 24, 24, 0.055);
+}
+
+.sk-um-card {
+    border-bottom: 1px solid rgb(196, 196, 196);
+}
+
+.sk-um-row > div {
+    padding: 6px;
+}
+.sk-um-checkbox {
+
+}
+
+.sk-um-title {
+    font-size: large;
+}
+.sk-um-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.103);
+    background-color: rgba(0, 0, 0, 0.117);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+}
+
+.sk-um-cgroup-tag {
+    display: flex;
+    border: 1px solid rgba(0, 0, 0, 0.103);
+    border-radius: 3px;
+    padding: 3px 9px;
+    background-color: rgba(255, 255, 255, 0.349);
+    box-shadow: 1px 3px 4px rgba(128, 128, 128, 0.24);
+}
+.skum-firstcol {
+    width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sk-um-grid-4col {
+    display: grid;
+    grid-template-columns: 35px 40% auto auto;
+    align-items: end;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.233);
+}

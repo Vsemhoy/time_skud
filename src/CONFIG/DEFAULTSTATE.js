@@ -50,7 +50,21 @@ export const DS_USER = {
       ],
     "companies": [
         {
-            "id": 2,
+            "id": 1,
+            "name": "All companies",
+            "description": "Everyting",
+            "is_active": 1,
+            "template_prefix": "all",
+            "folder": "all",
+            "color": "#2ccf2c",
+            "ext_address_offers": "/",
+            "path_logo": "/images/identics/iwtRd02l2h/logo.png",
+            "created_at": null,
+            "updated_at": null,
+            "places": []
+        },
+        {
+            "id": 3,
             "name": "Rondo",
             "description": "ООО Рондо",
             "is_active": 1,
@@ -83,7 +97,7 @@ export const DS_USER = {
             ]
         },
         {
-            "id": 1,
+            "id": 2,
             "name": "Arstel",
             "description": "ООО Арстел",
             "is_active": 1,
@@ -1615,9 +1629,9 @@ export const DS_SKUD_GROUPS = [
         id: 1,
         name: "Первая группа захвата пользователей",
         description: "Что-то здесь должно было быть написано, но не судьба, кажись...",
-        company_name: "Arstel",
-        company_color: "#ee7700",
-        id_company: 1,
+        company_name: "Rondo",
+        company_color: "#007799",
+        id_company: 3,
         linked_schedule: null,
         "linked_rules": [
             {
@@ -1666,7 +1680,7 @@ export const DS_SKUD_GROUPS = [
         id: 2,
         name: "Группа странных пингвинов",
         description: "Эти пингвины любят танцевать под дождем и собирать редкие камни.",
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#ee7700",
         linked_schedule: {
@@ -1684,7 +1698,7 @@ export const DS_SKUD_GROUPS = [
         id: 3,
         name: "Клуб любителей невидимых единорогов",
         description: "Мы собираемся каждую пятницу, чтобы обсуждать их последние приключения.",
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#ee7700",
         linked_schedule: {
@@ -1727,7 +1741,7 @@ export const DS_SKUD_GROUPS = [
         id: 4,
         name: "Ассоциация котов-экспертов по лазанью",
         description: "Наши коты знают все о лазанье и готовы делиться секретами приготовления.",
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#ee7700",
         linked_schedule: {
@@ -1785,7 +1799,7 @@ export const DS_SKUD_GROUPS = [
         id: 71,
         name: "Общество любителей обосранных штанов",
         description: "Каждая пара штанов имеет свою историю. Мы собираем их продаем под видом дизайнерских.",
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#ee7700",
         linked_schedule: {
@@ -1901,7 +1915,7 @@ export const DS_SKUD_GROUPS = [
         id: 6,
         name: "Группа по защите прав летающих картошек",
         description: "Мы боремся за права картошки, которая хочет взлететь и увидеть мир.",
-        id_company: 2,
+        id_company: 3,
         company_name: "Rondo",
         company_color: "#44bb00",
         linked_schedule: null,
@@ -1912,7 +1926,7 @@ export const DS_SKUD_GROUPS = [
         id: 7,
         name: "Общество любителей странных шляп",
         description: "Каждая шляпа имеет свою историю. Мы собираем их и рассказываем сказки.",
-        id_company: 2,
+        id_company: 3,
         company_name: "RONDO",
         company_color: "#44bb00",
         linked_schedule: {
@@ -1975,8 +1989,62 @@ export const DS_GROUP_USERS = [
         surname: 'Помидорчатый',
         patronymic: 'Со-специями',
         department: 1,
-        id_company: 1,
+        id_company: 3,
         user_group_id: 0,
+
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 21,
@@ -1984,8 +2052,61 @@ export const DS_GROUP_USERS = [
         surname: 'Овечкин',
         patronymic: 'Степанович',
         department: 4,
-        id_company: 1,
+        id_company: 2,
         user_group_id: 0,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 2,
@@ -1993,8 +2114,61 @@ export const DS_GROUP_USERS = [
         surname: 'Сливочный',
         patronymic: 'Супер-легкий',
         department: 1,
-        id_company: 1,
+        id_company: 2,
         user_group_id: 0,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 3,
@@ -2002,8 +2176,61 @@ export const DS_GROUP_USERS = [
         surname: 'Овощной',
         patronymic: 'Смешанный',
         department: 1,
-        id_company: 1,
+        id_company: 2,
         user_group_id: 7,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 4,
@@ -2011,8 +2238,61 @@ export const DS_GROUP_USERS = [
         surname: 'Макаронная',
         patronymic: 'Сосисочная',
         department: 1,
-        id_company: 1,
+        id_company: 3,
         user_group_id: 7,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 5,
@@ -2020,8 +2300,61 @@ export const DS_GROUP_USERS = [
         surname: 'Соусик',
         patronymic: 'Легкий',
         department: 1,
-        id_company: 1,
+        id_company: 2,
         user_group_id: 7,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 6,
@@ -2029,8 +2362,61 @@ export const DS_GROUP_USERS = [
         surname: 'Волшебник',
         patronymic: 'Зеленый',
         department: 1,
-        id_company: 1,
+        id_company: 3,
         user_group_id: 0,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 7,
@@ -2038,26 +2424,185 @@ export const DS_GROUP_USERS = [
         surname: 'Мечтатель',
         patronymic: 'Сладкий',
         department: 1,
-        id_company: 1,
+        id_company: 2,
         user_group_id: 3,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 8,
         name: 'Перечный',
         surname: 'Фантазер',
         patronymic: 'Острый',
-        department: 1,
-        id_company: 1,
+        department: 2,
+        id_company: 2,
         user_group_id: 3,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 9,
         name: 'Сырный',
         surname: 'Гуру',
         patronymic: 'Деревенский',
-        department: 1,
-        id_company: 1,
+        department: 2,
+        id_company: 2,
         user_group_id: 1,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 10,
@@ -2065,44 +2610,309 @@ export const DS_GROUP_USERS = [
         surname: 'Зеленец',
         patronymic: 'Витаминный',
         department: 1,
-        id_company: 1,
+        id_company: 2,
         user_group_id: 1,
+        groups: [1,3],
+        occupy: "Лошадиный бог",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 11,
         name: 'Фруктовый',
         surname: 'Пирожок',
         patronymic: 'Сладкий',
-        department: 1,
-        id_company: 1,
+        department: 4,
+        id_company: 2,
         user_group_id: 7,
+        groups: [4,3],
+        occupy: "Стервенец от бога",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
         id: 12,
         name: 'Карамельный',
         surname: 'Обманщик',
         patronymic: 'Липкий',
-        department: 1,
-        id_company: 1,
+        department: 6,
+        id_company: 2,
         user_group_id: 1,
+        groups: [1,3],
+        occupy: "Программист",
+        department_name: "Отдел профилактики",
+        linked_schedule: {
+            "id": 5,
+            "type": 1,
+            "name": "Antoxa hey",
+            "start": 452352345,
+            "end": 23452345, //nullable
+            "next_count": 4
+        },
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 11,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 0
+            },
+            {
+                "id": 51,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 4
+            },
+            {
+                "id": 15,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 2
+            },
+            {
+                "id": 65,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "next_count": 43
+            },
+        ]
     },
     {
          id :13, 
          name : "Пирожковый", 
          surname : "Тестоед", 
          patronymic : "Сдобный", 
-         department : 1, 
+         department : 7, 
          id_company : 1, 
-         user_group_id :7 
+         user_group_id :7 ,
+         groups: [1,3],
+         occupy: "Программист",
+         department_name: "Отдел профилактики",
+         linked_schedule: {
+             "id": 5,
+             "type": 1,
+             "name": "Antoxa hey",
+             "start": 452352345,
+             "end": 23452345, //nullable
+             "next_count": 4
+         },
+         "linked_rules": [
+             {
+                 "id": 5,
+                 "type" : 1,
+                 "name": "Fired by fire",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 11,
+                 "type" : 2,
+                 "name": "Second rule type",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 0
+             },
+             {
+                 "id": 51,
+                 "type" : 3,
+                 "name": "Third rule type sat",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 15,
+                 "type" : 4,
+                 "name": "Broken leg worse than broken dreams",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 2
+             },
+             {
+                 "id": 65,
+                 "type" : 5,
+                 "name": "If you wanna buy a house, just stop being beggar",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 43
+             },
+         ]
      },
      {
          id :14, 
          name : "Ванильный", 
          surname : "Мороженчик", 
          patronymic : "Холодный", 
-         department : 1, 
+         department : 7, 
          id_company : 1, 
-         user_group_id :0 
+         user_group_id :0 ,
+         groups: [1,3],
+         occupy: "Программист",
+         department_name: "Отдел профилактики",
+         linked_schedule: {
+             "id": 5,
+             "type": 1,
+             "name": "Antoxa hey",
+             "start": 452352345,
+             "end": 23452345, //nullable
+             "next_count": 4
+         },
+         "linked_rules": [
+             {
+                 "id": 5,
+                 "type" : 1,
+                 "name": "Fired by fire",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 11,
+                 "type" : 2,
+                 "name": "Second rule type",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 0
+             },
+             {
+                 "id": 51,
+                 "type" : 3,
+                 "name": "Third rule type sat",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 15,
+                 "type" : 4,
+                 "name": "Broken leg worse than broken dreams",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 2
+             },
+             {
+                 "id": 65,
+                 "type" : 5,
+                 "name": "If you wanna buy a house, just stop being beggar",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 43
+             },
+         ]
      },
      {
          id :15, 
@@ -2111,7 +2921,60 @@ export const DS_GROUP_USERS = [
          patronymic : "Тропический", 
          department : 1, 
          id_company : 1, 
-         user_group_id :0 
+         user_group_id :0 ,
+         groups: [1,3],
+         occupy: "Программист",
+         department_name: "Отдел профилактики",
+         linked_schedule: {
+             "id": 5,
+             "type": 1,
+             "name": "Antoxa hey",
+             "start": 452352345,
+             "end": 23452345, //nullable
+             "next_count": 4
+         },
+         "linked_rules": [
+             {
+                 "id": 5,
+                 "type" : 1,
+                 "name": "Fired by fire",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 11,
+                 "type" : 2,
+                 "name": "Second rule type",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 0
+             },
+             {
+                 "id": 51,
+                 "type" : 3,
+                 "name": "Third rule type sat",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 15,
+                 "type" : 4,
+                 "name": "Broken leg worse than broken dreams",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 2
+             },
+             {
+                 "id": 65,
+                 "type" : 5,
+                 "name": "If you wanna buy a house, just stop being beggar",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 43
+             },
+         ]
      },
      {
          id :16, 
@@ -2120,7 +2983,60 @@ export const DS_GROUP_USERS = [
          patronymic : "Зеленый", 
          department : 1, 
          id_company : 1, 
-         user_group_id :0 
+         user_group_id :0 ,
+         groups: [1,3],
+         occupy: "Лошадиный бог",
+         department_name: "Отдел профилактики",
+         linked_schedule: {
+             "id": 5,
+             "type": 1,
+             "name": "Antoxa hey",
+             "start": 452352345,
+             "end": 23452345, //nullable
+             "next_count": 4
+         },
+         "linked_rules": [
+             {
+                 "id": 5,
+                 "type" : 1,
+                 "name": "Fired by fire",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 11,
+                 "type" : 2,
+                 "name": "Second rule type",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 0
+             },
+             {
+                 "id": 51,
+                 "type" : 3,
+                 "name": "Third rule type sat",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 15,
+                 "type" : 4,
+                 "name": "Broken leg worse than broken dreams",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 2
+             },
+             {
+                 "id": 65,
+                 "type" : 5,
+                 "name": "If you wanna buy a house, just stop being beggar",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 43
+             },
+         ]
      },
      {
          id :17, 
@@ -2129,7 +3045,60 @@ export const DS_GROUP_USERS = [
          patronymic : "Горький", 
          department : 1, 
          id_company : 1, 
-         user_group_id :2 
+         user_group_id :2 ,
+         groups: [4,5,6,7],
+         occupy: "Лошадиный бог",
+         department_name: "Отдел профилактики",
+         linked_schedule: {
+             "id": 5,
+             "type": 1,
+             "name": "Antoxa hey",
+             "start": 452352345,
+             "end": 23452345, //nullable
+             "next_count": 4
+         },
+         "linked_rules": [
+             {
+                 "id": 5,
+                 "type" : 1,
+                 "name": "Fired by fire",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 11,
+                 "type" : 2,
+                 "name": "Second rule type",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 0
+             },
+             {
+                 "id": 51,
+                 "type" : 3,
+                 "name": "Third rule type sat",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 15,
+                 "type" : 4,
+                 "name": "Broken leg worse than broken dreams",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 2
+             },
+             {
+                 "id": 65,
+                 "type" : 5,
+                 "name": "If you wanna buy a house, just stop being beggar",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 43
+             },
+         ]
      },
      {
          id :18, 
@@ -2138,7 +3107,60 @@ export const DS_GROUP_USERS = [
          patronymic :"Кислый",  
          department :1,  
          id_company :1,  
-         user_group_id :2  
+         user_group_id :2  ,
+         groups: [1,3,3],
+         occupy: "Лошадиный бог",
+         department_name: "Продажный отдел",
+         linked_schedule: {
+             "id": 5,
+             "type": 1,
+             "name": "Antoxa hey",
+             "start": 452352345,
+             "end": 23452345, //nullable
+             "next_count": 4
+         },
+         "linked_rules": [
+             {
+                 "id": 5,
+                 "type" : 1,
+                 "name": "Fired by fire",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 11,
+                 "type" : 2,
+                 "name": "Second rule type",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 0
+             },
+             {
+                 "id": 51,
+                 "type" : 3,
+                 "name": "Third rule type sat",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 4
+             },
+             {
+                 "id": 15,
+                 "type" : 4,
+                 "name": "Broken leg worse than broken dreams",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 2
+             },
+             {
+                 "id": 65,
+                 "type" : 5,
+                 "name": "If you wanna buy a house, just stop being beggar",
+                 "start": 452352345,
+                 "end": 23452345, //nullable
+                 "next_count": 43
+             },
+         ]
      },
      {
           id :19,  
@@ -2147,7 +3169,60 @@ export const DS_GROUP_USERS = [
           patronymic :"Мотоциклетный",  
           department :1,  
           id_company :1,  
-          user_group_id :2  
+          user_group_id :2  ,
+          groups: [1,3, 5],
+          occupy: "Лошадиный бог",
+          department_name: "Отдел высоких продаж",
+          linked_schedule: {
+              "id": 5,
+              "type": 1,
+              "name": "Antoxa hey",
+              "start": 452352345,
+              "end": 23452345, //nullable
+              "next_count": 4
+          },
+          "linked_rules": [
+              {
+                  "id": 5,
+                  "type" : 1,
+                  "name": "Fired by fire",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 4
+              },
+              {
+                  "id": 11,
+                  "type" : 2,
+                  "name": "Second rule type",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 0
+              },
+              {
+                  "id": 51,
+                  "type" : 3,
+                  "name": "Third rule type sat",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 4
+              },
+              {
+                  "id": 15,
+                  "type" : 4,
+                  "name": "Broken leg worse than broken dreams",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 2
+              },
+              {
+                  "id": 65,
+                  "type" : 5,
+                  "name": "If you wanna buy a house, just stop being beggar",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 43
+              },
+          ]
       },
       {
           id :20,  
@@ -2156,8 +3231,61 @@ export const DS_GROUP_USERS = [
           patronymic :"Сочный",  
           department :1,  
           id_company :1,  
-          user_group_id :0  
-      }
+          user_group_id :0,
+          groups: [1,3],
+          occupy: "Лошадиный бог",
+          department_name: "Отдел профилактики",
+          linked_schedule: {
+              "id": 5,
+              "type": 1,
+              "name": "Antoxa hey",
+              "start": 452352345,
+              "end": 23452345, //nullable
+              "next_count": 4
+          },
+          "linked_rules": [
+              {
+                  "id": 5,
+                  "type" : 1,
+                  "name": "Fired by fire",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 4
+              },
+              {
+                  "id": 11,
+                  "type" : 2,
+                  "name": "Second rule type",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 0
+              },
+              {
+                  "id": 51,
+                  "type" : 3,
+                  "name": "Third rule type sat",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 4
+              },
+              {
+                  "id": 15,
+                  "type" : 4,
+                  "name": "Broken leg worse than broken dreams",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 2
+              },
+              {
+                  "id": 65,
+                  "type" : 5,
+                  "name": "If you wanna buy a house, just stop being beggar",
+                  "start": 452352345,
+                  "end": 23452345, //nullable
+                  "next_count": 43
+              },
+          ]
+      },
 ];
 
 export const DS_SCHEDULE_ENTITIES = [

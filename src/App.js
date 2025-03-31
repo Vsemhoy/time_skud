@@ -26,6 +26,7 @@ import AccountPage from './modules/ACCOUNT/AccountPage';
 import Search from 'antd/es/input/Search';
 import { HomeOutlined, LogoutOutlined, NotificationOutlined, SettingOutlined, SmileOutlined, ThunderboltOutlined, UserOutlined } from '@ant-design/icons';
 import NotifierPage from './modules/NOTIFIER/NotifierPage';
+import UserManagerPage from './modules/USER_MANAGER/UserManagerPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -179,6 +180,13 @@ function App() {
           </Menu.SubMenu>
           <Menu.SubMenu key="menu2" title="Управление сотрудниками">
           <MenuItem
+            key={'menu_5234734565'}>
+              <Link 
+              onClick={()=>{ setLocation('usermanager')}}
+              >Управление пользователями</Link>
+            </MenuItem>
+
+          <MenuItem
             key={'menu_52342'}>
               <Link 
               onClick={()=>{ setLocation('rulemanager')}}
@@ -275,6 +283,7 @@ function App() {
             {location === 'admin' && <AdminPage />}
             {location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
             {location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
+            {location === 'usermanager' && <UserManagerPage userdata={userAct} />}
             {location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
             {location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
