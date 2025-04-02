@@ -436,3 +436,10 @@ font-size: smaller;
 .sk-gt-intersected {
     background-color: #ff000052 !important;
 }
+
+
+.highlight {
+    background: yellow;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_ENTITIES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
+import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_RULES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_ENTITIES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 
 import './components/style/usermanager.css';
 
@@ -9,11 +9,16 @@ import { Empty, Tabs } from "antd";
 import UserManagerToolbar from "./components/UserManagerToolbar";
 import { PRODMODE } from "../../CONFIG/config";
 import UserManagerCard from "./components/UserManagerCard";
+import UserManagerExtraTools from "./components/UserManagerExtraTools";
 
 const UserManagerPage = (props) => {
     const { userdata } = props;
 
     const [baseUserList, setBaseUserList] = useState([]);
+    const [baseScheduleList, setBaseScheduleList] = useState([]);
+    const [ScheduleList, setScheduleList] = useState([]);
+    const [baseRuleList, setBaseRuleList] = useState([]);
+    const [ruleList, setRuleList] = useState([]);
     const [userList, setUserList] = useState([]);
 
     const [ctrlKey, setCtrlKey] = useState(false);
@@ -24,6 +29,13 @@ const UserManagerPage = (props) => {
 
     const [filters, setFilters] = useState([]);
 
+    const [searchWords, setSearchWords] = useState([]);
+
+    const [selectedUsers, setSelectedUsers] = useState([]);
+
+
+    const [selectedGroups, setSelectedGroups] = useState([]);
+    // const [selectedUsers, setSelectedUsers] = useState([]);
 
     useEffect(()=>{
         if (PRODMODE)
@@ -31,10 +43,14 @@ const UserManagerPage = (props) => {
 
         } else {
             setBaseUserList(DS_GROUP_USERS);
+            setBaseRuleList(DS_RULES);
+            setBaseScheduleList(DS_SCHEDULE_LIST);
         }
     },[]);
 
     useEffect(()=>{
+        setSearchWords([]);
+        let sw = [];
         let users = baseUserList;
         for (let i = 0; i < filters.length; i++) {
             const filter = filters[i];
@@ -42,20 +58,32 @@ const UserManagerPage = (props) => {
                 if (filter.key === "id_company"){
                     users = users.filter((item)=>{return item.id_company === filter.value});
                     continue;
+                    
                 };
                 if (filter.key.includes("text_filter")){
                     users = users.filter((item)=>{
-                        return (
+                        if (
+                            (item.id).toString().includes(filter.value)||
                             item.name.toLowerCase().includes(filter.value)||
                             item.surname.toLowerCase().includes(filter.value)  ||
                             item.patronymic.toLowerCase().includes(filter.value) ||
                             item.occupy.toLowerCase().includes(filter.value) ||
                             item.department_name.toLowerCase().includes(filter.value) 
-                        )
+                        ){
+                            sw.push(filter.value);
+                            return true;
+                        }
                     });
                     continue;
                 };
-            
+                if (filter.key === "group_id"){
+                    console.log("FILTERE",filter.value, users);
+                    for (let f = 0; f < filter.value.length; f++) {
+                        const fvalue = filter.value[f];
+                        users = users.filter((item)=>{return item.groups.includes(fvalue)});
+                        continue;
+                    }
+                };
             };
             if (filter.type === 'sorter' && filter.key === "sort_by")
             {
@@ -99,12 +127,119 @@ const UserManagerPage = (props) => {
                 };
             }
         }
-        console.log('I FOUND', users);
+        setSearchWords(sw);
         setUserList(users);
     },[filters, baseUserList]);
 
     
+    useEffect(()=>{
+        let items = baseScheduleList.filter((item)=> { return item.id });
 
+    },[filters, baseScheduleList]);
+
+    useEffect(()=>{
+
+    },[filters, baseRuleList]);
+
+    const selectAllUsersAction = (state) => {
+        setSelectedUsers([])
+        if (state){
+            let nlist = [];
+            let ul = userList;
+            for (let il = 0; il < ul.length; il++) {
+                nlist.push(ul[il].id);
+            };
+            setSelectedUsers(nlist);
+        };
+        console.log("SELECTE ALL");
+    };
+
+    const handleUnlinkGroupAction = (user_id, group_id)=> {
+        console.log(group_id);
+        let bus = JSON.parse(JSON.stringify(baseUserList));
+        for (let i = 0; i < bus.length; i++) {
+            const element = bus[i];
+
+            if (element.id === user_id){
+                console.log(element);
+                // element.groups.remove(group_id);
+                const indexxer = element.groups.indexOf(group_id);
+                if (indexxer > -1) {
+                    bus[i].groups.splice(indexxer, 1);
+                }
+                break;
+            }
+        }
+        setBaseUserList(bus);
+    }
+
+
+    const handleCallToBindGroups = (groups) => {
+        console.log('BIND');
+        console.log(groups);
+        console.log(selectedUsers);
+        let bus = JSON.parse(JSON.stringify(baseUserList));
+        for (let i = 0; i < bus.length; i++) {
+            const element = bus[i];
+
+            if (selectedUsers.includes(element.id)){
+                for (let g = 0; g < groups.length; g++) {
+                    const grp = groups[g];
+                    const indexxer = element.groups.indexOf(grp);
+                if (indexxer === -1) {
+                    bus[i].groups.push(grp);
+                }
+                    
+                }
+            }
+        }
+        setBaseUserList(bus);
+    }
+
+
+    const handleCardSelection = (item, value) => {
+        if (value) {
+          setSelectedUsers(prev => [...prev, item]);
+        } else {
+          setSelectedUsers(prev => prev.filter(v => v !== item));
+        }
+    };
+    
+    const handleCallToClearGroups = (groups) => {
+        console.log("CLEAR");
+        console.log(groups);
+        console.log(selectedUsers);
+
+        let bus = JSON.parse(JSON.stringify(baseUserList));
+        if (groups && groups.length){
+            for (let i = 0; i < bus.length; i++) {
+                const element = bus[i];
+    
+                if (selectedUsers.includes(element.id)){
+                    for (let g = 0; g < groups.length; g++) {
+                        const grp = groups[g];
+                        const indexxer = element.groups.indexOf(grp);
+                        if (indexxer > -1) {
+                            bus[i].groups.splice(indexxer, 1);
+                        }
+                }
+            }
+        }
+
+        } else {
+            console.log('ELSE - empty groups - clear all existed');
+            for (let i = 0; i < bus.length; i++) {
+                const element = bus[i];
+
+                if (selectedUsers.includes(element.id)){
+                        bus[i].groups = [];
+                    }
+                }
+            }
+        setBaseUserList(bus);
+    }
+
+    
 
     return (
         <div className={'sk-mw-1400'}>
@@ -114,6 +249,16 @@ const UserManagerPage = (props) => {
                 companies={userdata?.companies}
                 groups={DS_SKUD_GROUPS}
                 onChangeFilter={(ev)=>{setFilters(ev)}}
+            />
+            <br />
+            <UserManagerExtraTools
+                companies={userdata?.companies}
+                groups={DS_SKUD_GROUPS}
+                onChangeFilter={(ev)=>{setFilters(ev)}}
+                onSelectAllUsers={selectAllUsersAction}
+                onSelectGroups={(val)=>{setSelectedGroups(val)}}
+                onCallToSelectGroups={handleCallToBindGroups}
+                onCallToClearGroups={handleCallToClearGroups}
             />
             <br />
 
@@ -130,7 +275,11 @@ const UserManagerPage = (props) => {
                                 key={`itemcard_${item.id}`}
                                 data={item}
                                 groups={baseGroupList}
-
+                                search_strings={searchWords}
+                                selected={selectedUsers.includes(item.id)}
+                                onUnlinkGroup={handleUnlinkGroupAction}
+                                onCallToClearGroups={handleCallToClearGroups}
+                                onSelectCard={handleCardSelection}
                             />
                         ))}
                     </div>

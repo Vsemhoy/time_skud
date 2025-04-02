@@ -10,7 +10,10 @@
     border-radius: 6px;
 }
 .sk-um-card:nth-child(odd){
-    background-color: rgb(245, 244, 234);
+    background-color: #fbfaef;
+}
+.sk-um-card:last-child {
+    margin-bottom: 50vh;
 }
 .sk-um-card > div {
     transition: all 0.3s;
@@ -22,6 +25,10 @@
 
 .sk-um-card {
     border-bottom: 1px solid rgb(196, 196, 196);
+}
+
+.sk-um-card-selected {
+    border: 1px solid rgb(43, 137, 226);
 }
 
 .sk-um-row > div {
@@ -44,12 +51,30 @@
 
 .sk-um-cgroup-tag {
     display: flex;
+    transition: all 0.3s;
     border: 1px solid rgba(0, 0, 0, 0.103);
     border-radius: 3px;
-    padding: 3px 9px;
     background-color: rgba(255, 255, 255, 0.349);
     box-shadow: 1px 3px 4px rgba(128, 128, 128, 0.24);
 }
+.sk-um-cgroup-tag:hover {
+    box-shadow: 1px 3px 7px rgba(128, 128, 128, 0.54);
+    background-color: rgba(255, 255, 255, 0.649);
+}
+.sk-um-cgroup-tag > div:nth-child(1){
+    padding: 3px 9px;
+}
+.sk-um-cgroup-tag:hover > div:nth-child(2){
+    background-color: rgba(255, 0, 0, 0.13);
+    opacity: 1;
+}
+
+.sk-um-cgroup-tag > div:nth-child(2){
+    cursor: pointer;
+    padding: 3px 3px;
+    opacity: 0.4;
+}
+
 .skum-firstcol {
     width: 35px;
     display: flex;
@@ -61,4 +86,34 @@
     grid-template-columns: 35px 40% auto auto;
     align-items: end;
     border-bottom: 1px solid rgba(128, 128, 128, 0.233);
+}
+
+.sk-toolbox-trigger {
+    width: 100%;
+    background-color: gainsboro;
+    cursor: pointer;
+    text-align: center;
+    padding: 3px;
+    opacity: 0.75;
+}
+.sk-toolbox-trigger:hover{
+    opacity: 1;
+}
+.sk-tool-console {
+    padding: 12px;
+    background-color: gainsboro;
+    box-shadow: 1000px 0px 0px #dcdcdc, -1000px 0px 0px #dcdcdc;
+}
+
+.sk-flex-divider > div:not(:last-child) {
+    border-right: #fff 2px solid;
+    padding-right: 12px;
+}
+
+.sk-tool-console span {
+    font-size: small;
+    color: #808080;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
 }

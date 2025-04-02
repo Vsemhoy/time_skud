@@ -2054,7 +2054,7 @@ export const DS_GROUP_USERS = [
         department: 4,
         id_company: 2,
         user_group_id: 0,
-        groups: [1,3],
+        groups: [1,3, 2],
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {

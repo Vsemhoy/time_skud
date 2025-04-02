@@ -134,7 +134,7 @@ const tagRender = (props) => {
                 let fil1 = {type: 'filter', key: 'id_company', value: selectedCompany};
                 filters.push(fil1);
             }
-            if (filterText != null && filterText.trim() !== "" && filterText.trim().length > 1)
+            if (filterText != null && filterText.trim() !== "" && filterText.trim().length > 0)
             {
                 let splitext = filterText.toLowerCase().split('+');
                 for (let i = 0; i < splitext.length; i++) {
