@@ -10,13 +10,15 @@ import UserManagerToolbar from "./components/UserManagerToolbar";
 import { PRODMODE } from "../../CONFIG/config";
 import UserManagerCard from "./components/UserManagerCard";
 import UserManagerExtraTools from "./components/UserManagerExtraTools";
+import ScheduleManagerModal from "./components/schedulemanagermodal";
+import RulesManagerModal from "./components/rulesmanagermodal";
 
 const UserManagerPage = (props) => {
     const { userdata } = props;
 
     const [baseUserList, setBaseUserList] = useState([]);
     const [baseScheduleList, setBaseScheduleList] = useState([]);
-    const [ScheduleList, setScheduleList] = useState([]);
+    // const [ScheduleList, setScheduleList] = useState([]);
     const [baseRuleList, setBaseRuleList] = useState([]);
     const [ruleList, setRuleList] = useState([]);
     const [userList, setUserList] = useState([]);
@@ -35,7 +37,21 @@ const UserManagerPage = (props) => {
 
 
     const [selectedGroups, setSelectedGroups] = useState([]);
+    const [editedUserId,   setEditedUserId] = useState([]);
+
+    
     // const [selectedUsers, setSelectedUsers] = useState([]);
+
+
+    // User, who we edit
+    const [openedUser, setOpenedUser] = useState(null);
+
+    const [scheduleList,  setScheduleList]  = useState([]);
+    const [scheduleTypes, setScheduleTypes] = useState([]);
+    const [ruleTypes, setRuleTypes] = useState([]);
+    const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
+    const [openedRuleModal, setOpenedRuleModal]         = useState(false);
+
 
     useEffect(()=>{
         if (PRODMODE)
@@ -121,6 +137,14 @@ const UserManagerPage = (props) => {
                     });
                     continue;
                   }
+                if (filter.value === "id_asc"){
+                    users = users.sort((a, b)=> {return a.id - b.id});
+                    continue;
+                };
+                if (filter.value === "id_desc"){
+                    users = users.sort((a, b)=> {return b.id - a.id});
+                    continue;
+                };
                 if (filter.value === "department_asc"){
                     users = users.sort((a, b)=> {return a.department - b.department});
                     continue;
@@ -174,6 +198,27 @@ const UserManagerPage = (props) => {
     }
 
 
+
+
+
+    const openScheduleEditor = (value) => {
+        let usm = baseUserList.find((item)=> item.id === value);
+        setOpenedUser(usm);
+        setEditedUserId(value);
+        setOpenedScheduleModal(true);
+    }
+
+    const openRulesEditor = (value) => {
+        let usm = baseUserList.find((item)=> item.id === value);
+        setOpenedUser(usm);
+        setEditedUserId(value);
+        setOpenedRuleModal(true);
+    }
+
+
+
+
+
     const handleCallToBindGroups = (groups) => {
         console.log('BIND');
         console.log(groups);
@@ -187,7 +232,10 @@ const UserManagerPage = (props) => {
                     const grp = groups[g];
                     const indexxer = element.groups.indexOf(grp);
                 if (indexxer === -1) {
-                    bus[i].groups.push(grp);
+                    const checkGroup = baseGroupList.find((item)=> {return item.id === grp});
+                    if (checkGroup && checkGroup.id_company === element.id_company){
+                        bus[i].groups.push(grp);
+                    };
                 }
                     
                 }
@@ -242,7 +290,7 @@ const UserManagerPage = (props) => {
     
 
     return (
-        <div className={'sk-mw-1400'}>
+        <div className={'sk-mw-1400'} style={{padding: '12px'}}>
             <br/>
             <h2>Менеджер пользователей</h2>
             <UserManagerToolbar
@@ -259,6 +307,7 @@ const UserManagerPage = (props) => {
                 onSelectGroups={(val)=>{setSelectedGroups(val)}}
                 onCallToSelectGroups={handleCallToBindGroups}
                 onCallToClearGroups={handleCallToClearGroups}
+                selected_users={selectedUsers}
             />
             <br />
 
@@ -286,6 +335,36 @@ const UserManagerPage = (props) => {
                 )}
 
             </div>
+
+
+
+            {openedUser && (
+                <ScheduleManagerModal
+                    data={openedUser}
+                    target_id={editedUserId}
+                    schedule_types={scheduleTypes}
+                    schedule_list={scheduleList}
+                    on_open={openedScheduleModal}
+                    base_users={false}
+                    on_update={false}
+                    on_close={()=>setOpenedScheduleModal(false)}
+                />
+                )}
+
+                {openedUser && (
+                  <RulesManagerModal
+                    data={openedUser}
+                    target_id={editedUserId}
+                    open={openRulesEditor}
+                    on_open={openedRuleModal}
+                    rule_types={ruleTypes}
+                    rule_list={ruleList}
+                    base_users={false}
+                    on_update={false}
+                    on_close={()=>setOpenedRuleModal(false)}
+                />
+            )}
+
         </div>
     );
 }

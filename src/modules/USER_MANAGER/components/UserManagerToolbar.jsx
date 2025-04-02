@@ -14,6 +14,16 @@ const sortByOptions = [
         value: ''
     },
     {
+        key: `sort_id_asc`,
+        label: "По id увеличение",
+        value: 'id_asc'
+    },
+    {
+        key: `sort_id_desc`,
+        label: "По id уменьшение",
+        value: 'id_desc'
+    },
+    {
         key: `sort_username_asc`,
         label: "Имя А-Z",
         value: 'username_asc'
@@ -35,7 +45,7 @@ const sortByOptions = [
     },
     {
         key: `sort_department`,
-        label: "Отдел А-Я",
+        label: "Отдел по id",
         value: 'department_asc'
     },
 ];

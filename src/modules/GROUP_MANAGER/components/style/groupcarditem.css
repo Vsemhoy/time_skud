@@ -51,7 +51,7 @@
     border-bottom: none !important;
 }
 .sk-group-flexer-in-row:hover {
-    background-color:  rgb(231, 231, 231);
+    background-color:  rgba(0, 0, 0, 0.048);
 }
 .sk-group-flexer-in-row:hover .sk-groupcard-mini-trigger {
     opacity: 1;

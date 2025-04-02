@@ -2,7 +2,7 @@ import { Affix, Button, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
 import React, { useEffect, useState } from "react";
 import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
-import { CloseOutlined, CloseSquareOutlined, ToolOutlined } from "@ant-design/icons";
+import { ClearOutlined, CloseOutlined, CloseSquareOutlined, ToolOutlined } from "@ant-design/icons";
 import Checkbox from "antd/es/checkbox/Checkbox";
 
 
@@ -53,6 +53,11 @@ const [selectedCompany, setSelectedCompany] = useState(0);
 const [selectedGroups, setSelectedGroups] = useState([]);
 const [filterText, setFilterText] = useState('');
 
+const [selectedUsers, setSelectedUsers] = useState(props.selected_users);
+
+useEffect(()=>{
+    setSelectedUsers(props.selected_users);
+},[props.selected_users]);
 
 useEffect(()=>{
     console.log(props.companies);
@@ -157,7 +162,7 @@ const tagRender = (props) => {
         <div>
             {openedConsole ? (
                 <div>
-                    <div className={'sk-toolbox-trigger'}
+                    <div className={`sk-toolbox-trigger ${openedConsole ? 'opened' : 'closed'}`}
                     onClick={()=>{setOpenedConsole(false)}}
                 >
                     Скрыть панель инструментов <CloseOutlined />
@@ -172,7 +177,11 @@ const tagRender = (props) => {
                             />
                         </div>
                         <div style={{width: '100%'}}>
-                            <span>Группы</span>
+                            <div className={'sk-flex-space'}>
+                                <span>Группы </span> <span
+                                    onClick={()=>{setSelectedGroups([])}}
+                                ><ClearOutlined /></span>
+                            </div>
                         <Select
                             placeholder={'Фильтр по группам, включающим пользователей'}
                             value={selectedGroups}
@@ -187,11 +196,15 @@ const tagRender = (props) => {
                             <div className={"sk-flex"}>
 
                                 <Button 
+                                    size={'small'}
                                     onClick={callToClearGroups}
                                     block
-                                    >Удалить все группы выделенным</Button>
+                                    danger
+                                    disabled={selectedUsers.length === 0}
+                                    >Удалить группы</Button>
                             <Button
-                                disabled={selectedGroups.length ? false : true}
+                                size={'small'}
+                                disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
                                 onClick={callToSelectGroups}
                                 block
                             >Привязать группы</Button>
@@ -199,7 +212,13 @@ const tagRender = (props) => {
                             </div>
                         </div>
                         <div style={{width: '100%'}}>
-                        <span>Графики</span>
+                            <div className={'sk-flex-space'}>
+                                <span>Графики работы</span> 
+                                <span
+                                    onClick={()=>{setSelectedGroups([])}}
+                                ><ClearOutlined /></span>
+                            </div>
+                        
                         <Select
                          style={{width: '100%'}}
                             options={companiesList}
@@ -210,17 +229,27 @@ const tagRender = (props) => {
                             <br />
                             <div className={"sk-flex"}>
                             <Button 
+                                size={'small'}
                                     onClick={callToClearGroups}
                                     block
-                                    >Удалить все</Button>
-                                <Button
+                                    disabled={selectedUsers.length === 0}
+                                    >Удалить график</Button>
+                                <Button 
+                                disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                    size={'small'}
                                     block
-                                >Привязать выбранный график</Button>
+                                >Привязать график</Button>
 
                             </div>
                         </div>
                         <div style={{width: '100%'}}>
-                        <span>Правила</span>
+                        
+                            <div className={'sk-flex-space'}>
+                            <span>Правила учёта РВ</span> 
+                                <span
+                                    onClick={()=>{setSelectedGroups([])}}
+                                ><ClearOutlined /></span>
+                            </div>
                         <Select
                             style={{width: '100%'}}
                             options={companiesList}
@@ -231,12 +260,16 @@ const tagRender = (props) => {
                             <br />
                             <div className={"sk-flex"}>
                             <Button 
+                            size={'small'}
+                                disabled={selectedUsers.length === 0}
                                     onClick={callToClearGroups}
                                     block
-                                    >Удалить все </Button>
+                                    >Удалить правило </Button>
                                 <Button
+                                disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                size={'small'}
                                     block
-                                >Привязать выбранные правила</Button>
+                                >Привязать правила</Button>
 
                             </div>
                         </div>
@@ -250,8 +283,9 @@ const tagRender = (props) => {
                 </Affix>
                 </div>
             ):(
-                <div className={'sk-toolbox-trigger'}
+                <div 
                     onClick={()=>{setOpenedConsole(true)}}
+                    className={`sk-toolbox-trigger ${openedConsole ? 'opened' : 'closed'}`}
                 >
                     <ToolOutlined /> Открыть панель инструментов
                 </div>
