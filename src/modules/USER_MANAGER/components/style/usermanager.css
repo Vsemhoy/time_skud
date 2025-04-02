@@ -144,6 +144,18 @@
 }
 
 
+
+.sk-1col-body {
+    display: flex;
+}
+.sk-1col-body > div:nth-child(2){
+    display: none;
+}
+.sk-2col-body {
+    display: grid;
+    grid-template-columns: auto 300px;
+}
+
 /* from old file */
 .sk-first-row-4group {
     display: grid;
@@ -231,3 +243,6 @@
 .sk-second-row-group {
     background: #f1f1f1;
 }
+
+
+

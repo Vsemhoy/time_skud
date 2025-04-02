@@ -14,7 +14,6 @@ import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
 
 
 const Sched_type_icon = (type) => {
-    console.log(type);
     switch (type.children) {
         case 1:
             return ( <img src={HOST_COMPONENT_ROOT + SchedStdSVG} title='Пятидневка график'/>);
@@ -93,19 +92,29 @@ const UserManagerCard = (props)=>{
 
 
     const handleDblClickOnSchedule = () => {
-
+        if (props.onOpenScheduleModal)
+            {
+                props.onOpenScheduleModal(itemId);
+            }
     }
 
     const handleDblClickOnRule = () => {
-
+        if (props.onOpenRuleModal){
+            props.onOpenRuleModal(itemId);
+        }
     }
 
     const setOpenScheduleModal = () => {
-
+        if (props.onOpenScheduleModal)
+        {
+            props.onOpenScheduleModal(itemId);
+        }
     }
 
     const setOpenRuleModal = () => {
-
+        if (props.onOpenRuleModal){
+            props.onOpenRuleModal(itemId);
+        }
     }
 
 

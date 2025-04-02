@@ -1,4 +1,4 @@
-import { Affix, Button, Select, Tag } from "antd";
+import { Affix, Button, DatePicker, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
 import React, { useEffect, useState } from "react";
 import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
@@ -9,38 +9,8 @@ import Checkbox from "antd/es/checkbox/Checkbox";
 
 const UserManagerExtraTools = (props)=>{
 
-const sortByOptions = [
-    {
-        key: `sort_null`,
-        label: "Без сортировки",
-        value: ''
-    },
-    {
-        key: `sort_username_asc`,
-        label: "Имя А-Z",
-        value: 'username_asc'
-    },
-    {
-        key: `sort_username_desc`,
-        label: "Имя Z-А",
-        value: 'username_desc'
-    },
-    {
-        key: `sort_surname_asc`,
-        label: "Фамилия А-Z",
-        value: 'surname_asc'
-    },
-    {
-        key: `sort_surname_desc`,
-        label: "Фамилия Z-А",
-        value: 'surname_desc'
-    },
-    {
-        key: `sort_department`,
-        label: "Отдел А-Я",
-        value: 'department_asc'
-    },
-];
+const [ruleList, setRuleList] = useState(props.rules);
+const [scheduleList, setScheduleList] = useState(props.schedules);
 
 const [openedConsole, setOpenedConsole] = useState(false);
 
@@ -53,14 +23,18 @@ const [selectedCompany, setSelectedCompany] = useState(0);
 const [selectedGroups, setSelectedGroups] = useState([]);
 const [filterText, setFilterText] = useState('');
 
+const [selectedSchedule, setSelectedSchedule] = useState(null);
+const [selectedRule, setSelectedRule] = useState(null);
+
 const [selectedUsers, setSelectedUsers] = useState(props.selected_users);
+
+
 
 useEffect(()=>{
     setSelectedUsers(props.selected_users);
 },[props.selected_users]);
 
 useEffect(()=>{
-    console.log(props.companies);
     if (props.companies.length){
         let coms = props.companies.filter((item)=>{return item.id !== 1});
         if (coms.length > 1){
@@ -77,16 +51,21 @@ useEffect(()=>{
                 
               })));
         }
-
-        console.log(coms);
     }
 },[props.companies]);
 
 
 useEffect(()=>{
-    console.log( props.groups);
+    setSelectedCompany(props.selectedCompany);
+},[props.selectedCompany])
+
+
+
+
+useEffect(()=>{
     setSelectedGroups([]);
     let grop = props.groups;
+
     if (selectedCompany !== 0)
     {
         grop = grop.filter((item)=>{return item.id_company === selectedCompany});
@@ -98,8 +77,50 @@ useEffect(()=>{
             value: item.id,
             color: item.company_color
         }))
-    )
+    );
 },[props.groups, selectedCompany]);
+
+
+
+useEffect(()=>{
+    let sched = props.schedules;
+    let ruls = props.rules;
+
+    if (selectedCompany !== 0)
+    { 
+        sched = sched.filter((item)=>{return item.id_company === selectedCompany});
+    };
+
+
+    setScheduleList(
+        sched.map(item => ({
+            key: item.id,
+            label: item.name,
+            value: item.id,
+        }))
+    );
+},[props.schedules, selectedCompany]);
+
+
+useEffect(()=>{
+    let ruls = props.rules;
+
+    if (selectedCompany !== 0)
+    {
+        ruls = ruls.filter((item)=>{return item.id_company === selectedCompany});
+    }
+    setRuleList(
+        ruls.map(item => ({
+            key: item.id,
+            label: item.name,
+            value: item.id,
+        }))
+    );
+
+},[props.rules, selectedCompany]);
+
+
+
 
 const handleSelectAll = (ev) => {
     if (props.onSelectAllUsers){
@@ -211,29 +232,33 @@ const tagRender = (props) => {
                                                         <br />
                             </div>
                         </div>
+
+
+
+
                         <div style={{width: '100%'}}>
                             <div className={'sk-flex-space'}>
                                 <span>Графики работы</span> 
                                 <span
-                                    onClick={()=>{setSelectedGroups([])}}
+                                    onClick={()=>{setSelectedSchedule(null)}}
                                 ><ClearOutlined /></span>
                             </div>
                         
                         <Select
                          style={{width: '100%'}}
-                            options={companiesList}
-                            value={selectedCompany}
-                            onChange={(ev)=>{setSelectedCompany(ev)}}
+                            options={scheduleList}
+                            value={selectedSchedule}
+                            onChange={(ev)=>{setSelectedSchedule(ev)}}
                             />
                             <br />
                             <br />
                             <div className={"sk-flex"}>
-                            <Button 
-                                size={'small'}
-                                    onClick={callToClearGroups}
-                                    block
-                                    disabled={selectedUsers.length === 0}
-                                    >Удалить график</Button>
+                                <DatePicker />
+                                <DatePicker />
+                            </div>
+
+                            <div className={"sk-flex"}>
+                 
                                 <Button 
                                 disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
                                     size={'small'}
@@ -247,24 +272,24 @@ const tagRender = (props) => {
                             <div className={'sk-flex-space'}>
                             <span>Правила учёта РВ</span> 
                                 <span
-                                    onClick={()=>{setSelectedGroups([])}}
+                                    onClick={()=>{setSelectedRule([])}}
                                 ><ClearOutlined /></span>
                             </div>
                         <Select
                             style={{width: '100%'}}
-                            options={companiesList}
-                            value={selectedCompany}
-                            onChange={(ev)=>{setSelectedCompany(ev)}}
+                            options={ruleList}
+                            value={selectedRule}
+                            onChange={(ev)=>{setSelectedRule(ev)}}
                             />
                             <br />
                             <br />
+
                             <div className={"sk-flex"}>
-                            <Button 
-                            size={'small'}
-                                disabled={selectedUsers.length === 0}
-                                    onClick={callToClearGroups}
-                                    block
-                                    >Удалить правило </Button>
+                                <DatePicker />
+                                <DatePicker />
+                            </div>
+                            
+                            <div className={"sk-flex"}>
                                 <Button
                                 disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
                                 size={'small'}

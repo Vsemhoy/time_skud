@@ -131,6 +131,18 @@ const tagRender = (props) => {
 
 
     useEffect(()=>{
+        console.log('ev', selectedCompany)
+        if (props.onChangeCompany){
+        if (selectedCompany > 1) {
+                props.onChangeCompany(selectedCompany);
+            } else {
+                props.onChangeCompany(0);
+            }
+        };
+    },[selectedCompany]);
+    
+
+    useEffect(()=>{
         const t = setTimeout(() => {
             let filters = [];
 

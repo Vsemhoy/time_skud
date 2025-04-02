@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_RULES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_ENTITIES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
+import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_RULE_TYPES, DS_RULES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_ENTITIES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 
 import './components/style/usermanager.css';
 
-import { Empty, Tabs } from "antd";
+import { Button, Empty, Tabs } from "antd";
 
 import UserManagerToolbar from "./components/UserManagerToolbar";
 import { PRODMODE } from "../../CONFIG/config";
@@ -29,19 +29,22 @@ const UserManagerPage = (props) => {
     const [baseGroupList, setBaseGroupList] = useState(DS_SKUD_GROUPS);
     const [groupList, setGroupList] = useState([]);
 
+    
+
     const [filters, setFilters] = useState([]);
 
     const [searchWords, setSearchWords] = useState([]);
 
     const [selectedUsers, setSelectedUsers] = useState([]);
 
+    const [selectedCompanyId, setSelectedCompanyId] = useState(0);
 
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [editedUserId,   setEditedUserId] = useState([]);
 
     
     // const [selectedUsers, setSelectedUsers] = useState([]);
-
+    const [openToolbar, setOpenToolbar] = useState(false);
 
     // User, who we edit
     const [openedUser, setOpenedUser] = useState(null);
@@ -59,8 +62,13 @@ const UserManagerPage = (props) => {
 
         } else {
             setBaseUserList(DS_GROUP_USERS);
+            
             setBaseRuleList(DS_RULES);
             setBaseScheduleList(DS_SCHEDULE_LIST);
+
+            setRuleTypes(DS_RULE_TYPES);
+            setScheduleTypes(DS_SCHED_TYPES);
+            console.log('DS_RULES', DS_RULES)
         }
     },[]);
 
@@ -161,9 +169,9 @@ const UserManagerPage = (props) => {
 
     },[filters, baseScheduleList]);
 
-    useEffect(()=>{
+    // useEffect(()=>{
 
-    },[filters, baseRuleList]);
+    // },[filters, baseRuleList]);
 
     const selectAllUsersAction = (state) => {
         setSelectedUsers([])
@@ -297,6 +305,7 @@ const UserManagerPage = (props) => {
                 companies={userdata?.companies}
                 groups={DS_SKUD_GROUPS}
                 onChangeFilter={(ev)=>{setFilters(ev)}}
+                onChangeCompany={setSelectedCompanyId}
             />
             <br />
             <UserManagerExtraTools
@@ -308,13 +317,19 @@ const UserManagerPage = (props) => {
                 onCallToSelectGroups={handleCallToBindGroups}
                 onCallToClearGroups={handleCallToClearGroups}
                 selected_users={selectedUsers}
+                rules={baseRuleList}
+                schedules={baseScheduleList}
+                selectedCompany={selectedCompanyId}
             />
+            <Button
+            onClick={()=>setOpenToolbar(!openToolbar)}
+            >Open Toolbar</Button>
             <br />
 
-            <div className={'sk-sched-1col-body'}>
+            <div className={`${openToolbar ? "sk-2col-body" : ".sk-1col-body"}`}>
                 <div className={'sk-sched-main-col'}>
                     
-                </div>
+                
                 {userList.length === 0 ? (
                     <Empty description={"Ничего не найдено"}/>
                 ): (
@@ -329,12 +344,23 @@ const UserManagerPage = (props) => {
                                 onUnlinkGroup={handleUnlinkGroupAction}
                                 onCallToClearGroups={handleCallToClearGroups}
                                 onSelectCard={handleCardSelection}
+                                onOpenRuleModal={openRulesEditor}
+                                onOpenScheduleModal={openScheduleEditor}
                             />
                         ))}
                     </div>
                 )}
-
+                </div>
+                <div>
+                    Here will be toolbar
+                </div>
             </div>
+
+
+
+
+
+
 
 
 
