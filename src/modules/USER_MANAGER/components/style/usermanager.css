@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     grid-gap: 1rem;
+    width: 100%;
 }
 
 .sk-um-card {
@@ -117,8 +118,10 @@
 }
 .sk-tool-console {
     padding: 12px;
-    background-color: gainsboro;
-    box-shadow: 1000px 0px 0px #dcdcdc, -1000px 0px 0px #dcdcdc;
+    background-color: rgb(237, 237, 237);
+    min-height: 100vh;
+    border-radius: 4px;
+    border: 1px solid gainsboro;
 }
 
 .sk-flex-divider > div:not(:last-child) {

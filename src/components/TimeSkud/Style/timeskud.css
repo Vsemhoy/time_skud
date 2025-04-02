@@ -159,7 +159,7 @@ td:first-child {
     height: 46px !important;
     padding: 0 30px;
     line-height: 46px !important;
-}
+    }
 .sk-main-menu .ant-menu-submenu-selected {
     background-color: #ffffffbb !important;
 }
@@ -300,11 +300,7 @@ font-size: smaller;
     grid-gap: 12px;
 }
 
-.sk-2col-body > div {
-    /* background-color: lightgray; */
-    min-height: 200px;
-    /* background-color: #1677ff; */
-}
+
 
 .sk-d-none {
     display: none;
@@ -442,4 +438,4 @@ font-size: smaller;
     background: yellow;
     padding: 2px 5px;
     border-radius: 3px;
-  }
+}

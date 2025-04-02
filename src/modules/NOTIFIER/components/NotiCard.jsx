@@ -73,7 +73,10 @@ const NotiCard = (props) => {
                 {name && (
                     <div className="ma-notihead">{name}</div>
                 )}
-                <MDEditor.Markdown source={props.data.content} />
+                <div data-color-mode="light" style={{ backgroundColor: "#fff", color: "#000" }}>
+
+                <MDEditor.Markdown source={props.data.content}/>
+                </div>
             </div>
             <div className={"ma-notfooter"}>
                 

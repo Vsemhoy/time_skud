@@ -46,11 +46,21 @@ function App() {
   const [notificatorLoading, setNotificatorLoading] = useState(true);
   const [countOfNotifications, setCountOfNotifications] = useState(0);
 
+  const [historyStack, setHistoryStack] = useState([]);
+  
   /**
    * Текущий адрес страницы
    */
   const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'me');
   
+
+  // Инициализация при монтировании
+  useEffect(() => {
+    const initialParams = new URLSearchParams(window.location.search);
+    const initialLocation = initialParams.get('location') || '';
+    setHistoryStack([initialLocation]);
+  }, []);
+
     // Чтение параметра из URL при монтировании компонента
     useEffect(() => {
       const searchParams = new URLSearchParams(window.location.search);
@@ -63,16 +73,36 @@ function App() {
       console.log('start page is', value);
   }, []);
 
-  // Обновление URL при изменении состояния location
+  // Обработчик изменений location
   useEffect(() => {
-      const query = new URLSearchParams(window.location.search);
-      query.set('location', location); // Устанавливаем новый параметр
-
-      // Обновляем URL без перезагрузки страницы
-      window.history.pushState({}, '', `${window.location.pathname}?${query.toString()}`);
-      
-      console.log('useState' + ' => ' + location);
+    const query = new URLSearchParams(window.location.search);
+    query.set('location', location);
+    
+    // Обновляем URL без создания новой записи истории
+    window.history.replaceState({}, '', `?${query}`);
+    
+    // Добавляем в историю только новые значения
+    setHistoryStack(prev => [...prev, location].slice(-10)); // Ограничиваем глубину истории
   }, [location]);
+
+  // Обработка навигации назад
+  useEffect(() => {
+    const handlePopState = () => {
+      setHistoryStack(prev => {
+        if (prev.length < 2) return prev;
+        
+        const newStack = [...prev];
+        newStack.pop(); // Удаляем текущий элемент
+        const lastLocation = newStack[newStack.length - 1];
+        
+        setLocation(lastLocation); // Обновляем состояние
+        return newStack;
+      });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
 
 
@@ -85,6 +115,11 @@ function App() {
       setNotificatorLoading(false);
     }, 2000);
   };
+
+
+  const setRoute = (location)=>{
+    setLocation(location);
+  }
 
   
 /** ------------------ FETCHES ---------------- */
@@ -283,7 +318,7 @@ function App() {
             {location === 'admin' && <AdminPage />}
             {location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
             {location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
-            {location === 'usermanager' && <UserManagerPage userdata={userAct} />}
+            {location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={setRoute} />}
             {location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
             {location === 'userlist' && <UserListPage userdata={userAct}  />}
             {location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}

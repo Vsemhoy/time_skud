@@ -4,7 +4,7 @@ import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_RULE_TYPES, DS_
 
 import './components/style/usermanager.css';
 
-import { Button, Empty, Tabs } from "antd";
+import { Button, Checkbox, Empty, Tabs } from "antd";
 
 import UserManagerToolbar from "./components/UserManagerToolbar";
 import { PRODMODE } from "../../CONFIG/config";
@@ -308,26 +308,37 @@ const UserManagerPage = (props) => {
                 onChangeCompany={setSelectedCompanyId}
             />
             <br />
-            <UserManagerExtraTools
-                companies={userdata?.companies}
-                groups={DS_SKUD_GROUPS}
-                onChangeFilter={(ev)=>{setFilters(ev)}}
-                onSelectAllUsers={selectAllUsersAction}
-                onSelectGroups={(val)=>{setSelectedGroups(val)}}
-                onCallToSelectGroups={handleCallToBindGroups}
-                onCallToClearGroups={handleCallToClearGroups}
-                selected_users={selectedUsers}
-                rules={baseRuleList}
-                schedules={baseScheduleList}
-                selectedCompany={selectedCompanyId}
-            />
-            <Button
-            onClick={()=>setOpenToolbar(!openToolbar)}
-            >Open Toolbar</Button>
+            <div className={'sk-2col-body'}>
+                <div className="sk-flex" style={{alignItems: 'center'}}>
+                    <Checkbox
+                        style={{padding: '0px 12px'}}
+                        title={"Выделить всех"}
+                            onChange={(ev)=>{selectAllUsersAction(ev.target.checked)}}
+                        />
+                        <div className="sk-flex">
+                        <span>Выделить все карточки</span>
+                        {selectedUsers.length > 0 ? (
+                            
+                            <span
+                            style={{background: '#f6ef76', padding: '0px 12px', borderRadius: '6px'}}
+                            >{selectedUsers.length} выделено</span>
+                        ):""}
+                        </div>
+                </div>
+                <div>
+                <Button
+                block
+                size={'small'}
+                color="cyan" variant="outlined"
+                onClick={()=>setOpenToolbar(!openToolbar)}
+                    >Панель инструментов</Button>
+                </div>
+            </div>
+            
             <br />
 
-            <div className={`${openToolbar ? "sk-2col-body" : ".sk-1col-body"}`}>
-                <div className={'sk-sched-main-col'}>
+            <div className={`${openToolbar ? "sk-2col-body" : "sk-1col-body"}`}>
+                <div className={'sk-sched-main-col'} style={{width: '100%'}}>
                     
                 
                 {userList.length === 0 ? (
@@ -352,7 +363,20 @@ const UserManagerPage = (props) => {
                 )}
                 </div>
                 <div>
-                    Here will be toolbar
+                <UserManagerExtraTools
+                    companies={userdata?.companies}
+                    groups={DS_SKUD_GROUPS}
+                    onChangeFilter={(ev)=>{setFilters(ev)}}
+                    onSelectAllUsers={selectAllUsersAction}
+                    onSelectGroups={(val)=>{setSelectedGroups(val)}}
+                    onCallToSelectGroups={handleCallToBindGroups}
+                    onCallToClearGroups={handleCallToClearGroups}
+                    selected_users={selectedUsers}
+                    rules={baseRuleList}
+                    schedules={baseScheduleList}
+                    selectedCompany={selectedCompanyId}
+                    setRoute={props.setRoute}
+                />
                 </div>
             </div>
 

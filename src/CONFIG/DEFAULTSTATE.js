@@ -1481,7 +1481,7 @@ export const DS_SCHEDULE_LIST = [
     
     {
         "id": 123,
-        "id_company": 1,
+        "id_company" : 2,
         "company_name": "Arstel",
         "company_color": "#FF9900",
         "skud_schedule_type_id": 1,
@@ -1503,7 +1503,7 @@ export const DS_SCHEDULE_LIST = [
     },
     {
         "id": 513,
-        "id_company": 1,
+        "id_company" : 2,
         "company_name": "Arstel",
         "company_color": "#FF9900",
         "skud_schedule_type_id": 2,
@@ -1526,7 +1526,7 @@ export const DS_SCHEDULE_LIST = [
     {
         id: 13233,
         created_at: 1738068722,
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#FF9900",
         skud_schedule_type_id: 3,
@@ -1549,7 +1549,7 @@ export const DS_SCHEDULE_LIST = [
     {
         id: 13433,
         created_at: 1738068722,
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#FF9900",
         skud_schedule_type_id: 4,
@@ -1572,7 +1572,7 @@ export const DS_SCHEDULE_LIST = [
     {
         id: 13353,
         created_at: 1738068722,
-        id_company: 1,
+        id_company: 2,
         company_name: "Arstel",
         company_color: "#FF9900",
         skud_schedule_type_id: 5,
@@ -3537,7 +3537,7 @@ export const DS_RULES = [
         "creator_patronymic" :"Себастьяновна",
         "company_name" :"Arstel",
         "company_color" :"#EE7700",
-        "id_company" :1,
+        "id_company" : 2,
         "linked_users" : 12,
         "linked_groups" : 2,
         "user_count" : 12,
@@ -3558,7 +3558,7 @@ export const DS_RULES = [
         "creator_patronymic" :"Себастьяновна",
         "company_name" :"Arstel",
         "company_color" :"#EE7700",
-        "id_company" :1,
+        "id_company" : 2,
         "linked_users" : 12,
         "linked_groups" : 2,
         "user_count" : 12,
@@ -3579,7 +3579,7 @@ export const DS_RULES = [
         "creator_patronymic" :"Себастьяновна",
         "company_name" :"Arstel",
         "company_color" :"#EE7700",
-        "id_company" :1,
+        "id_company" : 2,
         "linked_users" : 12,
         "linked_groups" : 2,
         "user_count" : 12,
@@ -3600,7 +3600,7 @@ export const DS_RULES = [
         "creator_patronymic" :"Себастьяновна",
         "company_name" :"Arstel",
         "company_color" :"#EE7700",
-        "id_company" :1,
+        "id_company" : 2,
         "linked_users" : 12,
         "linked_groups" : 2,
         "user_count" : 12,
@@ -3621,7 +3621,7 @@ export const DS_RULES = [
         "creator_patronymic" :"Себастьяновна",
         "company_name" :"Arstel",
         "company_color" :"#EE7700",
-        "id_company" :1,
+        "id_company" : 2,
         "linked_users" : 12,
         "linked_groups" : 2,
         "user_count" : 12,
@@ -3642,7 +3642,7 @@ export const DS_RULES = [
         "creator_patronymic" :"Себастьяновна",
         "company_name" :"Arstel",
         "company_color" :"#EE7700",
-        "id_company" :1,
+        "id_company" : 2,
         "linked_users" : 12,
         "linked_groups" : 2,
         "user_count" : 12,
@@ -3731,7 +3731,7 @@ export const DS_SKUD_FILIALS =
 [
     {
         "id": 1,
-        "id_company": 1,
+        "id_company" : 2,
         "name": "Без филиала",
         "description": null,
         "deleted": 0

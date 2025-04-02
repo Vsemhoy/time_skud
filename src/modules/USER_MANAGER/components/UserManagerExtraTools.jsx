@@ -1,4 +1,4 @@
-import { Affix, Button, DatePicker, Select, Tag } from "antd";
+import { Affix, Button, DatePicker, Radio, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
 import React, { useEffect, useState } from "react";
 import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
@@ -12,7 +12,7 @@ const UserManagerExtraTools = (props)=>{
 const [ruleList, setRuleList] = useState(props.rules);
 const [scheduleList, setScheduleList] = useState(props.schedules);
 
-const [openedConsole, setOpenedConsole] = useState(false);
+const [openedConsole, setOpenedConsole] = useState(true);
 
 const [companiesList, setCompaniesList] = useState([]);
 const [groupList, setGroupList] = useState([]);
@@ -28,6 +28,22 @@ const [selectedRule, setSelectedRule] = useState(null);
 
 const [selectedUsers, setSelectedUsers] = useState(props.selected_users);
 
+const [selectedTab, setSelectedTab] = useState(1);
+
+// const [location, setLocation] = useState('usermanager');
+//   useEffect(() => {
+//       const query = new URLSearchParams(window.location.search);
+//       query.set('location', location); // Устанавливаем новый параметр
+//       // Обновляем URL без перезагрузки страницы
+//       window.history.pushState({}, '', `${window.location.pathname}?${query.toString()}`);
+//       window.location.reload();
+//   }, [location]);
+
+  const setLocation = (location)=>{
+    if (props.setRoute){
+        props.setRoute(location);
+    }
+  }
 
 
 useEffect(()=>{
@@ -183,20 +199,26 @@ const tagRender = (props) => {
         <div>
             {openedConsole ? (
                 <div>
-                    <div className={`sk-toolbox-trigger ${openedConsole ? 'opened' : 'closed'}`}
-                    onClick={()=>{setOpenedConsole(false)}}
-                >
-                    Скрыть панель инструментов <CloseOutlined />
-                </div>
+                    
                 <Affix offsetTop={0}>
                 <div className={"sk-tool-console"}>
-                    <div className={'sk-flex sk-flex-divider'} style={{justifyContent: 'space-between'}}>
+                    <div className={''} style={{justifyContent: 'space-between'}}>
                         <div>
-                            <Checkbox
-                            title={"Выделить всех"}
-                                onChange={handleSelectAll}
-                            />
+                        <Radio.Group value={selectedTab} block>
+                            <Radio.Button 
+                                onClick={()=>{setSelectedTab(1)}}
+                                value={1}>Группы</Radio.Button>
+                            <Radio.Button
+                                onClick={()=>{setSelectedTab(2)}}
+                                value={2}>Графики</Radio.Button>
+                            <Radio.Button 
+                                onClick={()=>{setSelectedTab(3)}}
+                                value={3}>Правила</Radio.Button>
+                        </Radio.Group>
                         </div>
+
+                        <br />
+                        {selectedTab === 1 && (
                         <div style={{width: '100%'}}>
                             <div className={'sk-flex-space'}>
                                 <span>Группы </span> <span
@@ -232,10 +254,12 @@ const tagRender = (props) => {
                                                         <br />
                             </div>
                         </div>
+                        )}
 
 
 
 
+                        {selectedTab === 2 && (
                         <div style={{width: '100%'}}>
                             <div className={'sk-flex-space'}>
                                 <span>Графики работы</span> 
@@ -256,7 +280,7 @@ const tagRender = (props) => {
                                 <DatePicker />
                                 <DatePicker />
                             </div>
-
+                            <br />
                             <div className={"sk-flex"}>
                  
                                 <Button 
@@ -266,7 +290,13 @@ const tagRender = (props) => {
                                 >Привязать график</Button>
 
                             </div>
+
+                            <br />
+                            <a onClick={()=>{setLocation('schedulemanager')}}>Менеджер графиков</a>
                         </div>
+                        )}
+
+                        {selectedTab === 3 && (
                         <div style={{width: '100%'}}>
                         
                             <div className={'sk-flex-space'}>
@@ -288,7 +318,7 @@ const tagRender = (props) => {
                                 <DatePicker />
                                 <DatePicker />
                             </div>
-                            
+                            <br />
                             <div className={"sk-flex"}>
                                 <Button
                                 disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
@@ -297,7 +327,11 @@ const tagRender = (props) => {
                                 >Привязать правила</Button>
 
                             </div>
+
+                            <br />
+                            <a onClick={()=>{setLocation('rulemanager')}}>Менеджер правил учёта РВ</a>
                         </div>
+                        )}
                     </div>
          
          
