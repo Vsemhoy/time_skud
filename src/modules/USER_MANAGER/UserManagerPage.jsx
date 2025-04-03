@@ -67,7 +67,7 @@ const UserManagerPage = (props) => {
             setBaseScheduleList(DS_SCHEDULE_LIST);
 
             setRuleTypes(DS_RULE_TYPES);
-            setScheduleTypes(DS_SCHED_TYPES);
+            setScheduleTypes(DS_SCHED_TYPES_DB);
             console.log('DS_RULES', DS_RULES)
         }
     },[]);
@@ -306,6 +306,7 @@ const UserManagerPage = (props) => {
                 groups={DS_SKUD_GROUPS}
                 onChangeFilter={(ev)=>{setFilters(ev)}}
                 onChangeCompany={setSelectedCompanyId}
+
             />
             <br />
             <div className={'sk-2col-body'}>
@@ -376,6 +377,8 @@ const UserManagerPage = (props) => {
                     schedules={baseScheduleList}
                     selectedCompany={selectedCompanyId}
                     setRoute={props.setRoute}
+                    schedTypes={scheduleTypes}
+                    ruleTypes={ruleTypes}
                 />
                 </div>
             </div>

@@ -130,11 +130,10 @@
 }
 
 .sk-tool-console span {
-    font-size: small;
+    /* font-size: small;
     color: #808080;
     font-weight: 600;
-    margin-bottom: 4px;
-    display: block;
+    /* margin-bottom: 4px; */
 }
 .sk-company-tag {
     text-align: center;
@@ -245,6 +244,12 @@
 }
 .sk-second-row-group {
     background: #f1f1f1;
+}
+
+
+.sk-totoro {
+    font-weight: 600;
+    font-size: medium;
 }
 
 
