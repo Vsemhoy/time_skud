@@ -399,9 +399,7 @@ const tagRender = (props) => {
                         <div style={{width: '100%'}}>
                             <div className={'sk-flex-space'}>
                                 <span className={'sk-totoro'}>Графики работы</span> 
-                                <span
-                                    onClick={()=>{setSelectedSchedule(null)}}
-                                ><ClearOutlined /></span>
+                                
                             </div>
                             <br />
                             <label>Фильтр типа графика</label>
@@ -484,9 +482,7 @@ const tagRender = (props) => {
                             <span className={'sk-totoro'}>Правила учёта РВ</span> 
                             <br />  
                             <br />  
-                                <span
-                                    onClick={()=>{setSelectedRule([])}}
-                                ><ClearOutlined /></span>
+                                
                             </div>
                         <label>Фильтр типа графика</label>
                         <Select
