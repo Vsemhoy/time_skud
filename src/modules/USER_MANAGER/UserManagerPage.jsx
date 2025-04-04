@@ -220,6 +220,55 @@ const UserManagerPage = (props) => {
     }
     
 
+    /**
+     * Получение списка групп
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const bind_groups_to_users = async (users, groups, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindgroups', 
+                {
+                    data: {
+                        users: users,
+                        groups: groups
+                    },
+                    _token: CSRF_TOKEN
+                });
+                // setBaseGroupList(response.data.content);
+                console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+        /**
+     * Получение списка групп
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const unlink_groups_for_users = async (users, groups, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/unlinkgroups', 
+                {
+                    data: {
+                        users: users,
+                        groups: groups
+                    },
+                    _token: CSRF_TOKEN
+                });
+                // setBaseGroupList(response.data.content);
+                console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+
     // ------------------ FetchWorld END ----------------------
 
 
@@ -340,6 +389,7 @@ const UserManagerPage = (props) => {
 
     const handleUnlinkGroupAction = (user_id, group_id)=> {
         console.log(group_id);
+        unlink_groups_for_users([user_id],[group_id]);
         let bus = JSON.parse(JSON.stringify(baseUserList));
         for (let i = 0; i < bus.length; i++) {
             const element = bus[i];
@@ -382,6 +432,7 @@ const UserManagerPage = (props) => {
     const handleCallToBindGroups = (groups) => {
         console.log('BIND');
         console.log(groups);
+        bind_groups_to_users(selectedUsers, groups);
         console.log(selectedUsers);
         let bus = JSON.parse(JSON.stringify(baseUserList));
         for (let i = 0; i < bus.length; i++) {
@@ -395,15 +446,19 @@ const UserManagerPage = (props) => {
                     const checkGroup = baseGroupList.find((item)=> {return item.id === grp});
                     if (checkGroup && checkGroup.id_company === element.id_company){
                         bus[i].groups.push(grp);
+                        console.log('PUSH GOUP', grp);
                     };
                 }
-                    
                 }
             }
         }
         setBaseUserList(bus);
     }
 
+
+    useEffect(()=>{
+        console.log('BUS updated', baseUserList);
+    },[baseUserList]);
 
     const handleCardSelection = (item, value) => {
         if (value) {
@@ -417,6 +472,7 @@ const UserManagerPage = (props) => {
         console.log("CLEAR");
         console.log(groups);
         console.log(selectedUsers);
+        unlink_groups_for_users(selectedUsers, groups);
 
         let bus = JSON.parse(JSON.stringify(baseUserList));
         if (groups && groups.length){
