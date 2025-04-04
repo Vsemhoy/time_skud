@@ -117,6 +117,20 @@ const [dateRuleEnd, setDateRuleEnd] = useState(dayjs().add(10, 'year').endOf('da
   }
 
 
+//   useEffect(()=>{
+//     if (props.rules){
+//         setRuleList(props.rules);
+//     }
+//   },[props.rules]);
+
+//   useEffect(()=>{
+//     if (props.schedules){
+//         setScheduleList(props.schedules);
+//     }
+//   },[props.schedules]);
+
+
+
 useEffect(()=>{
     setSelectedUsers(props.selected_users);
 },[props.selected_users]);
@@ -176,7 +190,7 @@ useEffect(()=>{
     { 
         sched = sched.filter((item)=>{return item.id_company === selectedCompany});
     };
-    if (selectedSchedType != null)
+    if (selectedSchedType !== null && selectedSchedType !== 0)
         { 
             sched = sched.filter((item)=>{return item.skud_schedule_type_id === selectedSchedType});
         };
@@ -198,7 +212,7 @@ useEffect(()=>{
     {
         ruls = ruls.filter((item)=>{return item.id_company === selectedCompany});
     }
-    if (selectedRuleType !== 0)
+    if (selectedRuleType !== 0 && selectedRuleType !== null)
         {
             ruls = ruls.filter((item)=>{return item.skud_rule_type_id === selectedRuleType});
         }
@@ -484,7 +498,7 @@ const tagRender = (props) => {
                             <br />  
                                 
                             </div>
-                        <label>Фильтр типа графика</label>
+                        <label>Фильтр типа правила</label>
                         <Select
                             status="warning"
                             style={{width: '100%'}}
@@ -495,7 +509,7 @@ const tagRender = (props) => {
                         <br />  
                         <br />  
 
-                        <label>Выберите график</label>
+                        <label>Выберите правило учёта РВ</label>
                         <Select
                             status="error"
                             style={{width: '100%'}}

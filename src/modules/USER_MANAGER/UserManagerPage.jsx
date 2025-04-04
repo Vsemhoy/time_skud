@@ -7,11 +7,12 @@ import './components/style/usermanager.css';
 import { Button, Checkbox, Empty, Tabs } from "antd";
 
 import UserManagerToolbar from "./components/UserManagerToolbar";
-import { PRODMODE } from "../../CONFIG/config";
+import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import UserManagerCard from "./components/UserManagerCard";
 import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ScheduleManagerModal from "./components/schedulemanagermodal";
 import RulesManagerModal from "./components/rulesmanagermodal";
+import { PROD_AXIOS_INSTANCE } from "../../API/API";
 
 const UserManagerPage = (props) => {
     const { userdata } = props;
@@ -26,8 +27,8 @@ const UserManagerPage = (props) => {
     const [ctrlKey, setCtrlKey] = useState(false);
     const [shiftKey, setShiftKey] = useState(false);
   
-    const [baseGroupList, setBaseGroupList] = useState(DS_SKUD_GROUPS);
-    const [groupList, setGroupList] = useState([]);
+    const [baseGroupList, setBaseGroupList] = useState([]);
+    // const [groupList, setGroupList] = useState([]);
 
     
 
@@ -59,8 +60,19 @@ const UserManagerPage = (props) => {
     useEffect(()=>{
         if (PRODMODE)
         {
+            get_groupList();
+            get_schedule_types();
+            get_ruleTypes();
+
+            get_ruleList();
+            get_scheduleList();
+
+
+            get_userList();
 
         } else {
+            setBaseGroupList(DS_SKUD_GROUPS);
+
             setBaseUserList(DS_GROUP_USERS);
             
             setBaseRuleList(DS_RULES);
@@ -71,6 +83,146 @@ const UserManagerPage = (props) => {
             console.log('DS_RULES', DS_RULES)
         }
     },[]);
+
+
+
+    // ------------------ FetchWorld ----------------------
+
+   /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_ruleList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/rulelist', 
+                  {
+                      data: {
+                        id_company: null
+                      },
+                      _token: CSRF_TOKEN
+                  });
+                  setBaseRuleList(response.data.content);
+                  console.log('get_calendarList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+            }
+        }
+
+    /**
+     * Получение типов графиков
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_schedule_types = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/schedtyplist?_token=' + CSRF_TOKEN);
+            console.log('users', response);
+            setScheduleTypes(response.data.content);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+    /**
+     * Получение графиков
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_scheduleList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/schedulelist?_token=' + CSRF_TOKEN);
+            console.log('departs', response.data);
+            // setOrganizations(organizations_response.data.org_list)
+            // setTotal(organizations_response.data.total_count)
+            setBaseScheduleList(response.data.content);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+    /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_ruleTypes = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/ruletyplist', 
+              {
+                  data: {
+                    deleted: 0
+                  },
+                  _token: CSRF_TOKEN
+              });
+              setRuleTypes(response.data.content);
+            //   console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+
+    /**
+     * Получение списка польззователей с группами и всем остальным барахлом
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_userList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/users', 
+                    {
+                        data: {
+                        id_company: null,
+                        status: '0',
+                        },
+                        _token: CSRF_TOKEN
+                    });
+                    setBaseUserList(response.data.content);
+                    console.log('get_userList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+        }
+    }
+
+
+    /**
+     * Получение списка групп
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_groupList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/grouplist', 
+                {
+                    data: {
+                    id_company: null
+                    },
+                    _token: CSRF_TOKEN
+                });
+                setBaseGroupList(response.data.content);
+                console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+    
+
+    // ------------------ FetchWorld END ----------------------
+
+
 
     useEffect(()=>{
         setSearchWords([]);
@@ -303,7 +455,7 @@ const UserManagerPage = (props) => {
             <h2>Менеджер пользователей</h2>
             <UserManagerToolbar
                 companies={userdata?.companies}
-                groups={DS_SKUD_GROUPS}
+                groups={baseGroupList}
                 onChangeFilter={(ev)=>{setFilters(ev)}}
                 onChangeCompany={setSelectedCompanyId}
 
@@ -366,7 +518,7 @@ const UserManagerPage = (props) => {
                 <div>
                 <UserManagerExtraTools
                     companies={userdata?.companies}
-                    groups={DS_SKUD_GROUPS}
+                    groups={baseGroupList}
                     onChangeFilter={(ev)=>{setFilters(ev)}}
                     onSelectAllUsers={selectAllUsersAction}
                     onSelectGroups={(val)=>{setSelectedGroups(val)}}

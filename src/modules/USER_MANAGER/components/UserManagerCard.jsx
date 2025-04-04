@@ -50,7 +50,7 @@ const UserManagerCard = (props)=>{
 
     const [dapartment, setDepartment] = useState(props.data.department_name);
     const [occupu, setOccupy] = useState(props.data.occupy);
-    const [groups, setGroups] = useState(props.groups.filter((item)=>{return props.data.groups.includes(item.id)}));
+    const [groups, setGroups] = useState([]);
 
     const [wordsToHighlight , setWordsToHighlight ] = useState([]);
 
@@ -74,8 +74,21 @@ const UserManagerCard = (props)=>{
     }
 
     useEffect(()=>{
-        let fgroups = props.groups.filter((item)=>{return props.data.groups.includes(item.id)});
-        setGroups(fgroups);
+        if (props.groups ){
+            // let fgroups = props.groups.filter((item)=>{return props.data.groups.includes(item.id)});
+            // setGroups(fgroups);
+            let fgroups = props.groups.filter((item)=>{return item.id_company === props.data.id_company});
+            let fgroups2 = [];
+
+            for (let i = 0; i < fgroups.length; i++) {
+                const element = fgroups[i];
+                if (props.data.groups.includes(element.id)){
+                    fgroups2.push(element);
+                }
+                
+            }
+            setGroups(fgroups2);
+        }
     },[props.data.groups]);
 
     useEffect(()=>{
