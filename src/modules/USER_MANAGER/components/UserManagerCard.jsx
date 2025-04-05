@@ -52,6 +52,8 @@ const UserManagerCard = (props)=>{
     const [occupu, setOccupy] = useState(props.data.occupy);
     const [groups, setGroups] = useState([]);
 
+    const [vStyle, setVStyle] = useState('view_top_only');
+
     const [wordsToHighlight , setWordsToHighlight ] = useState([]);
 
     const unlinkGroupAction = (group_id) => {
@@ -59,6 +61,12 @@ const UserManagerCard = (props)=>{
             props.onUnlinkGroup(itemId, group_id);
         }
     }
+
+    useEffect(()=>{
+        if (props.viewStyle){
+            setVStyle(props.viewStyle);
+        }
+    },[props.viewStyle]);
 
     useEffect(()=>{
         if (props.search_strings){
@@ -147,14 +155,14 @@ const UserManagerCard = (props)=>{
                         text={userName}
                     />
                 </div>
-                <div>
+                <div className={'sk-um-second-text'}>
                 <TextHighlight
                         searchWords={wordsToHighlight}
                         text={occupu}
                     />
                     
                 </div>
-                <div>
+                <div className={'sk-um-second-text'}>
                 <TextHighlight
                         searchWords={wordsToHighlight}
                         text={dapartment}
@@ -167,80 +175,95 @@ const UserManagerCard = (props)=>{
                     </div>
                 </div>
             </div>
-            <div className={'sk-flex'}>
-                <div className={'skum-firstcol'}>
-                
-                </div>
-                <div style={{width: '100%', marginTop: '6px',marginBottom: '6px',}} className={'skum-card-content'}>
-                   
-                {data.linked_schedule && data.linked_schedule.id > 0 ? (
-                    <div onDoubleClick={handleDblClickOnSchedule} className={'sk-group-flexer-in-row'}>
-                      <div><Sched_type_icon>{data.linked_schedule && data.linked_schedule.type ? data.linked_schedule.type : 0}</Sched_type_icon></div>
-                      <div>Текущий график: <span className={'sk-font-accent'}>{data.linked_schedule.name}</span></div>
-                      <div>{data.linked_schedule.start  ? dayjs(data.linked_schedule.start).format("DD-MM-YYYY") : "..."}</div>
-                      <div>{data.linked_schedule.end ? dayjs(data.linked_schedule.end).format("DD-MM-YYYY") : "..."}</div>
-                      <div>
-                        {data.schedules_in_queue ? (
-                          <span><strong>{data.schedules_in_queue}</strong> в очереди</span>
-                        ) : ""}
+            {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_middle") && (
+
+                <div className={'sk-flex sk-mid-row-cc'}>
+                    {vStyle === 'view_top_middle' ? (
+                        <div className={'sk-um-checkbox skum-firstcol'}>
+                            <Checkbox
+                            checked={selected}
+                            onChange={handleSelectAction}
+                            />
                         </div>
-                      <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
-                    </div> 
                     ) : (
-                      <div onDoubleClick={handleDblClickOnSchedule} className={'sk-group-flexer-in-row'}>
-                        <div></div>
-                        <div>Нет графика...</div>
-                        <div>-</div>
-                        <div>-</div>
-                        <div>                        
-                          {data.schedules_in_queue ? (
-                          <span><strong>{data.schedules_in_queue}</strong> в очереди</span>
-                        ) : "-"}</div>
-                        <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
-                      </div>  
+                        <div className={'skum-firstcol'}>
+                    
+                        </div>
                     )}
 
-
-                    {data.linked_rules && data.linked_rules.length > 0 ? (
-                      <div>
-                        <div className={'sk-group-flexer-in-row'} onDoubleClick={handleDblClickOnRule} >
-                        <span onClick={()=>setOpened(!opened)}> {opened ?  (<UpOutlined />) : (<DownOutlined />)}</span>
-                          
-                            <div>
-                            Прикреплено првил: <strong>{data.linked_rules && data.linked_rules.length}</strong> </div>
-                          <div></div>
-                          <div></div>
-                          <div><strong>{data?.rules_in_queue}</strong> в очереди</div>
-                          <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
-                        </div>
-                        {opened && (
-                          <div className={'sk-groupcard-graystack'}>
-                            {data.linked_rules.map((row)=>{return (
-                              <div key={`${row.id}_n_${row.type}`} className={'sk-group-flexer-in-row'} onDoubleClick={handleDblClickOnRule} >
-                                <span><RuleIcons type={row.type}/></span>
-                                <div onClick={setOpenRuleModal}>  {row.name}</div>
-                                <div>{row.start ? dayjs(row.start).format('DD-MM-YYYY') : "..."}</div>
-                                <div>{row.end ? dayjs(row.end).format("DD-MM-YYYY") : "..."}</div>
-                                <div></div>
-                              </div>
-                            )})}
-                          </div>
+                    <div style={{width: '100%', marginTop: '6px',marginBottom: '6px',}} className={'skum-card-content'}>
+                    
+                    {data.linked_schedule && data.linked_schedule.id > 0 ? (
+                        <div onDoubleClick={handleDblClickOnSchedule} className={'sk-group-flexer-in-row'}>
+                        <div><Sched_type_icon>{data.linked_schedule && data.linked_schedule.type ? data.linked_schedule.type : 0}</Sched_type_icon></div>
+                        <div>Текущий график: <span className={'sk-font-accent'}>{data.linked_schedule.name}</span></div>
+                        <div>{data.linked_schedule.start  ? dayjs(data.linked_schedule.start).format("DD-MM-YYYY") : "..."}</div>
+                        <div>{data.linked_schedule.end ? dayjs(data.linked_schedule.end).format("DD-MM-YYYY") : "..."}</div>
+                        <div>
+                            {data.schedules_in_queue ? (
+                            <span><strong>{data.schedules_in_queue}</strong> в очереди</span>
+                            ) : ""}
+                            </div>
+                        <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
+                        </div> 
+                        ) : (
+                        <div onDoubleClick={handleDblClickOnSchedule} className={'sk-group-flexer-in-row'}>
+                            <div></div>
+                            <div>Нет графика...</div>
+                            <div>-</div>
+                            <div>-</div>
+                            <div>                        
+                            {data.schedules_in_queue ? (
+                            <span><strong>{data.schedules_in_queue}</strong> в очереди</span>
+                            ) : "-"}</div>
+                            <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
+                        </div>  
                         )}
 
-                      </div>
-                    ) : (
-                      <div onDoubleClick={handleDblClickOnRule}  className={'sk-group-flexer-in-row'}>
-                        <div></div>
-                        <div>Нет правил...</div>
-                        <div>-</div>
-                        <div>-</div>
-                        <div>-</div>
-                        <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
-                      </div>
-                    )}
 
+                        {data.linked_rules && data.linked_rules.length > 0 ? (
+                        <div>
+                            <div className={'sk-group-flexer-in-row'} onDoubleClick={handleDblClickOnRule} >
+                            <span onClick={()=>setOpened(!opened)}> {opened ?  (<UpOutlined />) : (<DownOutlined />)}</span>
+                            
+                                <div>
+                                Прикреплено првил: <strong>{data.linked_rules && data.linked_rules.length}</strong> </div>
+                            <div></div>
+                            <div></div>
+                            <div><strong>{data?.rules_in_queue}</strong> в очереди</div>
+                            <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
+                            </div>
+                            {opened && (
+                            <div className={'sk-groupcard-graystack'}>
+                                {data.linked_rules.map((row)=>{return (
+                                <div key={`${row.id}_n_${row.type}`} className={'sk-group-flexer-in-row'} onDoubleClick={handleDblClickOnRule} >
+                                    <span><RuleIcons type={row.type}/></span>
+                                    <div onClick={setOpenRuleModal}>  {row.name}</div>
+                                    <div>{row.start ? dayjs(row.start).format('DD-MM-YYYY') : "..."}</div>
+                                    <div>{row.end ? dayjs(row.end).format("DD-MM-YYYY") : "..."}</div>
+                                    <div></div>
+                                </div>
+                                )})}
+                            </div>
+                            )}
+
+                        </div>
+                        ) : (
+                        <div onDoubleClick={handleDblClickOnRule}  className={'sk-group-flexer-in-row'}>
+                            <div></div>
+                            <div>Нет правил...</div>
+                            <div>-</div>
+                            <div>-</div>
+                            <div>-</div>
+                            <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
+                        </div>
+                        )}
+
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_bottom") && (
             <div>
                 <div className={'sk-flex sk-um-footer'}>
                     <div className={'sk-um-checkbox skum-firstcol'}>
@@ -266,6 +289,7 @@ const UserManagerCard = (props)=>{
                 </div>
 
             </div>
+            )}
         </div>
     )
 }

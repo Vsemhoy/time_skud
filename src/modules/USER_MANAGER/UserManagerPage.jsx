@@ -4,7 +4,7 @@ import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_RULE_TYPES, DS_
 
 import './components/style/usermanager.css';
 
-import { Button, Checkbox, Empty, Tabs } from "antd";
+import { Button, Checkbox, Empty, Radio, Select, Tabs } from "antd";
 
 import UserManagerToolbar from "./components/UserManagerToolbar";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
@@ -13,6 +13,7 @@ import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ScheduleManagerModal from "./components/schedulemanagermodal";
 import RulesManagerModal from "./components/rulesmanagermodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import { TableOutlined, TabletOutlined, UngroupOutlined } from "@ant-design/icons";
 
 const UserManagerPage = (props) => {
     const { userdata } = props;
@@ -55,6 +56,9 @@ const UserManagerPage = (props) => {
     const [ruleTypes, setRuleTypes] = useState([]);
     const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
     const [openedRuleModal, setOpenedRuleModal]         = useState(false);
+
+    const [viewCardStyle, setViewCardStyle] = useState('view_top_only');
+    const [viewListStyle, setViewListStyle] = useState(false); // true - as cards // fals - as table
 
 
     useEffect(()=>{
@@ -503,6 +507,29 @@ const UserManagerPage = (props) => {
         setBaseUserList(bus);
     }
 
+
+    const viewOptions = [
+        {
+            key: `view_top_only`,
+            label: "Только имя",
+            value: 'view_top_only'
+        },
+        {
+            key: `view_top_bottom`,
+            label: "Имя и Группа",
+            value: 'view_top_bottom'
+        },
+        {
+            key: `view_top_middle`,
+            label: "Имя и График-Правила",
+            value: 'view_top_middle'
+        },
+        {
+            key: `view_top_middle_bottom`,
+            label: "Полная карточка",
+            value: 'view_top_middle_bottom'
+        },
+    ];
     
 
     return (
@@ -518,7 +545,8 @@ const UserManagerPage = (props) => {
             />
             <br />
             <div className={'sk-2col-body'}>
-                <div className="sk-flex" style={{alignItems: 'center'}}>
+                <div className="sk-flex-space" style={{alignItems: 'center'}}>
+                <div className="sk-flex" >
                     <Checkbox
                         style={{padding: '0px 12px'}}
                         title={"Выделить всех"}
@@ -527,11 +555,31 @@ const UserManagerPage = (props) => {
                         <div className="sk-flex">
                         <span>Выделить все карточки</span>
                         {selectedUsers.length > 0 ? (
-                            
                             <span
                             style={{background: '#f6ef76', padding: '0px 12px', borderRadius: '6px'}}
                             >{selectedUsers.length} выделено</span>
                         ):""}
+                        </div>
+                        </div>
+                        <div className="sk-flex" style={{alignItems: 'center'}}>
+                        <span>Вид:</span>
+                            <Select
+                            size={'small'} 
+                                options={viewOptions}
+                                value={viewCardStyle}
+                                onChange={(vc)=>setViewCardStyle(vc)}
+                            />
+
+                    <Radio.Group value={viewListStyle} buttonStyle="solid" size={'small'}>
+                        <Radio.Button
+                        onClick={()=>{setViewListStyle(false)}}
+                        title={'Карточки'}
+                        value={false}><UngroupOutlined /></Radio.Button>
+                        <Radio.Button
+                        onClick={()=>{setViewListStyle(true)}}
+                        title={'Таблица'}
+                        value={true}><TableOutlined /></Radio.Button>
+                    </Radio.Group>
                         </div>
                 </div>
                 <div>
@@ -553,7 +601,7 @@ const UserManagerPage = (props) => {
                 {userList.length === 0 ? (
                     <Empty description={"Ничего не найдено"}/>
                 ): (
-                    <div className={'sk-um-userlist'}>
+                    <div className={`sk-um-userlist ${viewListStyle ? "sk-um-as-table" : "sk-um-as-cards"}`}>
                         {userList.map((item)=>(
                             <UserManagerCard
                                 key={`itemcard_${item.id}`}
@@ -566,6 +614,7 @@ const UserManagerPage = (props) => {
                                 onSelectCard={handleCardSelection}
                                 onOpenRuleModal={openRulesEditor}
                                 onOpenScheduleModal={openScheduleEditor}
+                                viewStyle={viewCardStyle}
                             />
                         ))}
                     </div>

@@ -1,11 +1,15 @@
-.sk-um-userlist {
+.sk-um-as-cards.sk-um-userlist {
     display: flex;
     flex-direction: column;
     grid-gap: 1rem;
     width: 100%;
 }
 
-.sk-um-card {
+.sk-um-as-table {
+    border: 1px solid rgba(0, 0, 0, 0.103);
+}
+
+.sk-um-as-cards .sk-um-card {
     background-color: white;
     border: 1px solid rgba(0, 0, 0, 0.103);
     border-radius: 6px;
@@ -25,7 +29,7 @@
 }
 
 .sk-um-card {
-    border-bottom: 1px solid rgb(196, 196, 196);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.152);
 }
 .sk-um-card  .skum-card-content {
     opacity: 0.85;
@@ -46,11 +50,19 @@
 }
 
 .sk-um-title {
-    font-size: large;
+    font-size: larger;
 }
-.sk-um-footer {
+.sk-um-second-text {
+    color: rgb(112, 111, 111);
+}
+.sk-um-as-cards .sk-um-footer {
     border-top: 1px solid rgba(0, 0, 0, 0.103);
     background-color: rgba(0, 0, 0, 0.117);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+}
+.sk-um-as-table .sk-um-footer {
     padding: 3px;
     display: flex;
     align-items: center;
@@ -96,9 +108,12 @@
 }
 .sk-um-grid-5col {
     display: grid;
-    grid-template-columns: 35px 40% auto auto 90px;
+    grid-template-columns: 35px 40% 20% auto 90px;
     align-items: end;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.233);
+    
+}
+.sk-mid-row-cc {
+    border-top: 1px solid rgba(128, 128, 128, 0.233);
 }
 
 .sk-toolbox-trigger {
