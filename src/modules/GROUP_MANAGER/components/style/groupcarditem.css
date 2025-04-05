@@ -1,6 +1,6 @@
 .sk-first-row-4group {
     display: grid;
-    grid-template-columns: 80px auto;
+    grid-template-columns: 30px auto 80px 100px 40px;
 }
 .sk-first-row-4group > div {
     padding: 9px;

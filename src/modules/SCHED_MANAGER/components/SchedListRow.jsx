@@ -141,45 +141,7 @@ const SchedListRow = (props)=>{
                     </div>
                 </div>
 
-                <div>
-                    {itemData.skud_schedule_type_id === 1 ? (
-                        <span className={"sk-slr-name"}>Пятидневнй страндартный</span>
-                    ): ""}
-                                        {itemData.skud_schedule_type_id === 2 ? (
-                        <span className={"sk-slr-name"}>Гибкий</span>
-                    ): ""}
-                                        {itemData.skud_schedule_type_id === 3 ? (
-                        <span className={"sk-slr-name"}>Свободный</span>
-                    ): ""}
-                                        {itemData.skud_schedule_type_id === 4 ? (
-                        <span className={"sk-slr-name"}>Сменный</span>
-                    ): ""}
-                                        {itemData.skud_schedule_type_id === 5 ? (
-                        <span className={"sk-slr-name"}>Суммированный</span>
-                    ): ""}
-                </div>
 
-                <div>
-                    <div className={'sk-sched-listitem-starttime'}>{startTime}</div>
-                    <div className={'sk-sched-listitem-endtime'}>{endTime}</div>
-                </div>
-
-                <div>
-                    <div>{unitTime > 0 ? (<span><strong>{unitTime / 60 / 60}</strong> часов</span>) : ""}</div>
-                    <div>{unitTime > 0 ? "в " + (unitType.toLowerCase()) : ""}</div>
-                </div>
-
-
-
-                <div>
-                    <div className={'sk-sched-listitem-starttime'}>с {lunchStart}</div>
-                    <div className={'sk-sched-listitem-endtime'}>до {lunchEnd}</div>
-                </div>
-
-
-                <div>
-                    <div>{itemType < 3 ? lunchTime : ""}</div>
-                </div>
             </div>
             <div className="sk-row sk-second-row">
                 <div className={"sk-flex"} style={{paddingLeft: 12}}>
