@@ -138,11 +138,20 @@ const UserManagerCard = (props)=>{
         }
     }
 
-
+    const handleDoubleClickOnTop = (ev)=>{
+        console.log('ev', ev)
+        ev.preventDefault();
+        setSelected(!selected);
+        if (props.onSelectCard){
+            props.onSelectCard(itemId, !selected);
+        }
+    }
 
     return (
         <div className={`sk-um-card ${selected ? "sk-um-card-selected" : ""}`}>
-            <div className={'sk-um-row sk-um-grid-5col'}>
+            <div className={'sk-um-row sk-um-grid-5col'}
+                onDoubleClick={handleDoubleClickOnTop}
+            >
                 <div className={'skum-firstcol'}>
                     {itemId}
                 </div>

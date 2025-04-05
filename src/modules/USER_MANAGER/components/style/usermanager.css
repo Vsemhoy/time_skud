@@ -9,13 +9,26 @@
     border: 1px solid rgba(0, 0, 0, 0.103);
 }
 
+
+
 .sk-um-as-cards .sk-um-card {
+    box-shadow: 0 5px 10px 0px #223c5025;
     background-color: white;
-    border: 1px solid rgba(0, 0, 0, 0.103);
+    /* border: 1px solid rgba(0, 0, 0, 0.103); */
     border-radius: 6px;
+    transition: all 0.3s;
 }
-.sk-um-card:nth-child(odd){
-    background-color: #fbfaef;
+.sk-um-card > div {
+    transition: all 0.2s;
+    background-color: #0091ff00;
+}
+
+.sk-um-as-cards .sk-um-card:hover {
+    box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.397);
+}
+
+.sk-um-card:nth-child(odd) > div {
+    background-color: #ffea0315;
 }
 .sk-um-card:last-child {
     margin-bottom: 50vh;
@@ -24,12 +37,16 @@
     transition: all 0.3s;
 
 }
-.sk-um-card:hover > div {
-    background-color: rgba(24, 24, 24, 0.055);
+.sk-um-card:hover {
+    background-color: rgb(239, 239, 239);
 }
 
-.sk-um-card {
+.sk-um-as-table .sk-um-card {
     border-bottom: 1px solid rgba(0, 0, 0, 0.152);
+    border-top: 1px solid rgba(255, 255, 255, 0.451);
+}
+.sk-um-as-cards .sk-um-card {
+    border-top: 1px solid rgba(0, 0, 0, 0.064);
 }
 .sk-um-card  .skum-card-content {
     opacity: 0.85;
@@ -39,8 +56,18 @@
 }
 
 .sk-um-card-selected {
-    border: 1px solid rgb(43, 137, 226);
+    outline: 1px solid rgb(43, 137, 226);
+    /* background-color:  rgba(0, 132, 255, 0.108) !important; */
 }
+.sk-um-as-table .sk-um-card-selected {
+    
+    margin-top: 1px;
+}
+
+.sk-um-card-selected .sk-um-title, .sk-um-card-selected .skum-firstcol {
+    color: rgb(0, 132, 255);
+}
+
 
 .sk-um-row > div {
     padding: 6px;
