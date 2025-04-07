@@ -255,7 +255,7 @@ const GroupCardItem = (props)=>{
 
                 </div>
                 <div>
-                  <UserOutlined /> {userCount}
+                  <UserOutlined /> {itemData.users_count}
                 </div>
                 <div>
                 <div className={'sk-company-tag'} style={{border: `1px solid ${props.data.company_color}`, color: `${props.data.company_color}`}}>

@@ -152,9 +152,25 @@ const UserManagerCard = (props)=>{
             <div className={'sk-um-row sk-um-grid-5col'}
                 onDoubleClick={handleDoubleClickOnTop}
             >
-                <div className={'skum-firstcol'}>
-                    {itemId}
+                { vStyle === 'view_top_only' ? (
+                    <div className={'skum-firstcol'}>
+                        <span className={'sk-um-checkbox  skf-hovered-show'}>
+                            <Checkbox
+                            checked={selected}
+                            onChange={handleSelectAction}
+                            />
+                        </span>
+                        <span className={'skf-hovered-hide'}>
+                            {itemId}
+                        </span>
+                    
                 </div>
+                ) : (
+                    <div className={'skum-firstcol'}>
+                        
+                        {itemId}
+                    </div>
+                )}
                 <div className={'sk-um-title'}>
                 {/* <Highlighter
                         highlightClassName="highlight"

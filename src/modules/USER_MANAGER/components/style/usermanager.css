@@ -236,7 +236,7 @@
 .sk-group-list {
     display: flex;
     flex-direction: column;
-    grid-gap: 1rem;
+    grid-gap: 12px;
 }
 
 .sk-group-flexer-in-row {
@@ -290,5 +290,20 @@
     font-size: medium;
 }
 
+.sk-um-card .skf-hovered-show {
+    display: none;
+}
+.sk-um-card:hover .skf-hovered-show {
+    display: flex !important;
+}
 
+
+.sk-um-card .skf-hovered-hide {
+    display: flex;
+    min-height: 22px;
+    align-items: center;
+}
+.sk-um-card:hover .skf-hovered-hide {
+    display: none !important;
+}
 
