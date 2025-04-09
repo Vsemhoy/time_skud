@@ -130,6 +130,10 @@ const ScheduleManagerModal= (props) => {
     },[props.on_open]);
 
     useEffect(()=>{
+      setBaseSchedules(props.schedule_list);
+    },[props.schedule_list]);
+
+    useEffect(()=>{
       if (openAddSection){
         setCloseAllEditorRows(0);
       }
@@ -332,7 +336,7 @@ const ScheduleManagerModal= (props) => {
   const createNewLink = () => {
     if (formSched && formStart){
       const data = {
-        group_id: props.target_id,
+        users: [props.target_id],
         schedule_id: formSched,
         start: formStart.unix(),
         end: !formEnd ? null : formEnd.unix()
@@ -378,7 +382,7 @@ const ScheduleManagerModal= (props) => {
           const create_links = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules',
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindschedules',
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
@@ -386,7 +390,7 @@ const ScheduleManagerModal= (props) => {
                   );
                   console.log('__ RS --------', response);
                   console.log(props.schedule_list);
-                  let object = response.data.data;
+                  let object = response.data.content[0];
                   console.log(object);
 
                   if (object){
@@ -580,7 +584,11 @@ const ScheduleManagerModal= (props) => {
                         value: null,
                         label: 'Все графики',
                     },
-                    ...props.schedule_types
+                    ...props.schedule_types.map((item) => ({
+                      key: `rtshkey_${item.id}`,
+                      value: item.id,
+                      label: item.name,
+                    })),
                 ]
                     }
                   value={formType}

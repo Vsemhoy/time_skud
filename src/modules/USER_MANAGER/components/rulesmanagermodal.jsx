@@ -113,6 +113,11 @@ const RulesManagerModal= (props) => {
 
 
     useEffect(()=>{
+      setBaseRules(props.rule_list);
+    },[props.rule_list]);
+
+
+    useEffect(()=>{
       if (openAddSection){
         if (formStart && formStart.unix() < dayjs().unix()){
           setFormStart(dayjs().startOf('day').add(1, 'day'));
@@ -328,7 +333,7 @@ const RulesManagerModal= (props) => {
   const createNewLink = () => {
     if (formRul && formStart){
       const data = {
-        group_id: props.target_id,
+        users: [props.target_id],
         rule_id: formRul,
         rule_type: formType,
         start: formStart.unix(),
@@ -374,20 +379,21 @@ const RulesManagerModal= (props) => {
           const create_links = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/links',
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindrules',
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
                       }
                   );
                   console.log('users', response);
-                  let object = response.data.data;
+                  let object = response.data.content[0];
                   if (object){
                     object.rule_type = body.rule_type;
                     object.rule_name = body.rule_type_name;
                   }
 
-                  setBaseLinks([...baseLinks, object]);
+                  // setBaseLinks([...baseLinks, object]);
+                  get_links();
                   // setBaseUserListData(response.data.data);
               } catch (e) {
                   console.log(e)

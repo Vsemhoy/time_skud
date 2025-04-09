@@ -20,9 +20,11 @@ const UserManagerPage = (props) => {
 
     const [baseUserList, setBaseUserList] = useState([]);
     const [baseScheduleList, setBaseScheduleList] = useState([]);
+    const [scheduleList,  setScheduleList]  = useState([]);
     // const [ScheduleList, setScheduleList] = useState([]);
     const [baseRuleList, setBaseRuleList] = useState([]);
     const [ruleList, setRuleList] = useState([]);
+
     const [userList, setUserList] = useState([]);
 
     const [ctrlKey, setCtrlKey] = useState(false);
@@ -51,14 +53,14 @@ const UserManagerPage = (props) => {
     // User, who we edit
     const [openedUser, setOpenedUser] = useState(null);
 
-    const [scheduleList,  setScheduleList]  = useState([]);
+
     const [scheduleTypes, setScheduleTypes] = useState([]);
     const [ruleTypes, setRuleTypes] = useState([]);
     const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
     const [openedRuleModal, setOpenedRuleModal]         = useState(false);
 
     const [viewCardStyle, setViewCardStyle] = useState('view_top_only');
-    const [viewListStyle, setViewListStyle] = useState(false); // true - as cards // fals - as table
+    const [viewListStyle, setViewListStyle] = useState(true); // true - as table // fals - as cards
 
 
     useEffect(()=>{
@@ -417,6 +419,9 @@ const UserManagerPage = (props) => {
 
     const openScheduleEditor = (value) => {
         let usm = baseUserList.find((item)=> item.id === value);
+
+        setScheduleList(baseScheduleList.filter((item)=>{return item.id_company === usm.id_company}));
+
         setOpenedUser(usm);
         setEditedUserId(value);
         setOpenedScheduleModal(true);
@@ -424,6 +429,9 @@ const UserManagerPage = (props) => {
 
     const openRulesEditor = (value) => {
         let usm = baseUserList.find((item)=> item.id === value);
+
+        setRuleList(baseRuleList.filter((item)=>{return item.id_company === usm.id_company}));
+        
         setOpenedUser(usm);
         setEditedUserId(value);
         setOpenedRuleModal(true);
