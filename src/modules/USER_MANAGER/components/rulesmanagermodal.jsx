@@ -336,8 +336,8 @@ const RulesManagerModal= (props) => {
         users: [props.target_id],
         rule_id: formRul,
         rule_type: formType,
-        start: formStart.unix(),
-        end: formEnd.unix()
+        start: formStart.utc().format(),
+        end: formEnd.utc().format(),
       };
 
       for (let i = 0; i < props.rule_list.length; i++) {
@@ -414,8 +414,8 @@ const RulesManagerModal= (props) => {
             rule_id: formRul,
             // rule_type: formType,
             id: data.id,
-            start: data.start.unix(),
-            end: data.end.unix()
+            start: data.start.utc().format(),
+            end: data.end.utc().format(),
           };
           update_links(data_up);
         }
