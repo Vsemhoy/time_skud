@@ -10,7 +10,10 @@ import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
 import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
 
-
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 
 const RulesManagerModal= (props) => {

@@ -49,6 +49,9 @@ const [dateSchedEnd, setDateSchedEnd] = useState(dayjs().add(10, 'year').endOf('
 const [dateRuleStart, setDateRuleStart] = useState(dayjs().add(1, 'day').startOf('day'));
 const [dateRuleEnd, setDateRuleEnd] = useState(dayjs().add(10, 'year').endOf('day'));
 
+const [formStart, setFormStart] = useState(dayjs().add(1,'day').startOf('day'));
+const [formEnd, setFormEnd]  = useState(dayjs().add(1,'month').endOf('day'));
+
 // const [location, setLocation] = useState('usermanager');
 //   useEffect(() => {
 //       const query = new URLSearchParams(window.location.search);
@@ -242,7 +245,7 @@ const handleSelectAll = (ev) => {
         {
             value = dayjs().add(1, 'day');
         }
-        setDateSchedStart(value.startOf('day'));
+        setFormStart(value.startOf('day'));
     }
 
     const handleSetEndSched = (value)=>{
@@ -253,7 +256,7 @@ const handleSelectAll = (ev) => {
         if (value !== null){
             value = value.endOf('day');
         }
-        setDateSchedEnd(value);
+        setFormEnd(value);
     }
 
     const handleSetStartRule = (value)=>{
@@ -261,7 +264,7 @@ const handleSelectAll = (ev) => {
         {
             value = dayjs().add(1, 'day');
         }
-        setDateRuleStart(value.startOf('day'));
+        setFormStart(value.startOf('day'));
     }
 
     const handleSetEndRule = (value)=>{
@@ -272,9 +275,49 @@ const handleSelectAll = (ev) => {
             if (value !== null){
                 value = value.endOf('day');
             }
-        setDateRuleEnd(value);
+        setFormEnd(value);
     }
 
+
+    const handleKeyDown = (e, callback) => {
+      // If formStart is null, set it to today's date
+      let currentDate = e.target.value;
+      if (currentDate === ""){
+        currentDate = dayjs();
+      } else {
+        currentDate = dayjs(currentDate);
+      }
+      console.log(currentDate);
+  
+      switch (e.key) {
+        case "ArrowLeft":
+          // Subtract 1 day
+          currentDate = currentDate.subtract(1, "day");
+          break;
+        case "ArrowRight":
+          // Add 1 day
+          currentDate = currentDate.add(1, "day");
+          break;
+        case "ArrowUp":
+          // Add 1 month
+          currentDate = currentDate.add(1, "month");
+          break;
+        case "ArrowDown":
+          // Subtract 1 month
+          currentDate = currentDate.subtract(1, "month");
+          break;
+        default:
+          return; // Do nothing for other keys
+      }
+  
+      // Prevent default browser behavior for arrow keys
+      e.preventDefault();
+  
+      // Update the date picker value
+      if (callback){
+        callback(currentDate);
+      }
+    };
 
 
 const tagRender = (props) => {
@@ -321,6 +364,26 @@ const tagRender = (props) => {
         if (props.onCallToClearGroups)
         {
             props.onCallToClearGroups(selectedGroups);
+        }
+    }
+
+    const callToBindSchedules = ()=>{
+        if (props.onBidnSchedules){
+            props.onBidnSchedules(
+                selectedSchedule,
+                formStart,
+                formEnd,
+            )
+        }
+    }
+
+    const callToBindRules = ()=>{
+        if (props.onBidnRules){
+            props.onBidnRules(
+                selectedRule,
+                formStart,
+                formEnd,
+            )
         }
     }
 
@@ -441,16 +504,18 @@ const tagRender = (props) => {
                             <div>
                             <label>Начало действия</label>
                                 <DatePicker
-                                    value={dateSchedStart}
+                                    value={formStart}
                                     onChange={handleSetStartSched}
+                                    onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
                                 />
                                 </div>
                                 <div>
                                 <label>Завершение</label>
                                 <DatePicker
-                                    value={dateSchedEnd}
+                                    value={formEnd}
                                     allowClear={true}
                                     onChange={handleSetEndSched}
+                                    onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
                                 />
                                 </div>
                             </div>
@@ -458,9 +523,10 @@ const tagRender = (props) => {
                             <div className={"sk-flex"}>
                  
                                 <Button 
-                                disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                    disabled={selectedUsers.length === 0 || selectedSchedule == null ? true : false}
                                     size={'small'}
                                     block
+                                    onClick={callToBindSchedules}
                                 >Привязать график</Button>
 
                             </div>
@@ -525,8 +591,9 @@ const tagRender = (props) => {
                                 <div>
                                 <label>Начало действия</label>
                                     <DatePicker
-                                        value={dateRuleStart}
+                                        value={formStart}
                                         onChange={handleSetStartRule}
+                                        onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
                                     />
                                 </div>
                                 <div>
@@ -534,16 +601,18 @@ const tagRender = (props) => {
                                 <DatePicker
                                     allowClear={true}
                                     onChange={handleSetEndRule}
-                                    value={dateRuleEnd}
+                                    value={formEnd}
+                                    onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
                                 />
                                 </div>
                             </div>
                             <br />
                             <div className={"sk-flex"}>
                                 <Button
-                                disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                disabled={selectedUsers.length === 0 || selectedRule == null ? true : false}
                                 size={'small'}
                                     block
+                                    onClick={callToBindRules}
                                 >Привязать правила</Button>
 
                             </div>

@@ -1,11 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
+import { DatePicker } from 'antd';
 
 const EventRandomixer = (props) => {
+    const [date, setDate] = useState(dayjs('2025-04-10', 'YYYY-MM-DD'));
 
+    const onChange = (date) => {
+      setDate(date);
+    };
+  
+    const handleStartOfDay = () => {
+      const startOfDay = date.startOf('day');
+      console.log(startOfDay.format('YYYY-MM-DD HH:mm:ss')); // 2025-04-10 00:00:00
+    };
+  
+    const handleEndOfDay = () => {
+      const endOfDay = date.endOf('day');
+      console.log(endOfDay.format('YYYY-MM-DD HH:mm:ss')); // 2025-04-10 23:59:59
+    };
 
 return (
     <div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    <div>
+      <DatePicker
+        value={date}
+        onChange={onChange}
+        format="YYYY-MM-DD"
+      />
+      <button onClick={handleStartOfDay}>Начало дня</button>
+      <button onClick={handleEndOfDay}>Конец дня</button>
+    </div>
+
         <h3>Доступы к разделам приложения:</h3>
         <ol>
             <li>

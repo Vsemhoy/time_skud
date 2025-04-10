@@ -15,6 +15,12 @@ import RulesManagerModal from "./components/rulesmanagermodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { TableOutlined, TabletOutlined, UngroupOutlined } from "@ant-design/icons";
 
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const UserManagerPage = (props) => {
     const { userdata } = props;
 
@@ -275,6 +281,32 @@ const UserManagerPage = (props) => {
     }
 
 
+    /**
+     * Перелинковка юзеров с графиками
+     * @param {*} req 
+     * @param {*} res 
+     */
+          const create_links_with_schedules = async (body, req, res) => {
+              console.log('body',body);
+              try {
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindschedules',
+                      {   
+                          data: body, 
+                          _token: CSRF_TOKEN
+                      }
+                  );
+                  
+                  if (response){
+                    get_userList();
+                  }
+
+              } catch (e) {
+                  console.log(e)
+              } finally {
+            }
+        }
+    
+
     // ------------------ FetchWorld END ----------------------
 
 
@@ -516,6 +548,21 @@ const UserManagerPage = (props) => {
     }
 
 
+    const handleBindSchedules = (schedule, start, end)=>{
+        const data = {
+            users: selectedUsers,
+            schedule_id: schedule,
+            start: start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+            end: !end ? null : end.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+          };
+        create_links_with_schedules(data);
+    }
+
+
+    const handleBindRules = (schedule, start, end)=>{
+        console.log(schedule, start, end, selectedUsers);
+    }
+
     const viewOptions = [
         {
             key: `view_top_only`,
@@ -644,6 +691,8 @@ const UserManagerPage = (props) => {
                     setRoute={props.setRoute}
                     schedTypes={scheduleTypes}
                     ruleTypes={ruleTypes}
+                    onBidnRules={handleBindRules}
+                    onBidnSchedules={handleBindSchedules}
                 />
                 </div>
             </div>

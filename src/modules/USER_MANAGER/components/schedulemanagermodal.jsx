@@ -13,7 +13,10 @@ import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
 
-
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 
 const Sched_type_icon = (type) => {
@@ -87,8 +90,8 @@ const ScheduleManagerModal= (props) => {
                 [
                   {
                       "id": 1,
-                      "start": "2025-03-01 00:00:00",
-                      "end": "2025-03-13 23:59:59",
+                      "start": dayjs("2025-03-01 00:00:00"),
+                      "end": dayjs("2025-03-13 23:59:59"),
                       "creator_id": 46,
                       "creator_name": "Александр",
                       "creator_surname": "Кошелев",
@@ -102,8 +105,8 @@ const ScheduleManagerModal= (props) => {
                   },
                   {
                       "id": 2,
-                      "start": "2025-04-01 00:00:00",
-                      "end": "2025-05-20 23:59:59",
+                      "start": dayjs("2025-04-01 00:00:00"),
+                      "end": dayjs("2025-06-20 23:59:59"),
                       "creator_id": 46,
                       "creator_name": "Александр",
                       "creator_surname": "Кошелев",
@@ -201,13 +204,14 @@ const ScheduleManagerModal= (props) => {
       return;
     }
     let st = formStart.startOf('day').unix();
-    let end = formEnd ? formEnd.endOf('day').unix() : 9999999999999999;
+    let end = formEnd ? formEnd.endOf('day').unix() : dayjs().add(1,'years').endOf('day').unix();
     setIntersected([]);
     let inters = [];
     for (let i = 0; i < baseLinks.length; i++) {
       const element = baseLinks[i];
-      const chstart = dayjs(element.start).unix();
-      const chend   = element.end ? dayjs(element.end).unix() : 99999999999999;
+      console.log('ELEMENT', element);
+      const chstart = element.start.unix();
+      const chend   = element.end ? element.end.unix() : 99999999999999;
       if (chstart === st 
         || chend === end
         || (st > chstart && end < chend)
@@ -304,7 +308,7 @@ const ScheduleManagerModal= (props) => {
    * @param {*} req 
    * @param {*} res 
    */
-  const get_links = async (req, res) => {
+  const get_links = async (command, req, res) => {
       try {
           let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules_get/' + props.target_id, 
             {   
@@ -317,8 +321,25 @@ const ScheduleManagerModal= (props) => {
           }
           );
           console.log('departs', response.data);
-
-          setBaseLinks([...baseLinks, ...response.data.data]);
+          
+          if (command === 'clear'){
+            setBaseLinks(response.data.data.map((item) => ({
+              ...item,
+              start: dayjs(item.start),
+              end: dayjs(item.end),
+              created_at: dayjs(item.created_at),
+            })));
+          } else {
+            setBaseLinks([
+              ...baseLinks,
+              ...response.data.data.map((item) => ({
+                ...item,
+                start: dayjs(item.start),
+                end: dayjs(item.end),
+                created_at: dayjs(item.created_at),
+              })),
+            ]);
+          }
           setTotalLinks(response.data.total);
           if (page_offset * page_num < response.data.total){
             setHasMoreRows(true);
@@ -333,49 +354,50 @@ const ScheduleManagerModal= (props) => {
   }
 
 
-  const createNewLink = () => {
-    if (formSched && formStart){
-      const data = {
-        users: [props.target_id],
-        schedule_id: formSched,
-        start: formStart.unix(),
-        end: !formEnd ? null : formEnd.unix()
-      };
-
-
-      for (let i = 0; i < props.schedule_list.length; i++) {
-        const element = props.schedule_list[i];
-        if (element.id === formSched)
-        {
-          data.schedule_type = element.skud_schedule_type_id;
-          data.schedule_type_name = element.name;
-          break;
-        }
-      }
-
-      for (let i  = 0; i < baseLinks.length ; i++){
-        const checkLink = baseLinks[i];
-        const startDate = dayjs(checkLink.start).unix();
-        const endDate = checkLink.end !== null ? dayjs(checkLink.end).unix() : null;
-
-        if (startDate < data.start && (endDate === null || (endDate > data.start ))){
-          // Обновляем найденную строку с пересечением - меняем дату окончания
-          checkLink.end = dayjs.unix(data.start).subtract(1, 'day').endOf('day').unix();
-          update_links(checkLink);
+    const createNewLink = () => {
+      if (formSched && formStart){
+        const data = {
+          users: [props.target_id],
+          schedule_id: formSched,
+          start: formStart.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+          end: !formEnd ? null : formEnd.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
         };
+        console.log('DATA TO SERVER', data);
 
-        console.log(checkLink);
+        for (let i = 0; i < props.schedule_list.length; i++) {
+          const element = props.schedule_list[i];
+          if (element.id === formSched)
+          {
+            data.schedule_type = element.skud_schedule_type_id;
+            data.schedule_type_name = element.name;
+            break;
+          }
+        }
+
+        console.log('BASELINKS', baseLinks);
+        for (let i  = 0; i < baseLinks.length ; i++){
+          const checkLink = baseLinks[i];
+          const startDate = checkLink.start.unix();
+          const endDate = checkLink.end !== null ? checkLink.end.unix() : null;
+
+          if (startDate < data.start && (endDate === null || (endDate > data.start ))){
+            // Обновляем найденную строку с пересечением - меняем дату окончания
+            checkLink.end = data.start.clone().subtract(1, 'day').endOf('day').unix();
+            update_links(checkLink);
+          };
+
+          console.log(checkLink);
+        }
+
+        data.id = dayjs().unix();
+
+        create_links(data);
       }
-
-      data.id = dayjs().unix();
-
-      create_links(data);
-    }
   }
 
 
     /**
-     * Перелинковка юзеров с гурппами
+     * Перелинковка юзеров с графиками
      * @param {*} req 
      * @param {*} res 
      */
@@ -396,7 +418,10 @@ const ScheduleManagerModal= (props) => {
                   if (object){
                     object.schedule_type = body.schedule_type;
                     object.schedule_name = body.schedule_type_name;
-                  }
+                  };
+
+                  object.start = dayjs(object.start);
+                  object.end   = dayjs(object.end);
 
                   setBaseLinks([...baseLinks, object]);
               } catch (e) {
@@ -409,11 +434,11 @@ const ScheduleManagerModal= (props) => {
       const updateOldLink = (data) => {
         if (data){
           const data_up = {
-            group_id: props.target_id,
+            user_id: props.target_id,
             schedule_id: formSched,
-            id: data.id,
-            start: data.start.unix(),
-            end: data.end.unix()
+            links: [data.id],
+            start: data.start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+            end: data.end.endOf('day').format('YYYY-MM-DD HH:mm:ss')
           };
           update_links(data_up);
         }
@@ -427,22 +452,26 @@ const ScheduleManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/schedules/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/changelinkschedules',
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
                         }
                     );
-                    body.start = dayjs.unix(body.start).format('YYYY-MM-DD HH:mm:ss');
-                    if (body.end){
-                      body.end = dayjs.unix(body.end).format('YYYY-MM-DD HH:mm:ss');
+                    setIntersected([]);
+                    if (response){
+                      get_links('clear');
                     }
-                    console.log('users', response);
-                    setBaseLinks(prevList => 
-                      prevList.map(item => 
-                          item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
-                      )
-                  );
+                  //   body.start = dayjs(body.start).format('YYYY-MM-DD HH:mm:ss');
+                  //   if (body.end){
+                  //     body.end = dayjs(body.end).format('YYYY-MM-DD HH:mm:ss');
+                  //   }
+                  //   console.log('users', response);
+                  //   setBaseLinks(prevList => 
+                  //     prevList.map(item => 
+                  //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                  //     )
+                  // );
                     // setBaseUserListData(response.data.data);
                 } catch (e) {
                     console.log(e)
@@ -464,9 +493,11 @@ const ScheduleManagerModal= (props) => {
     const delete_link = async (id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/schedules/' + id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/deleteschedulelinks',
               {   
-                  data: id, 
+                  data: {
+                    links: [id],
+                  }, 
                   _token: CSRF_TOKEN
               }
           );
@@ -621,7 +652,7 @@ const ScheduleManagerModal= (props) => {
                 <DatePicker
                   allowClear={false}
                   style={{ width: '100%' }}
-                  onChange={(value)=>{setFormStart(value)}}
+                  onChange={(value)=>{setFormStart(value.startOf('day'))}}
                   value={formStart}
                   onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
                 />
@@ -629,7 +660,7 @@ const ScheduleManagerModal= (props) => {
               <div>
                 <DatePicker
                 style={{ width: '100%' }}
-                onChange={(value)=>{setFormEnd(value)}}
+                onChange={(value)=>{  setFormEnd(value === null ? null : value.endOf('day')); }}
                 value={formEnd}
                 onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
                 />
