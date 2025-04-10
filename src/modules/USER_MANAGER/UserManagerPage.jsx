@@ -15,11 +15,29 @@ import RulesManagerModal from "./components/rulesmanagermodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { TableOutlined, TabletOutlined, UngroupOutlined } from "@ant-design/icons";
 
+import Cookies from 'js-cookie';
+
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+
+const useCookieState = (key, defaultValue) => {
+    const [state, setState] = useState(() => {
+      const saved = Cookies.get(key);
+      return saved ? JSON.parse(saved) : defaultValue;
+    });
+  
+    useEffect(() => {
+      Cookies.set(key, JSON.stringify(state), { expires: 365 }); // Храним год
+    }, [key, state]);
+  
+    return [state, setState];
+};
+
+
 
 const UserManagerPage = (props) => {
     const { userdata } = props;
@@ -41,7 +59,8 @@ const UserManagerPage = (props) => {
 
     
 
-    const [filters, setFilters] = useState([]);
+    // const [filters, setFilters] = useState([]);
+    const [filters, setFilters] = useCookieState('usermanager_filters', []);
 
     const [searchWords, setSearchWords] = useState([]);
 
@@ -54,7 +73,7 @@ const UserManagerPage = (props) => {
 
     
     // const [selectedUsers, setSelectedUsers] = useState([]);
-    const [openToolbar, setOpenToolbar] = useState(false);
+    const [openToolbar, setOpenToolbar] = useCookieState('usermanager_toolbar', false);
 
     // User, who we edit
     const [openedUser, setOpenedUser] = useState(null);
@@ -65,8 +84,11 @@ const UserManagerPage = (props) => {
     const [openedScheduleModal, setOpenedScheduleModal] = useState(false);
     const [openedRuleModal, setOpenedRuleModal]         = useState(false);
 
-    const [viewCardStyle, setViewCardStyle] = useState('view_top_only');
-    const [viewListStyle, setViewListStyle] = useState(true); // true - as table // fals - as cards
+    // const [viewCardStyle, setViewCardStyle] = useState('view_top_only');
+    // const [viewListStyle, setViewListStyle] = useState(true); // true - as table // fals - as cards
+
+    const [viewCardStyle, setViewCardStyle] = useCookieState('viewCardStyle', 'view_top_only');
+    const [viewListStyle, setViewListStyle] = useCookieState('viewListStyle', true);
 
 
     useEffect(()=>{
