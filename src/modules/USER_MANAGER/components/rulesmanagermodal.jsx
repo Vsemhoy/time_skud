@@ -57,8 +57,8 @@ const RulesManagerModal= (props) => {
               setBaseLinks([
                       {
                           "id": 1,
-                          "start": "2025-03-01 05:27:26",
-                          "end": "2025-03-15 14:54:19",
+                          "start": dayjs("2025-03-01 05:27:26"),
+                          "end": dayjs("2025-03-15 14:54:19"),
                           "creator_id": 47,
                           "creator_name": "Валентина",
                           "creator_surname": "Кошелева",
@@ -70,8 +70,8 @@ const RulesManagerModal= (props) => {
                       },
                       {
                           "id": 3,
-                          "start": "2025-03-02 00:00:00",
-                          "end": "2025-04-30 23:59:59",
+                          "start": dayjs("2025-03-02 00:00:00"),
+                          "end": dayjs("2025-04-30 23:59:59"),
                           "creator_id": 46,
                           "creator_name": "Александр",
                           "creator_surname": "Кошелев",
@@ -170,7 +170,7 @@ const RulesManagerModal= (props) => {
       return;
     }
     let st = formStart.startOf('day').unix();
-    let end = formEnd ? formEnd.endOf('day').unix() : 9999999999999999;
+    let end = formEnd ? formEnd.endOf('day').unix() : dayjs().add(1,'years').endOf('day').unix();
     setIntersected([]);
     let inters = [];
     for (let i = 0; i < baseLinks.length; i++) {
@@ -301,7 +301,7 @@ const RulesManagerModal= (props) => {
      * @param {*} req 
      * @param {*} res 
      */
-    const get_links = async (req, res) => {
+    const get_links = async (command,req, res) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get/' + props.target_id, 
               {   
@@ -314,12 +314,25 @@ const RulesManagerModal= (props) => {
             }
             );
             
-            setBaseLinks([...baseLinks, ...response.data.data]);
-            setTotalLinks(response.data.total);
-            // setOrganizations(organizations_response.data.org_list)
-            // setTotal(organizations_response.data.total_count)
-
-            // setScheduleList(response.data);
+          if (command === 'clear'){
+            setBaseLinks(response.data.data.map((item) => ({
+              ...item,
+              start: dayjs(item.start),
+              end: dayjs(item.end),
+              created_at: dayjs(item.created_at),
+            })));
+          } else {
+            setBaseLinks([
+              ...baseLinks,
+              ...response.data.data.map((item) => ({
+                ...item,
+                start: dayjs(item.start),
+                end: dayjs(item.end),
+                created_at: dayjs(item.created_at),
+              })),
+            ]);
+          }
+          setTotalLinks(response.data.total);
             if (page_offset * page_num < response.data.total){
               setHasMoreRows(true);
             } else {
@@ -339,8 +352,8 @@ const RulesManagerModal= (props) => {
         users: [props.target_id],
         rule_id: formRul,
         rule_type: formType,
-        start: formStart.utc().format(),
-        end: formEnd.utc().format(),
+        start: formStart.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        end: !formEnd ? null : formEnd.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
       };
 
       for (let i = 0; i < props.rule_list.length; i++) {
@@ -355,8 +368,8 @@ const RulesManagerModal= (props) => {
 
       for (let i  = 0; i < baseLinks.length ; i++){
         const checkLink = baseLinks[i];
-        const startDate = dayjs(checkLink.start).unix();
-        const endDate = checkLink.end !== null ? dayjs(checkLink.end).unix() : null;
+        const startDate = checkLink.start.unix();
+        const endDate = checkLink.end !== null ? checkLink.end.unix() : null;
 
         if (startDate < data.start && (endDate === null || (endDate > data.start ))){
           // Обновляем найденную строку с пересечением - меняем дату окончания
@@ -388,15 +401,22 @@ const RulesManagerModal= (props) => {
                           _token: CSRF_TOKEN
                       }
                   );
-                  console.log('users', response);
-                  let object = response.data.content[0];
-                  if (object){
-                    object.rule_type = body.rule_type;
-                    object.rule_name = body.rule_type_name;
-                  }
+                  // console.log('users', response);
+                  // let object = response.data.content[0];
+                  // if (object){
+                  //   object.rule_type = body.rule_type;
+                  //   object.rule_name = body.rule_type_name;
+                  // }
 
+
+                  //  object.start = dayjs(object.start);
+                  //   object.end   = dayjs(object.end);
+                  
                   // setBaseLinks([...baseLinks, object]);
-                  get_links();
+                  if (response){
+                    get_links('clear');
+                  }
+                  // get_links();
                   // setBaseUserListData(response.data.data);
               } catch (e) {
                   console.log(e)
@@ -413,12 +433,12 @@ const RulesManagerModal= (props) => {
       const updateOldLink = (data) => {
         if (data){
           const data_up = {
-            group_id: props.target_id,
+            user_id: props.target_id,
             rule_id: formRul,
             // rule_type: formType,
-            id: data.id,
-            start: data.start.utc().format(),
-            end: data.end.utc().format(),
+            links: [data.id],
+            start: data.start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+            end: data.end ? data.end.endOf('day').format('YYYY-MM-DD HH:mm:ss') : null
           };
           update_links(data_up);
         }
@@ -432,21 +452,25 @@ const RulesManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/usermanager/changelinkrules',
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
                         }
                     );
-                    body.start = dayjs.unix(body.start).format('YYYY-MM-DD HH:mm:ss');
-                    if (body.end){
-                      body.end = dayjs.unix(body.end).format('YYYY-MM-DD HH:mm:ss');
+                    setIntersected([]);
+                    if (response){
+                      get_links('clear');
                     }
-                    setBaseLinks(prevList => 
-                        prevList.map(item => 
-                            item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
-                        )
-                    );
+                    // body.start = dayjs.unix(body.start).format('YYYY-MM-DD HH:mm:ss');
+                    // if (body.end){
+                    //   body.end = dayjs.unix(body.end).format('YYYY-MM-DD HH:mm:ss');
+                    // }
+                    // setBaseLinks(prevList => 
+                    //     prevList.map(item => 
+                    //         item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
+                    //     )
+                    // );
                     // setBaseUserListData(response.data.data);
                 } catch (e) {
                     console.log(e)
@@ -465,16 +489,18 @@ const RulesManagerModal= (props) => {
      * @param {*} req 
      * @param {*} res 
      */
-    const delete_link = async (body, req, res) => {
+    const delete_link = async (id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/links/' + body.id + "?_token=" + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/usermanager/deleterulelinks',
                 {   
-                    data: { "id" : body.id}, 
+                  data: {
+                    links: [id],
+                  }, 
                     _token: CSRF_TOKEN
                 }
             );
-            setBaseLinks(baseLinks.filter((item)=>{return item.id !== body.id}));
+            setBaseLinks(baseLinks.filter((item)=>{return item.id !== id}));
         } catch (e) {
             console.log(e)
             alert(e.response.data.message);
@@ -605,7 +631,7 @@ const RulesManagerModal= (props) => {
                   showSearch
                   placeholder="Выберите правило"
                   optionFilterProp="label"
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', maxWidth: '470px' }}
                   onChange={(vel)=>setFormRul(vel)}
                   // onSearch={onSearch}
                   options={

@@ -320,7 +320,6 @@ const ScheduleManagerModal= (props) => {
               _token: CSRF_TOKEN
           }
           );
-          console.log('departs', response.data);
           
           if (command === 'clear'){
             setBaseLinks(response.data.data.map((item) => ({
@@ -410,20 +409,23 @@ const ScheduleManagerModal= (props) => {
                           _token: CSRF_TOKEN
                       }
                   );
-                  console.log('__ RS --------', response);
-                  console.log(props.schedule_list);
-                  let object = response.data.content[0];
-                  console.log(object);
+                  if (response){
+                    get_links('clear');
+                  }
+                  // console.log('__ RS --------', response);
+                  // console.log(props.schedule_list);
+                  // let object = response.data.content[0];
+                  // console.log(object);
 
-                  if (object){
-                    object.schedule_type = body.schedule_type;
-                    object.schedule_name = body.schedule_type_name;
-                  };
+                  // if (object){
+                  //   object.schedule_type = body.schedule_type;
+                  //   object.schedule_name = body.schedule_type_name;
+                  // };
 
-                  object.start = dayjs(object.start);
-                  object.end   = dayjs(object.end);
+                  // object.start = dayjs(object.start);
+                  // object.end   = dayjs(object.end);
 
-                  setBaseLinks([...baseLinks, object]);
+                  // setBaseLinks([...baseLinks, object]);
               } catch (e) {
                   console.log(e)
               } finally {
@@ -438,7 +440,7 @@ const ScheduleManagerModal= (props) => {
             schedule_id: formSched,
             links: [data.id],
             start: data.start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-            end: data.end.endOf('day').format('YYYY-MM-DD HH:mm:ss')
+            end: data.end ? data.end.endOf('day').format('YYYY-MM-DD HH:mm:ss') : null
           };
           update_links(data_up);
         }
@@ -630,7 +632,7 @@ const ScheduleManagerModal= (props) => {
                   showSearch
                   placeholder="Выберите график"
                   optionFilterProp="label"
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', maxWidth: '470px' }}
                   onChange={(vel)=>setFormSched(vel)}
                   // onSearch={onSearch}
                   options={

@@ -138,7 +138,7 @@
 .sk-um-grid-5col {
     display: grid;
     grid-template-columns: 35px 40% 20% auto 90px;
-    align-items: end;
+    align-items: start;
     
 }
 .sk-mid-row-cc {

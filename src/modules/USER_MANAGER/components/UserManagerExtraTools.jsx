@@ -2,7 +2,7 @@ import { Affix, Button, DatePicker, Modal, Radio, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
 import React, { useEffect, useState } from "react";
 import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
-import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, ToolOutlined } from "@ant-design/icons";
+import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, QuestionCircleFilled, QuestionCircleOutlined, QuestionCircleTwoTone, ToolOutlined } from "@ant-design/icons";
 import Checkbox from "antd/es/checkbox/Checkbox";
 import dayjs from "dayjs";
 
@@ -494,7 +494,7 @@ const tagRender = (props) => {
                                 />
                                 <Button
                                 onClick={()=>{setOpenModalSchedInfo(true)}}
-                                ><InfoOutlined /></Button>
+                                ><QuestionCircleOutlined /></Button>
                                 </div>
 
                         <br />  
@@ -583,7 +583,7 @@ const tagRender = (props) => {
                         />
                                                         <Button
                                 onClick={()=>{setOpenModalRuleTypeInfo(true)}}
-                                ><InfoOutlined /></Button>
+                                ><QuestionCircleOutlined /></Button>
                                 </div>
                         <br />  
                         <br />  
