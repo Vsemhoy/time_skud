@@ -452,7 +452,7 @@ const RulesManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/usermanager/changelinkrules',
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/changelinkrules',
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -481,7 +481,7 @@ const RulesManagerModal= (props) => {
         }
 
     const deleteOldItem = (id) => {
-      delete_link({id: id});
+      delete_link(id);
     }
 
     /**
@@ -492,7 +492,7 @@ const RulesManagerModal= (props) => {
     const delete_link = async (id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/usermanager/deleterulelinks',
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/deleterulelinks',
                 {   
                   data: {
                     links: [id],
@@ -500,7 +500,8 @@ const RulesManagerModal= (props) => {
                     _token: CSRF_TOKEN
                 }
             );
-            setBaseLinks(baseLinks.filter((item)=>{return item.id !== id}));
+            // setBaseLinks(baseLinks.filter((item)=>{return item.id !== id}));
+            get_links('clear');
         } catch (e) {
             console.log(e)
             alert(e.response.data.message);

@@ -4,7 +4,7 @@ import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_PROD_CALENDARS, DS_RULE_TYPES, DS_
 
 import './components/style/usermanager.css';
 
-import { Button, Checkbox, Empty, Radio, Select, Tabs } from "antd";
+import { Affix, Button, Checkbox, Empty, Radio, Select, Tabs } from "antd";
 
 import UserManagerToolbar from "./components/UserManagerToolbar";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
@@ -13,7 +13,7 @@ import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ScheduleManagerModal from "./components/schedulemanagermodal";
 import RulesManagerModal from "./components/rulesmanagermodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { TableOutlined, TabletOutlined, UngroupOutlined } from "@ant-design/icons";
+import { CloseOutlined, TableOutlined, TabletOutlined, UngroupOutlined } from "@ant-design/icons";
 
 import Cookies from 'js-cookie';
 
@@ -329,6 +329,32 @@ const UserManagerPage = (props) => {
         }
     
 
+
+            /**
+     * Перелинковка юзеров с правилами массовая
+     * @param {*} req 
+     * @param {*} res 
+     */
+            const create_links_with_rules = async (body, req, res) => {
+                console.log('body',body);
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindrules',
+                        {   
+                            data: body, 
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    
+                    if (response){
+                      get_userList();
+                    }
+  
+                } catch (e) {
+                    console.log(e)
+                } finally {
+              }
+          }
+
     // ------------------ FetchWorld END ----------------------
 
 
@@ -581,8 +607,15 @@ const UserManagerPage = (props) => {
     }
 
 
-    const handleBindRules = (schedule, start, end)=>{
-        console.log(schedule, start, end, selectedUsers);
+    const handleBindRules = (rule, start, end)=>{
+        const data = {
+            users: selectedUsers,
+            rule_id: rule,
+            rule_type: null,
+            start: start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+            end: !end ? null : end.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+          };
+        create_links_with_rules(data);
     }
 
     const viewOptions = [
@@ -621,7 +654,9 @@ const UserManagerPage = (props) => {
 
             />
             <br />
-            <div className={'sk-2col-body'}>
+
+            <Affix offsetTop={0}>
+            <div className={'sk-2col-body sk-top-plank'}>
                 <div className="sk-flex-space" style={{alignItems: 'center'}}>
                 <div className="sk-flex" >
                     <Checkbox
@@ -634,7 +669,9 @@ const UserManagerPage = (props) => {
                         {selectedUsers.length > 0 ? (
                             <span
                             style={{background: '#f6ef76', padding: '0px 12px', borderRadius: '6px'}}
-                            >{selectedUsers.length} выделено</span>
+                            >{selectedUsers.length} выделено <span
+                                onClick={()=>{setSelectedUsers([])}}
+                            ><CloseOutlined /></span></span>
                         ):""}
                         </div>
                         </div>
@@ -668,6 +705,7 @@ const UserManagerPage = (props) => {
                     >Панель инструментов</Button>
                 </div>
             </div>
+            </Affix>
             
             <br />
 

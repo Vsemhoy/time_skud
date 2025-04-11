@@ -307,3 +307,14 @@
     display: none !important;
 }
 
+
+.sk-top-plank {
+    background: #ffffff66;
+    padding: 6px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0px 16px 12px -12px #0000002e;
+    transition: all 0.3s;
+}
+.sk-top-plank:hover {
+    background: #ffffffd3;
+}

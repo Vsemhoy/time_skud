@@ -396,7 +396,7 @@ const tagRender = (props) => {
             {openedConsole ? (
                 <div>
                     
-                <Affix offsetTop={0}>
+                <Affix offsetTop={46}>
                 <div className={"sk-tool-console"}>
                     <div className={''} style={{justifyContent: 'space-between'}}>
                         <div>
