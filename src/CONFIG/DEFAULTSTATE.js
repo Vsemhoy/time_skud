@@ -1480,14 +1480,14 @@ export const DS_PROD_CALENDARS = [
 export const DS_SCHEDULE_LIST = [
     
     {
-        "id": 123,
+        "id": 5,
         "id_company" : 2,
         "company_name": "Arstel",
         "company_color": "#FF9900",
         "skud_schedule_type_id": 1,
         "name": "Super schedule F1RST",
         "description": "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
-        "start_time": 1738068722,
+        "start_time": 32400,
         "end_time": 1738968722,
         "target_time": (60*60*8),
         "target_unit": 1,
@@ -1502,14 +1502,14 @@ export const DS_SCHEDULE_LIST = [
         "creator_id": 377
     },
     {
-        "id": 513,
+        "id": 6,
         "id_company" : 2,
         "company_name": "Arstel",
         "company_color": "#FF9900",
         "skud_schedule_type_id": 2,
         "name": "Super schedule SCND",
         "description": "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
-        "start_time": 1738068722,
+        "start_time": 32400,
         "end_time": 1738968722,
         "target_time": (60*60*8),
         "target_unit": 1,
@@ -1524,7 +1524,7 @@ export const DS_SCHEDULE_LIST = [
         "creator_id": 377
     },
     {
-        id: 13233,
+        id: 7,
         created_at: 1738068722,
         id_company: 2,
         company_name: "Arstel",
@@ -1532,7 +1532,7 @@ export const DS_SCHEDULE_LIST = [
         skud_schedule_type_id: 3,
         name: "Super schedule 33333",
         description: "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
-        start_time: 1738068722,
+        start_time: 38400,
         end_time: 1738968722,
         target_time: (60*60*8),
         target_unit: 1,
@@ -1547,7 +1547,7 @@ export const DS_SCHEDULE_LIST = [
         creator_id: 377
     },
     {
-        id: 13433,
+        id: 8,
         created_at: 1738068722,
         id_company: 2,
         company_name: "Arstel",
@@ -1555,7 +1555,7 @@ export const DS_SCHEDULE_LIST = [
         skud_schedule_type_id: 4,
         name: "Super schedule 33333",
         description: "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
-        start_time: 1738068722,
+        start_time: 36400,
         end_time: 1738968722,
         target_time: (60*60*8),
         target_unit: 1,
@@ -1570,7 +1570,7 @@ export const DS_SCHEDULE_LIST = [
         creator_id: 377
     },
     {
-        id: 13353,
+        id: 9,
         created_at: 1738068722,
         id_company: 2,
         company_name: "Arstel",
@@ -1578,7 +1578,7 @@ export const DS_SCHEDULE_LIST = [
         skud_schedule_type_id: 5,
         name: "Super schedule 33333",
         description: "Hell world if yaoudfdf asdfas dfasdf asdasdifa sd",
-        start_time: 1738068722,
+        start_time: 22800,
         end_time: 1738968722,
         target_time: (60*60*8),
         target_unit: 1,
@@ -1643,7 +1643,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 4
             },
             {
-                "id": 11,
+                "id": 9,
                 "type" : 2,
                 "name": "Second rule type",
                 "start": 452352345,
@@ -1651,7 +1651,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 0
             },
             {
-                "id": 51,
+                "id": 8,
                 "type" : 3,
                 "name": "Third rule type sat",
                 "start": 452352345,
@@ -1659,7 +1659,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 4
             },
             {
-                "id": 15,
+                "id": 6,
                 "type" : 4,
                 "name": "Broken leg worse than broken dreams",
                 "start": 452352345,
@@ -1667,7 +1667,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 2
             },
             {
-                "id": 65,
+                "id": 4,
                 "type" : 5,
                 "name": "If you wanna buy a house, just stop being beggar",
                 "start": 452352345,
@@ -1712,7 +1712,7 @@ export const DS_SKUD_GROUPS = [
         "linked_rules": [
 
             {
-                "id": 51,
+                "id": 4,
                 "type" : 3,
                 "name": "Third rule type sat",
                 "start": 452352345,
@@ -1720,7 +1720,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 4
             },
             {
-                "id": 15,
+                "id": 6,
                 "type" : 4,
                 "name": "Broken leg worse than broken dreams",
                 "start": 452352345,
@@ -1728,7 +1728,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 2
             },
             {
-                "id": 65,
+                "id": 8,
                 "type" : 5,
                 "name": "If you wanna buy a house, just stop being beggar",
                 "start": 452352345,
@@ -1745,7 +1745,7 @@ export const DS_SKUD_GROUPS = [
         company_name: "Arstel",
         company_color: "#ee7700",
         linked_schedule: {
-            "id": 5,
+            "id": 6,
             "type": 5,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -1762,7 +1762,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 4
             },
             {
-                "id": 11,
+                "id": 9,
                 "type" : 2,
                 "name": "Second rule type",
                 "start": 452352345,
@@ -1770,7 +1770,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 0
             },
             {
-                "id": 51,
+                "id": 8,
                 "type" : 3,
                 "name": "Third rule type sat",
                 "start": 452352345,
@@ -1778,7 +1778,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 4
             },
             {
-                "id": 15,
+                "id": 7,
                 "type" : 4,
                 "name": "Broken leg worse than broken dreams",
                 "start": 452352345,
@@ -1786,7 +1786,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 2
             },
             {
-                "id": 65,
+                "id": 6,
                 "type" : 5,
                 "name": "If you wanna buy a house, just stop being beggar",
                 "start": 452352345,
@@ -1803,7 +1803,7 @@ export const DS_SKUD_GROUPS = [
         company_name: "Arstel",
         company_color: "#ee7700",
         linked_schedule: {
-            "id": 5,
+            "id": 7,
             "type": 4,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -1820,7 +1820,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 4
             },
             {
-                "id": 11,
+                "id": 9,
                 "type" : 2,
                 "name": "Second rule type",
                 "start": 452352345,
@@ -1828,7 +1828,7 @@ export const DS_SKUD_GROUPS = [
                 "next_count": 0
             },
             {
-                "id": 51,
+                "id": 7,
                 "type" : 3,
                 "name": "Third rule type sat",
                 "start": 452352345,
@@ -1861,7 +1861,7 @@ export const DS_SKUD_GROUPS = [
         company_name: "RONDO",
         company_color: "#44bb00",
         linked_schedule: {
-            "id": 5,
+            "id": 8,
             "type": 3,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -1999,7 +1999,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 6,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2016,7 +2016,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 4
             },
             {
-                "id": 11,
+                "id": 7,
                 "type" : 2,
                 "name": "Second rule type",
                 "start": 452352345,
@@ -2024,7 +2024,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 0
             },
             {
-                "id": 51,
+                "id": 8,
                 "type" : 3,
                 "name": "Third rule type sat",
                 "start": 452352345,
@@ -2032,7 +2032,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 4
             },
             {
-                "id": 15,
+                "id": 9,
                 "type" : 4,
                 "name": "Broken leg worse than broken dreams",
                 "start": 452352345,
@@ -2040,7 +2040,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 2
             },
             {
-                "id": 65,
+                "id": 6,
                 "type" : 5,
                 "name": "If you wanna buy a house, just stop being beggar",
                 "start": 452352345,
@@ -2063,7 +2063,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 8,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2072,7 +2072,7 @@ export const DS_GROUP_USERS = [
         },
         "linked_rules": [
             {
-                "id": 5,
+                "id": 7,
                 "type" : 1,
                 "name": "Fired by fire",
                 "start": 452352345,
@@ -2080,7 +2080,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 4
             },
             {
-                "id": 11,
+                "id": 9,
                 "type" : 2,
                 "name": "Second rule type",
                 "start": 452352345,
@@ -2088,7 +2088,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 0
             },
             {
-                "id": 51,
+                "id": 8,
                 "type" : 3,
                 "name": "Third rule type sat",
                 "start": 452352345,
@@ -2096,7 +2096,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 4
             },
             {
-                "id": 15,
+                "id": 4,
                 "type" : 4,
                 "name": "Broken leg worse than broken dreams",
                 "start": 452352345,
@@ -2104,7 +2104,7 @@ export const DS_GROUP_USERS = [
                 "next_count": 2
             },
             {
-                "id": 65,
+                "id": 5,
                 "type" : 5,
                 "name": "If you wanna buy a house, just stop being beggar",
                 "start": 452352345,
@@ -2127,7 +2127,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 9,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2136,7 +2136,7 @@ export const DS_GROUP_USERS = [
         },
         "linked_rules": [
             {
-                "id": 5,
+                "id": 8,
                 "type" : 1,
                 "name": "Fired by fire",
                 "start": 452352345,
@@ -2191,7 +2191,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 9,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2255,7 +2255,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 7,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2319,7 +2319,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 6,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2383,7 +2383,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 9,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -2449,7 +2449,7 @@ export const DS_GROUP_USERS = [
         occupy: "Лошадиный бог",
         department_name: "Отдел профилактики",
         linked_schedule: {
-            "id": 5,
+            "id": 9,
             "type": 1,
             "name": "Antoxa hey",
             "start": 452352345,
@@ -3544,7 +3544,7 @@ export const DS_RULES = [
         "group_count" : 2
     },
     {
-        "id": 2,
+        "id": 6,
         "rule_type_id" : 5,
         "name": "Можно работать про запас, время копится, лавэ мутится",
         "duration_time": 960,
@@ -3565,7 +3565,7 @@ export const DS_RULES = [
         "group_count" : 2
     },
     {
-        "id": 32,
+        "id": 7,
         "rule_type_id" : 3,
         "name": "Сходил покурить - потерял честь",
         "duration_time": 960,
@@ -3586,7 +3586,7 @@ export const DS_RULES = [
         "group_count" : 2
     },
     {
-        "id": 12,
+        "id": 8,
         "rule_type_id" : 2,
         "name": "Приходи раньше и уходи раньше, твой график - буйный",
         "duration_time": 960,
@@ -3607,7 +3607,7 @@ export const DS_RULES = [
         "group_count" : 2
     },
     {
-        "id": 22,
+        "id": 9,
         "rule_type_id" : 4,
         "name": "Оставайся после работы и отрабатывай и отрабатывай всё, что ты потерял",
         "duration_time": 960,
@@ -3628,7 +3628,7 @@ export const DS_RULES = [
         "group_count" : 2
     },
     {
-        "id": 224,
+        "id": 4,
         "rule_type_id" : 4,
         "name": "A this is proverochni plunk",
         "duration_time": 960,

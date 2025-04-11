@@ -1,7 +1,7 @@
-import { Checkbox } from "antd";
+import { Checkbox, Dropdown } from "antd";
 import React, { useEffect, useState } from "react";
 import TextHighlight from "../../../Utils/TextHelpers/TextHighlight";
-import { CloseOutlined, DownOutlined, EditOutlined, PlusOutlined, UpOutlined } from "@ant-design/icons";
+import { CalendarOutlined, CloseOutlined, DownOutlined, EditOutlined, MenuOutlined, PlusOutlined, TrademarkCircleOutlined, TrademarkOutlined, UpOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { HOST_COMPONENT_ROOT } from "../../../CONFIG/config";
 import SchedStdSVG from "../../../media/schedule-std.svg";
@@ -11,6 +11,8 @@ import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
 import SchedEmptySVG from "../../../media/schedule-empty.svg";
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import UmCardSchedRow from "./UmCardSchedRow";
+import UmCardRuleRow from "./UmCardRuleRow";
 
 
 const Sched_type_icon = (type) => {
@@ -147,12 +149,45 @@ const UserManagerCard = (props)=>{
         }
     }
 
+
+
+    const items = [
+        {
+          key: '1',
+          label: (
+            <a onClick={setOpenScheduleModal}>
+              Редактировать Графики
+            </a>
+          ),
+          icon: <CalendarOutlined />
+          
+        },
+        {
+          key: '2',
+          label: (
+            <a onClick={setOpenRuleModal}>
+              Редактировать Правила
+            </a>
+          ),
+          icon: <TrademarkCircleOutlined />
+        },
+        {
+          key: '3',
+          label: (
+            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+              3rd menu item
+            </a>
+          ),
+          icon: <CloseOutlined />
+        },
+      ];
+
     return (
         <div className={`sk-um-card ${selected ? "sk-um-card-selected" : ""}`}>
             <div className={'sk-um-row sk-um-grid-5col'}
                 onDoubleClick={handleDoubleClickOnTop}
             >
-                { vStyle === 'view_top_only' ? (
+            
                     <div className={'skum-firstcol'}>
                         <span className={'sk-um-checkbox  skf-hovered-show'}>
                             <Checkbox
@@ -165,12 +200,7 @@ const UserManagerCard = (props)=>{
                         </span>
                     
                 </div>
-                ) : (
-                    <div className={'skum-firstcol'}>
-                        
-                        {itemId}
-                    </div>
-                )}
+
                 <div className={'sk-um-title'}>
                 {/* <Highlighter
                         highlightClassName="highlight"
@@ -193,109 +223,45 @@ const UserManagerCard = (props)=>{
                         text={dapartment}
                     />
                 </div>
-                <div>
-                    <div className={'sk-company-tag'} style={{border: `1px solid ${companyColor}`, color: `${companyColor}`}}>
+                <div className={''} style={{display: 'flex', justifyContent:'space-between', alignItems:'center'}}>
+                    <div className={'sk-company-tag'} style={{width: '100%', border: `1px solid ${companyColor}`, color: `${companyColor}`, fontSize: 'x-small'}}>
                         {companyName}
-
                     </div>
+
+                    <Dropdown menu={{ items }} placement="bottomRight" arrow>
+                    <div style={{ color: '#666', padding: '0px 3px 0px 9px', cursor: 'pointer'}}>
+                        {/* <Button>bottomRight</Button> */}
+                        <MenuOutlined />
+                    </div>
+                    </Dropdown>
                 </div>
             </div>
-            {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_middle") && (
 
-                <div className={'sk-flex sk-mid-row-cc'}>
-                    {vStyle === 'view_top_middle' ? (
-                        <div className={'sk-um-checkbox skum-firstcol'}>
-                            <Checkbox
-                            checked={selected}
-                            onChange={handleSelectAction}
-                            />
-                        </div>
-                    ) : (
-                        <div className={'skum-firstcol'}>
-                    
-                        </div>
+
+
+            {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_schedule" || vStyle === "view_top_schedule_rules") && (
+                <>
+                    {props.schedule_item && (
+                        <UmCardSchedRow schedule_item={props.schedule_item} />
                     )}
-
-                    <div style={{width: '100%', marginTop: '6px',marginBottom: '6px',}} className={'skum-card-content'}>
-                    
-                    {data.linked_schedule && data.linked_schedule.id > 0 ? (
-                        <div onDoubleClick={handleDblClickOnSchedule} className={'sk-group-flexer-in-row'}>
-                        <div><Sched_type_icon>{data.linked_schedule && data.linked_schedule.type ? data.linked_schedule.type : 0}</Sched_type_icon></div>
-                        <div>Текущий график: <span className={'sk-font-accent'}>{data.linked_schedule.name}</span></div>
-                        <div>{data.linked_schedule.start  ? dayjs(data.linked_schedule.start).format("DD-MM-YYYY") : "..."}</div>
-                        <div>{data.linked_schedule.end ? dayjs(data.linked_schedule.end).format("DD-MM-YYYY") : "..."}</div>
-                        <div>
-                            {data.schedules_in_queue ? (
-                            <span><strong>{data.schedules_in_queue}</strong> в очереди</span>
-                            ) : ""}
-                            </div>
-                        <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
-                        </div> 
-                        ) : (
-                        <div onDoubleClick={handleDblClickOnSchedule} className={'sk-group-flexer-in-row'}>
-                            <div></div>
-                            <div>Нет графика...</div>
-                            <div>-</div>
-                            <div>-</div>
-                            <div>                        
-                            {data.schedules_in_queue ? (
-                            <span><strong>{data.schedules_in_queue}</strong> в очереди</span>
-                            ) : "-"}</div>
-                            <div  onClick={setOpenScheduleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
-                        </div>  
-                        )}
-
-
-                        {data.linked_rules && data.linked_rules.length > 0 ? (
-                        <div>
-                            <div className={'sk-group-flexer-in-row'} onDoubleClick={handleDblClickOnRule} >
-                            <span onClick={()=>setOpened(!opened)}> {opened ?  (<UpOutlined />) : (<DownOutlined />)}</span>
-                            
-                                <div>
-                                Прикреплено првил: <strong>{data.linked_rules && data.linked_rules.length}</strong> </div>
-                            <div></div>
-                            <div></div>
-                            <div><strong>{data?.rules_in_queue}</strong> в очереди</div>
-                            <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><EditOutlined /></div>
-                            </div>
-                            {opened && (
-                            <div className={'sk-groupcard-graystack'}>
-                                {data.linked_rules.map((row)=>{return (
-                                <div key={`${row.id}_n_${row.type}`} className={'sk-group-flexer-in-row'} onDoubleClick={handleDblClickOnRule} >
-                                    <span><RuleIcons type={row.type}/></span>
-                                    <div onClick={setOpenRuleModal}>  {row.name}</div>
-                                    <div>{row.start ? dayjs(row.start).format('DD-MM-YYYY') : "..."}</div>
-                                    <div>{row.end ? dayjs(row.end).format("DD-MM-YYYY") : "..."}</div>
-                                    <div></div>
-                                </div>
-                                )})}
-                            </div>
-                            )}
-
-                        </div>
-                        ) : (
-                        <div onDoubleClick={handleDblClickOnRule}  className={'sk-group-flexer-in-row'}>
-                            <div></div>
-                            <div>Нет правил...</div>
-                            <div>-</div>
-                            <div>-</div>
-                            <div>-</div>
-                            <div  onClick={setOpenRuleModal} className={'sk-groupcard-mini-trigger'}><PlusOutlined /></div>
-                        </div>
-                        )}
-
-                    </div>
-                </div>
+                </>
+            )}
+            {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_rules" || vStyle === "view_top_schedule_rules") && (
+                <>
+                    {props.rule_items && (
+                        <UmCardRuleRow rule_items={props.rule_items} rule_types={props.rule_types} />
+                    )}
+                </>
             )}
 
             {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_bottom") && (
             <div>
                 <div className={'sk-flex sk-um-footer'}>
                     <div className={'sk-um-checkbox skum-firstcol'}>
-                        <Checkbox
+                        {/* <Checkbox
                         checked={selected}
                         onChange={handleSelectAction}
-                        />
+                        /> */}
                     </div>
                     <div className={'sk-flex'}>
                         { groups.map((item)=>(

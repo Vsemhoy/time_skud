@@ -625,14 +625,24 @@ const UserManagerPage = (props) => {
             value: 'view_top_only'
         },
         {
+            key: `view_top_schedule`,
+            label: "Имя и График",
+            value: 'view_top_schedule'
+        },
+        {
+            key: `view_top_rules`,
+            label: "Имя и Правила",
+            value: 'view_top_rules'
+        },
+        {
+            key: `view_top_schedule_rules`,
+            label: "Имя и График + Правила",
+            value: 'view_top_schedule_rules'
+        },
+        {
             key: `view_top_bottom`,
             label: "Имя и Группа",
             value: 'view_top_bottom'
-        },
-        {
-            key: `view_top_middle`,
-            label: "Имя и График-Правила",
-            value: 'view_top_middle'
         },
         {
             key: `view_top_middle_bottom`,
@@ -730,6 +740,14 @@ const UserManagerPage = (props) => {
                                 onOpenRuleModal={openRulesEditor}
                                 onOpenScheduleModal={openScheduleEditor}
                                 viewStyle={viewCardStyle}
+
+                                schedule_item={baseScheduleList.find((elem)=>{return elem.id === item.linked_schedule.id})}
+
+                                rule_items={baseRuleList.filter((elem)=>{
+                                    return item.linked_rules.map(rule => rule.id).includes(elem.id)
+                                })}
+
+                                rule_types={ruleTypes}
                             />
                         ))}
                     </div>
@@ -772,7 +790,7 @@ const UserManagerPage = (props) => {
                     schedule_types={scheduleTypes}
                     schedule_list={scheduleList}
                     on_open={openedScheduleModal}
-                    base_users={false}
+                    base_user={baseUserList.find((item)=>{return item.id === editedUserId})}
                     on_update={false}
                     on_close={()=>setOpenedScheduleModal(false)}
                 />
@@ -786,7 +804,7 @@ const UserManagerPage = (props) => {
                     on_open={openedRuleModal}
                     rule_types={ruleTypes}
                     rule_list={ruleList}
-                    base_users={false}
+                    base_user={baseUserList.find((item)=>{return item.id === editedUserId})}
                     on_update={false}
                     on_close={()=>setOpenedRuleModal(false)}
                 />

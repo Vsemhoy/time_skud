@@ -41,7 +41,7 @@
 }
 
 .sk-um-as-table .sk-um-card {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.152);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.31);
     border-top: 1px solid rgba(255, 255, 255, 0.451);
 }
 .sk-um-as-cards .sk-um-card {
@@ -95,6 +95,7 @@
     padding: 3px;
     display: flex;
     align-items: center;
+    border-top: 1px solid #0000001e;
 }
 
 .sk-um-cgroup-tag {
@@ -317,4 +318,24 @@
 }
 .sk-top-plank:hover {
     background: #ffffffd3;
+}
+
+.sk-row-cc-2col {
+    display: grid;
+    grid-template-columns: 35px auto;
+    border-top: 1px solid #0000001e;
+}
+.sk-row-inline-several-col {
+    display: grid;
+    grid-template-columns: auto 65px 65px 65px 65px 65px 65px 65px;
+}
+.sk-row-in-cell {
+    padding: 3px;
+    border-left: 1px solid #0000001e;
+    
+    text-align: center;
+}
+.sk-cccard-flexer-in-row img {
+    padding: 0px 6px;
+    width: 100%;
 }

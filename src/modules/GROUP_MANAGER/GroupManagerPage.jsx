@@ -525,7 +525,9 @@ const GroupManagerPage = (props)=>{
                         open_rule_modal={openRulesEditor}
                         open_schedule_modal={openScheduleEditor}
                         open_user_modal={openModalUserEditor}
-                        />
+
+
+                    />
                 ))}
 
             </div>

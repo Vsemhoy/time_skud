@@ -101,3 +101,18 @@ export const WordDayNumerate = (value) => {
         return "дней";
     }
 }
+
+export const secondsToTime = (seconds) => {
+    // Рассчитываем часы и минуты
+   
+    if (seconds > 86400){
+        seconds = seconds % 86400;
+    }
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+  
+    // Форматируем в строку HH:MM
+    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    
+    return formattedTime;
+  }

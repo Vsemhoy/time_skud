@@ -578,7 +578,14 @@ const RulesManagerModal= (props) => {
 
 
       <Modal
-        title="Менеджер правил учёта рабочего времени"
+          title={ <span>Правила учёта РВ: <span
+          style={{fontStyle: "italic", color: "#0095b8"}}
+        >{
+          props.base_user ? (
+            props.base_user.patronymic + " " +
+            props.base_user.name + " " +
+            props.base_user.patronymic
+          ) : " "}</span></span> }
         centered
         open={open}
         cancelText={''}
