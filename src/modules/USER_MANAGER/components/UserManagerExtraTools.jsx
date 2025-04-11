@@ -1,8 +1,8 @@
-import { Affix, Button, DatePicker, Radio, Select, Tag } from "antd";
+import { Affix, Button, DatePicker, Modal, Radio, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
 import React, { useEffect, useState } from "react";
 import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
-import { ClearOutlined, CloseOutlined, CloseSquareOutlined, ToolOutlined } from "@ant-design/icons";
+import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, ToolOutlined } from "@ant-design/icons";
 import Checkbox from "antd/es/checkbox/Checkbox";
 import dayjs from "dayjs";
 
@@ -60,6 +60,10 @@ const [formEnd, setFormEnd]  = useState(dayjs().add(1,'month').endOf('day'));
 //       window.history.pushState({}, '', `${window.location.pathname}?${query.toString()}`);
 //       window.location.reload();
 //   }, [location]);
+
+const [openModalSchedInfo, setOpenModalSchedInfo] = useState(false);
+const [openModalRuleTypeInfo, setOpenModalRuleTypeInfo] = useState(false);
+
 
 
     useEffect(()=>{
@@ -480,15 +484,19 @@ const tagRender = (props) => {
                             </div>
                             <br />
                             <label>Фильтр типа графика</label>
-                        <Select
-                            status="warning"
-                            style={{width: '100%'}}
-                            options={schedTypes}
-                            onChange={(ev)=>{setSelectedSchedType(ev)}}
-                            value={selectedSchedType}
-                        />
+                            <div className={'sk-flex-space'}>
+                                <Select
+                                    status="warning"
+                                    style={{width: '100%'}}
+                                    options={schedTypes}
+                                    onChange={(ev)=>{setSelectedSchedType(ev)}}
+                                    value={selectedSchedType}
+                                />
+                                <Button
+                                onClick={()=>{setOpenModalSchedInfo(true)}}
+                                ><InfoOutlined /></Button>
+                                </div>
 
-                        <br />  
                         <br />  
                         <label>Выберите график работы</label>
                         <Select
@@ -565,6 +573,7 @@ const tagRender = (props) => {
                                 
                             </div>
                         <label>Фильтр типа правила</label>
+                        <div className={'sk-flex-space'}>
                         <Select
                             status="warning"
                             style={{width: '100%'}}
@@ -572,6 +581,10 @@ const tagRender = (props) => {
                             onChange={(ev)=>{setSelectedRuleType(ev)}}
                             value={selectedRuleType}
                         />
+                                                        <Button
+                                onClick={()=>{setOpenModalRuleTypeInfo(true)}}
+                                ><InfoOutlined /></Button>
+                                </div>
                         <br />  
                         <br />  
 
@@ -657,6 +670,54 @@ const tagRender = (props) => {
                     <ToolOutlined /> Открыть панель инструментов
                 </div>
             )}
+
+
+    <Modal
+        title={
+          <div
+            style={{ width: '100%', cursor: 'move' }}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            // end
+          >
+            Типы графиков
+          </div>
+        }
+        open={openModalSchedInfo}
+        onCancel={()=>{setOpenModalSchedInfo(false)}}
+        onOk={()=>{setOpenModalSchedInfo(false)}}
+      >
+        {props.schedTypes.map((item)=>(
+            <div style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}>
+                <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
+                <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
+            </div>
+        ))}
+      </Modal>
+
+
+      <Modal
+        title={
+          <div
+            style={{ width: '100%', cursor: 'move' }}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            // end
+          >
+            Типы правил учёта рабочего времени
+          </div>
+        }
+        open={openModalRuleTypeInfo}
+        onCancel={()=>{setOpenModalRuleTypeInfo(false)}}
+        onOk={()=>{setOpenModalRuleTypeInfo(false)}}
+      >
+        {props.ruleTypes.map((item)=>(
+            <div style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}>
+                <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
+                <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
+            </div>
+        ))}
+      </Modal>
 
         </div>
     );

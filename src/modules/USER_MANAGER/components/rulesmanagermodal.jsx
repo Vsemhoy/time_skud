@@ -374,7 +374,7 @@ const RulesManagerModal= (props) => {
   }
 
 
-      /**
+    /**
      * Создание связи
      * @param {*} req 
      * @param {*} res 
