@@ -1985,9 +1985,9 @@ export const DS_SKUD_GROUPS = [
 export const DS_GROUP_USERS = [
     {
         id: 1,
-        name: 'Кетчуп',
-        surname: 'Помидорчатый',
-        patronymic: 'Со-специями',
+        name: 'Мирослав',
+        surname: 'Германов',
+        patronymic: 'Виосыч',
         department: 1,
         id_company: 3,
         user_group_id: 0,

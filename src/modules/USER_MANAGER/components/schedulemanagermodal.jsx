@@ -578,7 +578,7 @@ const ScheduleManagerModal= (props) => {
           style={{fontStyle: "italic", color: "#0095b8"}}
         >{
           props.base_user ? (
-            props.base_user.patronymic + " " +
+            props.base_user.surname + " " +
             props.base_user.name + " " +
             props.base_user.patronymic
           ) : " "}</span></span> }
