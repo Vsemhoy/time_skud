@@ -6,6 +6,7 @@ import { HOST_COMPONENT_ROOT } from "../../../CONFIG/config";
 
 
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import { EllipsisOutlined } from "@ant-design/icons";
 
 
 
@@ -30,6 +31,17 @@ const UmCardRuleRow = (props)=>{
 
     return (
         <>
+        {props.rule_items === null || rules === undefined  || rules.length === 0 ? (
+                <div className={'sk-row-cc-2col'}>
+                    <div style={{textAlign:'center', padding: '3px',color: '#8b8b8b'}}>
+                        <EllipsisOutlined />
+                    </div>
+                    <div style={{padding: '3px',color: '#8b8b8b'}}>
+                        Нет привязанных правил
+                    </div>
+                </div>
+            ):(
+                <>
         {rules.map((rule)=>{
             const typ  = types.find((item)=> {return item.id === rule.rule_type_id});
             return (
@@ -79,6 +91,8 @@ const UmCardRuleRow = (props)=>{
             </div>
             </div>
         )})}
+        </>
+            )}
         </>
     );
 }

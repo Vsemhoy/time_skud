@@ -10,6 +10,7 @@ import SchedFreeSVG from "../../../media/schedule-free.svg";
 import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
 import SchedEmptySVG from "../../../media/schedule-empty.svg";
+import { EllipsisOutlined } from "@ant-design/icons";
 
 
 const Sched_type_icon = (type) => {
@@ -37,7 +38,7 @@ const Sched_type_icon = (type) => {
 
 
 const UmCardSchedRow = (props)=>{
-
+    console.log("UmCardSchedRow", props);
     const [unitName, setUnitName] = useState("");
 
     const [schedule, setSchedule] = useState(props.schedule_item);
@@ -52,54 +53,70 @@ const UmCardSchedRow = (props)=>{
         }
     }, [props.schedule_item])
 
+
+
     return (
-        <div className={'sk-row-cc-2col'}>
-        <div style={{textAlign:'center'}} className={'sk-cccard-flexer-in-row'}>
-            <Sched_type_icon>{schedule.skud_schedule_type_id}</Sched_type_icon>
-        </div>
-        <div className={'sk-row-inline-several-col'}>
-            <div className={'sk-row-in-cell'}
-                title={schedule.description}
-                style={{textAlign:'left'}}
-                >
-                {schedule.name}
-            </div>
-            <div className={'sk-row-in-cell'}
-            title={"Начало рабочего дня"}
-            >
-                { secondsToTime(schedule.start_time)}
-            </div>
-            <div className={'sk-row-in-cell'}
-            title={"Конец рабочего дня"}
-            >
-                {secondsToTime(schedule.end_time)}
-            </div>
-            <div className={'sk-row-in-cell'}
-            title={"Начало обеда"}
-            >
-                {secondsToTime(schedule.lunch_start)}
-            </div>
-            <div className={'sk-row-in-cell'}
-            title={"Конец обеда"}
-            >
-                {secondsToTime(schedule.lunch_end)}
-            </div>
-                <div className={'sk-row-in-cell'}
-                title={"Время обеда"}
-                >
-                {secondsToTime(schedule.lunch_time)}
-            </div>
-            <div className={'sk-row-in-cell'}
-                title={"Целевое время"}
-            >
-                {secondsToTime(schedule.target_time)}
-            </div>
-            <div className={'sk-row-in-cell'}>
-                {unitName}
-            </div>
-            
-        </div>
-        </div>
+        <>
+            {props.schedule_item === null || schedule === undefined ? (
+                <div className={'sk-row-cc-2col'}>
+                    <div style={{textAlign:'center', padding: '3px',color: '#8b8b8b'}}>
+                        <EllipsisOutlined />
+                    </div>
+                    <div style={{padding: '3px',color: '#8b8b8b'}}>
+                        Нет привязанных графиков
+                    </div>
+                </div>
+            ):(
+                <div className={'sk-row-cc-2col'}>
+                    <div style={{textAlign:'center'}} className={'sk-cccard-flexer-in-row'}>
+                        <Sched_type_icon>{schedule.skud_schedule_type_id}</Sched_type_icon>
+                    </div>
+                    <div className={'sk-row-inline-several-col'}>
+                        <div className={'sk-row-in-cell'}
+                            title={schedule.description}
+                            style={{textAlign:'left'}}
+                            >
+                            {schedule.name}
+                        </div>
+                        <div className={'sk-row-in-cell'}
+                        title={"Начало рабочего дня"}
+                        >
+                            { secondsToTime(schedule.start_time)}
+                        </div>
+                        <div className={'sk-row-in-cell'}
+                        title={"Конец рабочего дня"}
+                        >
+                            {secondsToTime(schedule.end_time)}
+                        </div>
+                        <div className={'sk-row-in-cell'}
+                        title={"Начало обеда"}
+                        >
+                            {secondsToTime(schedule.lunch_start)}
+                        </div>
+                        <div className={'sk-row-in-cell'}
+                        title={"Конец обеда"}
+                        >
+                            {secondsToTime(schedule.lunch_end)}
+                        </div>
+                            <div className={'sk-row-in-cell'}
+                            title={"Время обеда"}
+                            >
+                            {secondsToTime(schedule.lunch_time)}
+                        </div>
+                        <div className={'sk-row-in-cell'}
+                            title={"Целевое время"}
+                        >
+                            {secondsToTime(schedule.target_time)}
+                        </div>
+                        <div className={'sk-row-in-cell'}>
+                            {unitName}
+                        </div>
+                        
+                    </div>
+                </div>
+            )}
+        
+        </>
     );
 }
 

@@ -13,7 +13,7 @@ import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ScheduleManagerModal from "./components/schedulemanagermodal";
 import RulesManagerModal from "./components/rulesmanagermodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CloseOutlined, TableOutlined, TabletOutlined, UngroupOutlined } from "@ant-design/icons";
+import { CloseOutlined, TableOutlined, UngroupOutlined } from "@ant-design/icons";
 
 import Cookies from 'js-cookie';
 
@@ -89,7 +89,6 @@ const UserManagerPage = (props) => {
 
     const [viewCardStyle, setViewCardStyle] = useCookieState('viewCardStyle', 'view_top_only');
     const [viewListStyle, setViewListStyle] = useCookieState('viewListStyle', true);
-
 
     useEffect(()=>{
         if (PRODMODE)
@@ -741,7 +740,7 @@ const UserManagerPage = (props) => {
                                 onOpenScheduleModal={openScheduleEditor}
                                 viewStyle={viewCardStyle}
 
-                                schedule_item={baseScheduleList.find((elem)=>{return elem.id === item.linked_schedule.id})}
+                                schedule_item={baseScheduleList.find((elem)=>{return item.linked_schedule && elem.id === item.linked_schedule.skud_schedule_id})}
 
                                 rule_items={baseRuleList.filter((elem)=>{
                                     return item.linked_rules.map(rule => rule.id).includes(elem.id)

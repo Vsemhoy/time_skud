@@ -54,6 +54,7 @@ const Sched_type_icon = (type) => {
 
 
 const SchedListRow = (props)=>{
+
     const [itemId, setItemId] = useState(props.data.id);
 
     const [itemData, setItemData] = useState(props.data);

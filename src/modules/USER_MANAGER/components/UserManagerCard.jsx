@@ -240,11 +240,9 @@ const UserManagerCard = (props)=>{
 
 
             {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_schedule" || vStyle === "view_top_schedule_rules") && (
-                <>
-                    {props.schedule_item && (
-                        <UmCardSchedRow schedule_item={props.schedule_item} />
-                    )}
-                </>
+
+                <UmCardSchedRow schedule_item={props.schedule_item} />
+                    
             )}
             {(vStyle === "view_top_middle_bottom" || vStyle === "view_top_rules" || vStyle === "view_top_schedule_rules") && (
                 <>

@@ -1,0 +1,28 @@
+.sk-arche-stack {
+    min-height: calc(100vh - 400px);
+    background-color: #efefef;
+}
+
+.sk-evemonic-cardrow {
+    display: grid;
+    grid-template-columns: 120px auto 200px 100px 70px;
+    border: 1px solid #80808061;
+    border-top: none;
+    background: white;
+}
+
+.sk-evemonic-cardrow:first-child {
+    border-top:  1px solid #80808061 !important;
+}
+
+.sk-evemonic-cardrow > div {
+    padding: 4px;
+}
+
+.sk-evemonic-entrance > div {
+    background-color: rgba(0, 255, 255, 0.041);
+}
+
+.sk-evemonic-exit > div {
+    background-color: rgba(255, 0, 55, 0.041);
+}

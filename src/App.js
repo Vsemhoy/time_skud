@@ -27,6 +27,7 @@ import Search from 'antd/es/input/Search';
 import { HomeOutlined, LogoutOutlined, NotificationOutlined, SettingOutlined, SmileOutlined, ThunderboltOutlined, UserOutlined } from '@ant-design/icons';
 import NotifierPage from './modules/NOTIFIER/NotifierPage';
 import UserManagerPage from './modules/USER_MANAGER/UserManagerPage';
+import EventMonitorPage from './modules/EVENT_MONITOR_SK/EventMonitorPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -264,6 +265,13 @@ function App() {
               onClick={()=>{ setLocation('superadmin/randomixer')}}
               >RMXR</Link>
             </MenuItem>
+
+            <MenuItem
+            key={'menu_523566744'}>
+              <Link 
+              onClick={()=>{ setLocation('eventmonitor')}}
+              >Монитор событий</Link>
+            </MenuItem>
           </Menu.SubMenu>
         </Menu>
 
@@ -324,6 +332,9 @@ function App() {
             {location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
             {location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
             {location === 'notificator' && <NotifierPage userdata={userAct} />}
+
+
+            {location === 'eventmonitor' && <EventMonitorPage userdata={userAct} />}
 
           </div>
           ) : (

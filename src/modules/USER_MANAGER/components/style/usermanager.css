@@ -90,12 +90,14 @@
     align-items: center;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+    min-height: 36px;
 }
 .sk-um-as-table .sk-um-footer {
     padding: 3px;
     display: flex;
     align-items: center;
     border-top: 1px solid #0000001e;
+    min-height: 36px;
 }
 
 .sk-um-cgroup-tag {
