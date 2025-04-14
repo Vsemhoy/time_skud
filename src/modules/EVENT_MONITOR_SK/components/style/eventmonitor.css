@@ -26,3 +26,28 @@
 .sk-evemonic-exit > div {
     background-color: rgba(255, 0, 55, 0.041);
 }
+
+.sk-drform-label {
+    color: rgb(43, 43, 43);
+    margin-bottom: 6px;;
+}
+.sk-dform-enttab {
+    background: #bde9d1;
+    font-size: large;
+    font-weight: 500;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #339c6252;
+    border-radius: 3px;
+}
+.sk-dform-exttab {
+    background: #ffd2d2;
+    font-size: large;
+    font-weight: 500;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ff000052;
+    border-radius: 3px;
+}

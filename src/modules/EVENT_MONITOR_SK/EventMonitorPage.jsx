@@ -58,6 +58,11 @@ const EventMonitorPage = (props) => {
     // ------------------ FetchWorld END ----------------------
 
 
+    const handleCustomEventCreation = () => {
+        get_arch_events(queryParams);
+        // Call to reload page after insert user's action
+    }
+
 
 return (
     <div className={'sk-mw-1400'} style={{padding: '12px'}}>
@@ -67,6 +72,7 @@ return (
     <EventMonitorToolbar 
         on_chang_query_params={(data)=>{setQueryParams(data)}}
         pagination_total={totalRowsInQuery}
+        on_create_event={handleCustomEventCreation}
     />
     
     <div className={'sk-arche-stack'}>
