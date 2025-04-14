@@ -525,6 +525,9 @@ const EventMonitorToolbar = (props)=>
 
                 </div>
                 <br />
+                {formStartTime?.format('YYYY-MM-DD HH:mm') === formEndTime?.format('YYYY-MM-DD HH:mm') && (
+                    <div>Время входа и выхода не должно совпадать<br /><br /></div>
+                )}
                 <div className={'sk-dform-exttab'}>
                 <label className={'sk-drform-label'}>
                     Выход
@@ -548,11 +551,13 @@ const EventMonitorToolbar = (props)=>
                         onChange={(ev)=>{setFormReason(ev.target.value)}}
                         value={formReason}
                         onKeyDown={handleChangeVariants}
+                        placeholder="Нажмите стрелку вниз\вверх на клавиатуре, чтобы выбрать шаблонный текст"
                     ></TextArea>
 
                 <br />
                 {formValid ? (
                     <Button
+                    type="primary"
                     onClick={handleCreateEvent}
                     block >
                     Сохранить

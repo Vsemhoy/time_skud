@@ -9,7 +9,7 @@ import {
 import HomePage from './modules/DEFAULT_PAGE/HomePage';
 import UserListPage from './modules/USER_LIST/UserListPage';
 import UserPage from './modules/USER_PAGE/UserPage';
-import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar, Drawer, Button, Badge } from 'antd';
+import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar, Drawer, Button, Badge, Alert } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
 import { useEffect, useState } from 'react';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
@@ -29,17 +29,30 @@ import NotifierPage from './modules/NOTIFIER/NotifierPage';
 import UserManagerPage from './modules/USER_MANAGER/UserManagerPage';
 import EventMonitorPage from './modules/EVENT_MONITOR_SK/EventMonitorPage';
 
+import Cookies from 'js-cookie';
+import dayjs from 'dayjs';
 
 const { Header, Content, Footer } = Layout;
 
+const useCookieState = (key, defaultValue) => {
+  const [state, setState] = useState(() => {
+    const saved = Cookies.get(key);
+    return saved ? JSON.parse(saved) : defaultValue;
+  });
 
+  useEffect(() => {
+    Cookies.set(key, JSON.stringify(state), { expires: 365 }); // Храним год
+  }, [key, state]);
 
+  return [state, setState];
+};
 
 
 function App() {
   const menuItems = [
 
   ];
+  const [alertNotShowDate, setAlertNotShowDate] = useCookieState('skud_alert_notshow_date', "");
 
   const [userAct, setUserAct] = useState(!PRODMODE ? DS_USER : []);
   const [pageLoaded, setPageLoaded] = useState(false);
@@ -313,7 +326,25 @@ function App() {
           </Dropdown>
         </div>
       </Header>
-
+      {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && (
+        <Alert
+          message=<div className='sk-flex-space'>
+          <span>"Возможно Вы забыли приложить карту при входе в офис"</span>
+          <Button
+            style={{marginRight: '12px'}}
+            size={'small'}
+            danger
+            onClick={()=>{
+              setAlertNotShowDate(dayjs().format("YYYY-MM-DD"));
+            }}
+          >
+            Не показывать сегодня
+          </Button>
+          </div>
+          banner  type="error"
+          closable
+        />
+      )}
       <Content style={{ padding: '0 48px' }}>
         
         

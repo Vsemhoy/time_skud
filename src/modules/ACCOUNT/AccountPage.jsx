@@ -187,7 +187,7 @@ const AccountPage = (props) => {
 
     
     return (
-        <div className={'sk-mw-1200'}>
+        <div className={'sk-mw-1400'} style={{padding: '12px'}}>
             <div>
             <h1>Главная страница юзера</h1>
             </div>

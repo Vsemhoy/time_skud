@@ -69,7 +69,7 @@ const HomePage = () => {
 
     
     return (
-        <div className={'sk-mw-1000'}>
+        <div className={'sk-mw-1400'} style={{padding: '12px'}}>
             <div>
             <h1>Главная страница юзера</h1>
             </div>
