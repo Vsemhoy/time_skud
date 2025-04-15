@@ -5,7 +5,7 @@
 
 .sk-evemonic-cardrow {
     display: grid;
-    grid-template-columns: 120px auto 200px 100px 70px;
+    grid-template-columns: 100px 40px 300px auto 130px 90px 70px;
     border: 1px solid #80808061;
     border-top: none;
     background: white;
@@ -25,6 +25,13 @@
 
 .sk-evemonic-exit > div {
     background-color: rgba(255, 0, 55, 0.041);
+}
+
+.sk-evemonic-entrance.sk-evemonic-cuscard > div {
+    background-color: rgba(0, 255, 255, 0.178);
+}
+.sk-evemonic-exit.sk-evemonic-cuscard > div {
+    background-color: rgba(255, 0, 55, 0.171);
 }
 
 .sk-drform-label {

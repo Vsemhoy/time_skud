@@ -61,8 +61,6 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
 
     const [saveMode, setSaveMode] = useState(false);
 
-
-
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const openDayEditorDrawer = (day) => {

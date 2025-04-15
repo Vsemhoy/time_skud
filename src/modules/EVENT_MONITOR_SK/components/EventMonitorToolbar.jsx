@@ -150,9 +150,17 @@ const EventMonitorToolbar = (props)=>
             setTargetStartDate(date.startOf('year').startOf('day'));
             setTargetEndDate(date.endOf('year').endOf('day'));
         }
-        
     }
 
+
+    useEffect(()=>{ 
+        setFormStartTime(targetStartDate?.hour(9).minute(15))
+    },[targetStartDate]);
+
+    useEffect(()=>{ 
+        setFormEndTime(targetEndDate?.hour(18).minute(0))
+    },[targetStartDate]);
+    
     
     useEffect(()=>{ 
 
@@ -395,7 +403,6 @@ const EventMonitorToolbar = (props)=>
                     onChange={(ev)=>{setTargetString(ev.target.value)}}
                 />
                 <Select
-                disabled
                     style={{width: '220px'}}
                     placeholder={'Где событие создано'}
                     value={selectedSource}

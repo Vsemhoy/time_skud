@@ -80,6 +80,15 @@ return (
             <Empty />
         ):(
             <>
+            <div className={`sk-evemonic-cardrow`}>
+                <div>id</div>
+                <div>src</div>
+                <div>Имя сотрудника</div>
+                <div>Причина</div>
+                <div>Время события</div>
+                <div>День</div>
+                <div>Тип</div>
+            </div>
                 {baseArchEvents.map((arche)=>(
                     <EventMonitorListCard
                         data={arche}
