@@ -31,6 +31,7 @@ import EventMonitorPage from './modules/EVENT_MONITOR_SK/EventMonitorPage';
 
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs';
+import UserStatisticsPage from './modules/USER_STATISTICS/UserStatisticsPage';
 
 const { Header, Content, Footer } = Layout;
 
@@ -217,7 +218,6 @@ function App() {
               <Link
                 onClick={()=>{ setLocation('me')}}
               >Моё</Link>
-              
             </MenuItem>
 
             <MenuItem
@@ -226,6 +226,14 @@ function App() {
                 onClick={()=>{ setLocation('userlist')}}
               >Сотрудники</Link>
             </MenuItem>
+
+            <MenuItem
+            key={'menu_52d3994'}>
+              <Link
+                onClick={()=>{ setLocation('statistics')}}
+              >Статистика</Link>
+            </MenuItem>
+
           </Menu.SubMenu>
           <Menu.SubMenu key="menu2" title="Управление сотрудниками">
           <MenuItem
@@ -354,6 +362,7 @@ function App() {
             {/* {location === 'home' && <HomePage />} */}
             {location === '' && <AccountPage userdata={userAct} />}
             {location === 'me' && <AccountPage userdata={userAct} />}
+            {location === 'statistics' && <UserStatisticsPage userdata={userAct} />}
             {location === 'admin' && <AdminPage />}
             {location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
             {location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}

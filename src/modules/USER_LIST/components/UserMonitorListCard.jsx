@@ -2,7 +2,7 @@ import { Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { BugOutlined, IssuesCloseOutlined, RobotOutlined } from "@ant-design/icons";
+import { BarChartOutlined, BugOutlined, IssuesCloseOutlined, RobotOutlined } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
@@ -87,8 +87,16 @@ const UserMonitorListCard = (props) => {
                 <div>
                     <div>
                         {content.name}
-
                     </div>
+                </div>
+                <div>
+                    <BarChartOutlined 
+                        className={'sk-usermoinc-divider-statrig-button'}
+                        title="Статистика по отделу"
+                    />
+                </div>
+                <div style={{padding: '3px'}}>
+                   
                 </div>
                 </>
             ):(

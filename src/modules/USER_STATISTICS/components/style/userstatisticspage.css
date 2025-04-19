@@ -1,0 +1,10 @@
+.sk-usp-layout-container {
+    display: grid;
+    grid-template-columns: 300px auto;
+    grid-gap: 12px;
+}
+.sk-usp-filter-col, .sk-usp-content-col {
+    background-color: #efefef;
+    min-height: 400px;
+    width: 100%;
+}

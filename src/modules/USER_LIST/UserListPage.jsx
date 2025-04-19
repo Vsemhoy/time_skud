@@ -11,6 +11,7 @@ import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
 import { FileUnknownOutlined, InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { USER_STATE_PLACES } from "../../CONFIG/DEFFORMS";
 
 
 const UserList = (props)=>{
@@ -31,6 +32,8 @@ const UserList = (props)=>{
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortBy, setSortBy ] = useState(null);
   const [selectedColumns, setSelectedColumns] = useState([]);
+
+  const [badger, setBadger] = useState(null);
 
 
   const markedUsersRef = useRef(markedUsers);
@@ -142,8 +145,9 @@ const UserList = (props)=>{
     console.log('user_id', user_id)
     handleMarkUser(user_id);
     setOpenUserInfo(true);
-    setTargetUserInfo(baseUserListData.find((item)=> item.user_id === user_id));
-    
+    let usr = baseUserListData.find((item)=> item.user_id === user_id);
+    setTargetUserInfo(usr);
+    setBadger(USER_STATE_PLACES[usr.current_state]);
   }
 
 
@@ -233,7 +237,7 @@ const UserList = (props)=>{
   };
 
     return (
-        <div>
+        <div style={{padding: '6px'}} className={'sk-mw-1400'}>
             <br/>
             <UserListToolbar
               // onSortBy={sortUserList}
@@ -242,6 +246,7 @@ const UserList = (props)=>{
               onChange={SortFilterChanged}
               userData={userdata}
               on_find_me={handleFindMe}
+              im_exist={userListData.find((item)=>  item.user_id === userdata.user.id) != null}
             />
             
             {/* <Table 
@@ -447,23 +452,38 @@ const UserList = (props)=>{
 
               ): ""}
 
-              <br />
+              
               
               {targetUserGuys && targetUserGuys.length > 0 && (
-              <div className="sk-boss-wrapper-sf">
-                <div style={{fontSize: 'large',
-                      fontSize: 'initial', fontWeight:'bolder',
-                      borderBottom: '1px solid gray'
-                    }}><span>Сотрудники</span></div>
-                { targetUserGuys.map((item, index)=>(
-                  <div className={'sk-boss-guy-card'}
-                   onClick={()=>{
-                    setTargetUserInfo(baseUserListData.find((user)=> user.user_id === item.user_id),
-                    handleMarkUser(item.user_id));}}
-                  >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
-                ))}
+                <>
+                <br />
+                  <div className="sk-boss-wrapper-sf">
+                    <div style={{fontSize: 'large',
+                          fontSize: 'initial', fontWeight:'bolder',
+                          borderBottom: '1px solid gray'
+                        }}><span>Сотрудники</span></div>
+                    { targetUserGuys.map((item, index)=>(
+                      <div className={'sk-boss-guy-card'}
+                      onClick={()=>{
+                        setTargetUserInfo(baseUserListData.find((user)=> user.user_id === item.user_id),
+                        handleMarkUser(item.user_id));}}
+                      >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
+                    ))}
 
-              </div>
+                  </div>
+                </>
+              )}
+
+              {badger && (
+                <>
+                <br />
+                <br />
+                <div style={{background: badger.color + 99}}
+                className="sk-state-intgra-card">
+                  {badger.icon} {badger.title} 
+                </div>
+
+                </>
 
               )}
 

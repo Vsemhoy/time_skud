@@ -3789,7 +3789,7 @@ export const DS_USERLIST_USERS = [
         "time_need_work": null,
         "current_place": null,
         "current_state": 0,
-        "is_late": null,
+        "is_late": 1,
         "control_date": null,
         "boss_name": null,
         "boss_surname": null,

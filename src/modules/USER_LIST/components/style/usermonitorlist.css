@@ -19,7 +19,7 @@
 
 .sk-usermonic-crd-divider {
     display: grid;
-    grid-template-columns: 10px auto !important;
+    grid-template-columns: 10px auto 22px 120px !important;
     background-color: #bde9d1;
 }
 
@@ -152,3 +152,21 @@
 .sk-arche-stack:focus-visible {
     outline: 1px solid #0278bd19;
 }   
+
+.sk-usermoinc-divider-statrig-button {
+    color: gray;
+    height: 100%;
+    display: flex;
+    cursor: pointer;
+}
+.sk-usermoinc-divider-statrig-button:hover {
+    color: #006d9f;
+}
+.sk-state-intgra-card {
+    font-size: large;
+    padding: 6px;
+    border-radius: 6px;
+    box-shadow: 3px 4px 9px -3px #00000059;
+    backdrop-filter: blur(1px);
+    border: 1px solid white;
+}

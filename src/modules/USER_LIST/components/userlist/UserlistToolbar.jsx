@@ -1,4 +1,4 @@
-import { Button, DatePicker, Select } from "antd";
+import { Button, Collapse, DatePicker, Select } from "antd";
 import React, { useState, useEffect, use } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import '../../../../components/TimeSkud/Style/timeskud.css'
 import { StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../../CONFIG/config";
+import { getWeekDayString } from "../../../../GlobalComponents/Helpers/TextHelpers";
 
 
 const UserListToolbar = (props) => {
@@ -26,6 +27,7 @@ const UserListToolbar = (props) => {
     const [baseUserListData, setBaseUserListData] = useState(props.baseUsers);
     const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
     const [usedSort, setUsedSort] = useState(0);
+    const [imExist, setImExist] = useState(false);
     const [sortByValues, setSortByValues] = useState([
         {
             key:'ssv001',
@@ -99,6 +101,11 @@ const UserListToolbar = (props) => {
         return currentDate.getTime();
     };
 
+
+    useEffect(()=>{
+        console.log('im_exist.', props.im_exist)
+        setImExist(props.im_exist);
+    }, [props.im_exist])
 
     useEffect(()=>{
 
@@ -334,19 +341,44 @@ const UserListToolbar = (props) => {
 
 
     return (
-        <div className={"ts-toolbar"} style={{width: '100%'}}>
-        <div className={"sk-flex-gap sk-flex-space"}
-            style={{width: '100%'}}
-        >
-            <div className={"sk-m"}>
-                {companies.length > 1 ? (
+        <div style={{width: '100%'}}>
+
+            <div className={"sk-flex-gap sk-flex-space"}
+                style={{width: '100%'}}
+            >
+                <div>
+                    {companies.length > 1 ? (
                     <Select 
                         options={companies}
                         value={usedCompany} // Use value instead of defaultValue for controlled component
                         style={{ minWidth: 140 }}
                         onChange={handleUsedCompanyChange}
                     />
-                ) : ''}
+                    ) : ''}
+                </div>
+                <div
+                    style={{fontSize: 'large'}}
+                >
+                    {getWeekDayString( usedDate.day())}
+                </div>
+            <div>
+                <Select
+                    minWidth={130}
+                    placeholder={'Упорядочить по'}
+                    options={sortByValues}
+                    value={usedSort == 0 ? null : usedSort}
+                    allowClear={true}
+                    onChange={handleSortByChange}
+                />
+            </div>
+                </div>
+        
+        <div className={"sk-flex-gap sk-flex-space"}
+            style={{width: '100%'}}
+        >
+
+            <div className={"sk-m"}>
+                
 
                 <Select 
                     options={departments}
@@ -363,32 +395,27 @@ const UserListToolbar = (props) => {
                     // defaultValue={usedDate}
                     value={usedDate}
                     onChange={handleUsedDateChange}
+                    format={"DD-MM-YYYY"}
                     />
                 <Button 
                     onClick={increaseDate}
                 ><StepForwardOutlined /></Button>
 
             </div>
+
             <div>
-                <Select
-                    minWidth={130}
-                    placeholder={'Упорядочить по'}
-                    options={sortByValues}
-                    value={usedSort == 0 ? null : usedSort}
-                    allowClear={true}
-                    onChange={handleSortByChange}
-                />
-            </div>
-            <div>
-                <Button
-                    title="найти себя"
-                    onClick={handleFindMyself}
-                 danger>Я</Button>
+                {imExist && (
+                    <Button
+                        title="найти себя"
+                        onClick={handleFindMyself}
+                    danger>Где Я?</Button>
+                )}
 
             </div>
 
 
         </div>
+        <br />
         </div>
     );
 }
