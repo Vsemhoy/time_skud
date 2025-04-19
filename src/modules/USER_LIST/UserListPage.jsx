@@ -125,6 +125,7 @@ const UserList = (props)=>{
 
   const handleShowUserInfo = (user_id)=>{
     console.log('user_id', user_id)
+    handleMarkUser(user_id);
     setOpenUserInfo(true);
     setTargetUserInfo(baseUserListData.find((item)=> item.user_id === user_id));
     
@@ -141,10 +142,12 @@ const UserList = (props)=>{
     console.log('markedUsers', markedUsers)
     if (event.key === "Escape") {
       //Do whatever when esc is pressed
+      console.log('openUserInfo', openUserInfo)
       if (openUserInfo === true){
         setOpenUserInfo(false);
-      } else if (markedUsers.length > 0){
-        setMarkedUsers([0]);
+      } else if (markedUsers.length > 0 && markedUsers[0] !== 0){
+        setMarkedUsers([]);
+        console.log('markedUsers.length', markedUsers.length)
       } else {
         setSelectedColumns([]);
       }
@@ -163,13 +166,16 @@ const UserList = (props)=>{
   };
 
 
-  useEffect(() => {
+  useEffect(()=>{
     document.addEventListener("keydown", escFunction, false);
+  }, []);
+  // useEffect(() => {
+  //   document.addEventListener("keydown", escFunction, false);
 
-    return () => {
-      document.removeEventListener("keydown", escFunction, false);
-    };
-  }, [escFunction]);
+  //   return () => {
+  //     document.removeEventListener("keydown", escFunction, false);
+  //   };
+  // }, [escFunction]);
 
     return (
         <div>

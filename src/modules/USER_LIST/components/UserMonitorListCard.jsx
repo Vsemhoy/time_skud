@@ -47,13 +47,10 @@ const UserMonitorListCard = (props) => {
     },[props.its_me]);
 
     useEffect(()=> {
-        console.log('USER EVV');
         if (content.user_id !== undefined && props.marked_users && props.marked_users.includes(content.user_id)){
             setMarkedCard(true);
-            console.log('set true', content.user_id);
         } else {
             setMarkedCard(false);
-            console.log('set false', content.user_id);
         }
     },[props.marked_users])
 
@@ -98,7 +95,9 @@ const UserMonitorListCard = (props) => {
                     {content.user_id}
                 </div>
 
-                <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
+                <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}
+                    title={content.user_occupy}
+                >
                     {content.user_surname} {content.user_name} {content.user_patronymic}
                 </div>
 

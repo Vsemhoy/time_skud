@@ -137,7 +137,8 @@
 }
 
 .sk-col-selected {
-    box-shadow: inset 0px 0px 99px #8080803d;
+    /* box-shadow: inset 0px 0px 99px #8080803d; */
     border-right: 1px solid rgba(255, 255, 255, 0.478);
     border-left: 1px solid rgba(255, 255, 255, 0.488);
+    background-color: rgba(0, 0, 0, 0.079);
 }
