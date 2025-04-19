@@ -1,0 +1,111 @@
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) {
+    display: grid;
+    grid-template-columns: 42px  300px 50px auto  28px 28px 120px;
+    border: 1px solid #80808061;
+    border-top: none;
+    background: white;
+    transition: all ease 0.2s;
+}
+.sk-usermonic-cardrow > div {
+    transition: all 0.1s;
+}
+/* .sk-usermonic-cardrow:nth-child(even){
+    background-color: #03a9f4;
+} */
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider):hover > div {
+    background: #fff5d7;
+}
+
+.sk-usermonic-crd-divider {
+    display: grid;
+    grid-template-columns: 10px auto !important;
+    background-color: #bde9d1;
+}
+
+.sk-usermonic-cardrow:first-child {
+    border-top:  1px solid #80808061 !important;
+}
+
+.sk-usermonic-cardrow > div {
+    padding: 4px;
+}
+
+.sk-usermonic-badger {
+    width: 100%;
+}
+.sk-usermonic-badger > span:last-child {
+    color: gray;
+}
+
+.sk-usermonic-boss-trigger {
+    color: rgb(180, 180, 180);
+    transition: all ease 0.3s;
+    cursor: pointer;
+}
+.sk-usermonic-boss-trigger:hover {
+    color: rgb(79, 79, 79);
+
+}
+
+.sk-usermonic-crd-marked > div {
+    background-color: #03a9f4 !important;
+    color: white;
+}
+
+.sk-usermonic-crd-mine > div {
+    background-color: #ffab91;
+}
+
+.sk-usermonic-drawer-row {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgb(195, 195, 195);
+}
+.sk-labed-um {
+    color: #0277BD;
+    font-weight: 500;
+    font-size: small;
+    padding-bottom: 1px;
+}
+.sk-contend-um {
+    font-size: medium;
+    font-style: italic;
+}
+.sk-boss-wrapper-sf {
+    /* background-color: #e7e7e7; */
+    background-color: #00000021;
+    padding: 6px;
+    border-radius: 6px;
+}
+.sk-usermonic-micro-row {
+    display: grid;
+    grid-template-columns: 50px 50px 50px 50px 50px 50px;
+}
+
+.sk-usermonic-headerrow {
+    background: #00000012 !important;
+    backdrop-filter: blur(12px);
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+.sk-usermonic-headerrow > div {
+    background: #00000000 !important;
+    /* backdrop-filter: blur(6px); */
+
+}
+
+.ant-drawer-content-wrapper {
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0) !important;
+    /* transition-delay: 1450ms !important; */
+}
+.ant-drawer-content-wrapper.ant-drawer-content-wrapper-hidden {
+    background: rgb(255, 255, 255) !important;
+}
+
+.ant-drawer-content {
+    transition-delay: 1250ms !important;
+    background: #ffffffa1 !important;
+    backdrop-filter: blur(14px) !important;
+}

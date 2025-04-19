@@ -235,27 +235,27 @@ const UserListToolbar = (props) => {
                 break;
     
             case "name_asc":
-                sortedData.sort((a, b) => a.name.localeCompare(b.name));
+                sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
                 break;
     
             case "name_desc":
-                sortedData.sort((a, b) => b.name.localeCompare(a.name));
+                sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
                 break;
     
             case "surname_asc":
-                sortedData.sort((a, b) => a.surname.localeCompare(b.surname));
+                sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
                 break;
     
             case "surname_desc":
-                sortedData.sort((a, b) => b.surname.localeCompare(a.surname));
+                sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
                 break;
     
             case "state_asc":
-                sortedData.sort((a, b) => a.state - b.state);
+                sortedData.sort((a, b) => a.current_state - b.current_state);
                 break;
     
             case "state_desc":
-              sortedData.sort((a, b) => b.state - a.state);
+              sortedData.sort((a, b) => b.current_state - a.current_state);
             //   console.log( sortedData);
               break;
     
@@ -288,7 +288,7 @@ const UserListToolbar = (props) => {
         let next = -1; // next department ID
     
         for (let i = 0; i < dataArray.length; i++){
-          let dep_id = dataArray[i].department;
+          let dep_id = dataArray[i].department_id;
           
           if (dep_id != next){
             // insert custom row
@@ -326,9 +326,18 @@ const UserListToolbar = (props) => {
   };
 
 
+    const handleFindMyself = ()=>{
+        if (props.on_find_me){
+            props.on_find_me();
+        }
+    }
+
+
     return (
-        <div className={"ts-toolbar"}>
-        <div style={{display: 'flex'}} className={"sk-flex-gap"}>
+        <div className={"ts-toolbar"} style={{width: '100%'}}>
+        <div className={"sk-flex-gap sk-flex-space"}
+            style={{width: '100%'}}
+        >
             <div className={"sk-m"}>
                 {companies.length > 1 ? (
                     <Select 
@@ -339,40 +348,46 @@ const UserListToolbar = (props) => {
                     />
                 ) : ''}
 
-            <Select 
-                options={departments}
-                value={usedDepartment} // Use value instead of defaultValue for controlled component
-                style={{ minWidth: 140 }}
-                onChange={handleUsedDepartmentChange}
-            />
-            </div>
-            <div>
-            <Button 
-                onClick={decreaseDate}
-            ><StepBackwardOutlined /></Button>
-            <DatePicker 
-                // defaultValue={usedDate}
-                value={usedDate}
-                onChange={handleUsedDateChange}
+                <Select 
+                    options={departments}
+                    value={usedDepartment} // Use value instead of defaultValue for controlled component
+                    style={{ minWidth: 140 }}
+                    onChange={handleUsedDepartmentChange}
                 />
-            <Button 
-                onClick={increaseDate}
-            ><StepForwardOutlined /></Button>
             </div>
             <div>
-            <Select
-                minWidth={130}
-                placeholder={'Упорядочить по'}
-                options={sortByValues}
-                value={usedSort == 0 ? null : usedSort}
-                allowClear={true}
-                onChange={handleSortByChange}
-            />
+                <Button 
+                    onClick={decreaseDate}
+                ><StepBackwardOutlined /></Button>
+                <DatePicker 
+                    // defaultValue={usedDate}
+                    value={usedDate}
+                    onChange={handleUsedDateChange}
+                    />
+                <Button 
+                    onClick={increaseDate}
+                ><StepForwardOutlined /></Button>
+
+            </div>
+            <div>
+                <Select
+                    minWidth={130}
+                    placeholder={'Упорядочить по'}
+                    options={sortByValues}
+                    value={usedSort == 0 ? null : usedSort}
+                    allowClear={true}
+                    onChange={handleSortByChange}
+                />
+            </div>
+            <div>
+                <Button
+                    title="найти себя"
+                    onClick={handleFindMyself}
+                 danger>Я</Button>
+
             </div>
 
 
-
-            
         </div>
         </div>
     );

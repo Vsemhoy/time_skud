@@ -1,21 +1,29 @@
-import React, {useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState } from "react";
 
 import UserListToolbar from "./components/userlist/UserlistToolbar";
-import { Table } from "antd";
+import { Affix, Drawer, Empty, Table } from "antd";
 import '../../components/TimeSkud/Style/timeskud.css';
-import { DS_DEFAULT_USERS, DS_DEPARTMENTS } from "../../CONFIG/DEFAULTSTATE";
+import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
 import { ShortName } from "../../GlobalComponents/Helpers/TextHelpers";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
+import UserMonitorListCard from "./components/UserMonitorListCard";
+import dayjs from "dayjs";
+import { InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
 
 
 const UserList = (props)=>{
   const { userdata } = props;
   const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
 
-  const [baseUserListData, setBaseUserListData] = useState(!PRODMODE ? DS_DEFAULT_USERS : []);
+  const [baseUserListData, setBaseUserListData] = useState([]);
   const [userListData, setUserListData] = useState(baseUserListData.sort((a, b) => b.department - a.department));
+
+  const [markedUsers, setMarkedUsers] = useState([]);
+
+  const [openUserInfo, setOpenUserInfo] = useState(false);
+  const [targetUserInfo, setTargetUserInfo] = useState(null);
 
   const [departments, setDepartments]  = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -29,82 +37,24 @@ const UserList = (props)=>{
     };
       
 
-    // const fet = {
-    //     "status" : если null|0 - работающие (status=0), если 1 - уволенные (status=1)
+    useEffect(()=>{
+      setUserListData(baseUserListData.sort((a, b) => b.department - a.department));
+    }, [baseUserListData])
+  
+  
+    useEffect(() => {
+      if (PRODMODE){
+        get_departments();
+        get_users();
+      } else {
+        setDepartments(DS_DEPARTMENTS);
+        setBaseUserListData(DS_USERLIST_USERS);
+      }
+  
+    },[])
 
-    // }
 
-    const columns = [
-      {
-        title: 'ФИО',
-        key: 'namekey',
-        render: (text, record) => {
-            if (record.type && record.type === 'header') {
-                return <span>{record.name} {record.id}</span>; // Отображаем имя для заголовка
-            } else {
-              if (record.name != ""){
-                return (
-                  <a onClick={() => openUserCard(record.id)} title={`${record.surname} ${record.name} ${record.patronymic}`}>
-                    <span className="sk-table-username"><span className="sk-table-state-badge"> </span>  {ShortName(record.surname, record.name, record.patronymic)}</span>
-                  </a>
-              );
-              } else {
-                return (
-                  <a onClick={() => openUserCard(record.id)} title={`${record.surname} ${record.name} ${record.patronymic}`}>
-                      <strong>test user</strong>
-                  </a>
-              );
-              }
 
-            }
-        },
-        onCell: (record) => {
-            return {
-                colSpan: record.type && record.type === 'header' ? 5 : 1,
-            };
-        },
-    },
-      {
-          title: 'Тел',
-          dataIndex: 'phone',
-          key: 'ponekey',
-          onCell: (record) => {
-            return {
-                colSpan: record.type && record.type === 'header' ? 0 : 1,
-            };
-        },
-      },
-      {
-          title: 'Время входа',
-          dataIndex: 'enter',
-          key: 'enterkey',
-          onCell: (record) => {
-            return {
-                colSpan: record.type && record.type === 'header' ? 0 : 1,
-            };
-        },
-      },
-      {
-          title: 'Время выхода',
-          dataIndex: 'exit',
-          key: 'exitkey',
-          onCell: (record) => {
-            return {
-                colSpan: record.type && record.type === 'header' ? 0 : 1,
-            };
-        },
-      },
-      {
-          title: 'Потерянное время',
-          dataIndex: 'losttime',
-          key: 'losttimekey',
-          onCell: (record) => {
-            return {
-                colSpan: record.type && record.type === 'header' ? 0 : 1,
-            };
-        },
-      },
-  ];
 
 
     
@@ -148,56 +98,54 @@ const UserList = (props)=>{
   /** ------------------ FETCHES END ---------------- */
 
 
-  useEffect(()=>{
-    setUserListData(baseUserListData.sort((a, b) => b.department - a.department));
-  }, [baseUserListData])
 
 
-  useEffect(() => {
-    if (PRODMODE){
-      get_departments();
-      get_users();
-    } else {
-      setDepartments(DS_DEPARTMENTS);
+  const handleMarkUser = (user_id)=>{
+    setMarkedUsers([user_id]);
+    
+    const elementdiv = document.querySelector('#row_' + user_id);
+    if (elementdiv){
+      elementdiv.scrollIntoView({ block: "center", behavior: "smooth" });
     }
+  }
 
-  },[])
-
-
-      
-    // Функция для определения класса строки
-    const rowClassName = (record) => {
-      let classname = '';
-      switch (record.state) {
-          case 0:
-            classname =  'sk_state_outside';
-            break;
-          case 10:
-            classname =  'sk_state_active';
-            break;
-          case 5:
-            classname =  'sk_state_somewhere';
-            break;
-          default:
-            classname =  '';
-            break;
-      }
-      if (record.type){
-        classname += ' sk_table_headrow';
-      }
-      if (record.id == currentUserId){
-        classname += ' sk-table-current-user';
-      }
-      return classname;
-  };
+  const handleFindMe = ()=>{
+    const elementdiv = document.querySelector('#row_' + userdata.user.id);
+    if (elementdiv){
+      elementdiv.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }
 
 
   const SortFilterChanged = (userList) => {
     setUserListData(userList);
   }
 
+  const handleShowUserInfo = (user_id)=>{
+    console.log('user_id', user_id)
+    setOpenUserInfo(true);
+    setTargetUserInfo(baseUserListData.find((item)=> item.user_id === user_id));
+  }
 
 
+  const escFunction = useCallback((event) => {
+    if (event.key === "Escape") {
+      //Do whatever when esc is pressed
+      if (openUserInfo){
+        setOpenUserInfo(false);
+      } else if (markedUsers.length > 0){
+        setMarkedUsers([]);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  }, [escFunction]);
 
     return (
         <div>
@@ -208,16 +156,59 @@ const UserList = (props)=>{
               baseUsers={baseUserListData}
               onChange={SortFilterChanged}
               userData={userdata}
+              on_find_me={handleFindMe}
             />
             
-            <Table 
+            {/* <Table 
             sticky={true}
             dataSource={userListData}
             columns={columns}
             rowClassName={rowClassName}
             pagination={false}
             className={'sk-flight-table'}
-             />
+             /> */}
+
+        <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}}>
+              {userListData.length == 0 ? (
+                  <Empty />
+              ):(
+                  <>
+                  <Affix offsetTop={0}>
+                  <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
+                      <div>id</div>
+                      <div>Имя сотрудника</div>
+                      <div>тел</div>
+                      <div className="sk-flex-space">
+                        <div></div>
+                        <div className="sk-usermonic-micro-row">
+                          <div>Вход</div>
+                          <div>Выход</div>
+                          <div>Рв</div>
+                          <div>Ов</div>
+                          <div>От</div>
+                          <div>Пв</div>
+                        </div>
+                        <div></div>
+                      </div>
+                      <div>Оп.</div>
+                      <div>Рук</div>
+                      <div>Место</div>
+                  </div>
+                  </Affix>
+                      {userListData.map((arche)=>(
+                          <UserMonitorListCard
+                              data={arche}
+                              on_mark_user={handleMarkUser}
+                              marked_users={markedUsers}
+                              its_me={userdata.user.id == arche.user_id}
+                              on_double_click={handleShowUserInfo}
+                          />
+                      ))}
+                  </>
+
+              )}
+          </div>
+
             
             <UserModal
             userId={selectedUserId} 
@@ -225,6 +216,92 @@ const UserList = (props)=>{
             onClose={() => setIsModalVisible(false)} 
             />
             {/* // if sortBy == undefined || null || department_desc - insert custom row with depart name before show belongs rows */}
+
+
+            <Drawer title="Информация о сотруднике" 
+            mask={false}
+            onClose={()=>{setOpenUserInfo(false)}} open={openUserInfo}>
+            {openUserInfo && (
+              <div>
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Должность</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_occupy}</div>
+              </div>
+
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Отдел</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.department_name}</div>
+              </div>
+
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Имя</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_name}</div>
+              </div>
+
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Фамилия</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_surname}</div>
+              </div>
+
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Отчество</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic}</div>
+              </div>
+
+
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Внутренний телефон</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "нет"}</div>
+              </div>
+
+              {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
+                <div className={'sk-usermonic-drawer-row'}>
+                  <div className={'sk-labed-um'}>Работает с</div>
+                  <div className={'sk-contend-um'}>{targetUserInfo.recrut ? dayjs.unix(targetUserInfo.recrut).format("DD-MM-YYYY") : ""}</div>
+                </div>
+              ): ""}
+
+
+              {targetUserInfo.email && targetUserInfo.email != 0 && (
+                <div className={'sk-usermonic-drawer-row'}>
+                  <div className={'sk-labed-um'}>E-mail</div>
+                  <div className={'sk-contend-um'}>{targetUserInfo.email}</div>
+                </div>
+              )}
+              <br />
+              
+              {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
+                <div className="sk-boss-wrapper-sf">
+                  <div style={{fontSize: 'large',
+                    fontSize: 'initial', fontWeight:'bolder',
+                    borderBottom: '1px solid gray'
+                  }}><span>Руководитель</span> <span
+                    onClick={()=>{setTargetUserInfo(baseUserListData.find((item)=> item.user_id === targetUserInfo.boss_id));}}
+                  ><UserSwitchOutlined /></span></div>
+                  <div className={'sk-usermonic-drawer-row'}>
+                    <div className={'sk-labed-um'}>Должность</div>
+                    <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
+                  </div>
+
+                  <div className={'sk-usermonic-drawer-row'}>
+                    <div className={'sk-labed-um'}>Фио</div>
+                    <div className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
+                  </div>
+
+                  <div className={'sk-usermonic-drawer-row'}>
+                    <div className={'sk-labed-um'}>Внутренний телефон</div>
+                    <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
+                  </div>
+                </div>
+
+              ): ""}
+
+
+
+              </div>
+              )}
+            </Drawer>
+
         </div>
     )
 }
