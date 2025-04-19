@@ -15,6 +15,7 @@ const UserMonitorListCard = (props) => {
 
     const [markedCard, setMarkedCard] = useState(false);
     const [itsMe, setItsMe] = useState(false);
+    const [selectedColumns, setSelectedColumns] = useState([]);
     
     const [arrow, setArrow] = useState('Show');
 
@@ -46,13 +47,20 @@ const UserMonitorListCard = (props) => {
     },[props.its_me]);
 
     useEffect(()=> {
-        if (props.marked_users && props.marked_users.includes(content.user_id)){
+        console.log('USER EVV');
+        if (content.user_id !== undefined && props.marked_users && props.marked_users.includes(content.user_id)){
             setMarkedCard(true);
+            console.log('set true', content.user_id);
         } else {
             setMarkedCard(false);
+            console.log('set false', content.user_id);
         }
     },[props.marked_users])
 
+
+    useEffect(()=> {
+        setSelectedColumns(props.selected_columns);
+    },[props.selected_columns]);
 
     const handleMarkUser = () => {
         if (props.on_mark_user)
@@ -86,15 +94,15 @@ const UserMonitorListCard = (props) => {
             ):(
                 <>
 
-                <div>
+                <div style={{paddingLeft: '9px'}}>
                     {content.user_id}
                 </div>
 
-                <div>
+                <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
                     {content.user_surname} {content.user_name} {content.user_patronymic}
                 </div>
 
-                <div>
+                <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
                     <div style={{overflow: 'hidden'}}>
                     {content.phone && content.phone != 0 && content.phone}
                     </div>
@@ -104,23 +112,23 @@ const UserMonitorListCard = (props) => {
                     {/* {dayjs(content.datetime_contr).format("DD-MM-YYYY   HH:mm")} */}
                     <div></div>
                     <div className={'sk-usermonic-micro-row'}>
-                        <div>
+                        <div className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}>
                         {content.enter_time && dayjs(content.enter_time).format('HH:mm')}
                         </div>
                         
-                        <div>
+                        <div className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}>
                             {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
                         </div>
-                        <div>
+                        <div className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}>
                             {content.job_time_count && secondsToTime(content.job_time_count)}
                         </div>
-                        <div>
+                        <div className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}>
                             {content.exit_time_count && secondsToTime(content.exit_time_count)}
                         </div>
-                        <div>
+                        <div className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}>
                             {content.time_need_work && secondsToTime(content.time_need_work)}
                         </div>
-                        <div>
+                        <div className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}>
                             {content.lost_time_count && secondsToTime(content.lost_time_count)}
                         </div>
 
@@ -128,7 +136,7 @@ const UserMonitorListCard = (props) => {
                     <div></div>
                 </div>
 
-                <div>
+                <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
                     {content.is_late && (<IssuesCloseOutlined 
                         title="Опоздание"
                     />)}

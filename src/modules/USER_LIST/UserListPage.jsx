@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState } from "react";
 
 import UserListToolbar from "./components/userlist/UserlistToolbar";
-import { Affix, Drawer, Empty, Table } from "antd";
+import { Affix, Badge, Drawer, Empty, Table, Tag } from "antd";
 import '../../components/TimeSkud/Style/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
@@ -10,7 +10,7 @@ import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
-import { InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { FileUnknownOutlined, InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
 
 
 const UserList = (props)=>{
@@ -24,11 +24,13 @@ const UserList = (props)=>{
 
   const [openUserInfo, setOpenUserInfo] = useState(false);
   const [targetUserInfo, setTargetUserInfo] = useState(null);
+  const [targetUserGuys, setTargetUserGuys] = useState([]);
 
   const [departments, setDepartments]  = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortBy, setSortBy ] = useState(null);
+  const [selectedColumns, setSelectedColumns] = useState([]);
 
   const openUserCard = (id) => {
     console.log('id' + ' => ' + id);
@@ -125,19 +127,41 @@ const UserList = (props)=>{
     console.log('user_id', user_id)
     setOpenUserInfo(true);
     setTargetUserInfo(baseUserListData.find((item)=> item.user_id === user_id));
+    
   }
 
 
+  useEffect(()=>{
+    let guys = baseUserListData.filter((item)=> item.boss_id === targetUserInfo.user_id);
+    setTargetUserGuys(guys ? guys : []);
+  }, [targetUserInfo]);
+
   const escFunction = useCallback((event) => {
+    console.log('event.key', event.key)
+    console.log('markedUsers', markedUsers)
     if (event.key === "Escape") {
       //Do whatever when esc is pressed
-      if (openUserInfo){
+      if (openUserInfo === true){
         setOpenUserInfo(false);
       } else if (markedUsers.length > 0){
-        setMarkedUsers([]);
+        setMarkedUsers([0]);
+      } else {
+        setSelectedColumns([]);
       }
     }
   }, []);
+
+
+  const toggleSelectedColumn = (col) => {
+    if (selectedColumns.includes(col)) {
+      // Удалить col из массива
+      setSelectedColumns(selectedColumns.filter(item => item !== col));
+    } else {
+      // Добавить col в массив
+      setSelectedColumns([...selectedColumns, col]);
+    }
+  };
+
 
   useEffect(() => {
     document.addEventListener("keydown", escFunction, false);
@@ -175,22 +199,47 @@ const UserList = (props)=>{
                   <>
                   <Affix offsetTop={0}>
                   <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
-                      <div>id</div>
-                      <div>Имя сотрудника</div>
-                      <div>тел</div>
+                      <div style={{paddingLeft: '9px'}}
+                        onClick={()=>{toggleSelectedColumn(1)}}
+                      >id</div>
+                      <div
+                        onClick={()=>{toggleSelectedColumn(2)}}
+                      >Имя сотрудника</div>
+                      <div
+                        onClick={()=>{toggleSelectedColumn(3)}}
+                      >тел</div>
                       <div className="sk-flex-space">
                         <div></div>
                         <div className="sk-usermonic-micro-row">
-                          <div>Вход</div>
-                          <div>Выход</div>
-                          <div>Рв</div>
-                          <div>Ов</div>
-                          <div>От</div>
-                          <div>Пв</div>
+                          <div
+                            onClick={()=>{toggleSelectedColumn(10)}}
+                          >Вход</div>
+                          <div
+                          onClick={()=>{toggleSelectedColumn(11)}}
+                          >Выход</div>
+                          <div
+                          onClick={()=>{toggleSelectedColumn(12)}}
+                            title={'Всего рабочее время'}
+                          >Рв</div>
+                          <div
+                          onClick={()=>{toggleSelectedColumn(13)}}
+                          title={'Общее время на предприятии'}
+                          >Ов</div>
+                          <div
+                          onClick={()=>{toggleSelectedColumn(14)}}
+                          title={'Врямя для отработки'}
+                          >От</div>
+                          <div
+                          onClick={()=>{toggleSelectedColumn(15)}}
+                          title={'Потерянное время'}
+                          >Пв</div>
                         </div>
                         <div></div>
                       </div>
-                      <div>Оп.</div>
+                      <div
+                        title="Есть опоздание"
+                        onClick={()=>{toggleSelectedColumn(20)}}
+                      >Оп.</div>
                       <div>Рук</div>
                       <div>Место</div>
                   </div>
@@ -202,6 +251,7 @@ const UserList = (props)=>{
                               marked_users={markedUsers}
                               its_me={userdata.user.id == arche.user_id}
                               on_double_click={handleShowUserInfo}
+                              selected_columns={selectedColumns}
                           />
                       ))}
                   </>
@@ -218,40 +268,40 @@ const UserList = (props)=>{
             {/* // if sortBy == undefined || null || department_desc - insert custom row with depart name before show belongs rows */}
 
 
-            <Drawer title="Информация о сотруднике" 
+            <Drawer title=<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.user_id}</Tag></span>
             mask={false}
             onClose={()=>{setOpenUserInfo(false)}} open={openUserInfo}>
             {openUserInfo && (
               <div>
               <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Должность</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_occupy}</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_occupy ? targetUserInfo.user_occupy : '-'}</div>
               </div>
 
               <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Отдел</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.department_name}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Имя</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_name}</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
               </div>
 
               <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Фамилия</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_surname}</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : '-'}</div>
+              </div>
+
+              <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Имя</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_name ? targetUserInfo.user_name : '-'}</div>
               </div>
 
               <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Отчество</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic}</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : '-'}</div>
               </div>
 
 
               <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Внутренний телефон</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "нет"}</div>
+                <div className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
               </div>
 
               {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
@@ -268,6 +318,19 @@ const UserList = (props)=>{
                   <div className={'sk-contend-um'}>{targetUserInfo.email}</div>
                 </div>
               )}
+
+              {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
+                <div className={'sk-usermonic-drawer-row'}>
+                  <div className={'sk-labed-um'}>Компания</div>
+                  <div className={'sk-contend-um'}>
+                    <span className={'sk-usermonic-comround'}
+                    style={{background: `${userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.color}`
+                    }}>
+                      {targetUserInfo.id_company}
+                    </span>
+                  {userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.name}</div>
+                </div>
+              )}
               <br />
               
               {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
@@ -275,9 +338,13 @@ const UserList = (props)=>{
                   <div style={{fontSize: 'large',
                     fontSize: 'initial', fontWeight:'bolder',
                     borderBottom: '1px solid gray'
-                  }}><span>Руководитель</span> <span
-                    onClick={()=>{setTargetUserInfo(baseUserListData.find((item)=> item.user_id === targetUserInfo.boss_id));}}
-                  ><UserSwitchOutlined /></span></div>
+                  }}><span
+                    onClick={()=>{
+                      setTargetUserInfo(baseUserListData.find((item)=> item.user_id === targetUserInfo.boss_id),
+                      handleMarkUser(targetUserInfo.boss_id));}}
+                    className={'sk-usermonic-drawer-rukop-title'}
+                  >Руководитель</span> <span
+                  ></span></div>
                   <div className={'sk-usermonic-drawer-row'}>
                     <div className={'sk-labed-um'}>Должность</div>
                     <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
@@ -296,7 +363,25 @@ const UserList = (props)=>{
 
               ): ""}
 
+              <br />
+              
+              {targetUserGuys && targetUserGuys.length > 0 && (
+              <div className="sk-boss-wrapper-sf">
+                <div style={{fontSize: 'large',
+                      fontSize: 'initial', fontWeight:'bolder',
+                      borderBottom: '1px solid gray'
+                    }}><span>Сотрудники</span></div>
+                { targetUserGuys.map((item, index)=>(
+                  <div className={'sk-boss-guy-card'}
+                   onClick={()=>{
+                    setTargetUserInfo(baseUserListData.find((user)=> user.user_id === item.user_id),
+                    handleMarkUser(item.user_id));}}
+                  >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
+                ))}
 
+              </div>
+
+              )}
 
               </div>
               )}

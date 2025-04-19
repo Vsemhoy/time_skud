@@ -27,8 +27,12 @@
     border-top:  1px solid #80808061 !important;
 }
 
-.sk-usermonic-cardrow > div {
+.sk-usermonic-cardrow > div:not(.sk-flex-space), 
+.sk-usermonic-micro-row > div:not(.sk-flex-space){
     padding: 4px;
+}
+.sk-usermonic-micro-row > div {
+    text-align: center;
 }
 
 .sk-usermonic-badger {
@@ -88,6 +92,8 @@
     backdrop-filter: blur(12px);
     padding-bottom: 3px;
     padding-top: 3px;
+    user-select: none;
+    cursor:default;
 }
 .sk-usermonic-headerrow > div {
     background: #00000000 !important;
@@ -108,4 +114,30 @@
     transition-delay: 1250ms !important;
     background: #ffffffa1 !important;
     backdrop-filter: blur(14px) !important;
+}
+.sk-usermonic-comround {
+    width: 22px;
+    display: inline-grid;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    margin-right: 12px;
+    opacity: 0.8;
+}
+.sk-boss-guy-card {
+    line-height: 26px;
+    cursor: pointer;
+}
+.sk-boss-guy-card:hover {
+    color: #006d9f;
+}
+.sk-usermonic-drawer-rukop-title:hover {
+    color: #006d9f;
+    cursor: pointer;
+}
+
+.sk-col-selected {
+    box-shadow: inset 0px 0px 99px #8080803d;
+    border-right: 1px solid rgba(255, 255, 255, 0.478);
+    border-left: 1px solid rgba(255, 255, 255, 0.488);
 }
