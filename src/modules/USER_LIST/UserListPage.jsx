@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState } from "react";
 
 import UserListToolbar from "./components/userlist/UserlistToolbar";
 import { Affix, Badge, Drawer, Empty, Table, Tag } from "antd";
@@ -31,6 +31,18 @@ const UserList = (props)=>{
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortBy, setSortBy ] = useState(null);
   const [selectedColumns, setSelectedColumns] = useState([]);
+
+
+  const markedUsersRef = useRef(markedUsers);
+  const openUserInfoRef = useRef(openUserInfo);
+  const tableRef = useRef(null);
+  useEffect(() => {
+    markedUsersRef.current = markedUsers;
+  }, [markedUsers]);
+  
+  useEffect(() => {
+    openUserInfoRef.current = openUserInfo;
+  }, [openUserInfo]);
 
   const openUserCard = (id) => {
     console.log('id' + ' => ' + id);
@@ -100,6 +112,9 @@ const UserList = (props)=>{
   /** ------------------ FETCHES END ---------------- */
 
 
+  useEffect(()=>{
+    console.log('OPENOPEN' , openUserInfo);
+  },[openUserInfo]);
 
 
   const handleMarkUser = (user_id)=>{
@@ -137,23 +152,75 @@ const UserList = (props)=>{
     setTargetUserGuys(guys ? guys : []);
   }, [targetUserInfo]);
 
-  const escFunction = useCallback((event) => {
-    console.log('event.key', event.key)
-    console.log('markedUsers', markedUsers)
-    if (event.key === "Escape") {
-      //Do whatever when esc is pressed
-      console.log('openUserInfo', openUserInfo)
-      if (openUserInfo === true){
-        setOpenUserInfo(false);
-      } else if (markedUsers.length > 0 && markedUsers[0] !== 0){
-        setMarkedUsers([]);
-        console.log('markedUsers.length', markedUsers.length)
-      } else {
-        setSelectedColumns([]);
-      }
-    }
-  }, []);
+  // const escFunction = useCallback((event) => {
+  //   console.log('event.key', event.key)
+  //   console.log('markedUsers', markedUsers)
+  //   if (event.key === "Escape") {
+  //     //Do whatever when esc is pressed
+  //     console.log('openUserInfo', openUserInfo)
+  //     if (openUserInfo === true){
+  //       setOpenUserInfo(false);
+  //     } else if (markedUsers.length > 0 && markedUsers[0] !== 0){
+  //       setMarkedUsers([]);
+  //       console.log('markedUsers.length', markedUsers.length)
+  //     } else {
+  //       setSelectedColumns([]);
+  //     }
+  //   }
+  // }, []);
 
+
+  useEffect(() => {
+    const escFunction = (event) => {
+      if (event.key === "Escape") {
+        if (openUserInfoRef.current) {
+          setOpenUserInfo(false);
+        } else if (markedUsersRef.current.length > 0 && markedUsersRef.current[0] !== 0) {
+          setMarkedUsers([]);
+        } else {
+          setSelectedColumns([]);
+        };
+        if (tableRef.current) {
+          tableRef.current.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", escFunction);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction);
+    };
+  }, []); // Обработчик добавляется один раз
+
+
+  // const escFunction = useCallback((event) => {
+  //   if (event.key === "Escape") {
+  //     console.log('first', markedUsersRef.current.length)
+  //     if (openUserInfoRef.current) {
+  //       setOpenUserInfo(false);
+  //       setMarkedUsers([]);
+  //     } else if (markedUsersRef.current.length > 0 && markedUsersRef.current[0] !== 0) {
+  //       setMarkedUsers([]);
+  //     } else {
+  //       setSelectedColumns([]);
+  //     }
+  //   }
+  // }, []);
+
+
+  // useEffect(() => {
+  //   document.addEventListener("keydown", escFunction, false);
+
+  //   return () => {
+  //     document.removeEventListener("keydown", escFunction, false);
+  //   };
+  // }, [escFunction]);
+
+
+  // useEffect(()=>{
+  //   document.addEventListener("keydown", escFunction, false);
+  // }, []);
 
   const toggleSelectedColumn = (col) => {
     if (selectedColumns.includes(col)) {
@@ -164,18 +231,6 @@ const UserList = (props)=>{
       setSelectedColumns([...selectedColumns, col]);
     }
   };
-
-
-  useEffect(()=>{
-    document.addEventListener("keydown", escFunction, false);
-  }, []);
-  // useEffect(() => {
-  //   document.addEventListener("keydown", escFunction, false);
-
-  //   return () => {
-  //     document.removeEventListener("keydown", escFunction, false);
-  //   };
-  // }, [escFunction]);
 
     return (
         <div>
@@ -198,56 +253,79 @@ const UserList = (props)=>{
             className={'sk-flight-table'}
              /> */}
 
-        <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}}>
+        <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
               {userListData.length == 0 ? (
                   <Empty />
               ):(
                   <>
                   <Affix offsetTop={0}>
                   <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
-                      <div style={{paddingLeft: '9px'}}
+                      <div 
                         onClick={()=>{toggleSelectedColumn(1)}}
-                      >id</div>
+                      ><div
+                      style={{paddingLeft: '9px'}}
+                      className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
+                      >id</div></div>
                       <div
                         onClick={()=>{toggleSelectedColumn(2)}}
-                      >Имя сотрудника</div>
+                      >
+                      <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
+                      Имя сотрудника
+                      </div>
+                      </div>
                       <div
                         onClick={()=>{toggleSelectedColumn(3)}}
-                      >тел</div>
+                      >
+                      <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
+                        Тел.
+                      </div>
+                      </div>
                       <div className="sk-flex-space">
                         <div></div>
                         <div className="sk-usermonic-micro-row">
                           <div
+                            className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}
                             onClick={()=>{toggleSelectedColumn(10)}}
-                          >Вход</div>
+                          >
+                            Вход
+                          </div>
                           <div
+                          className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(11)}}
                           >Выход</div>
                           <div
+                          className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(12)}}
                             title={'Всего рабочее время'}
-                          >Рв</div>
+                          >РВ</div>
                           <div
+                          className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(13)}}
                           title={'Общее время на предприятии'}
-                          >Ов</div>
+                          >ОВ</div>
                           <div
+                          className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(14)}}
                           title={'Врямя для отработки'}
-                          >От</div>
+                          >ОТ</div>
                           <div
+                          className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(15)}}
                           title={'Потерянное время'}
-                          >Пв</div>
+                          >ПВ</div>
                         </div>
                         <div></div>
                       </div>
                       <div
                         title="Есть опоздание"
                         onClick={()=>{toggleSelectedColumn(20)}}
-                      >Оп.</div>
-                      <div>Рук</div>
-                      <div>Место</div>
+                      >
+                      <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                        Оп.
+                      </div>
+                      </div>
+                      <div><div>Рук</div></div>
+                      <div><div>Место</div></div>
                   </div>
                   </Affix>
                       {userListData.map((arche)=>(

@@ -85,25 +85,30 @@ const UserMonitorListCard = (props) => {
                 <>
                 <div></div>
                 <div>
-                    {content.name}
+                    <div>
+                        {content.name}
+
+                    </div>
                 </div>
                 </>
             ):(
+                
                 <>
-
-                <div style={{paddingLeft: '9px'}}>
+                <div >
+                <div className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
+                style={{paddingLeft: '6px', textAlign: 'center'}}>
                     {content.user_id}
                 </div>
-
-                <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}
-                    title={content.user_occupy}
-                >
-                    {content.user_surname} {content.user_name} {content.user_patronymic}
                 </div>
 
+                <div title={content.user_occupy}>
+                    <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
+                    {content.user_surname} {content.user_name} {content.user_patronymic}</div>
+                </div>
+
+                    <div style={{overflow: 'hidden', textAlign: 'center'}}>
                 <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
-                    <div style={{overflow: 'hidden'}}>
-                    {content.phone && content.phone != 0 && content.phone}
+                    <div>{content.phone && content.phone != 0 && content.phone}</div>
                     </div>
                 </div>
 
@@ -135,12 +140,14 @@ const UserMonitorListCard = (props) => {
                     <div></div>
                 </div>
 
+                <div style={{textAlign: 'center'}}>
                 <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
                     {content.is_late && (<IssuesCloseOutlined 
                         title="Опоздание"
-                    />)}
+                    />)}</div>
                 </div>
                 <div>
+                    <div style={{textAlign: 'center'}}>
                     {content.boss_id > 0 && ( 
                         <Tooltip placement="left" title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`} arrow={mergedArrow}>
                             <RobotOutlined
@@ -149,9 +156,10 @@ const UserMonitorListCard = (props) => {
                             />
 
                         </Tooltip>
-                    )}
+                    )}</div>
                 </div>
                 <div>
+                    <div style={{textAlign: 'center'}}>
                     {badger && (
                         <Tag className="sk-usermonic-badger"
                             style={{background: badger.color}}
@@ -159,7 +167,7 @@ const UserMonitorListCard = (props) => {
                         >
                         {badger.icon} <span>{badger.text}</span>
                         </Tag>
-                    )}
+                    )}</div>
                 </div>
                 </>
             )}
