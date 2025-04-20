@@ -7,4 +7,40 @@
     background-color: #efefef;
     min-height: 400px;
     width: 100%;
+    border-radius: 6px;
+}
+
+.sk-usp-openmode-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-gap: 6px;
+    padding: 6px 0px ;
+}
+.sk-usp-openmode-group > div {
+    background-color: #efefef;
+    width: 100%;
+    text-align: center;
+    font-size: large;
+    padding: 3px;
+    cursor: pointer;
+    user-select: none;
+    transition: all ease 0.3s;
+    border-radius: 3px;
+}
+.sk-usp-openmode-group > div:hover:not(.sk-active) {
+    background-color: #dddddd;
+}
+.sk-usp-openmode-group > div.sk-active {
+    background-color:#1677FF;
+    color: white;
+}
+
+.sk-usp-filter-col-item {
+    padding: 12px 6px;
+}
+.sk-usp-filter-col-label {
+    margin-bottom: 6px;
+    display: block;
+    color: gray;
 }

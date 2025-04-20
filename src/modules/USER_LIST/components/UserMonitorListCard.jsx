@@ -31,6 +31,7 @@ const UserMonitorListCard = (props) => {
         };
       }, [arrow]);
 
+    const [currentState, setCurrentState] = useState(0);
 
     useEffect(()=> {
         setContent(props.data);
@@ -40,6 +41,7 @@ const UserMonitorListCard = (props) => {
         } else {
             setBadger(null);
         }
+        setCurrentState(props.data.current_state);
     },[props.data]);
 
     useEffect(()=> {
@@ -78,7 +80,9 @@ const UserMonitorListCard = (props) => {
         <div 
             id={`row_${content.user_id}`}
             onDoubleClick={handleDoubleClickOnRow}
-        className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''} ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''} ${ itsMe ? 'sk-usermonic-crd-mine' : ''}`}
+        className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
+         ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
+          ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState != 10 && content.type != 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
         >
             {content.type && 
             content.type == 'header' ? (

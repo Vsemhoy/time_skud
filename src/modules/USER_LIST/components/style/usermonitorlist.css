@@ -170,3 +170,10 @@
     backdrop-filter: blur(1px);
     border: 1px solid white;
 }
+/* .sk-usermonic-cardrow > div:first-child {
+    color:#006d9f;
+} */
+.sk-usermonic-crd-notinoffice-state > div:first-child {
+    /* background-color: rgb(243, 243, 243) !important; */
+    color: rgba(0, 0, 0, 0.041);
+}
