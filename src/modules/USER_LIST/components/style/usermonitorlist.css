@@ -39,6 +39,7 @@
 
 .sk-usermonic-badger {
     width: 100%;
+    box-shadow: 1px 1px 3px #00000021;
 }
 .sk-usermonic-badger > span:last-child {
     color: gray;
@@ -185,5 +186,5 @@
 
 .sk-state-intgra-card-backdrop {
     border-radius: 3px;
-    background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 1) 84%, rgba(0, 0, 0, 0.56) 100%);
+    background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 0.46) 84%, rgba(0, 0, 0, 0.26) 100%);
 }

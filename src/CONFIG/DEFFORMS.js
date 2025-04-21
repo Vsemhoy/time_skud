@@ -33,8 +33,8 @@ export const DEF_SCHEDULE = {
 
 // текущее состояние юзера - 0 - нет и не был, 4 - вышел на обед, 10 - на работе, 5 - вышел на перерыв, 20 - ушел с работы, 30 - больняки
 export   const USER_STATE_PLACES = {
-    0: { title: "Не приходил в офис", text: "", color: "№757575", icon: <MinusCircleOutlined />},
-    4: { title: "Вышел на обед", text: "обед", color: "#f5c582", icon:<AppleOutlined /> },
+    0: { title: "Не приходил в офис", text: "", color: "#fefefe", icon: <MinusCircleOutlined />},
+    4: { title: "Вышел на обед", text: "обед", color: "#ffc582", icon:<AppleOutlined /> },
     5: { title: "Вышел на перерыв", text: "перерыв", color: "#fae5a9", icon: <RestOutlined />},
     10: { title: "На работе", text: "на месте", color: "#d0f5a5", icon: <CheckOutlined />},
     20: { title: "Рабочий день закончен", text: "ушел", color: "#e4e4e4", icon: <SafetyCertificateOutlined />},
