@@ -386,9 +386,12 @@ const UserList = (props)=>{
 
             <Drawer title=<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.user_id}</Tag></span>
             mask={false}
-            onClose={()=>{setOpenUserInfo(false)}} open={openUserInfo}>
+            onClose={()=>{setOpenUserInfo(false)}} open={openUserInfo}
+            className={"sk-ant-no-padding"}
+            >
             {openUserInfo && (
               <div>
+              <div className="sk-w-padding-18">
               <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Должность</div>
                 <div className={'sk-contend-um'}>{targetUserInfo.user_occupy ? targetUserInfo.user_occupy : '-'}</div>
@@ -448,9 +451,11 @@ const UserList = (props)=>{
                 </div>
               )}
               <br />
+              </div>
               
+
               {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
-                <div className="sk-boss-wrapper-sf">
+                <div className="sk-boss-wrapper-sf sk-w-padding-18">  
                   <div style={{fontSize: 'large',
                     fontSize: 'initial', fontWeight:'bolder',
                     borderBottom: '1px solid gray'
@@ -484,7 +489,7 @@ const UserList = (props)=>{
               {targetUserGuys && targetUserGuys.length > 0 && (
                 <>
                 <br />
-                  <div className="sk-boss-wrapper-sf">
+                  <div className="sk-boss-wrapper-sf sk-w-padding-18">
                     <div style={{fontSize: 'large',
                           fontSize: 'initial', fontWeight:'bolder',
                           borderBottom: '1px solid gray'
@@ -504,12 +509,14 @@ const UserList = (props)=>{
               {badger && (
                 <>
                 <br />
-                <br />
+                <div className="sk-w-padding-18">
+                <div className="sk-state-intgra-card-backdrop">
                 <div style={{background: badger.color + 99}}
-                className="sk-state-intgra-card">
+                className="sk-state-intgra-card ">
                   {badger.icon} {badger.title} 
                 </div>
-
+                </div>
+                </div>
                 </>
 
               )}

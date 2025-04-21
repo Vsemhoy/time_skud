@@ -3,7 +3,7 @@
     grid-template-columns: 42px  300px 50px auto  28px 28px 120px;
     border: 1px solid #80808061;
     border-top: none;
-    background: white;
+    background: var(--row-main-bg-color);
     transition: all ease 0.2s;
 }
 .sk-usermonic-cardrow > div {
@@ -14,13 +14,13 @@
 } */
 
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider):hover > div {
-    background: #fff5d7;
+    background: var(--row-hovered-bg-color);
 }
 
 .sk-usermonic-crd-divider {
     display: grid;
     grid-template-columns: 10px auto 22px 120px !important;
-    background-color: #bde9d1;
+    background-color: var(--row-divider-color);
 }
 
 .sk-usermonic-cardrow:first-child {
@@ -55,12 +55,12 @@
 }
 
 .sk-usermonic-crd-marked > div {
-    background-color: #03a9f4 !important;
-    color: white;
+    background-color: var(--row-selected-color) !important;
+    /* color: white; */
 }
 
 .sk-usermonic-crd-mine > div {
-    background-color: #ffab91;
+    background-color: var(--row-self-accent-color);
 }
 
 .sk-usermonic-drawer-row {
@@ -80,10 +80,10 @@
 }
 .sk-boss-wrapper-sf {
     /* background-color: #e7e7e7; */
-    background-color: #00000017;
-    padding: 6px;
-    border-radius: 6px;
-    box-shadow: 3px 4px 9px -3px #00000059;
+    background-color: var(--drawer-gray-section-color);
+    /* padding: 6px;
+    border-radius: 6px; */
+    /* box-shadow: 3px 4px 9px  #00000059; */
     backdrop-filter: blur(1px);
 }
 .sk-usermonic-micro-row {
@@ -95,8 +95,9 @@
 }
 
 .sk-usermonic-headerrow {
-    background: #00000012 !important;
-    backdrop-filter: blur(12px);
+    /* background: #00000012 !important; */
+    background-color: var(--row-header-color) !important;
+    backdrop-filter: blur(22px);
     padding-bottom: 3px;
     padding-top: 3px;
     user-select: none;
@@ -119,8 +120,8 @@
 
 .ant-drawer-content {
     transition-delay: 1250ms !important;
-    background: #ffffffa1 !important;
-    backdrop-filter: blur(14px) !important;
+    background: var(--drawer-bg-color) !important;
+    backdrop-filter: blur(44px) !important;
 }
 .sk-usermonic-comround {
     width: 22px;
@@ -165,7 +166,7 @@
 .sk-state-intgra-card {
     font-size: large;
     padding: 6px;
-    border-radius: 6px;
+    border-radius: 3px;
     box-shadow: 3px 4px 9px -3px #00000059;
     backdrop-filter: blur(1px);
     border: 1px solid white;
@@ -176,4 +177,13 @@
 .sk-usermonic-crd-notinoffice-state > div:first-child {
     /* background-color: rgb(243, 243, 243) !important; */
     color: rgba(0, 0, 0, 0.041);
+}
+.sk-usermonic-crd-notinoffice-state > div {
+    /* background-color: #f5f5f5; */
+    background: var(--row-second-bg-color);
+}
+
+.sk-state-intgra-card-backdrop {
+    border-radius: 3px;
+    background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 1) 84%, rgba(0, 0, 0, 0.56) 100%);
 }
