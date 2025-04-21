@@ -36,6 +36,10 @@ const UserList = (props)=>{
   const [badger, setBadger] = useState(null);
 
 
+  // Await data from header, then load data from setver
+  const [extFilters, setExtFilters] = useState([]);
+
+
   const markedUsersRef = useRef(markedUsers);
   const openUserInfoRef = useRef(openUserInfo);
   const tableRef = useRef(null);
@@ -62,15 +66,25 @@ const UserList = (props)=>{
     useEffect(() => {
       if (PRODMODE){
         get_departments();
-        get_users();
+        // get_users();
       } else {
         setDepartments(DS_DEPARTMENTS);
-        setBaseUserListData(DS_USERLIST_USERS);
+        // setBaseUserListData(DS_USERLIST_USERS);
       }
-  
     },[])
 
+    useEffect(()=>{
+      if (PRODMODE){
+        const debounceTimer = setTimeout(() => {
 
+          get_users(extFilters);
+          }, 500);
+          return () => clearTimeout(debounceTimer);
+      } else {
+        setBaseUserListData(DS_USERLIST_USERS);
+      }
+
+    },[extFilters]);
 
 
 
@@ -101,11 +115,16 @@ const UserList = (props)=>{
        * @param {*} req 
        * @param {*} res 
        */
-      const get_users = async (req, res) => {
+      const get_users = async (filters, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
-            console.log('users', response);
-            setBaseUserListData(response.data.data);
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getusers', 
+                {
+                    data: filters,
+                    _token: CSRF_TOKEN
+                });
+                if (response && response.data){
+                  setBaseUserListData(response.data.content);
+                }
         } catch (e) {
             console.log(e)
         } finally {
@@ -236,6 +255,11 @@ const UserList = (props)=>{
     }
   };
 
+
+  const toggleExternalFilters = (filters) => {
+    setExtFilters(filters);
+  }
+
     return (
         <div style={{padding: '6px'}} className={'sk-mw-1400'}>
             <br/>
@@ -247,6 +271,7 @@ const UserList = (props)=>{
               userData={userdata}
               on_find_me={handleFindMe}
               im_exist={userListData.find((item)=>  item.user_id === userdata.user.id) != null}
+              onChangeExternalFilters={toggleExternalFilters}
             />
             
             {/* <Table 
@@ -333,8 +358,10 @@ const UserList = (props)=>{
                       <div><div>Место</div></div>
                   </div>
                   </Affix>
-                      {userListData.map((arche)=>(
+                      {userListData.map((arche, index)=>
+                      (
                           <UserMonitorListCard
+                            key={`usmcard_${arche.user_id !== undefined ? arche.user_id : 'hed' + index}`} // так как строки сеператоры не имеют айди
                               data={arche}
                               on_mark_user={handleMarkUser}
                               marked_users={markedUsers}

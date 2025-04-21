@@ -13,7 +13,7 @@ import { getWeekDayString } from "../../../../GlobalComponents/Helpers/TextHelpe
 
 
 const UserListToolbar = (props) => {
-    const {onChange, onDateChange, userData} = props;
+    const {onChange, userData} = props;
     const location = useLocation();
     const navigate = useNavigate();
     const [companies, setCompanies] = useState([
@@ -28,6 +28,8 @@ const UserListToolbar = (props) => {
     const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
     const [usedSort, setUsedSort] = useState(0);
     const [imExist, setImExist] = useState(false);
+    const [extFilters, setExtFilters] = useState([{date: dayjs()}]);
+
     const [sortByValues, setSortByValues] = useState([
         {
             key:'ssv001',
@@ -140,16 +142,23 @@ const UserListToolbar = (props) => {
             setUsedDepartment(Number(targetDepartmentValue));
         }
         if (targetDateValue){
-            setUsedDate(dayjs(Number(targetDateValue)));
+            setUsedDate(dayjs.unix(Number(targetDateValue)));
         }
     }, [location.search]); // Dependency array ensures this runs when location.search changes
 
+
+
+    // Отслеживаем и отсылаем внешние фильтры на сервер
     useEffect(() => {
-        changeAddressBarParam('date',usedDate.valueOf(),[0]);
-        if (typeof onDateChange === 'function')
-        {
-            onDateChange(usedDate);
+        changeAddressBarParam('date',usedDate.unix(),[0]);
+        if (props.onChangeExternalFilters){
+            let params = {};
+    
+            params.date =  usedDate.format('YYYY-MM-DD HH:mm:ss');
+
+            props.onChangeExternalFilters(params);
         }
+
     }, [usedDate])
 
 
@@ -195,12 +204,13 @@ const UserListToolbar = (props) => {
         setUsedDate(value);
         changeAddressBarParam('date',value.valueOf(),[0]);
     }
+
     const increaseDate = () => {
         setUsedDate(usedDate.add(1, 'day'));
     }
+
     const decreaseDate = () => {
         setUsedDate(usedDate.add(-1, 'day'));
-        
     }
 
     const handleSortByChange = (value) => {
@@ -233,12 +243,12 @@ const UserListToolbar = (props) => {
         setUsedSort(sortByValue);
         switch (sortByValue) {
             case "department_asc":
-                sortedData.sort((a, b) => a.department - b.department);
+                sortedData.sort((a, b) => a.department_id - b.department_id);
                 sortedData = insertDepartmentNames(sortedData);
                 break;
     
             case "department_desc":
-                sortedData.sort((a, b) => b.department - a.department);
+                sortedData.sort((a, b) => b.department_id - a.department_id);
                 break;
     
             case "name_asc":
@@ -268,12 +278,13 @@ const UserListToolbar = (props) => {
     
             default:
                 // Сортировка по умолчанию (например, по department ASC)
-                sortedData.sort((a, b) => a.department - b.department);
+                sortedData.sort((a, b) => a.department_id - b.department_id);
                 sortedData = insertDepartmentNames(sortedData);
                 break;
         }
         return sortedData;
     }
+
 
     const filterUserListByCompany = (userList, id_company)=>{
         if (id_company == 0 || id_company == null){
@@ -282,13 +293,15 @@ const UserListToolbar = (props) => {
         return userList.filter(item => item.id_company === Number( id_company));
     }
 
+
     const filterUserListByDepartment = (userList, depart_id) =>
     {
         if (depart_id == null || depart_id == 0){
             return userList;
         };
-        return userList.filter(item => item.department === Number(depart_id));
+        return userList.filter(item => item.department_id === Number(depart_id));
     }
+
 
     const insertDepartmentNames = (dataArray) => {
         let newDataArray = [];
@@ -318,6 +331,7 @@ const UserListToolbar = (props) => {
       return department ? department.name : null; // Возвращаем имя или null, если не найдено
   };
 
+
   // Добавляем кастомную строку в зависимости от значения sortBy
   const customRow = (dep_id) => {
     return {
@@ -331,6 +345,7 @@ const UserListToolbar = (props) => {
       type: 'header'
       };
   };
+
 
 
     const handleFindMyself = ()=>{
