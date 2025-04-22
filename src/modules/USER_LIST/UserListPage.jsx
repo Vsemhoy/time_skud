@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState } from "react";
 
-import UserListToolbar from "./components/userlist/UserlistToolbar";
+import UserListToolbar from "./components/UserlistToolbar";
 import { Affix, Badge, Drawer, Empty, Table, Tag } from "antd";
 import '../../components/TimeSkud/Style/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { FileUnknownOutlined, InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { USER_STATE_PLACES } from "../../CONFIG/DEFFORMS";
 import UserlistEventDumpCard from "./components/UserlistEventDumpCard";
+import UserListSidebar from "./components/UserListSidebar";
 
 
 const UserList = (props)=>{
@@ -34,7 +35,7 @@ const UserList = (props)=>{
   const [sortBy, setSortBy ] = useState(null);
   const [selectedColumns, setSelectedColumns] = useState([]);
 
-  const [badger, setBadger] = useState(null);
+
 
 
   // Await data from header, then load data from setver
@@ -158,7 +159,12 @@ const UserList = (props)=>{
   const handleFindMe = ()=>{
     const elementdiv = document.querySelector('#row_' + userdata.user.id);
     if (elementdiv){
+      elementdiv.classList.add('sk-move-to-me');
       elementdiv.scrollIntoView({ block: "center", behavior: "smooth" });
+
+      setTimeout(() => {
+        elementdiv.classList.remove('sk-move-to-me');
+      }, 5000);
     }
   }
 
@@ -173,7 +179,6 @@ const UserList = (props)=>{
     setOpenUserInfo(true);
     let usr = baseUserListData.find((item)=> item.user_id === user_id);
     setTargetUserInfo(usr);
-    setBadger(USER_STATE_PLACES[usr.current_state]);
   }
   const openUserInfoCallbackRef = useRef(handleShowUserInfo);
 
@@ -461,153 +466,16 @@ const UserList = (props)=>{
             {/* // if sortBy == undefined || null || department_desc - insert custom row with depart name before show belongs rows */}
 
 
-            <Drawer title=<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.user_id}</Tag></span>
-            mask={false}
-            onClose={()=>{setOpenUserInfo(false)}} open={openUserInfo}
-            className={"sk-ant-no-padding"}
-            >
-            {openUserInfo && (
-              <div>
-              <div className="sk-w-padding-18">
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Должность</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_occupy ? targetUserInfo.user_occupy : '-'}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Отдел</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Фамилия</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : '-'}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Имя</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_name ? targetUserInfo.user_name : '-'}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Отчество</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : '-'}</div>
-              </div>
-
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Внутренний телефон</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
-              </div>
-
-              {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
-                <div className={'sk-usermonic-drawer-row'}>
-                  <div className={'sk-labed-um'}>Работает с</div>
-                  <div className={'sk-contend-um'}>{targetUserInfo.recrut ? dayjs.unix(targetUserInfo.recrut).format("DD-MM-YYYY") : ""}</div>
-                </div>
-              ): ""}
-
-
-              {targetUserInfo.email && targetUserInfo.email != 0 && (
-                <div className={'sk-usermonic-drawer-row'}>
-                  <div className={'sk-labed-um'}>E-mail</div>
-                  <div className={'sk-contend-um'}>{targetUserInfo.email}</div>
-                </div>
-              )}
-
-              {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
-                <div className={'sk-usermonic-drawer-row'}>
-                  <div className={'sk-labed-um'}>Компания</div>
-                  <div className={'sk-contend-um'}>
-                    <span className={'sk-usermonic-comround'}
-                    style={{background: `${userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.color}`
-                    }}>
-                      {targetUserInfo.id_company}
-                    </span>
-                  {userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.name}</div>
-                </div>
-              )}
-              <br />
-              </div>
-              
-
-              {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
-                <div className="sk-boss-wrapper-sf sk-w-padding-18">  
-                  <div style={{fontSize: 'large',
-                    fontSize: 'initial', fontWeight:'bolder',
-                    borderBottom: '1px solid gray'
-                  }}><span
-                    onClick={()=>{
-                      setTargetUserInfo(baseUserListData.find((item)=> item.user_id === targetUserInfo.boss_id),
-                      handleMarkUser(targetUserInfo.boss_id));}}
-                    className={'sk-usermonic-drawer-rukop-title'}
-                  >Руководитель</span> <span
-                  ></span></div>
-                  <div className={'sk-usermonic-drawer-row'}>
-                    <div className={'sk-labed-um'}>Должность</div>
-                    <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
-                  </div>
-
-                  <div className={'sk-usermonic-drawer-row'}>
-                    <div className={'sk-labed-um'}>Фио</div>
-                    <div className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
-                  </div>
-
-                  <div className={'sk-usermonic-drawer-row'}>
-                    <div className={'sk-labed-um'}>Внутренний телефон</div>
-                    <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
-                  </div>
-                </div>
-
-              ): ""}
-
-              
-              
-              {targetUserGuys && targetUserGuys.length > 0 && (
-                <>
-                <br />
-                  <div className="sk-boss-wrapper-sf sk-w-padding-18">
-                    <div style={{fontSize: 'large',
-                          fontSize: 'initial', fontWeight:'bolder',
-                          borderBottom: '1px solid gray'
-                        }}><span>Сотрудники</span></div>
-                    { targetUserGuys.map((item, index)=>(
-                      <div className={'sk-boss-guy-card'}
-                      onClick={()=>{
-                        setTargetUserInfo(baseUserListData.find((user)=> user.user_id === item.user_id),
-                        handleMarkUser(item.user_id));}}
-                      >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
-                    ))}
-
-                  </div>
-                </>
-              )}
-
-
-
-              {badger && (
-                <>
-                <br />
-                <div className="sk-w-padding-18">
-                <div className="sk-state-intgra-card-backdrop">
-                <div style={{background: badger.color + 99}}
-                className="sk-state-intgra-card ">
-                  {badger.icon} {badger.title} 
-                </div>
-                </div>
-                </div>
-                </>
-              )}
-
-
-              {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
-                <UserlistEventDumpCard data={targetUserInfo.event_dump} />
-              ) : ""}
-
-
-              </div>
-              )}
-            </Drawer>
+              <UserListSidebar
+              key="djafklsdjklfjaskl"
+                target_user_guys={targetUserGuys}
+                target_user_info={targetUserInfo}
+                userdata={userdata}
+                base_user_list_data={baseUserListData}
+                open_user_info={openUserInfo}
+                on_mark_user={handleMarkUser}
+                on_close={setOpenUserInfo}
+              />
 
         </div>
     )

@@ -76,8 +76,19 @@ const UserMonitorListCard = (props) => {
         }
     }
 
+    const handleMOuseOver = (ev) => {
+        if (ev.target.closest('.sk-move-to-me')){
+            console.log('ev.target', ev.target)
+            const elementdiv = document.querySelector('.sk-move-to-me');
+            elementdiv.classList.remove('sk-move-to-me');
+        }
+    }
+
+    
+
     return (
         <div 
+            onMouseOver={handleMOuseOver}
             id={`row_${content.user_id}`}
             onDoubleClick={handleDoubleClickOnRow}
         className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}

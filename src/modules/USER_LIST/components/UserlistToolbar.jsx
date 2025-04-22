@@ -1,15 +1,15 @@
-import { Button, Collapse, DatePicker, Select } from "antd";
+import { Button, Collapse, DatePicker, Drawer, Select } from "antd";
 import React, { useState, useEffect, use } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
 import dayjs from "dayjs";
 
-import '../../../../components/TimeSkud/Style/timeskud.css'
-import { StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
-import { DS_DEPARTMENTS, DS_USER } from "../../../../CONFIG/DEFAULTSTATE";
-import { CSRF_TOKEN } from "../../../../CONFIG/config";
-import { getWeekDayString } from "../../../../GlobalComponents/Helpers/TextHelpers";
+import '../../../components/TimeSkud/Style/timeskud.css'
+import { BranchesOutlined, CrownOutlined, DoubleLeftOutlined, DoubleRightOutlined, RightOutlined, RightSquareOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
+import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
+import { CSRF_TOKEN } from "../../../CONFIG/config";
+import { getWeekDayString } from "../../../GlobalComponents/Helpers/TextHelpers";
 
 
 const UserListToolbar = (props) => {
@@ -29,6 +29,10 @@ const UserListToolbar = (props) => {
     const [usedSort, setUsedSort] = useState(0);
     const [imExist, setImExist] = useState(false);
     const [extFilters, setExtFilters] = useState([{date: dayjs()}]);
+
+
+    const [openDrawer, setOpenDrawer] = useState(false);
+
 
     const [sortByValues, setSortByValues] = useState([
         {
@@ -232,7 +236,23 @@ const UserListToolbar = (props) => {
     }
 
 
-
+    const move_boss_to_top = (arr) => {
+        // Создаем копию массива для безопасности
+        const newArray = [...arr];
+        
+        // Ищем босса
+        const bossIndex = newArray.findIndex(user => user?.user_id === 46);
+        
+        // Если босс найден и не на первом месте
+        if (bossIndex > 0) {
+          // Извлекаем босса
+          const [boss] = newArray.splice(bossIndex, 1);
+          // Вставляем в начало
+          newArray.unshift(boss);
+        }
+        
+        return newArray;
+      };
 
     // _----------------------------------------
        const sortUserList = (userList, sortByValue) => {
@@ -244,6 +264,7 @@ const UserListToolbar = (props) => {
         switch (sortByValue) {
             case "department_asc":
                 sortedData.sort((a, b) => a.department_id - b.department_id);
+                sortedData = move_boss_to_top(sortedData);
                 sortedData = insertDepartmentNames(sortedData);
                 break;
     
@@ -279,6 +300,7 @@ const UserListToolbar = (props) => {
             default:
                 // Сортировка по умолчанию (например, по department ASC)
                 sortedData.sort((a, b) => a.department_id - b.department_id);
+                sortedData = move_boss_to_top(sortedData);
                 sortedData = insertDepartmentNames(sortedData);
                 break;
         }
@@ -358,79 +380,142 @@ const UserListToolbar = (props) => {
     return (
         <div style={{width: '100%'}}>
 
-            <div className={"sk-flex-gap sk-flex-space"}
-                style={{width: '100%'}}
-            >
-                <div>
-                    {companies.length > 1 ? (
-                    <Select 
-                        options={companies}
-                        value={usedCompany} // Use value instead of defaultValue for controlled component
-                        style={{ minWidth: 140 }}
-                        onChange={handleUsedCompanyChange}
-                    />
-                    ) : ''}
-                </div>
-                <div
-                    style={{fontSize: 'large'}}
-                >
-                    {getWeekDayString( usedDate.day())}
-                </div>
-            <div>
-                <Select
-                    minWidth={130}
-                    placeholder={'Упорядочить по'}
-                    options={sortByValues}
-                    value={usedSort == 0 ? null : usedSort}
-                    allowClear={true}
-                    onChange={handleSortByChange}
-                />
-            </div>
-                </div>
+
         
-        <div className={"sk-flex-gap sk-flex-space"}
-            style={{width: '100%'}}
-        >
+            <div className={"sk-flex sk-flex-space sk-sermonic-tolbar-bar"}
+            style={{width: '100%', padding: '6px 14px', alignItems: 'center'}}
 
-            <div className={"sk-m"}>
-                
-
-                <Select 
-                    options={departments}
-                    value={usedDepartment} // Use value instead of defaultValue for controlled component
-                    style={{ minWidth: 140 }}
-                    onChange={handleUsedDepartmentChange}
-                />
-            </div>
+            >
             <div>
-                <Button 
+
+                <RightSquareOutlined
+                    
+                    className={`sk-usermonic-filter-bacon ${parseInt(usedCompany) > 1 
+                        || parseInt(usedDepartment) > 0 || usedSort != 'department_asc' ? 'sk-fried-bacon' : ''}`}
+                    onClick={()=>{setOpenDrawer(true)}}
+                    title="Фильтры и сотрировки"
+                    />
+            </div>
+
+            <div className="sk-flex">
+                <DoubleLeftOutlined
+                    title="На предыдущий день"
                     onClick={decreaseDate}
-                ><StepBackwardOutlined /></Button>
+                    className={'sk-usermonic-filter-bacon'}
+                    />
+
+
                 <DatePicker 
                     // defaultValue={usedDate}
                     value={usedDate}
                     onChange={handleUsedDateChange}
                     format={"DD-MM-YYYY"}
+                    variant="borderless"
+                    size="large"
+                    title={getWeekDayString( usedDate.day())}
                     />
-                <Button 
+
+                    <DoubleRightOutlined
                     onClick={increaseDate}
-                ><StepForwardOutlined /></Button>
+                    className={'sk-usermonic-filter-bacon'}
+                    title="На следующий день"
+                    />
+            
 
             </div>
 
             <div>
-                {imExist && (
-                    <Button
-                        title="найти себя"
+                {imExist ? (
+                    <CrownOutlined 
+                        title="Найти себя в списке"
                         onClick={handleFindMyself}
-                    danger>Где Я?</Button>
+                        className={'sk-usermonic-filter-bacon'}
+                    />
+                   
+                ):(
+                    <div style={{minWidth: '34px'}}></div>
                 )}
 
             </div>
 
 
         </div>
-        <br />
+        
+                <br />
+            <Drawer
+                open={openDrawer}
+                placement="left"
+                onClose={()=>{setOpenDrawer(false)}}
+                title=<span className={'sk-flex-space'}>Фильтры и сортировки</span>
+                style={{background: 'white !important'}}
+                className="sk-bg-white"
+            >
+            <div>
+
+
+                <div className={'sk-usermonic-drawer-row'}>
+                    <div className={'sk-labed-um'}>Компания</div>
+                    {companies.length > 1 ? (
+                    <Select 
+                        variant={'borderless'}
+                        style={{ width: '100%' }}
+                        options={companies}
+                        value={usedCompany} // Use value instead of defaultValue for controlled component
+                        onChange={handleUsedCompanyChange}
+                    />
+                    ) : ''}
+                </div>
+
+
+
+
+                <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Отдел</div>
+                        <Select 
+                            variant={'borderless'}
+                            style={{ width: '100%' }}
+                            options={departments}
+                            value={usedDepartment} // Use value instead of defaultValue for controlled component
+      
+                            onChange={handleUsedDepartmentChange}
+                        />
+                    </div>
+                </div>
+
+
+                <div className={'sk-usermonic-drawer-row'}>
+                <div className={'sk-labed-um'}>Сортировка</div>
+                <Select
+                                            variant={'borderless'}
+                                            style={{ width: '100%' }}
+                    placeholder={'Упорядочить по'}
+                    options={sortByValues}
+                    value={usedSort == 0 ? null : usedSort}
+                    allowClear={true}
+                    onChange={handleSortByChange}
+                />
+                </div>
+
+                
+                <div>
+                    {parseInt(usedCompany) > 1 || parseInt(usedDepartment) > 0 || usedSort != 'department_asc' ? (
+                        <div>
+                            <br />
+                            <Button
+                            danger
+                            block
+                            onClick={()=>{
+                                setUsedCompany(0); setUsedDepartment(0); setUsedSort('department_asc');
+                            }}
+                            >
+                                Очистить фильтры
+                            </Button>
+                        </div>
+                    ): ""}
+                    
+                </div>
+
+            </Drawer>
         </div>
     );
 }

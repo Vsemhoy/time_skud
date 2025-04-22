@@ -211,3 +211,36 @@
 .sk-uml-table-dumper tr:nth-child(even) {
     background-color: var(--row-second-bg-color);
 }
+
+.sk-sermonic-tolbar-bar {
+    background-color: var(--drawer-gray-section-color);
+}
+
+.sk-usermonic-filter-bacon {
+    transition: all 0.3s;
+    font-size: 32px;
+    line-height: 32px;
+    color: var(--icon-color-std);
+}
+.sk-usermonic-filter-bacon:hover {
+    color: var(--icon-color-std-hover);
+}
+.sk-fried-bacon {
+    color: var(--row-self-accent-color);
+    background-color: white;
+    box-shadow: 0px 0px 9px white;
+}
+.sk-usermonic-cardrow {
+    transition: all 0.9s;
+}
+.sk-move-to-me {
+    position: relative;
+    z-index: 988999;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    outline: 6px solid #45454561;
+}
+
+.sk-bg-white {
+    background-color: rgb(249, 249, 249) !important;
+}

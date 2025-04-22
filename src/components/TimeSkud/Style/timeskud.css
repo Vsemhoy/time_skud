@@ -23,6 +23,9 @@
 
     --drawer-bg-color: #ffffffa1;
     --drawer-gray-section-color: #00000017;
+
+    --icon-color-std: #767b82;
+    --icon-color-std-hover: #4a4c50;
 }
 
 .sk-flex-gap {
