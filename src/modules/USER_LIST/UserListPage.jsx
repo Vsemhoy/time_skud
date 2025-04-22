@@ -336,11 +336,16 @@ const UserList = (props)=>{
                           <div
                           className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(14)}}
-                          title={'Врямя для отработки'}
-                          >ОТ</div>
+                          title={'Время выходов'}
+                          >ВВ</div>
                           <div
                           className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}
                           onClick={()=>{toggleSelectedColumn(15)}}
+                          title={'Врямя для отработки'}
+                          >ОТ</div>
+                          <div
+                          className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}
+                          onClick={()=>{toggleSelectedColumn(16)}}
                           title={'Потерянное время'}
                           >ПВ</div>
                         </div>

@@ -139,12 +139,15 @@ const UserMonitorListCard = (props) => {
                             {content.job_time_count && secondsToTime(content.job_time_count)}
                         </div>
                         <div className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}>
-                            {content.exit_time_count && secondsToTime(content.exit_time_count)}
+                            {content.all_time_count && secondsToTime(content.all_time_count)}
                         </div>
                         <div className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}>
-                            {content.time_need_work && secondsToTime(content.time_need_work)}
+                            {content.exit_time_count && secondsToTime(content.exit_time_count)}
                         </div>
                         <div className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}>
+                            {content.time_need_work && secondsToTime(content.time_need_work)}
+                        </div>
+                        <div className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}>
                             {content.lost_time_count && secondsToTime(content.lost_time_count)}
                         </div>
 

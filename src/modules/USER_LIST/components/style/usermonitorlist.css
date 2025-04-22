@@ -89,7 +89,7 @@
 }
 .sk-usermonic-micro-row {
     display: grid;
-    grid-template-columns: 50px 50px 50px 50px 50px 50px;
+    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px;
 }
 .ant-drawer-header {
     background-color: #00000017;
@@ -177,7 +177,7 @@
 } */
 .sk-usermonic-crd-notinoffice-state > div:first-child {
     /* background-color: rgb(243, 243, 243) !important; */
-    color: rgba(0, 0, 0, 0.041);
+    color: rgb(116, 116, 116);
 }
 .sk-usermonic-crd-notinoffice-state > div {
     /* background-color: #f5f5f5; */

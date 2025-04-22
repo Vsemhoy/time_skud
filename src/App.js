@@ -66,7 +66,7 @@ function App() {
   /**
    * Текущий адрес страницы
    */
-  const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'me');
+  const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'userlist');
   
 
   // Инициализация при монтировании
@@ -360,7 +360,7 @@ function App() {
         <div>
             {/* {location === '' && <HomePage />} */}
             {/* {location === 'home' && <HomePage />} */}
-            {location === '' && <AccountPage userdata={userAct} />}
+            {location === '' && <UserListPage userdata={userAct} />}
             {location === 'me' && <AccountPage userdata={userAct} />}
             {location === 'statistics' && <UserStatisticsPage userdata={userAct} />}
             {location === 'admin' && <AdminPage />}
