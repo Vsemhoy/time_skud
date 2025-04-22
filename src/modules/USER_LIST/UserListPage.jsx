@@ -12,6 +12,7 @@ import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
 import { FileUnknownOutlined, InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { USER_STATE_PLACES } from "../../CONFIG/DEFFORMS";
+import UserlistEventDumpCard from "./components/UserlistEventDumpCard";
 
 
 const UserList = (props)=>{
@@ -39,13 +40,19 @@ const UserList = (props)=>{
   // Await data from header, then load data from setver
   const [extFilters, setExtFilters] = useState([]);
 
-
+  const sortedUserRef = useRef(userListData);
   const markedUsersRef = useRef(markedUsers);
   const openUserInfoRef = useRef(openUserInfo);
   const tableRef = useRef(null);
+
+
   useEffect(() => {
     markedUsersRef.current = markedUsers;
   }, [markedUsers]);
+
+  useEffect(() => {
+    sortedUserRef.current = userListData;
+  }, [userListData]);
   
   useEffect(() => {
     openUserInfoRef.current = openUserInfo;
@@ -168,12 +175,18 @@ const UserList = (props)=>{
     setTargetUserInfo(usr);
     setBadger(USER_STATE_PLACES[usr.current_state]);
   }
+  const openUserInfoCallbackRef = useRef(handleShowUserInfo);
+
 
 
   useEffect(()=>{
     let guys = baseUserListData.filter((item)=> item.boss_id === targetUserInfo.user_id);
     setTargetUserGuys(guys ? guys : []);
   }, [targetUserInfo]);
+
+  useEffect(() => {
+    openUserInfoCallbackRef.current = handleShowUserInfo;
+  }, [markedUsers]);
 
   // const escFunction = useCallback((event) => {
   //   console.log('event.key', event.key)
@@ -195,6 +208,8 @@ const UserList = (props)=>{
 
   useEffect(() => {
     const escFunction = (event) => {
+
+      // console.log("Key pressed:", event.key);
       if (event.key === "Escape") {
         if (openUserInfoRef.current) {
           setOpenUserInfo(false);
@@ -205,6 +220,52 @@ const UserList = (props)=>{
         };
         if (tableRef.current) {
           tableRef.current.focus();
+        }
+        return;
+      }
+
+      if (markedUsersRef.current.length === 1) {
+        const cref_id = markedUsersRef.current[0];
+        let nref = null;
+        
+        // Проверяем, что sortedUserRef.current - массив
+        if (!Array.isArray(sortedUserRef.current)) {
+          console.error("sortedUserRef.current is not an array!");
+          return;
+        }
+      
+        // Находим текущий элемент через find
+        const currentUser = sortedUserRef.current.find(
+          (user) => user.user_id === cref_id
+        );
+      
+        if (!currentUser) {
+          console.error("User not found!");
+          return;
+        }
+      
+        const currentIndex = sortedUserRef.current.indexOf(currentUser);
+      
+        if (event.key === "ArrowUp") {
+          if (currentIndex > 0) {
+            nref = sortedUserRef.current[currentIndex - 1].user_id;
+            if (nref == null){ // If DIVIDER
+              nref = sortedUserRef.current[currentIndex - 2]?.user_id;
+            }
+          }
+        } else if (event.key === "ArrowDown") {
+          if (currentIndex < sortedUserRef.current.length - 1) {
+            nref = sortedUserRef.current[currentIndex + 1].user_id;
+            if (nref == null){
+              nref = sortedUserRef.current[currentIndex + 2]?.user_id;
+            }
+          }
+        }
+      
+        if (nref) {
+          // Проверяем, что setUserListData принимает правильный формат
+          setMarkedUsers([nref]);
+          openUserInfoCallbackRef.current(nref);
         }
       }
     };
@@ -381,6 +442,17 @@ const UserList = (props)=>{
           </div>
 
             
+
+
+
+
+
+
+
+
+
+
+
             <UserModal
             userId={selectedUserId} 
             visible={isModalVisible} 
@@ -511,6 +583,8 @@ const UserList = (props)=>{
                 </>
               )}
 
+
+
               {badger && (
                 <>
                 <br />
@@ -523,8 +597,13 @@ const UserList = (props)=>{
                 </div>
                 </div>
                 </>
-
               )}
+
+
+              {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
+                <UserlistEventDumpCard data={targetUserInfo.event_dump} />
+              ) : ""}
+
 
               </div>
               )}

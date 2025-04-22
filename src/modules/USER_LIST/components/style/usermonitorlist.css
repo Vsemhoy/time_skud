@@ -188,3 +188,26 @@
     border-radius: 3px;
     background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 0.46) 84%, rgba(0, 0, 0, 0.26) 100%);
 }
+
+
+
+.sk-usermonic-crd-notinoffice-state.sk-usermonic-crd-mine > div {
+    background-color: var(--row-self-accent-faded-color) !important;
+}
+
+.sk-uml-table-dumper {
+    width: 100%;
+    
+    box-shadow: 3px 4px 11px -2px #00000059;
+    background-color: var(--row-main-bg-color);
+}
+.sk-uml-table-dumper th, .sk-uml-table-dumper td {
+    padding: 3px;
+    text-align: center;
+}
+.sk-uml-table-dumper th {
+    background-color: var(--row-divider-color);
+}
+.sk-uml-table-dumper tr:nth-child(even) {
+    background-color: var(--row-second-bg-color);
+}

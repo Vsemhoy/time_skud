@@ -1,7 +1,7 @@
 import ru from "antd/es/date-picker/locale/ru_RU";
 import ruRU from "antd/es/locale/ru_RU";
 
-export const PRODMODE = false;
+export const PRODMODE = true;
 // Тянем токен со страницы
 export const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : null;
 export const HTTP_HOST  = document.querySelector('meta[name="host"]') ? document.querySelector('meta[name="host"]').content : null;
