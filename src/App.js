@@ -83,7 +83,7 @@ function App() {
       if (value) {
           setLocation(value);
       } else {
-          setLocation('home'); // Установка корневой страницы
+          setLocation('userlist'); // Установка корневой страницы
       }
       console.log('start page is', value);
   }, []);

@@ -29,10 +29,10 @@ const UserlistEventDumpCard = (props) => {
             </thead>
             <tbody>
                 {eventDump.map((evt, index)=>(
-                    <tr>
+                    <tr className={`${evt.c && evt.c ===1 ? 'sk-uml-custom' : ''}`}>
                         <td>{index + 1}</td>
-                        <td>{evt.d === 0 ? dayjs(evt.t).format('HH:mm') : ""}</td>
-                        <td>{evt.d > 0 ? dayjs(evt.t).format('HH:mm') : ""}</td>
+                        <td className={`${evt.d !== 0 && evt.c ? "sk-uml-cuscontent" : ""}`}>{evt.d === 0 ? dayjs(evt.t).format('HH:mm') : evt.c && evt.c === 1 ? evt.r : '' }</td>
+                        <td className={`${evt.d === 0 && evt.c ? "sk-uml-cuscontent" : ""}`}>{evt.d > 0 ? dayjs(evt.t).format('HH:mm')  : evt.c && evt.c === 1 ? evt.r : '' }</td>
                     </tr>
                 ))}
             </tbody>

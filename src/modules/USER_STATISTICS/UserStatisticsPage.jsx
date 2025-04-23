@@ -77,7 +77,11 @@ const UserStatisticsPage = (props)=>{
 
     useEffect(() => {
       if (PRODMODE){
-
+        get_stats({
+            start: dayjs().startOf('day').format('YYYY-MM-DD HH:mm'),
+            end: dayjs().endOf('day').format('YYYY-MM-DD HH:mm'),
+            users_id: [57, 36, 505]
+        });
       } else {
         setBaseUserList(DS_DEFAULT_USERS);
         setBaseDepartList(DS_DEPARTMENTS);
@@ -208,7 +212,48 @@ const UserStatisticsPage = (props)=>{
     
 
 
-        // ------------------ FetchWorld END ----------------------
+        //     /**
+        //      * Получение списка отделов
+        //      * @param {*} req 
+        //      * @param {*} res 
+        //      */
+        //     const get_departments = async (req, res) => {
+        //       try {
+        //           let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
+        //           console.log('departs', response);
+        //           // setOrganizations(organizations_response.data.org_list)
+        //           // setTotal(organizations_response.data.total_count)
+        //           setDepartments(response.data.data);
+        //       } catch (e) {
+        //           console.log(e)
+        //       } finally {
+        //           // setLoadingOrgs(false)
+        //       }
+        //   }
+        
+        
+    /**
+     * Получение списка пользователей
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_stats = async (filters, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/statistic', 
+                {
+                    data: filters,
+                    _token: CSRF_TOKEN
+                });
+                if (response && response.data){
+                    console.log(response.data.content);
+                }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+    /** ------------------ FETCHES END ---------------- */
 
 
 
