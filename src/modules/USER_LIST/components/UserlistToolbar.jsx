@@ -31,6 +31,7 @@ const UserListToolbar = (props) => {
     const [extFilters, setExtFilters] = useState([{date: dayjs()}]);
 
 
+
     const [openDrawer, setOpenDrawer] = useState(false);
 
 
@@ -126,6 +127,9 @@ const UserListToolbar = (props) => {
               )];
         setDepartments(deps);
     }, [props.departments]);
+
+
+
 
     const [usedDate, setUsedDate] = useState(dayjs());
 
@@ -390,11 +394,12 @@ const UserListToolbar = (props) => {
 
                 <RightSquareOutlined
                     
-                    className={`sk-usermonic-filter-bacon ${parseInt(usedCompany) > 1 
-                        || parseInt(usedDepartment) > 0 || usedSort != 'department_asc' ? 'sk-fried-bacon' : ''}`}
+                    className={`sk-usermonic-filter-bacon ${(usedCompany !== 0 &&  parseInt(usedCompany) > 1 )
+                        || (usedDepartment !== 0 && parseInt(usedDepartment) > 0)  || (usedSort !== 0 && usedSort != 'department_asc') ? 'sk-fried-bacon' : ''}`}
                     onClick={()=>{setOpenDrawer(true)}}
                     title="Фильтры и сотрировки"
                     />
+                {/* {usedDepartment} {usedCompany} {usedSort} */}
             </div>
 
             <div className="sk-flex">

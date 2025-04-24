@@ -46,6 +46,8 @@ const UserList = (props)=>{
   const openUserInfoRef = useRef(openUserInfo);
   const tableRef = useRef(null);
 
+  const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
+
 
   useEffect(() => {
     markedUsersRef.current = markedUsers;
@@ -82,6 +84,7 @@ const UserList = (props)=>{
     },[])
 
     useEffect(()=>{
+      setTargetDate(extFilters.date);
       if (PRODMODE){
         const debounceTimer = setTimeout(() => {
 
@@ -475,6 +478,7 @@ const UserList = (props)=>{
                 open_user_info={openUserInfo}
                 on_mark_user={handleMarkUser}
                 on_close={setOpenUserInfo}
+                target_date={targetDate}
               />
 
         </div>

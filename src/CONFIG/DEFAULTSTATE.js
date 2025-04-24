@@ -3824,7 +3824,7 @@ export const DS_USERLIST_USERS = [
         "time_need_work": 0,
         "current_place": null,
         "current_state": 10,
-        "is_late": 0,
+        "is_late": 4,
         "control_date": "2025-04-23",
         "boss_name": "Александр",
         "boss_surname": "Кошелев",
@@ -3858,7 +3858,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 0,
         "time_need_work": 0,
         "current_place": 0,
-        "current_state": 0,
+        "current_state": 5,
         "is_late": false,
         "control_date": null,
         "boss_name": "Александр",
@@ -3928,7 +3928,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 0,
         "time_need_work": 0,
         "current_place": 0,
-        "current_state": 0,
+        "current_state": 20,
         "is_late": false,
         "control_date": null,
         "boss_name": null,
@@ -3963,7 +3963,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 0,
         "time_need_work": 0,
         "current_place": 0,
-        "current_state": 0,
+        "current_state": 30,
         "is_late": false,
         "control_date": null,
         "boss_name": null,
@@ -3998,7 +3998,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 0,
         "time_need_work": 0,
         "current_place": null,
-        "current_state": 10,
+        "current_state": 45,
         "is_late": 0,
         "control_date": "2025-04-23",
         "boss_name": "Александр",
@@ -4033,7 +4033,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 15,
         "time_need_work": 0,
         "current_place": null,
-        "current_state": 10,
+        "current_state": 40,
         "is_late": 0,
         "control_date": "2025-04-23",
         "boss_name": "Виктория",
@@ -4068,7 +4068,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 0,
         "time_need_work": 0,
         "current_place": 0,
-        "current_state": 0,
+        "current_state": 50,
         "is_late": false,
         "control_date": null,
         "boss_name": null,
@@ -4103,7 +4103,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 14,
         "time_need_work": 0,
         "current_place": null,
-        "current_state": 10,
+        "current_state": 55,
         "is_late": 0,
         "control_date": "2025-04-23",
         "boss_name": "Виктория",
@@ -4768,7 +4768,7 @@ export const DS_USERLIST_USERS = [
         "exit_time_count": 0,
         "time_need_work": 0,
         "current_place": null,
-        "current_state": 10,
+        "current_state": 30,
         "is_late": 0,
         "control_date": "2025-04-23",
         "boss_name": "Юрий",
@@ -6006,6 +6006,50 @@ export const DS_USERLIST_USERS = [
 ]
 
 
+export const LIST_SCHED_N_RULES_RESPONSE =  {
+    "schedules": [
+        {
+            "id": 145,
+            "skud_schedule_id": 10,
+            "creator_id": 46,
+            "deleted_at": null,
+            "deleted": false,
+            "created_at": "2025-04-11 20:09:10",
+            "start": "2025-04-12 00:00:00",
+            "end": null,
+            "skud_user_id": 340,
+            "actual": 1,
+            "skud_schedule": {
+                "id": 10,
+                "skud_schedule_type_id": 1,
+                "name": "Стд. Ранний. с 8:15 до 17",
+                "description": "Ранний график для утренних менеджеров",
+                "start_time": 29700,
+                "end_time": 68400,
+                "target_time": 28800,
+                "target_unit": 1,
+                "schedule": [],
+                "id_company": 2,
+                "next_id": 0,
+                "skud_prod_calendar_id": 1,
+                "deleted": false,
+                "created_at": 1744389211,
+                "creator_id": 46,
+                "lunch_start": 46800,
+                "lunch_end": 54000,
+                "lunch_time": 2700,
+                "skud_schedule_type": {
+                    "id": 1,
+                    "name": "Стандартный",
+                    "description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели.",
+                    "color": "#ffe000",
+                    "disabled": false
+                }
+            }
+        }
+    ],
+    "rules": []
+}
 
 
 // {

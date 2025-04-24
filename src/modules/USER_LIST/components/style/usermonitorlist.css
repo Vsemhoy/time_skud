@@ -253,3 +253,27 @@
     text-align: left !important;
     padding-left: 6px !important;
 }
+
+
+.sk-umsmi-card {
+    background-color: white;
+    /* border: 1px solid slateblue; */
+    box-shadow: 0px 0px 30px -23px black;
+}
+.sk-umsmi-card-title {
+    color: rgb(87, 87, 87);
+    margin-bottom: 12px;
+    font-size: larger;
+    border-bottom: 1px solid rgb(172, 172, 172);
+}
+.sk-umsmi-row {
+    display: grid;
+    grid-template-columns: 75% auto;
+    border-bottom: 1px solid gainsboro;
+}
+.sk-umsmi-row > div {
+    padding: 4px;
+}
+.sk-usmi-dorian-g {
+    background-color: var(--row-second-bg-color);
+}

@@ -4,6 +4,10 @@ import { Drawer, Tag } from "antd";
 
 import dayjs from "dayjs";
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
+import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import { PROD_AXIOS_INSTANCE } from "../../../API/API";
+import { LIST_SCHED_N_RULES_RESPONSE } from "../../../CONFIG/DEFAULTSTATE";
+import UmScheduleMiniCard from "./UmScheduleMiniCard";
 
 const UserListSidebar = (props) => {
 
@@ -12,9 +16,12 @@ const UserListSidebar = (props) => {
     const [openUserInfo, setOpenUserInfo] = useState(false);
     const [targetUserInfo, setTargetUserInfo] = useState(null);
     
-     const [badger, setBadger] = useState(null);
+    const [badger, setBadger] = useState(null);
 
+    const [baseSchedules, setBaseSchedules] = useState([]);
+    const [baseRules, setBaseRules] = useState([]);
      
+    const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
     useEffect(() => {
       setTargetUserGuys(props.target_user_guys);
@@ -24,11 +31,24 @@ const UserListSidebar = (props) => {
         if (props.target_user_info){
             setTargetUserInfo(props.target_user_info);
             setBadger(USER_STATE_PLACES[props.target_user_info.current_state]);
+
+            if (PRODMODE){
+              let data = {
+                date: props.target_date, 
+                user_id: props.target_user_info.user_id,
+              };
+              get_user_schedule_and_rules(data);
+            }
+            else {
+              setBaseSchedules(LIST_SCHED_N_RULES_RESPONSE.schedules);
+              setBaseRules(LIST_SCHED_N_RULES_RESPONSE.rules);
+            }
         }
     }, [props.target_user_info])
 
     useEffect(() => {   
       setOpenUserInfo(props.open_user_info);
+
       console.log('HANDLE OPEN', props.open_user_info);
     }, [props.open_user_info])
 
@@ -50,6 +70,49 @@ const UserListSidebar = (props) => {
             return s;
         }
     }
+
+
+
+    
+  /** ------------------ FETCHES ---------------- */
+
+
+      /**
+       * Получение актуального на выбранную дату графика и правил для этого юзера
+       * @param {*} req 
+       * @param {*} res 
+       */
+      const get_user_schedule_and_rules = async (data, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getuserschedrules', 
+                {
+                    data: data,
+                    _token: CSRF_TOKEN
+                });
+                if (response && response.data){
+                  setBaseSchedules(response.data.content.schedules);
+                  setBaseRules(response.data.content.rules);
+                }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+  
+
+    /** ------------------ FETCHES END ---------------- */
+
+
+
+        useEffect(()=>{
+          console.log(props.target_date);
+          if (props.open_user_info){
+            setTargetDate(props.target_date);
+          }
+        },[props.target_date]);
+
+
 
     return (
 
@@ -173,6 +236,7 @@ const UserListSidebar = (props) => {
                     }}><span>Сотрудники</span></div>
                 { targetUserGuys.map((item, index)=>(
                   <div className={'sk-boss-guy-card'}
+                  key={`taurkey_${index}`}
                   onClick={()=>{
                     setTargetUserInfo(props.base_user_list_data.find((user)=> user.user_id === item.user_id),
                     props.on_mark_user(item.user_id));}}
@@ -203,6 +267,17 @@ const UserListSidebar = (props) => {
           {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
             <UserlistEventDumpCard data={targetUserInfo.event_dump} />
           ) : ""}
+
+          {baseSchedules && baseSchedules.length > 0 && (
+            <div>
+              {baseSchedules.map((item, index)=> (
+                <UmScheduleMiniCard 
+                  data={item}
+                  key={`umscard_${item.id}`}
+                  />
+              ))}
+            </div>
+          )}
 
 
           </div>
