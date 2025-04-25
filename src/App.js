@@ -1,5 +1,6 @@
 
 import './App.css';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -11,7 +12,6 @@ import UserListPage from './modules/USER_LIST/UserListPage';
 import UserPage from './modules/USER_PAGE/UserPage';
 import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar, Drawer, Button, Badge, Alert } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
-import { useEffect, useState } from 'react';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
 import { CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
@@ -29,11 +29,19 @@ import NotifierPage from './modules/NOTIFIER/NotifierPage';
 import UserManagerPage from './modules/USER_MANAGER/UserManagerPage';
 import EventMonitorPage from './modules/EVENT_MONITOR_SK/EventMonitorPage';
 
+import { StateContext, StateProvider } from './GlobalComponents/providers/StateProvider';
+
+
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs';
 import UserStatisticsPage from './modules/USER_STATISTICS/UserStatisticsPage';
 
+
 const { Header, Content, Footer } = Layout;
+
+
+
+
 
 const useCookieState = (key, defaultValue) => {
   const [state, setState] = useState(() => {
@@ -49,10 +57,14 @@ const useCookieState = (key, defaultValue) => {
 };
 
 
-function App() {
-  const menuItems = [
 
-  ];
+
+
+function App() {
+  const menuItems = [];
+
+  const { state, setState } = useContext(StateContext);
+
   const [alertNotShowDate, setAlertNotShowDate] = useCookieState('skud_alert_notshow_date', "");
 
   const [userAct, setUserAct] = useState(!PRODMODE ? DS_USER : []);
@@ -66,8 +78,25 @@ function App() {
   /**
    * Текущий адрес страницы
    */
-  const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'userlist');
+  // const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'userlist');
   
+
+  // const handleStateChange = (e) => {
+  //   setState({ value: e.target.value });
+  // };
+
+  const setLocation = (value) => {
+    setState(prevState => ({
+      ...prevState,
+      location: value
+    }));
+    if (value !== 'profile'){
+      setState(prevState => ({
+        ...prevState,
+        target_user: null
+      }));
+    }
+  }
 
   // Инициализация при монтировании
   useEffect(() => {
@@ -75,6 +104,12 @@ function App() {
     const initialLocation = initialParams.get('location') || '';
     setHistoryStack([initialLocation]);
   }, []);
+
+
+    // CHANGE PAGE
+    useEffect(()=>{
+      
+    },[state.target_page]);
 
     // Чтение параметра из URL при монтировании компонента
     useEffect(() => {
@@ -91,14 +126,14 @@ function App() {
   // Обработчик изменений location
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    query.set('location', location);
+    query.set('location', state.location);
     
     // Обновляем URL без создания новой записи истории
     window.history.replaceState({}, '', `?${query}`);
     
     // Добавляем в историю только новые значения
-    setHistoryStack(prev => [...prev, location].slice(-10)); // Ограничиваем глубину истории
-  }, [location]);
+    setHistoryStack(prev => [...prev, state.location].slice(-10)); // Ограничиваем глубину истории
+  }, [state.location]);
 
   // Обработка навигации назад
   useEffect(() => {
@@ -216,7 +251,7 @@ function App() {
             <MenuItem
             key={'menu_52d34'}>
               <Link
-                onClick={()=>{ setLocation('me')}}
+                onClick={()=>{ setLocation('profile')}}
               >Моё</Link>
             </MenuItem>
 
@@ -301,6 +336,13 @@ function App() {
 
         {/* Третья группа */}
         <div style={{ display: 'flex', alignItems: 'center'}}>
+          {/* <input value={state.text} onChange={(e)=>{ setState(prevState => ({
+                                                              ...prevState,
+                                                              text: e.target.value
+                                                            }))}}/>
+          <input value={state.target_page} onChange={(e)=>{ setState({target_page: e.target.value})}}/>
+          <span>{state.text}</span>
+          <span>{state.target_page}</span> */}
             <div onClick={showNotyBar} style={{ cursor: "pointer", marginRight: '24px'}}>
             <Badge count={countOfNotifications} offset={[2, 24]}>
             <Avatar style={{ backgroundColor: '#33333300', marginRight: '0px' }}>
@@ -360,21 +402,21 @@ function App() {
         <div>
             {/* {location === '' && <HomePage />} */}
             {/* {location === 'home' && <HomePage />} */}
-            {location === '' && <UserListPage userdata={userAct} />}
-            {location === 'me' && <AccountPage userdata={userAct} />}
-            {location === 'statistics' && <UserStatisticsPage userdata={userAct} />}
-            {location === 'admin' && <AdminPage />}
-            {location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
-            {location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
-            {location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={setRoute} />}
-            {location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
-            {location === 'userlist' && <UserListPage userdata={userAct}  />}
-            {location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
-            {location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
-            {location === 'notificator' && <NotifierPage userdata={userAct} />}
+            {state.location === '' && <UserListPage userdata={userAct} />}
+            {state.location === 'profile' && <AccountPage userdata={userAct} />}
+            {state.location === 'statistics' && <UserStatisticsPage userdata={userAct} />}
+            {state.location === 'admin' && <AdminPage />}
+            {state.location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
+            {state.location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
+            {state.location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={setRoute} />}
+            {state.location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
+            {state.location === 'userlist' && <UserListPage userdata={userAct}  />}
+            {state.location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
+            {state.location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
+            {state.location === 'notificator' && <NotifierPage userdata={userAct} />}
 
 
-            {location === 'eventmonitor' && <EventMonitorPage userdata={userAct} />}
+            {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} />}
 
           </div>
           ) : (

@@ -354,7 +354,7 @@ const UserStatisticsPage = (props)=>{
                 <div className="sk-usp-filter-col">
                     
                     <div className={'sk-usp-filter-col-item'} >
-                    <span className={'sk-usp-filter-col-label'}>Дипазон времени</span>
+                    <span className={'sk-usp-filter-col-label'}>Период</span>
                     <Select
                         style={{ width: '100%' }}
                         placeholder={'Диапазон времени'}
@@ -365,7 +365,7 @@ const UserStatisticsPage = (props)=>{
                     </div>
                     
                     <div className={'sk-usp-filter-col-item'} >
-                        <span className={'sk-usp-filter-col-label'}>Дипазон времени</span>
+                        <span className={'sk-usp-filter-col-label'}>Дата</span>
                         <div
                             style={{display: 'flex'}}
                         >

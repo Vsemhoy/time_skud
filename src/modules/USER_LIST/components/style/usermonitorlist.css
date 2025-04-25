@@ -112,7 +112,7 @@
 
 .ant-drawer-content-wrapper {
     transition: all 0.3s;
-    background: rgba(255, 255, 255, 0) !important;
+    /* background: rgba(255, 255, 255, 0) !important; */
     /* transition-delay: 1450ms !important; */
 }
 .ant-drawer-content-wrapper.ant-drawer-content-wrapper-hidden {
@@ -121,9 +121,13 @@
 
 .ant-drawer-content {
     transition-delay: 1250ms !important;
-    background: var(--drawer-bg-color) !important;
+    
     backdrop-filter: blur(44px) !important;
 }
+.sk-drawer-transparent {
+    background: var(--drawer-bg-color) !important;
+}
+
 .sk-usermonic-comround {
     width: 22px;
     display: inline-grid;
@@ -167,10 +171,17 @@
 .sk-state-intgra-card {
     font-size: large;
     padding: 6px;
-    border-radius: 3px;
-    box-shadow: 3px 4px 9px -3px #00000059;
+    /* border-radius: 3px; */
+    /* box-shadow: 3px 4px 9px -3px #00000059; */
     backdrop-filter: blur(1px);
-    border: 1px solid white;
+    /* border: 1px solid white; */
+    display: grid;
+    grid-template-columns: 52px auto 32px;
+}
+
+.sk-state-intgra-card-backdrop {
+    /* border-radius: 3px; */
+    background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 0.46) 84%, rgba(0, 0, 0, 0.26) 100%);
 }
 /* .sk-usermonic-cardrow > div:first-child {
     color:#006d9f;
@@ -185,10 +196,7 @@
     /* color: #9b9b9b; */
 }
 
-.sk-state-intgra-card-backdrop {
-    border-radius: 3px;
-    background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 0.46) 84%, rgba(0, 0, 0, 0.26) 100%);
-}
+
 
 
 
@@ -198,13 +206,14 @@
 
 .sk-uml-table-dumper {
     width: 100%;
-    
+/*     
     box-shadow: 3px 4px 11px -2px #00000059;
-    background-color: var(--row-main-bg-color);
+    background-color: var(--row-main-bg-color); */
 }
 .sk-uml-table-dumper th, .sk-uml-table-dumper td {
     padding: 3px;
     text-align: center;
+    border-bottom: 1px solid gainsboro;
 }
 .sk-uml-table-dumper th {
     background-color: var(--row-divider-color);
@@ -268,7 +277,7 @@
 }
 .sk-umsmi-row {
     display: grid;
-    grid-template-columns: 75% auto;
+    grid-template-columns: 70% auto;
     border-bottom: 1px solid gainsboro;
 }
 .sk-umsmi-row > div {

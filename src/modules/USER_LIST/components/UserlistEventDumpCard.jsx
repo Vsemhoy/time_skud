@@ -16,15 +16,15 @@ const UserlistEventDumpCard = (props) => {
     },[props.data]);
 
     return (
-        <div className="sk-w-padding-18">
+        <div className="sk-w-padding-18 sk-umsmi-card">
 
-        
-        <table className="sk-uml-table-dumper">
+    <div className="sk-umsmi-card-title">Скуд-события за день:</div>
+        <table className="sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
             <thead>
-                <tr>
-                    <th></th>
-                    <th>Вход</th>
-                    <th>Выход</th>
+                <tr style={{fontWeight: '500'}}>
+                    <td></td>
+                    <td>Вход</td>
+                    <td>Выход</td>
                 </tr>
             </thead>
             <tbody>

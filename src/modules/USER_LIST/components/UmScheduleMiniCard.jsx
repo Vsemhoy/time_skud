@@ -29,47 +29,31 @@ const UmScheduleMiniCard = (props) => {
 
                     <div className="sk-umsmi-row sk-usmi-dorian-g ">
                         <div className={'sk-umsmi-title'}>
-                            Время начала рабочего дня
+                            Рабочее время
                         </div>
                         <div className={'sk-umsmi-data'}>
-                            {secondsToTime(baseSchedule.start_time)}
+                            {secondsToTime(baseSchedule.start_time)} - {secondsToTime(baseSchedule.end_time)}
                         </div>
                     </div>
 
-                    <div className="sk-umsmi-row sk-usmi-dorian-g ">
-                        <div className={'sk-umsmi-title'}>
-                            Время заката рабочего дня
-                        </div>
-                        <div className={'sk-umsmi-data'}>
-                            {secondsToTime(baseSchedule.end_time)}
-                        </div>
-                    </div>
+
 
                     {scheduleType.id === 1}{
                         <>
                             <div className="sk-umsmi-row">
-                                <div className={'sk-umsmi-title'}>
-                                    Время начала обеденного интервала
+                                <div className={'sk-umsmi-title'} title={'Временной интервал, в котором сотрудник может выходить из офиса на обед'}>
+                                    Время обеда
                                 </div>
                                 <div className={'sk-umsmi-data'}>
-                                    {secondsToTime(baseSchedule.lunch_start)}
-                                </div>
-                            </div>
-
-                            <div className="sk-umsmi-row">
-                                <div className={'sk-umsmi-title'}>
-                                    Время конца обеденного интервала
-                                </div>
-                                <div className={'sk-umsmi-data'}>
-                                    {secondsToTime(baseSchedule.lunch_end)}
+                                    {secondsToTime(baseSchedule.lunch_start)} - {secondsToTime(baseSchedule.lunch_end)}
                                 </div>
                             </div>
                         </>
                     }
 
                     <div className="sk-umsmi-row sk-usmi-dorian-g ">
-                        <div className={'sk-umsmi-title'}>
-                            Продолжительность рабочего дня <br />(не считая обеда)
+                        <div className={'sk-umsmi-title'} title={'Время, которое сотрудник должен отработать, не считая обеда'}>
+                            Продолжительность рабочего дня <br />
                         </div>
                         <div className={'sk-umsmi-data'}>
                             {secondsToTime(baseSchedule.target_time)}
@@ -78,7 +62,7 @@ const UmScheduleMiniCard = (props) => {
 
                     {scheduleType.id === 1}{
                         <>
-                            <div className="sk-umsmi-row sk-usmi-dorian-g ">
+                            <div className="sk-umsmi-row">
                                 <div className={'sk-umsmi-title'}>
                                     Продолжительность обеда
                                 </div>
@@ -91,8 +75,8 @@ const UmScheduleMiniCard = (props) => {
 
                     {baseSchedule.lunch_time > 0 && (
                         <div className="sk-umsmi-row sk-usmi-dorian-g ">
-                            <div className={'sk-umsmi-title'}>
-                                Общее время работы, всключая обед
+                            <div className={'sk-umsmi-title'} title={'Рабочее время + обед, не считая опоздания и кратковременные выходы'}>
+                                Общее время работы с обедом
                             </div>
                             <div className={'sk-umsmi-data'}>
                                 {secondsToTime(baseSchedule.target_time + baseSchedule.lunch_time)}
@@ -102,21 +86,12 @@ const UmScheduleMiniCard = (props) => {
 
                     <div style={{textAlign: 'center', padding: '6px'}}>***</div>
 
-                    <div className="sk-umsmi-row">
+                    <div className="sk-umsmi-row sk-usmi-dorian-g">
                         <div className={'sk-umsmi-title'}>
-                            Начало действия графика
+                            График действителелен с
                         </div>
                         <div className={'sk-umsmi-data'}>
-                            {dayjs(link.start).format('DD-MM-YYYY')}
-                        </div>
-                    </div>
-
-                    <div className="sk-umsmi-row">
-                        <div className={'sk-umsmi-title'}>
-                            График действует до
-                        </div>
-                        <div className={'sk-umsmi-data'}>
-                            {link.end === null ? "бессрочно" : dayjs(link.end).format('DD-MM-YYYY')}
+                            {dayjs(link.start).format('DD-MM-YYYY')} {link.end === null ? " " : " по " + dayjs(link.end).format('DD-MM-YYYY')}
                         </div>
                     </div>
 

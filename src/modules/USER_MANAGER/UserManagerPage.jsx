@@ -765,7 +765,7 @@ const UserManagerPage = (props) => {
                     rules={baseRuleList}
                     schedules={baseScheduleList}
                     selectedCompany={selectedCompanyId}
-                    setRoute={props.setRoute}
+
                     schedTypes={scheduleTypes}
                     ruleTypes={ruleTypes}
                     onBidnRules={handleBindRules}

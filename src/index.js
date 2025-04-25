@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ConfigProvider, theme } from 'antd';
+import { StateProvider } from './GlobalComponents/providers/StateProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,7 +18,9 @@ root.render(
       // algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
     }}
     >
+      <StateProvider>
         <App />
+      </StateProvider>
 
     </ConfigProvider>
     </React.StrictMode>

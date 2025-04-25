@@ -2,10 +2,48 @@ import { Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { BarChartOutlined, BugOutlined, IssuesCloseOutlined, RobotOutlined } from "@ant-design/icons";
+import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
+    MinusCircleOutlined,
+    AppleOutlined,
+    RestOutlined,
+    CheckOutlined,
+    SafetyCertificateOutlined,
+    MedicineBoxOutlined,
+    RocketOutlined,
+    CarOutlined,
+    MoonOutlined,
+    SmileOutlined,
+    DollarOutlined,
+    HeatMapOutlined
+ } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
+
+
+
+const iconMap = {
+    MinusCircleOutlined,
+    AppleOutlined,
+    RestOutlined,
+    CheckOutlined,
+    SafetyCertificateOutlined,
+    MedicineBoxOutlined,
+    RocketOutlined,
+    CarOutlined,
+    MoonOutlined,
+    SmileOutlined,
+    DollarOutlined,
+    HeatMapOutlined
+  };
+
+const DynamicIcon = ({ iconName, ...props }) => {
+    const IconComponent = iconMap[iconName];
+    return IconComponent ? <IconComponent {...props} /> : null;
+  };
+
+
+
 
 const UserMonitorListCard = (props) => {
 
@@ -35,11 +73,11 @@ const UserMonitorListCard = (props) => {
 
     useEffect(()=> {
         setContent(props.data);
-        if (props.data.current_state != null && USER_STATE_PLACES[props.data.current_state] != null)
+        if (props.data.current_state != 0)
         {
-            setBadger(USER_STATE_PLACES[props.data.current_state]);
+            setBadger({ title: props.data.state_text, text: props.data.state_title, color: props.data.state_color, icon: <DynamicIcon iconName={props.data.state_icon} />});
         } else {
-            setBadger(null);
+            setBadger(USER_STATE_PLACES[0]);
         }
         setCurrentState(props.data.current_state);
     },[props.data]);
@@ -91,9 +129,9 @@ const UserMonitorListCard = (props) => {
             onMouseOver={handleMOuseOver}
             id={`row_${content.user_id}`}
             onDoubleClick={handleDoubleClickOnRow}
-        className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
-         ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
-          ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState != 10 && content.type != 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
+            className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
+            ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
+            ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState != 10 && content.type != 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
         >
             {content.type && 
             content.type == 'header' ? (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
-import { Drawer, Tag } from "antd";
+import { Drawer, Empty, Tag } from "antd";
 
 import dayjs from "dayjs";
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
@@ -8,6 +8,43 @@ import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import { LIST_SCHED_N_RULES_RESPONSE } from "../../../CONFIG/DEFAULTSTATE";
 import UmScheduleMiniCard from "./UmScheduleMiniCard";
+import { DownOutlined, UpOutlined,
+  BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
+  MinusCircleOutlined,
+  AppleOutlined,
+  RestOutlined,
+  CheckOutlined,
+  SafetyCertificateOutlined,
+  MedicineBoxOutlined,
+  RocketOutlined,
+  CarOutlined,
+  MoonOutlined,
+  SmileOutlined,
+  DollarOutlined,
+  HeatMapOutlined
+} from "@ant-design/icons";
+
+const iconMap = {
+    MinusCircleOutlined,
+    AppleOutlined,
+    RestOutlined,
+    CheckOutlined,
+    SafetyCertificateOutlined,
+    MedicineBoxOutlined,
+    RocketOutlined,
+    CarOutlined,
+    MoonOutlined,
+    SmileOutlined,
+    DollarOutlined,
+    HeatMapOutlined
+  };
+
+const DynamicIcon = ({ iconName, ...props }) => {
+    const IconComponent = iconMap[iconName];
+    return IconComponent ? <IconComponent {...props} /> : null;
+  };
+
+
 
 const UserListSidebar = (props) => {
 
@@ -23,6 +60,8 @@ const UserListSidebar = (props) => {
      
     const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
+    const [openStateInfoSection, setOpenStateInfoSection] = useState(false);
+
     useEffect(() => {
       setTargetUserGuys(props.target_user_guys);
     }, [props.target_user_guys])
@@ -30,7 +69,13 @@ const UserListSidebar = (props) => {
     useEffect(() => {
         if (props.target_user_info){
             setTargetUserInfo(props.target_user_info);
-            setBadger(USER_STATE_PLACES[props.target_user_info.current_state]);
+
+            if (props.target_user_info.current_state != 0)
+              {
+                  setBadger({ title: props.target_user_info.state_text, text: props.target_user_info.state_title, color: props.target_user_info.state_color, icon: <DynamicIcon iconName={props.target_user_info.state_icon} />});
+              } else {
+                  setBadger(USER_STATE_PLACES[0]);
+              }
 
             if (PRODMODE){
               let data = {
@@ -120,11 +165,41 @@ const UserListSidebar = (props) => {
         mask={false}
         onClose={()=>{handleClose()}} 
         open={openUserInfo}
-        className={"sk-ant-no-padding"}
+        className={"sk-ant-no-padding sk-drawer-transparent"}
         style={{background: 'white'}}
         >
         {openUserInfo && (
           <div>
+
+          {badger && (
+            <>
+            
+            <div className="">
+            <div className="sk-state-intgra-card-backdrop">
+            <div style={{background: badger.color + 99}}
+            className="sk-state-intgra-card ">
+              <span style={{textAlign: 'center' , paddingLeft: '4px'}}>{badger.icon}</span> <span>{badger.title}</span> 
+              <div onClick={()=>{setOpenStateInfoSection(!openStateInfoSection)}}>
+                  {openStateInfoSection ? (
+                    <span><UpOutlined /></span>
+                  ) : (
+                    <span><DownOutlined /></span>
+                  )}
+                </div>
+            </div>
+            </div>
+            {openStateInfoSection ? (
+              <div>
+              {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
+                <UserlistEventDumpCard data={targetUserInfo.event_dump} />
+              ) : (<div style={{padding: '18px'}}>...</div>)}
+              </div>
+            ) : ("")}
+            <br />
+            </div>
+            </>
+          )}
+
           <div className="sk-w-padding-18">
           <div className={'sk-usermonic-drawer-row'}>
             <div className={'sk-labed-um'}>Должность</div>
@@ -190,9 +265,23 @@ const UserListSidebar = (props) => {
               {userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.name}</div>
             </div>
           )}
-          <br />
+          
           </div>
           
+
+          {baseSchedules && baseSchedules.length > 0 && (
+            <div>
+              {baseSchedules.map((item, index)=> (
+                <UmScheduleMiniCard 
+                  data={item}
+                  key={`umscard_${item.id}`}
+                  />
+              ))}
+              <br />
+              <br />
+            </div>
+          )}
+
 
           {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
             <div className="sk-boss-wrapper-sf sk-w-padding-18">  
@@ -249,35 +338,9 @@ const UserListSidebar = (props) => {
 
 
 
-          {badger && (
-            <>
-            <br />
-            <div className="sk-w-padding-18">
-            <div className="sk-state-intgra-card-backdrop">
-            <div style={{background: badger.color + 99}}
-            className="sk-state-intgra-card ">
-              {badger.icon} {badger.title} 
-            </div>
-            </div>
-            </div>
-            </>
-          )}
 
 
-          {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
-            <UserlistEventDumpCard data={targetUserInfo.event_dump} />
-          ) : ""}
-
-          {baseSchedules && baseSchedules.length > 0 && (
-            <div>
-              {baseSchedules.map((item, index)=> (
-                <UmScheduleMiniCard 
-                  data={item}
-                  key={`umscard_${item.id}`}
-                  />
-              ))}
-            </div>
-          )}
+        
 
 
           </div>

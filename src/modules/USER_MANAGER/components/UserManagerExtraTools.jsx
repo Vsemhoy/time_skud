@@ -1,14 +1,15 @@
+import React, { useEffect, useState, useContext } from "react";
 import { Affix, Button, DatePicker, Modal, Radio, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
-import React, { useEffect, useState } from "react";
 import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
 import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, QuestionCircleFilled, QuestionCircleOutlined, QuestionCircleTwoTone, ToolOutlined } from "@ant-design/icons";
 import Checkbox from "antd/es/checkbox/Checkbox";
 import dayjs from "dayjs";
-
+import { StateContext } from "../../../GlobalComponents/providers/StateProvider";
 
 
 const UserManagerExtraTools = (props)=>{
+  const { state, setState } = useContext(StateContext);
 
 const [ruleList, setRuleList] = useState(props.rules);
 const [scheduleList, setScheduleList] = useState(props.schedules);
@@ -117,10 +118,11 @@ const [openModalRuleTypeInfo, setOpenModalRuleTypeInfo] = useState(false);
     },
     [props.ruleTypes]);
 
-  const setLocation = (location)=>{
-    if (props.setRoute){
-        props.setRoute(location);
-    }
+  const setLocation = (value)=>{
+    setState(prevState => ({
+        ...prevState,
+        location: value
+      }));
   }
 
 
