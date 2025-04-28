@@ -527,6 +527,7 @@ const UserStatisticsPage = (props)=>{
                 </div>
 
                 <div className="sk-usp-content-col">
+
                     <DemoChart />
                 </div>
             </div>

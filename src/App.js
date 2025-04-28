@@ -35,6 +35,7 @@ import { StateContext, StateProvider } from './GlobalComponents/providers/StateP
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs';
 import UserStatisticsPage from './modules/USER_STATISTICS/UserStatisticsPage';
+import ClaimManagerPage from './modules/CLAIM_MANAGER_SK/ClaimManagerPage';
 
 
 const { Header, Content, Footer } = Layout;
@@ -247,7 +248,7 @@ function App() {
         <Menu mode="horizontal" style={{ background: '#00000000', flex: 1}}>
           <Menu.Item key="home" icon={<HomeOutlined  style={{ fontSize: '20px', color: '#3b3b3b', marginTop: '6px',
            textAlign: 'center', paddingLeft: '6px' }} />} ><a href={HTTP_ROOT}></a></Menu.Item>
-          <Menu.SubMenu key="menu1" title="Персональный раздел">
+          <Menu.SubMenu key="menu1" title="Моё">
             <MenuItem
             key={'menu_52d34'}>
               <Link
@@ -270,7 +271,21 @@ function App() {
             </MenuItem>
 
           </Menu.SubMenu>
-          <Menu.SubMenu key="menu2" title="Управление сотрудниками">
+
+          <Menu.SubMenu key="menu109" title="Администратор">
+            <MenuItem
+            key={'menu_52d34'}>
+              <Link
+                onClick={()=>{ setLocation('claims')}}
+              >Администрирование заявок</Link>
+            </MenuItem>
+
+
+
+          </Menu.SubMenu>
+
+
+          <Menu.SubMenu key="menu2" title="Персонал">
           <MenuItem
             key={'menu_5234734565'}>
               <Link 
@@ -414,6 +429,8 @@ function App() {
             {state.location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
             {state.location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
             {state.location === 'notificator' && <NotifierPage userdata={userAct} />}
+
+            {state.location === 'claims' && <ClaimManagerPage userdata={userAct} />}
 
 
             {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} />}

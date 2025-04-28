@@ -105,7 +105,7 @@
     cursor:default;
 }
 .sk-usermonic-headerrow > div {
-    background: #00000000 !important;
+    background: white !important;
     /* backdrop-filter: blur(6px); */
 
 }

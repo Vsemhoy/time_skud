@@ -1,0 +1,78 @@
+.sk-claiman-type-selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.sk-claiman-typeselect-item {
+
+    /* background-color: var(--table-border-divider-color); */
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s;
+    margin-right: 6px;
+   
+    border-radius: 12px;
+    opacity: 0.65;
+    /* border: 1px solid rgba(0, 0, 0, 0.116); */
+    /* transform: scale(0.8); */
+}
+
+.sk-claiman-typeselect-item:hover:not(.sk-active) {
+    background-color: rgb(236, 236, 236);
+}
+.sk-claiman-typeselect-item > div {
+    padding: 3px 6px;
+    border-radius: 12px;
+    transition: all 0.3s;
+    background-color: rgba(212, 212, 212, 0.5);
+}
+.sk-claiman-typeselect-item.sk-active {
+    /* box-shadow: -2px 5px 12px #0000006b; */
+    opacity: 1;
+    /* transform: scale(1.1); */
+    z-index: 999;
+    border-radius: 3px;
+}
+
+.sk-claiman-typeselect-item.sk-active > div {
+    background-color: transparent;
+    /* border: 1px solid transparent; */
+    /* box-shadow: 1px 1px 9px gray; */
+}
+
+.sk-clamen-card {
+    display: grid;
+        grid-template-columns: 42px auto 50px 70px 70px 50px 50px 150px 150px 50px 50px ;
+        border: 1px solid #80808061;
+        border-top: none;
+        background: var(--row-main-bg-color);
+        transition: all ease 0.2s;
+}
+
+.sk-clamen-headerrow {
+    /* background: #00000012 !important; */
+    background-color: var(--row-header-color) !important;
+    backdrop-filter: blur(22px);
+    padding-bottom: 3px;
+    padding-top: 3px;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+    
+}
+.ant-affix > .sk-clamen-headerrow > .sk-clamen-card {
+    background: white;
+    /* border: 1px solid transparent; */
+    border-left: 1px solid var(--row-main-bg-color);
+    border-right: 1px solid var(--row-main-bg-color);
+}
+
+.sk-clamen-card > div > div {
+    padding: 4px;
+    align-content: center;
+    height: 100%;
+}
+
+div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
+    background: var(--row-hovered-bg-color);
+}
