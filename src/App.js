@@ -37,9 +37,10 @@ import dayjs from 'dayjs';
 import UserStatisticsPage from './modules/USER_STATISTICS/UserStatisticsPage';
 import ClaimManagerPage from './modules/CLAIM_MANAGER_SK/ClaimManagerPage';
 
+import useWebSocket from 'react-use-websocket';
+const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
-
 
 
 
@@ -76,6 +77,16 @@ function App() {
 
   const [historyStack, setHistoryStack] = useState([]);
   
+
+  const { sendMessage, lastMessage } = useWebSocket(WS_URL, {
+    onOpen: () => console.log('Соединение открыто'),
+    shouldReconnect: () => true,
+  });
+console.log(lastMessage);
+
+  const [actionUpdateEvents, setActionUpdateEvents] = useState(null);
+
+  // return <button onClick={() => sendMessage('Hello')}>Отправить</button>;
   /**
    * Текущий адрес страницы
    */
@@ -155,6 +166,18 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+
+  useEffect(() => {
+    if (lastMessage && lastMessage.data) {
+      let msData = JSON.parse(lastMessage.data);
+      console.log('Получено сообщение:', msData);
+      // Trig на обновление списков пользователей
+      if (msData.action === 'UPDATE_EVENTS'){
+        setActionUpdateEvents(dayjs().unix());
+        console.log('Update triggers', msData);
+      }
+    }
+  }, [lastMessage]);
 
 
   const showNotyBar = () => {
@@ -417,7 +440,7 @@ function App() {
         <div>
             {/* {location === '' && <HomePage />} */}
             {/* {location === 'home' && <HomePage />} */}
-            {state.location === '' && <UserListPage userdata={userAct} />}
+            {state.location === '' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
             {state.location === 'profile' && <AccountPage userdata={userAct} />}
             {state.location === 'statistics' && <UserStatisticsPage userdata={userAct} />}
             {state.location === 'admin' && <AdminPage />}
@@ -425,7 +448,7 @@ function App() {
             {state.location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
             {state.location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={setRoute} />}
             {state.location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
-            {state.location === 'userlist' && <UserListPage userdata={userAct}  />}
+            {state.location === 'userlist' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
             {state.location === 'groupmanager' && <GroupManagerPage userdata={userAct} />}
             {state.location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
             {state.location === 'notificator' && <NotifierPage userdata={userAct} />}
@@ -433,7 +456,7 @@ function App() {
             {state.location === 'claims' && <ClaimManagerPage userdata={userAct} />}
 
 
-            {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} />}
+            {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
 
           </div>
           ) : (

@@ -26,7 +26,7 @@ const EventMonitorPage = (props) => {
         const debounceTimer = setTimeout(() => {
         console.log(queryParams);
         get_arch_events(queryParams);
-        }, 1000);
+        }, 800);
         return () => clearTimeout(debounceTimer);
     },[queryParams]);
 

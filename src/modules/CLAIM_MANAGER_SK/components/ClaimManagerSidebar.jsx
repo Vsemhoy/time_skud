@@ -165,14 +165,14 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Продолжительность в днях от __ до __</span>
                 <div className="sk-flex-space">
                     <Input
-                    type="number"
-                    min={1}
-                    value={filterDurationStart}
-                />
-                <Input
-                    type="number"
-                    min={1}
-                    filter={filterDurationEnd}
+                        type="number"
+                        min={1}
+                        value={filterDurationStart}
+                    />
+                    <Input
+                        type="number"
+                        min={1}
+                        filter={filterDurationEnd}
                     />
                 </div>
 

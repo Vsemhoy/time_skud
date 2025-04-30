@@ -99,6 +99,16 @@ const UserList = (props)=>{
 
 
 
+    // Callback from socket
+    useEffect(()=>{
+      if (props.refresh_trigger != null){
+        const debounceTimer = setTimeout(() => {
+          get_users(extFilters);
+          }, 500);
+          return () => clearTimeout(debounceTimer);
+      }
+    },[props.refresh_trigger]);
+
     
   /** ------------------ FETCHES ---------------- */
     /**
