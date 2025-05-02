@@ -14,7 +14,8 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     MoonOutlined,
     SmileOutlined,
     DollarOutlined,
-    HeatMapOutlined
+    HeatMapOutlined,
+    TruckOutlined
  } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../GlobalComponents/Helpers/TextHelpers";
 import './style/usermonitorlist.css';

@@ -9,7 +9,7 @@ import '../../../components/TimeSkud/Style/timeskud.css'
 import { BranchesOutlined, CrownOutlined, DoubleLeftOutlined, DoubleRightOutlined, RightOutlined, RightSquareOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../CONFIG/config";
-import { getWeekDayString } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { getMonthName, getWeekDayString } from "../../../GlobalComponents/Helpers/TextHelpers";
 
 
 const UserListToolbar = (props) => {
@@ -390,7 +390,7 @@ const UserListToolbar = (props) => {
             style={{width: '100%', padding: '6px 14px', alignItems: 'center'}}
 
             >
-            <div>
+            <div className={'sk-flex-space'}>
 
                 <RightSquareOutlined
                     
@@ -400,7 +400,10 @@ const UserListToolbar = (props) => {
                     title="Фильтры и сотрировки"
                     />
                 {/* {usedDepartment} {usedCompany} {usedSort} */}
+
             </div>
+
+
 
             <div className="sk-flex">
                 <DoubleLeftOutlined
@@ -444,6 +447,16 @@ const UserListToolbar = (props) => {
             </div>
 
 
+        </div>
+
+        <div className={'sk-usermonic-after-toolbar'}>
+            <div className={'sk-usermonic-toolbar-xtext'}
+                onDoubleClick={()=>{setUsedDate(dayjs())}}
+                title="Выбранный день. Двойной клик скинет вас на сегодняшнюю дату."
+            >
+                {getMonthName(usedDate.month())}'{usedDate.year()}, {getWeekDayString( usedDate.day())}
+            </div>
+            <div></div>
         </div>
         
                 <br />

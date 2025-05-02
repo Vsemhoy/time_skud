@@ -1,5 +1,5 @@
-import { AimOutlined, BlockOutlined, CarOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined } from "@ant-design/icons";
-import { Affix, Button, Select } from "antd";
+import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
+import { Affix, Button, Dropdown, Select } from "antd";
 import React, { useState } from "react";
 
 import './components/style/claimmanager.css';
@@ -9,10 +9,71 @@ import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
 
 
+const claimTypes = [
+    {
+        key: 'clt_9',
+        value: 9, 
+        label: 'Отпуск за свой счёт',
+        icon: <MoonOutlined />
+    },
+    {
+        key: 'clt_8',
+        value: 8, 
+        label: 'Кратковременная командировка',
+        icon: <CarOutlined />
+    },
+    {
+        key: 'clt_7',
+        value: 7, 
+        label: 'Длительная командировка',
+        icon: <RocketOutlined />
+    },
+    {
+        key: 'clt_10',
+        value: 10, 
+        label: 'Отпуск',
+        icon: <SmileOutlined />
+    },
+    {
+        key: 'clt_11',
+        value: 11, 
+        label: 'Сверхурочные',
+        icon: <DollarOutlined />
+    },
+    {
+        key: 'clt_6',
+        value: 6, 
+        label: 'Больничные',
+        icon: <MedicineBoxOutlined />
+    },
+    {
+        key: 'clt_13',
+        value: 13, 
+        label: 'Контейнеры',
+        icon: <TruckOutlined />
+    }
+];
+
 const ClaimManagerPage = (props) => {
     const [typeSelect, setTypeSelect] = useState(null);
     const [editorOpened, setEditorOpened] = useState(false);
 
+    const [formType, setFormType] = useState(null);
+
+
+
+    const handleEditorOpen = (value) => {
+        if (value && value.key){
+            let key = parseInt(value.key.replace('clt_', ''));
+            setEditorOpened(true);
+            setFormType(key);
+        }
+    }
+
+    const menuProps = {
+        items: claimTypes,
+        onClick: handleEditorOpen,
+      };
 
 
     return (
@@ -115,15 +176,29 @@ const ClaimManagerPage = (props) => {
 
                             </div>
                         </div>
+
+                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 13 ? "sk-active" : ""}`}
+                            onClick={()=>{setTypeSelect(13)}}
+                            style={{background: "#ffc107"}}
+                        >
+                            <div>
+                            <span><MedicineBoxOutlined /></span> <span>Контейн.</span>
+
+                            </div>
+                        </div>
                     </div>
                     <div>
+                        <Dropdown
+                            menu={menuProps}
+                            onClick={handleEditorOpen}
+                        >
                         <Button 
                             icon={<PlusOutlined />}
                             type={'primary'}
-                            onClick={()=>{setEditorOpened(true)}}
                         >
                             Создать заявку
                         </Button>
+                        </Dropdown>
                     </div>
                 </div>
             </div>
@@ -221,7 +296,9 @@ const ClaimManagerPage = (props) => {
 
             <ClaimEditorDrawer
                 opened={editorOpened}
+                claim_type={formType}
                 on_close={()=>{setEditorOpened(false)}}
+                claim_types={claimTypes}
             />
         </div>
     )

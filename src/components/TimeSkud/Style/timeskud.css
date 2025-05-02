@@ -26,6 +26,8 @@
 
     --icon-color-std: #767b82;
     --icon-color-std-hover: #4a4c50;
+
+    --column-divider-color: #00000038;
 }
 
 .sk-flex-gap {
