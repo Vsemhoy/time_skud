@@ -544,7 +544,7 @@ const tagRender = (props) => {
                             <br />
                             <br />
                             <br />
-                            <a onClick={()=>{setLocation('schedulemanager')}}>Менеджер графиков</a>
+                            <a onClick={()=>{setLocation('schedules')}}>Менеджер графиков</a>
 
                             <br />
                             <br />
@@ -635,7 +635,7 @@ const tagRender = (props) => {
                             <br />
                             <br />
                             <br />
-                            <a onClick={()=>{setLocation('rulemanager')}}>Менеджер правил учёта РВ</a>
+                            <a onClick={()=>{setLocation('rules')}}>Менеджер правил учёта РВ</a>
 
                             <br />
                             <br />

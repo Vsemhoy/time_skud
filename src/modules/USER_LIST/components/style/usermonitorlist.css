@@ -6,8 +6,10 @@
     background: var(--row-main-bg-color);
     transition: all ease 0.2s;
 }
-.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div, .sk-usermonic-micro-row > div {
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div {
     transition: all 0.1s;
+}
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div, .sk-usermonic-micro-row > div {
     box-shadow: -7px 0px 1px -6px var(--column-divider-color);
 }
 .sk-usermonic-micro-row > div:last-child {

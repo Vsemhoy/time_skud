@@ -62,10 +62,81 @@ const useCookieState = (key, defaultValue) => {
 
 
 
+
+
 function App() {
   const menuItems = [];
 
   const { state, setState } = useContext(StateContext);
+
+  const [pages, setPages] = useState({
+    userListPage: {
+        id: 1,
+        rendered: true,
+        name: 'userlist',
+        ruName: 'Список сотрудников',
+    },
+    personalPage: {
+        id: 2,
+        rendered: false,
+        name: 'personal',
+        ruName: 'Личный кабинет',
+    },
+    statisticPage: {
+        id: 3,
+        rendered: false,
+        name: 'statistic',
+        ruName: 'Статистика',
+    },
+    claimPage: {
+        id: 4,
+        rendered: false,
+        name: 'claims',
+        ruName: 'Менеджер раявок',
+    },
+    scheduleManagerPage: {
+        id: 5,
+        rendered: false,
+        name: 'schedules',
+        ruName: 'Графики работы',
+    },
+    userManagerPage: {
+        id: 6,
+        rendered: false,
+        name: 'usermanager',
+        ruName: 'Настройки учёта РВ пользователей',
+    },
+    calendarManagerPage: {
+        id: 7,
+        rendered: false,
+        name: 'prodcalendars',
+        ruName: 'Производственные календари',
+    },
+    eventMonitorPage: {
+        id: 8,
+        rendered: false,
+        name: 'eventmonitor',
+        ruName: 'Монитор событий',
+    },
+    notificatorPage: {
+        id: 8,
+        rendered: false,
+        name: 'notificator',
+        ruName: 'Нотификатор',
+    },
+    groupManagerPage: {
+        id: 9,
+        rendered: false,
+        name: 'groupmanager',
+        ruName: 'Группы для группировки пользователей',
+    },
+    ruleManagetPage: {
+        id: 10,
+        rendered: false,
+        name: 'rules',
+        ruName: 'Правила учёта рабочего времени',
+    }
+  });
 
   const [alertNotShowDate, setAlertNotShowDate] = useCookieState('skud_alert_notshow_date', "");
 
@@ -75,29 +146,20 @@ function App() {
   const [notificatorLoading, setNotificatorLoading] = useState(true);
   const [countOfNotifications, setCountOfNotifications] = useState(0);
 
-  const [historyStack, setHistoryStack] = useState([]);
+  // const [historyStack, setHistoryStack] = useState([]);
   
 
   const { sendMessage, lastMessage } = useWebSocket(WS_URL, {
     onOpen: () => console.log('Соединение открыто'),
     shouldReconnect: () => true,
   });
-console.log(lastMessage);
 
   const [actionUpdateEvents, setActionUpdateEvents] = useState(null);
 
-  // return <button onClick={() => sendMessage('Hello')}>Отправить</button>;
-  /**
-   * Текущий адрес страницы
-   */
-  // const [location, setLocation] = useState((new URLSearchParams(window.location.search)).get('location') ? (new URLSearchParams(window.location.search)).get('location') : 'userlist');
-  
 
-  // const handleStateChange = (e) => {
-  //   setState({ value: e.target.value });
-  // };
 
   const setLocation = (value) => {
+    console.log('SETLOCATOR ', value);
     setState(prevState => ({
       ...prevState,
       location: value
@@ -110,61 +172,54 @@ console.log(lastMessage);
     }
   }
 
-  // Инициализация при монтировании
-  useEffect(() => {
-    const initialParams = new URLSearchParams(window.location.search);
-    const initialLocation = initialParams.get('location') || '';
-    setHistoryStack([initialLocation]);
-  }, []);
 
 
-    // CHANGE PAGE
-    useEffect(()=>{
-      
-    },[state.target_page]);
-
-    // Чтение параметра из URL при монтировании компонента
-    useEffect(() => {
-      const searchParams = new URLSearchParams(window.location.search);
-      const value = searchParams.get('location'); // Измените на 'locate', если нужно
-      if (value) {
-          setLocation(value);
-      } else {
-          setLocation('userlist'); // Установка корневой страницы
-      }
-      console.log('start page is', value);
-  }, []);
 
   // Обработчик изменений location
   useEffect(() => {
+    console.log('STATER');
     const query = new URLSearchParams(window.location.search);
-    query.set('location', state.location);
-    
-    // Обновляем URL без создания новой записи истории
-    window.history.replaceState({}, '', `?${query}`);
-    
-    // Добавляем в историю только новые значения
-    setHistoryStack(prev => [...prev, state.location].slice(-10)); // Ограничиваем глубину истории
+    console.log('STATELOCATION', state.location);
+    if (state.location){
+      query.set('location', state.location);
+      // Обновляем URL без создания новой записи истории
+      window.history.replaceState({}, '', `?${query}`);
+      // Добавляем в историю только новые значения
+      // setHistoryStack(prev => [...prev, state.location].slice(-10)); // Ограничиваем глубину истории
+    }
   }, [state.location]);
 
-  // Обработка навигации назад
-  useEffect(() => {
-    const handlePopState = () => {
-      setHistoryStack(prev => {
-        if (prev.length < 2) return prev;
-        
-        const newStack = [...prev];
-        newStack.pop(); // Удаляем текущий элемент
-        const lastLocation = newStack[newStack.length - 1];
-        
-        setLocation(lastLocation); // Обновляем состояние
-        return newStack;
-      });
-    };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+
+
+// 1. При монтировании: синхронизировать state.location с URL
+useEffect(() => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const currentLocation = searchParams.get('location') || 'userlist';
+  setLocation(currentLocation);
+
+  const handlePopState = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const currentLocation = searchParams.get('location') || 'userlist';
+    setLocation(currentLocation);
+  };
+  window.addEventListener('popstate', handlePopState);
+  return () => window.removeEventListener('popstate', handlePopState);
+}, []);
+
+// 2. При смене страницы (только по клику/действию)
+const changePage = (pageId) => {
+  const activePage = Object.values(pages).find(page => page.id === pageId);
+  if (activePage) {
+    const newUrl = `${window.location.pathname}?location=${encodeURIComponent(activePage.name)}`;
+    window.history.pushState({}, '', newUrl);
+    setLocation(activePage.name);
+  }
+};
+
+
+
+
 
 
   useEffect(() => {
@@ -180,6 +235,8 @@ console.log(lastMessage);
   }, [lastMessage]);
 
 
+
+
   const showNotyBar = () => {
     setNotificatorOpened(true);
     setNotificatorLoading(true);
@@ -192,6 +249,7 @@ console.log(lastMessage);
 
 
   const setRoute = (location)=>{
+    console.log('SET_ROUTE ', location);
     setLocation(location);
   }
 
@@ -249,7 +307,7 @@ console.log(lastMessage);
         </Menu.Item> */}
         <Menu.Item key="block" icon={<ThunderboltOutlined />}>
         <Link 
-              onClick={()=>{ setLocation('notificator')}}
+              onClick={()=>{ changePage(8)}}
               >Нотификатор</Link>
         </Menu.Item>
         <Menu.Item key="logout" icon={<LogoutOutlined />}>
@@ -275,21 +333,21 @@ console.log(lastMessage);
             <MenuItem
             key={'menu_52d34'}>
               <Link
-                onClick={()=>{ setLocation('profile')}}
+                onClick={()=>{ changePage(2)}}
               >Моё</Link>
             </MenuItem>
 
             <MenuItem
             key={'menu_52s34'}>
               <Link 
-                onClick={()=>{ setLocation('userlist')}}
+                onClick={()=>{ changePage(1)}}
               >Сотрудники</Link>
             </MenuItem>
 
             <MenuItem
             key={'menu_52d3994'}>
               <Link
-                onClick={()=>{ setLocation('statistics')}}
+                onClick={()=>{ changePage(3)}}
               >Статистика</Link>
             </MenuItem>
 
@@ -299,7 +357,7 @@ console.log(lastMessage);
             <MenuItem
             key={'menu_52d34'}>
               <Link
-                onClick={()=>{ setLocation('claims')}}
+                onClick={()=>{ changePage(4)}}
               >Администрирование заявок</Link>
             </MenuItem>
 
@@ -312,21 +370,21 @@ console.log(lastMessage);
           <MenuItem
             key={'menu_5234734565'}>
               <Link 
-              onClick={()=>{ setLocation('usermanager')}}
+              onClick={()=>{ changePage(6)}}
               >Управление пользователями</Link>
             </MenuItem>
 
           <MenuItem
             key={'menu_52342'}>
               <Link 
-              onClick={()=>{ setLocation('rulemanager')}}
+              onClick={()=>{ changePage(10)}}
               >Правила</Link>
             </MenuItem>
 
             <MenuItem
             key={'menu_5234qq'}>
               <Link 
-              onClick={()=>{ setLocation('schedulemanager')}}
+              onClick={()=>{ changePage(5)}}
               >Графики</Link>
             </MenuItem>
 
@@ -335,35 +393,35 @@ console.log(lastMessage);
             <MenuItem
             key={'menu_235234'}>
               <Link 
-              onClick={()=>{ setLocation('prodcalendars')}}
+              onClick={()=>{ changePage(7)}}
               >Календари</Link>
             </MenuItem>
 
 
             <MenuItem>
               <Link 
-              onClick={()=>{ setLocation('schedulemanager')}}
+              onClick={()=>{ changePage(1)}}
               >Заявки на смену графика</Link>
             </MenuItem> 
 
             <MenuItem
             key={'menu_5234765'}>
               <Link 
-              onClick={()=>{ setLocation('groupmanager')}}
+              onClick={()=>{ changePage(9)}}
               >Группы пользоваателей</Link>
             </MenuItem>
 
             <MenuItem
             key={'menu_5235644'}>
               <Link 
-              onClick={()=>{ setLocation('superadmin/randomixer')}}
+              onClick={()=>{ changePage(4)}}
               >RMXR</Link>
             </MenuItem>
 
             <MenuItem
             key={'menu_523566744'}>
               <Link 
-              onClick={()=>{ setLocation('eventmonitor')}}
+              onClick={()=>{ changePage(8)}}
               >Монитор событий</Link>
             </MenuItem>
           </Menu.SubMenu>
@@ -441,11 +499,11 @@ console.log(lastMessage);
             {/* {location === '' && <HomePage />} */}
             {/* {location === 'home' && <HomePage />} */}
             {state.location === '' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
-            {state.location === 'profile' && <AccountPage userdata={userAct} />}
-            {state.location === 'statistics' && <UserStatisticsPage userdata={userAct} />}
+            {state.location === 'personal' && <AccountPage userdata={userAct} />}
+            {state.location === 'statistic' && <UserStatisticsPage userdata={userAct} />}
             {state.location === 'admin' && <AdminPage />}
-            {state.location === 'rulemanager' && <RuleManagerPage userdata={userAct} />}
-            {state.location === 'schedulemanager' && <SchedManagerPage userdata={userAct} />}
+            {state.location === 'rules' && <RuleManagerPage userdata={userAct} />}
+            {state.location === 'schedules' && <SchedManagerPage userdata={userAct} />}
             {state.location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={setRoute} />}
             {state.location === 'prodcalendars' && <ProdCalManagerPage userdata={userAct} />}
             {state.location === 'userlist' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
@@ -455,7 +513,7 @@ console.log(lastMessage);
 
             {state.location === 'claims' && <ClaimManagerPage userdata={userAct} />}
 
-
+            {/* {!state.location && <NotFoundPage />} */}
             {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
 
           </div>
