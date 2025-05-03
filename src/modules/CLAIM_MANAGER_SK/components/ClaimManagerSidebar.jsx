@@ -1,6 +1,6 @@
 import { Button, DatePicker, Input, Select, Switch } from "antd";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ClaimManagerSidebar = (props) => {
 
@@ -69,6 +69,41 @@ const ClaimManagerSidebar = (props) => {
     };
 
 
+    const [bossList, setBossList] = useState([]);
+
+    useEffect(() => {
+        if (props.user_list && props.user_list.length > 0) {
+          // 1. Собираем уникальные boss_id
+          const bossIds = new Set();
+          props.user_list.forEach(user => {
+            if (user.boss_id && user.boss_id !== 0) {
+              bossIds.add(user.boss_id);
+            }
+          });
+      
+          // 2. Формируем массив объектов только для тех, кто является чьим-то боссом
+          const bosses = props.user_list
+            .filter(user => bossIds.has(user.id))
+            .map(user => ({
+              key: `userkey_${user.id}`,
+              value: user.id,
+              label: (
+                <div className="sk-flex-space">
+                  <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
+                  <div>{user.id}</div>
+                </div>
+              ),
+            }));
+      
+          setBossList(bosses);
+        } else {
+          setBossList([]);
+        }
+      }, [props.user_list]);
+
+
+
+
     return (
         <div>
             <div className={'sk-usp-filter-col-item'} >
@@ -119,6 +154,7 @@ const ClaimManagerSidebar = (props) => {
                     style={{ width: '100%' }}
                     placeholder={'Поиск по имени руководителя'}
                     value={filterBoss}
+                    options={bossList}
                     />
             </div>
 

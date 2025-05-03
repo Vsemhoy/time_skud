@@ -1,12 +1,15 @@
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 import { Affix, Button, Dropdown, Select } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import './components/style/claimmanager.css';
 import ClaimManagerCard from "./components/ClaimManagerCard";
 import ClaimEditorDrawer from "./components/ClaimEditorDrawer";
 import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
+import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import { CLAIM_STATES, CLAIM_USERS } from "./CLAIM_MOCK";
 
 
 const claimTypes = [
@@ -60,6 +63,15 @@ const ClaimManagerPage = (props) => {
 
     const [formType, setFormType] = useState(null);
 
+    const [baseUserList, setBaseUserList] = useState([]);
+    const [userList, setUserList] = useState([]);
+    const [departList, setDepartList] = useState([]);
+    const [bossList, setBossList] = useState([]);
+    const [baseApproverList, setBaseApproverList] = useState([]);
+    const [approverList, setApproverList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    const [claimList, setClaimList] = useState([]);
+    const [baseClaimList, setBaseClaimList] = useState([]);
 
 
     const handleEditorOpen = (value) => {
@@ -75,6 +87,136 @@ const ClaimManagerPage = (props) => {
         onClick: handleEditorOpen,
       };
 
+
+    useEffect(()=>{
+        if (PRODMODE){
+            get_stateList();
+            get_userList();
+            get_approverList();
+            get_claimList();
+        } else {
+            //mock data
+            setBaseUserList(CLAIM_USERS);
+            setStateList(CLAIM_STATES);
+        }
+    },[]);
+
+    useEffect(()=>{
+        setUserList(baseUserList);
+    },[baseUserList]);
+
+
+    // ------------------ FetchWorld ----------------------
+
+
+
+    const get_claimList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                setBaseClaimList(response.data.content);
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+
+    const get_userList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getusers', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                setBaseUserList(response.data.content);
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+
+    const get_approverList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getapprovers', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                setBaseApproverList(response.data.content);
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+
+    const get_stateList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                setStateList(response.data.content);
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+
+    const set_claimStatus = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/setclaimstatus', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+
+    const create_claim = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+
+    // ------------------ FetchWorld ----------------------
 
     return (
         <div>
@@ -206,7 +348,7 @@ const ClaimManagerPage = (props) => {
             <div className={'sk-usp-layout-container'}>
                 <div className="sk-usp-filter-col">
                     <ClaimManagerSidebar 
-
+                        user_list={userList}
                     />
                 </div>
 
@@ -295,6 +437,7 @@ const ClaimManagerPage = (props) => {
             </div>
 
             <ClaimEditorDrawer
+                user_list={userList}
                 opened={editorOpened}
                 claim_type={formType}
                 on_close={()=>{setEditorOpened(false)}}

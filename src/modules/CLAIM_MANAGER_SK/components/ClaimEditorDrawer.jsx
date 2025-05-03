@@ -29,7 +29,7 @@ const ClaimEditorDrawer = (props) => {
   
   const [formResult, setFormResult] = useState('');               // 11,
   
-
+  const [userList, setUserList] = useState([]);
 
   const showDrawer = () => {
     setOpen(true);
@@ -40,6 +40,18 @@ const ClaimEditorDrawer = (props) => {
         props.on_close();
     }
   };
+
+  useEffect(()=>{
+    if (props.user_list){
+      setUserList(props.user_list.map((item)=>{
+        return {
+          'key': `userkey_${item.id}`,
+          'value': item.id,
+          'label': <div className={'sk-flex-space'}><div>{item.surname + " " + item.name + " " + item.patronymic}</div> <div>{item.id}</div></div>,
+        }
+      }));
+    }
+  },[props.user_list]);
 
   useEffect(()=>{
     if (props.opened){
@@ -153,9 +165,12 @@ const ClaimEditorDrawer = (props) => {
         <div>
           <div style={{padding: '9px 0px'}}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Сотрудник</span>
-                <Input
+                <Select
+                    mode="multiple"
+                    allowClear
                     style={{ width: '100%' }}
                     placeholder={'Имя пользователя'}
+                    options={userList}
                 
                     />
             </div>
