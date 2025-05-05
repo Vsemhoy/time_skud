@@ -9,7 +9,7 @@ import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CLAIM_STATES, CLAIM_USERS } from "./CLAIM_MOCK";
+import { CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS } from "./CLAIM_MOCK";
 
 
 const claimTypes = [
@@ -58,6 +58,7 @@ const claimTypes = [
 ];
 
 const ClaimManagerPage = (props) => {
+    const [userData, setUserData] = useState(null);
     const [typeSelect, setTypeSelect] = useState(null);
     const [editorOpened, setEditorOpened] = useState(false);
 
@@ -74,6 +75,7 @@ const ClaimManagerPage = (props) => {
     const [baseClaimList, setBaseClaimList] = useState([]);
 
 
+
     const handleEditorOpen = (value) => {
         if (value && value.key){
             let key = parseInt(value.key.replace('clt_', ''));
@@ -87,15 +89,22 @@ const ClaimManagerPage = (props) => {
         onClick: handleEditorOpen,
       };
 
+    useEffect(()=>{
+        setUserData(props.userdata);
+    },[props.userdata]);
+
+
 
     useEffect(()=>{
         if (PRODMODE){
+            get_departlist();
             get_stateList();
             get_userList();
             get_approverList();
             get_claimList();
         } else {
             //mock data
+            setDepartList(CLAIM_DEPARTS);
             setBaseUserList(CLAIM_USERS);
             setStateList(CLAIM_STATES);
         }
@@ -181,6 +190,23 @@ const ClaimManagerPage = (props) => {
         }
     }
 
+    const get_departlist = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getdepartments', 
+                {
+                    data: {
+                    
+                    },
+                    _token: CSRF_TOKEN
+                });
+                setDepartList(response.data.content);
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
 
     const set_claimStatus = async (req, res) => {
         try {
@@ -217,6 +243,12 @@ const ClaimManagerPage = (props) => {
 
 
     // ------------------ FetchWorld ----------------------
+
+
+
+
+
+
 
     return (
         <div>
@@ -348,7 +380,10 @@ const ClaimManagerPage = (props) => {
             <div className={'sk-usp-layout-container'}>
                 <div className="sk-usp-filter-col">
                     <ClaimManagerSidebar 
-                        user_list={userList}
+                        user_list={baseUserList}
+                        depart_list={departList}
+                        company_list={userData?.companies}
+
                     />
                 </div>
 

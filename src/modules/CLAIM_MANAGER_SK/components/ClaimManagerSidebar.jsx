@@ -70,6 +70,7 @@ const ClaimManagerSidebar = (props) => {
 
 
     const [bossList, setBossList] = useState([]);
+    const [companyList, setCompanyList] = useState([]);
 
     useEffect(() => {
         if (props.user_list && props.user_list.length > 0) {
@@ -104,6 +105,27 @@ const ClaimManagerSidebar = (props) => {
 
 
 
+      useEffect(()=>{
+        console.log('props.company_list', props.company_list);
+        if (props.company_list){
+            setCompanyList(
+                props.company_list.filter(com => com.id != 1)
+                .map(com => ({
+                    key: `usercom_${com.id}`,
+                    value: com.id,
+                    label: (
+                      <div className="sk-flex-space">
+                        <div>{`${com.name}`}</div>
+                        <div>{com.id}</div>
+                      </div>
+                    ),
+                  })
+            ));
+        }
+
+      },[props.company_list]);
+
+
     return (
         <div>
             <div className={'sk-usp-filter-col-item'} >
@@ -113,6 +135,7 @@ const ClaimManagerSidebar = (props) => {
                     placeholder={'Имя пользователя'}
                     allowClear={true}
                     value={filterUserName}
+                    onChange={(ev)=>{setFilterUserName(ev.target.value)}}
                     />
             </div>
 
@@ -134,6 +157,7 @@ const ClaimManagerSidebar = (props) => {
                     style={{ width: '100%' }}
                     placeholder={'Компания, в которой служит сотрудник'}
                     value={filterCompany}
+                    options={companyList}
                     />
             </div>
 
@@ -155,6 +179,7 @@ const ClaimManagerSidebar = (props) => {
                     placeholder={'Поиск по имени руководителя'}
                     value={filterBoss}
                     options={bossList}
+                    onChange={(ev)=>{setFilterBoss(ev)}}
                     />
             </div>
 

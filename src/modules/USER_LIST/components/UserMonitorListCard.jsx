@@ -132,7 +132,7 @@ const UserMonitorListCard = (props) => {
             onDoubleClick={handleDoubleClickOnRow}
             className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
             ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
-            ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState != 10 && content.type != 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
+            ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
         >
             {content.type && 
             content.type == 'header' ? (

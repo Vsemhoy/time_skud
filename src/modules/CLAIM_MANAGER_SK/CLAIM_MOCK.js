@@ -699,3 +699,178 @@ export const CLAIM_STATES = [
         "need_approved": 0
     }
 ];
+
+
+export const CLAIM_DEPARTS = [
+    {
+        "id": 1,
+        "name": "Администрация",
+        "rang": 1,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 2,
+        "name": "Отдел персонала",
+        "rang": 30,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 3,
+        "name": "Бухгалтерия",
+        "rang": 10,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 4,
+        "name": "Техническая группа проектного отдела",
+        "rang": 140,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 5,
+        "name": "Отдел оптовых продаж",
+        "rang": 50,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 6,
+        "name": "Отдел рекламы",
+        "rang": 70,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 7,
+        "name": "Технический отдел трансляционного звука",
+        "rang": 60,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 8,
+        "name": "Проектный отдел",
+        "rang": 100,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 9,
+        "name": "Склад Санкт-Петербург",
+        "rang": 120,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 11,
+        "name": "Строительный отдел",
+        "rang": 110,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 12,
+        "name": "АХЧ",
+        "rang": 200,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 13,
+        "name": "Дилерский отдел",
+        "rang": 130,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 14,
+        "name": "Отдел информационных технологий",
+        "rang": 90,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 15,
+        "name": "Отдел информации",
+        "rang": 40,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 17,
+        "name": "Пулково КПП",
+        "rang": 150,
+        "visible": false,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 18,
+        "name": "Пулково 19",
+        "rang": 170,
+        "visible": false,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 19,
+        "name": "Контрагенты",
+        "rang": 180,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 20,
+        "name": "Технический отдел профессионального звука",
+        "rang": 80,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    },
+    {
+        "id": 21,
+        "name": "Отдел Логистики",
+        "rang": 20,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null
+    }
+];
