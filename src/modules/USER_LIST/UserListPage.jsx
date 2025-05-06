@@ -1,18 +1,15 @@
-import React, {useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import UserListToolbar from "./components/UserlistToolbar";
-import { Affix, Badge, Drawer, Empty, Table, Tag } from "antd";
+import { Affix, Badge, Drawer, Empty, message, Table, Tag } from "antd";
 import '../../components/TimeSkud/Style/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
-import { ShortName } from "../../GlobalComponents/Helpers/TextHelpers";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
-import { FileUnknownOutlined, InfoOutlined, UserSwitchOutlined } from "@ant-design/icons";
-import { USER_STATE_PLACES } from "../../CONFIG/DEFFORMS";
-import UserlistEventDumpCard from "./components/UserlistEventDumpCard";
+
 import UserListSidebar from "./components/UserListSidebar";
 
 
@@ -40,6 +37,9 @@ const UserList = (props)=>{
 
   // Await data from header, then load data from setver
   const [extFilters, setExtFilters] = useState([]);
+  const [innerSortByValue, setInnerSortByValue] = useState('department_asc');
+  const [innerFilters, setInnerFiletrs] = useState([]);
+  
 
   const sortedUserRef = useRef(userListData);
   const markedUsersRef = useRef(markedUsers);
@@ -48,6 +48,10 @@ const UserList = (props)=>{
 
   const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
+  const [messageApi, contextHolder] = message.useMessage();
+  const info = () => {
+    messageApi.info('Данные обновлены');
+  };
 
   useEffect(() => {
     markedUsersRef.current = markedUsers;
@@ -101,6 +105,7 @@ const UserList = (props)=>{
 
     // Callback from socket
     useEffect(()=>{
+      info();
       if (props.refresh_trigger != null){
         const debounceTimer = setTimeout(() => {
           get_users(extFilters);
@@ -182,9 +187,9 @@ const UserList = (props)=>{
   }
 
 
-  const SortFilterChanged = (userList) => {
-    setUserListData(userList);
-  }
+  // const SortFilterChanged = (userList) => {
+  //   setUserListData(userList);
+  // }
 
   const handleShowUserInfo = (user_id)=>{
     console.log('user_id', user_id)
@@ -206,22 +211,6 @@ const UserList = (props)=>{
     openUserInfoCallbackRef.current = handleShowUserInfo;
   }, [markedUsers]);
 
-  // const escFunction = useCallback((event) => {
-  //   console.log('event.key', event.key)
-  //   console.log('markedUsers', markedUsers)
-  //   if (event.key === "Escape") {
-  //     //Do whatever when esc is pressed
-  //     console.log('openUserInfo', openUserInfo)
-  //     if (openUserInfo === true){
-  //       setOpenUserInfo(false);
-  //     } else if (markedUsers.length > 0 && markedUsers[0] !== 0){
-  //       setMarkedUsers([]);
-  //       console.log('markedUsers.length', markedUsers.length)
-  //     } else {
-  //       setSelectedColumns([]);
-  //     }
-  //   }
-  // }, []);
 
 
   useEffect(() => {
@@ -296,33 +285,6 @@ const UserList = (props)=>{
   }, []); // Обработчик добавляется один раз
 
 
-  // const escFunction = useCallback((event) => {
-  //   if (event.key === "Escape") {
-  //     console.log('first', markedUsersRef.current.length)
-  //     if (openUserInfoRef.current) {
-  //       setOpenUserInfo(false);
-  //       setMarkedUsers([]);
-  //     } else if (markedUsersRef.current.length > 0 && markedUsersRef.current[0] !== 0) {
-  //       setMarkedUsers([]);
-  //     } else {
-  //       setSelectedColumns([]);
-  //     }
-  //   }
-  // }, []);
-
-
-  // useEffect(() => {
-  //   document.addEventListener("keydown", escFunction, false);
-
-  //   return () => {
-  //     document.removeEventListener("keydown", escFunction, false);
-  //   };
-  // }, [escFunction]);
-
-
-  // useEffect(()=>{
-  //   document.addEventListener("keydown", escFunction, false);
-  // }, []);
 
   const toggleSelectedColumn = (col) => {
     if (selectedColumns.includes(col)) {
@@ -335,9 +297,231 @@ const UserList = (props)=>{
   };
 
 
-  const toggleExternalFilters = (filters) => {
-    setExtFilters(filters);
-  }
+
+
+  const move_boss_to_top = (arr) => {
+    // Создаем копию массива для безопасности
+    const newArray = [...arr];
+    
+    // Ищем босса
+    const bossIndex = newArray.findIndex(user => user?.user_id === 46);
+    
+    // Если босс найден и не на первом месте
+    if (bossIndex > 0) {
+      // Извлекаем босса
+      const [boss] = newArray.splice(bossIndex, 1);
+      // Вставляем в начало
+      newArray.unshift(boss);
+    }
+    
+    return newArray;
+  };
+
+
+  
+  const insertDepartmentNames = (dataArray) => {
+      let newDataArray = [];
+      let next = -1; // next department ID
+  
+      for (let i = 0; i < dataArray.length; i++){
+        let dep_id = dataArray[i].department_id;
+        
+        if (dep_id != next){
+          // insert custom row
+          let crow = customRow(dep_id);
+          // console.log('crow', crow);
+          newDataArray.push(crow);
+        }
+        if (i < dataArray.length - 1){
+          next = dep_id;
+        }; 
+          newDataArray.push(dataArray[i]);
+        }
+      
+      // console.log('dataArray' + ' => ' + newDataArray);
+      return newDataArray;
+    }
+
+    const getDepartmentNameById = (id) => {
+      const department = DS_DEPARTMENTS.find(dept => dept.id === id);
+      return department ? department.name : null; // Возвращаем имя или null, если не найдено
+  };
+
+
+  // Добавляем кастомную строку в зависимости от значения sortBy
+  const customRow = (dep_id) => {
+    return {
+    id: `custom_row_dep_${dep_id}`,
+      key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
+      name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
+      surname: null,
+      patronymic: null,
+      enter: '', // Пустые значения для других полей
+      exit: '',
+      losttime: '',
+      type: 'header'
+      };
+  };
+
+
+    const filterUserListByCompany = (userList, id_company)=>{
+      if (id_company == 0 || id_company == null){
+          return userList;
+      };
+      return userList.filter(item => item.id_company === Number( id_company));
+    }
+
+
+    const filterUserListByDepartment = (userList, depart_id) =>
+    {
+        if (depart_id == null || depart_id == 0){
+            return userList;
+        };
+        return userList.filter(item => item.department_id === Number(depart_id));
+    }
+
+
+
+  
+    // useEffect(()=>{
+    //   // Filter data
+    //   console.log(innerFilters);
+    //   let userList = JSON.parse(JSON.stringify(baseUserListData));
+
+    //   let companyFilter = innerFilters.find((item)=> item.key === 'id_company');
+    //   if (companyFilter) {
+    //     userList = filterUserListByCompany(userList, companyFilter.value);
+    //   };
+    //   let departFilter = innerFilters.find((item)=> item.key === 'depart_id');
+    //   if (departFilter){
+    //     userList = filterUserListByDepartment(userList, departFilter.value);
+    //   };
+
+    //   // SortData
+    //   let sortedData = userList;
+    //   switch (innerSortByValue) {
+    //       case "department_asc":
+    //           sortedData.sort((a, b) => a.department_id - b.department_id);
+    //           sortedData = move_boss_to_top(sortedData);
+    //           sortedData = insertDepartmentNames(sortedData);
+    //           break;
+  
+    //       case "department_desc":
+    //           sortedData.sort((a, b) => b.department_id - a.department_id);
+    //           break;
+  
+    //       case "name_asc":
+    //           sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
+    //           break;
+  
+    //       case "name_desc":
+    //           sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
+    //           break;
+  
+    //       case "surname_asc":
+    //           sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
+    //           break;
+  
+    //       case "surname_desc":
+    //           sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
+    //           break;
+  
+    //       case "state_asc":
+    //           sortedData.sort((a, b) => a.current_state - b.current_state);
+    //           break;
+  
+    //       case "state_desc":
+    //         sortedData.sort((a, b) => b.current_state - a.current_state);
+    //       //   console.log( sortedData);
+    //         break;
+  
+    //       default:
+    //           // Сортировка по умолчанию (например, по department ASC)
+    //           sortedData.sort((a, b) => a.department_id - b.department_id);
+    //           sortedData = move_boss_to_top(sortedData);
+    //           sortedData = insertDepartmentNames(sortedData);
+    //           break;
+    //   }
+    //   setUserListData(sortedData);
+
+    // },[innerFilters, innerSortByValue]);
+
+
+    const filteredUsers = useMemo(() => {
+      let userList = JSON.parse(JSON.stringify(baseUserListData));
+
+      let companyFilter = innerFilters.find((item)=> item.key === 'id_company');
+      if (companyFilter) {
+        userList = filterUserListByCompany(userList, companyFilter.value);
+      };
+      let departFilter = innerFilters.find((item)=> item.key === 'depart_id');
+      if (departFilter){
+        userList = filterUserListByDepartment(userList, departFilter.value);
+      };
+
+      // SortData
+      let sortedData = userList;
+      switch (innerSortByValue) {
+          case "department_asc":
+              sortedData.sort((a, b) => a.department_id - b.department_id);
+              sortedData = move_boss_to_top(sortedData);
+              sortedData = insertDepartmentNames(sortedData);
+              break;
+  
+          case "department_desc":
+              sortedData.sort((a, b) => b.department_id - a.department_id);
+              break;
+  
+          case "name_asc":
+              sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
+              break;
+  
+          case "name_desc":
+              sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
+              break;
+  
+          case "surname_asc":
+              sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
+              break;
+  
+          case "surname_desc":
+              sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
+              break;
+  
+          case "state_asc":
+              sortedData.sort((a, b) => a.current_state - b.current_state);
+              break;
+  
+          case "state_desc":
+            sortedData.sort((a, b) => b.current_state - a.current_state);
+          //   console.log( sortedData);
+            break;
+  
+          default:
+              // Сортировка по умолчанию (например, по department ASC)
+              sortedData.sort((a, b) => a.department_id - b.department_id);
+              sortedData = move_boss_to_top(sortedData);
+              sortedData = insertDepartmentNames(sortedData);
+              break;
+      }
+    
+      return sortedData;
+    }, [baseUserListData, innerSortByValue, innerFilters]);
+
+
+    const toggleInnerSorts = (value) => {
+      setInnerSortByValue(value);
+    }
+
+    const toggleInnerFilters = (value) => {
+      setInnerFiletrs(value);
+    }
+
+    const toggleExternalFilters = (filters) => {
+      setExtFilters(filters);
+    }
+
+
 
     return (
         <div style={{padding: '6px'}} className={'sk-mw-1400'}>
@@ -346,11 +530,12 @@ const UserList = (props)=>{
               // onSortBy={sortUserList}
               departments={departments}
               baseUsers={baseUserListData}
-              onChange={SortFilterChanged}
               userData={userdata}
               on_find_me={handleFindMe}
               im_exist={userListData.find((item)=>  item.user_id === userdata.user.id) != null}
               onChangeExternalFilters={toggleExternalFilters}
+              onChangeInnerSort={toggleInnerSorts}
+              onChangeInnerFilers={toggleInnerFilters}
             />
             
             {/* <Table 
@@ -442,10 +627,10 @@ const UserList = (props)=>{
                       <div><div>Место</div></div>
                   </div>
                   </Affix>
-                      {userListData.map((arche, index)=>
+                      {filteredUsers.map((arche, index)=>
                       (
                           <UserMonitorListCard
-                            key={`usmcard_${arche.user_id !== undefined ? arche.user_id : 'hed' + index}`} // так как строки сеператоры не имеют айди
+                              key={`usmcard_${arche.user_id !== undefined ? arche.user_id : arche.key}`} // так как строки сеператоры не имеют айди
                               data={arche}
                               on_mark_user={handleMarkUser}
                               marked_users={markedUsers}

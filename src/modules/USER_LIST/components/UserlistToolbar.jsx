@@ -17,8 +17,8 @@ const UserListToolbar = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [companies, setCompanies] = useState([
-        { key: 0, value: 0, label: 'Все компании' },
-        ...DS_USER.companies.map((com) => ({
+        { key: 'nullCompany', value: 0, label: 'Все компании' },
+        ...DS_USER.companies.filter(item => item.id !== 1).map((com) => ({
             key: com.id,
             value: Number(com.id),
             label: com.name,
@@ -171,23 +171,39 @@ const UserListToolbar = (props) => {
 
 
     useEffect(() => {
-        if (typeof onChange === 'function')
+        if (props.onChangeInnerSort)
         {
-            let userList = JSON.parse(JSON.stringify(baseUserListData));
-            userList = filterUserListByCompany(userList, usedCompany);
-            userList = filterUserListByDepartment(userList, usedDepartment);
-            userList = sortUserList(userList, usedSort);
+            // let userList = JSON.parse(JSON.stringify(baseUserListData));
+            // userList = filterUserListByCompany(userList, usedCompany);
+            // userList = filterUserListByDepartment(userList, usedDepartment);
 
-            onChange(userList);
+
+            // userList = sortUserList(userList, usedSort);
+                console.log('CALL TO SORT', usedSort);
+                props.onChangeInnerSort(usedSort);
+            // onChange(userList);
         }
 
-    }, [usedCompany, usedDepartment, usedSort, baseUserListData])
+    }, [usedSort]);
+
+    useEffect(() => {
+        if (props.onChangeInnerFilers)
+        {
+            let filters = [{ key :'id_company', value: usedCompany},
+                {key : 'depart_id', value: usedDepartment}
+            ];
+                console.log('CALL TO FILTER', filters);
+                props.onChangeInnerFilers(filters);
+        }
+
+    }, [usedCompany, usedDepartment]);
 
 
     useEffect(() => {
         if (CSRF_TOKEN){
-            setCompanies([{ key: 0, value: 0, label: 'Все компании' },
-                ...userData.companies.map((com) => ({
+            setCompanies([
+                { key: 'nullCompany', value: 0, label: 'Все компании' },
+                ...userData.companies.filter((item) => { return item.id !== 1}).map((com) => ({
                     key: com.id,
                     value: Number(com.id),
                     label: com.name,
@@ -259,118 +275,120 @@ const UserListToolbar = (props) => {
       };
 
     // _----------------------------------------
-       const sortUserList = (userList, sortByValue) => {
-        console.log('sortBy' + ' => ' + sortByValue);
-        // await setUserListData(DS_DEFAULT_USERS.sort((a, b) => b.department - a.department));
-        // Копируем текущие данные для сортировки
-        let sortedData = userList;
-        setUsedSort(sortByValue);
-        switch (sortByValue) {
-            case "department_asc":
-                sortedData.sort((a, b) => a.department_id - b.department_id);
-                sortedData = move_boss_to_top(sortedData);
-                sortedData = insertDepartmentNames(sortedData);
-                break;
+    //    const sortUserList = (userList, sortByValue) => {
+    //     console.log('sortBy' + ' => ' + sortByValue);
+    //     // await setUserListData(DS_DEFAULT_USERS.sort((a, b) => b.department - a.department));
+    //     // Копируем текущие данные для сортировки
+    //     let sortedData = userList;
+    //     setUsedSort(sortByValue);
+    //     switch (sortByValue) {
+    //         case "department_asc":
+    //             sortedData.sort((a, b) => a.department_id - b.department_id);
+    //             sortedData = move_boss_to_top(sortedData);
+    //             sortedData = insertDepartmentNames(sortedData);
+    //             break;
     
-            case "department_desc":
-                sortedData.sort((a, b) => b.department_id - a.department_id);
-                break;
+    //         case "department_desc":
+    //             sortedData.sort((a, b) => b.department_id - a.department_id);
+    //             break;
     
-            case "name_asc":
-                sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
-                break;
+    //         case "name_asc":
+    //             sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
+    //             break;
     
-            case "name_desc":
-                sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
-                break;
+    //         case "name_desc":
+    //             sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
+    //             break;
     
-            case "surname_asc":
-                sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
-                break;
+    //         case "surname_asc":
+    //             sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
+    //             break;
     
-            case "surname_desc":
-                sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
-                break;
+    //         case "surname_desc":
+    //             sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
+    //             break;
     
-            case "state_asc":
-                sortedData.sort((a, b) => a.current_state - b.current_state);
-                break;
+    //         case "state_asc":
+    //             sortedData.sort((a, b) => a.current_state - b.current_state);
+    //             break;
     
-            case "state_desc":
-              sortedData.sort((a, b) => b.current_state - a.current_state);
-            //   console.log( sortedData);
-              break;
+    //         case "state_desc":
+    //           sortedData.sort((a, b) => b.current_state - a.current_state);
+    //         //   console.log( sortedData);
+    //           break;
     
-            default:
-                // Сортировка по умолчанию (например, по department ASC)
-                sortedData.sort((a, b) => a.department_id - b.department_id);
-                sortedData = move_boss_to_top(sortedData);
-                sortedData = insertDepartmentNames(sortedData);
-                break;
-        }
-        return sortedData;
-    }
-
-
-    const filterUserListByCompany = (userList, id_company)=>{
-        if (id_company == 0 || id_company == null){
-            return userList;
-        };
-        return userList.filter(item => item.id_company === Number( id_company));
-    }
-
-
-    const filterUserListByDepartment = (userList, depart_id) =>
-    {
-        if (depart_id == null || depart_id == 0){
-            return userList;
-        };
-        return userList.filter(item => item.department_id === Number(depart_id));
-    }
-
-
-    const insertDepartmentNames = (dataArray) => {
-        let newDataArray = [];
-        let next = -1; // next department ID
-    
-        for (let i = 0; i < dataArray.length; i++){
-          let dep_id = dataArray[i].department_id;
-          
-          if (dep_id != next){
-            // insert custom row
-            let crow = customRow(dep_id);
-            // console.log('crow', crow);
-            newDataArray.push(crow);
-          }
-          if (i < dataArray.length - 1){
-            next = dep_id;
-          }; 
-            newDataArray.push(dataArray[i]);
-          }
+    //         default:
+    //             // Сортировка по умолчанию (например, по department ASC)
+    //             sortedData.sort((a, b) => a.department_id - b.department_id);
+    //             sortedData = move_boss_to_top(sortedData);
+    //             sortedData = insertDepartmentNames(sortedData);
+    //             break;
+    //     }
         
-        // console.log('dataArray' + ' => ' + newDataArray);
-        return newDataArray;
-      }
-
-    const getDepartmentNameById = (id) => {
-      const department = DS_DEPARTMENTS.find(dept => dept.id === id);
-      return department ? department.name : null; // Возвращаем имя или null, если не найдено
-  };
+    //     return sortedData;
+    // }
 
 
-  // Добавляем кастомную строку в зависимости от значения sortBy
-  const customRow = (dep_id) => {
-    return {
-      key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
-      name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
-      surname: null,
-      patronymic: null,
-      enter: '', // Пустые значения для других полей
-      exit: '',
-      losttime: '',
-      type: 'header'
-      };
-  };
+    // const filterUserListByCompany = (userList, id_company)=>{
+    //     if (id_company == 0 || id_company == null){
+    //         return userList;
+    //     };
+    //     return userList.filter(item => item.id_company === Number( id_company));
+    // }
+
+
+    // const filterUserListByDepartment = (userList, depart_id) =>
+    // {
+    //     if (depart_id == null || depart_id == 0){
+    //         return userList;
+    //     };
+    //     return userList.filter(item => item.department_id === Number(depart_id));
+    // }
+
+
+//     const insertDepartmentNames = (dataArray) => {
+//         let newDataArray = [];
+//         let next = -1; // next department ID
+    
+//         for (let i = 0; i < dataArray.length; i++){
+//           let dep_id = dataArray[i].department_id;
+          
+//           if (dep_id != next){
+//             // insert custom row
+//             let crow = customRow(dep_id);
+//             // console.log('crow', crow);
+//             newDataArray.push(crow);
+//           }
+//           if (i < dataArray.length - 1){
+//             next = dep_id;
+//           }; 
+//             newDataArray.push(dataArray[i]);
+//           }
+        
+//         // console.log('dataArray' + ' => ' + newDataArray);
+//         return newDataArray;
+//       }
+
+//     const getDepartmentNameById = (id) => {
+//       const department = DS_DEPARTMENTS.find(dept => dept.id === id);
+//       return department ? department.name : null; // Возвращаем имя или null, если не найдено
+//   };
+
+
+//   // Добавляем кастомную строку в зависимости от значения sortBy
+//   const customRow = (dep_id) => {
+//     return {
+//     id: `custom_row_dep_${dep_id}`,
+//       key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
+//       name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
+//       surname: null,
+//       patronymic: null,
+//       enter: '', // Пустые значения для других полей
+//       exit: '',
+//       losttime: '',
+//       type: 'header'
+//       };
+//   };
 
 
 

@@ -331,7 +331,7 @@ const changePage = (pageId) => {
            textAlign: 'center', paddingLeft: '6px' }} />} ><a href={HTTP_ROOT}></a></Menu.Item>
           <Menu.SubMenu key="menu1" title="Моё">
             <MenuItem
-            key={'menu_52d34'}>
+            key={'menu_52d34ds'}>
               <Link
                 onClick={()=>{ changePage(2)}}
               >Моё</Link>
