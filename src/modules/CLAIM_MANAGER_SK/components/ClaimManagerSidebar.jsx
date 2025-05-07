@@ -168,6 +168,11 @@ const ClaimManagerSidebar = (props) => {
                     style={{ width: '100%' }}
                     placeholder={'Отдел, где работает сотрудник'}
                     value={filterDepartment}
+                    options={props.depart_list.map((dep) => {return ({
+                        key: `depid_${dep.id}`,
+                        value: dep.id,
+                        label: dep.name
+                    })})}
                     />
             </div>
 
