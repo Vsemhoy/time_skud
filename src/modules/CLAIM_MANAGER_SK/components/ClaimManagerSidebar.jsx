@@ -13,45 +13,47 @@ const ClaimManagerSidebar = (props) => {
         {
             key: 'cs2453524',
             label: 'Новые',
-            value: null
+            value: 1
         },
         {
             key: 'cs34537424',
             label: 'Принятые',
-            value: null
+            value: 2
         },
         {
             key: 'cs45327424',
             label: 'Отклоненные',
-            value: null
+            value: 3
         },
-    ]
+    ];
+
+
 
     const initialstate = {
         filterUserName: '',
         filterReason: '',
         filterCompany: null,
         filterDepartment: null,
-        filterBoss: '',
-        filterEventInterval: [dayjs(), dayjs()],
+        filterBoss: null,
+        filterEventInterval: [null, null],
         filterStatus: null,
         filterShowClosed: false,
         filterApprover: '',
-        filterDurationStart: 1,
-        filterDurationEnd: 1
+        filterDurationStart: 0,
+        filterDurationEnd: 0
     }
     
     const [filterUserName, setFilterUserName] = useState('');
     const [filterReason, setFilterReason] = useState('');
     const [filterCompany, setFilterCompany] = useState(null);
     const [filterDepartment, setFilterDepartment] = useState(null);
-    const [filterBoss, setFilterBoss] = useState('');
-    const [filterEventInterval, setFilterEventInterval] = useState([dayjs(), dayjs()]);
+    const [filterBoss, setFilterBoss] = useState(null);
+    const [filterEventInterval, setFilterEventInterval] = useState([null, null]);
     const [filterStatus, setFilterStatus] = useState(null);
     const [filterShowClosed, setFilterShowClosed] = useState(false);
     const [filterApprover, setFilterApprover] = useState('');
-    const [filterDurationStart, setFilterDurationStart] = useState(1);
-    const [filterDurationEnd, setFilterDurationEnd] = useState(1);
+    const [filterDurationStart, setFilterDurationStart] = useState(0);
+    const [filterDurationEnd, setFilterDurationEnd] = useState(0);
 
 
     const setInitialState = () => {
@@ -71,6 +73,11 @@ const ClaimManagerSidebar = (props) => {
 
     const [bossList, setBossList] = useState([]);
     const [companyList, setCompanyList] = useState([]);
+
+
+
+
+    
 
     useEffect(() => {
         if (props.user_list && props.user_list.length > 0) {
@@ -126,6 +133,44 @@ const ClaimManagerSidebar = (props) => {
       },[props.company_list]);
 
 
+
+
+    useEffect(() => {
+      const params = {};
+        if (filterUserName?.trim()) params.userName = filterUserName.trim();
+        if (filterReason?.trim()) params.reason = filterReason.trim();
+        if (filterCompany) params.id_company = filterCompany;
+        if (filterDepartment) params.departmentId = filterDepartment;
+        if (filterBoss) params.boss = filterBoss;
+        if (filterStatus !== null) params.status = filterStatus;
+        if (filterApprover) params.approver = filterApprover;
+        if (filterShowClosed) params.showClosed = true;
+        
+        // Обработка интервала дат
+        if (filterEventInterval[0]?.isValid() && filterEventInterval[1]?.isValid()) {
+            params.startDate = filterEventInterval[0].format('YYYY-MM-DD');
+            params.endDate = filterEventInterval[1].format('YYYY-MM-DD');
+        }
+        
+        // Фильтр по продолжительности
+        if (filterDurationStart > 0) params.durationStart = parseInt(filterDurationStart);
+        if (filterDurationEnd > 0) params.durationEnd = parseInt(filterDurationEnd);
+
+        if (parseInt(filterDurationEnd) < parseInt(filterDurationStart)){
+            setFilterDurationEnd(parseInt(filterDurationStart));
+            params.durationEnd = parseInt(filterDurationStart);
+        }
+        if (props.on_change_filter){
+            props.on_change_filter(params);
+        }
+    }, [
+        filterUserName, filterReason, filterCompany, 
+        filterDepartment, filterBoss, filterEventInterval,
+        filterStatus, filterShowClosed, filterApprover,
+        filterDurationStart, filterDurationEnd]);
+
+
+
     return (
         <div>
             <div className={'sk-usp-filter-col-item'} >
@@ -147,6 +192,7 @@ const ClaimManagerSidebar = (props) => {
                     placeholder={'Поиск в тексте причины события'}
                     allowClear={true}
                     value={filterReason}
+                    onChange={(ev)=>{setFilterReason(ev.target.value)}}
                     />
             </div>
 
@@ -158,6 +204,8 @@ const ClaimManagerSidebar = (props) => {
                     placeholder={'Компания, в которой служит сотрудник'}
                     value={filterCompany}
                     options={companyList}
+                    onChange={(ev)=>{setFilterCompany(ev)}}
+                    allowClear
                     />
             </div>
 
@@ -173,6 +221,8 @@ const ClaimManagerSidebar = (props) => {
                         value: dep.id,
                         label: dep.name
                     })})}
+                    onChange={(ev)=>{setFilterDepartment(ev)}}
+                    allowClear
                     />
             </div>
 
@@ -185,6 +235,7 @@ const ClaimManagerSidebar = (props) => {
                     value={filterBoss}
                     options={bossList}
                     onChange={(ev)=>{setFilterBoss(ev)}}
+                    allowClear
                     />
             </div>
 
@@ -195,6 +246,7 @@ const ClaimManagerSidebar = (props) => {
                     style={{ width: '100%' }}
                     placeholder={'Включающий диапазон дат, в которых искать событие'}
                     value={filterEventInterval}
+                    onChange={setFilterEventInterval}
                     />
             </div>
 
@@ -206,6 +258,7 @@ const ClaimManagerSidebar = (props) => {
                     style={{ width: '100%' }}
                     placeholder={'Принят, отклонён'}
                     value={filterStatus}
+                    onChange={(ev)=>{setFilterStatus(ev)}}
                     />
             </div>
 
@@ -214,6 +267,7 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Закрытые архивные заявки</span>
                 <Switch
                     checked={filterShowClosed}
+                    onChange={(ev)=>{setFilterShowClosed(ev)}}
                 ></Switch>
             </div>
 
@@ -232,13 +286,15 @@ const ClaimManagerSidebar = (props) => {
                 <div className="sk-flex-space">
                     <Input
                         type="number"
-                        min={1}
+                        min={0}
                         value={filterDurationStart}
+                        onChange={(ev)=>{setFilterDurationStart(ev.target.value)}}
                     />
                     <Input
                         type="number"
-                        min={1}
-                        filter={filterDurationEnd}
+                        min={0}
+                        value={filterDurationEnd}
+                        onChange={(ev)=>{setFilterDurationEnd(ev.target.value)}}
                     />
                 </div>
 

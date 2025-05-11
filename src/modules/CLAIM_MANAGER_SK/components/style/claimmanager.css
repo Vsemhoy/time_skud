@@ -1,7 +1,17 @@
 .sk-claiman-type-selector {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     margin-bottom: 12px;
+}
+.sk-claiman-type-selector > div  {
+    height: 100%;
+    /* background-color: rgba(255, 255, 255, 0.6); */
+    padding-bottom: 4px;
+}
+.sk-claiman-type-selector > div > div {
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.801);
+    margin-bottom: 4px;
 }
 .sk-claiman-typeselect-item {
 
@@ -10,11 +20,14 @@
     user-select: none;
     transition: all 0.3s;
     margin-right: 6px;
-   
-    border-radius: 12px;
-    opacity: 0.65;
+   font-size: x-small;
+    /* border-radius: 12px; */
+    /* opacity: 0.65; */
     /* border: 1px solid rgba(0, 0, 0, 0.116); */
     /* transform: scale(0.8); */
+}
+.sk-claiman-typeselect-item:hover {
+    opacity: 1;
 }
 
 .sk-claiman-typeselect-item:hover:not(.sk-active) {
@@ -22,7 +35,6 @@
 }
 .sk-claiman-typeselect-item > div {
     padding: 3px 6px;
-    border-radius: 12px;
     transition: all 0.3s;
     background-color: rgba(212, 212, 212, 0.5);
 }
@@ -39,10 +51,15 @@
     /* border: 1px solid transparent; */
     /* box-shadow: 1px 1px 9px gray; */
 }
-
+.sk-claim-select-icon {
+    font-size: large;
+    width: 100%;
+    display: block;
+    text-align: center;
+}
 .sk-clamen-card {
     display: grid;
-        grid-template-columns: 42px auto 50px 70px 70px 50px 50px 150px 150px 50px 50px ;
+        grid-template-columns: 32px auto 50px 70px 70px 50px 50px 70px 70px 50px  30px;
         border: 1px solid #80808061;
         border-top: none;
         background: var(--row-main-bg-color);
@@ -75,4 +92,18 @@
 
 div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     background: var(--row-hovered-bg-color);
+}
+
+.sk-clamen-card > div{
+        box-shadow: -7px 0px 1px -6px var(--column-divider-color);
+    }
+.sk-clamen-card-trigger {
+    display: flex;
+        align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.074);
+    font-size: large;
+    cursor: pointer;
 }

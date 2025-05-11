@@ -1,5 +1,5 @@
-import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
-import { Affix, Button, Dropdown, Select } from "antd";
+import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
+import { Affix, Button, Dropdown, Pagination, Select } from "antd";
 import React, { useEffect, useState } from "react";
 
 import './components/style/claimmanager.css';
@@ -57,12 +57,64 @@ const claimTypes = [
     }
 ];
 
+const typeOptions = [
+  {
+    value: null,
+    label: 'Все заявки',
+    icon: <BlockOutlined />,
+    background: '#c3c3c3'
+  },
+  {
+    value: 9,
+    label: 'Отпуск СВ',
+    icon: <MoonOutlined />,
+    background: '#c4e8e5'
+  },
+  {
+    value: 8,
+    label: 'Крат. ком.',
+    icon: <CarOutlined />,
+    background: '#e3dbf1'
+  },
+  {
+    value: 7,
+    label: 'Длит. ком.',
+    icon: <RocketOutlined />,
+    background: '#e2b4e9'
+  },
+  {
+    value: 10,
+    label: 'Отпуск',
+    icon: <SmileOutlined />,
+    background: '#7adfb8'
+  },
+  {
+    value: 11,
+    label: 'Сверхурочн.',
+    icon: <DollarOutlined />,
+    background: '#b7ff5c'
+  },
+  {
+    value: 6,
+    label: 'Больничн.',
+    icon: <MedicineBoxOutlined />,
+    background: '#ffa8a8'
+  },
+  {
+    value: 13,
+    label: 'Контейн.',
+    icon: <DockerOutlined />,
+    background: '#ffc107'
+  }
+];
+
 const ClaimManagerPage = (props) => {
     const [userData, setUserData] = useState(null);
     const [typeSelect, setTypeSelect] = useState(null);
     const [editorOpened, setEditorOpened] = useState(false);
 
     const [formType, setFormType] = useState(null);
+    const [filterPack, setFilterPack] = useState([]);
 
     const [baseUserList, setBaseUserList] = useState([]);
     const [userList, setUserList] = useState([]);
@@ -74,7 +126,14 @@ const ClaimManagerPage = (props) => {
     const [claimList, setClaimList] = useState([]);
     const [baseClaimList, setBaseClaimList] = useState([]);
 
+    const [page, setPage] = useState(1);
+    const [onPage, setOnPage] = useState(30);
+    const [total, setTotal] = useState(30);
 
+    const onShowSizeChange = (current, pageSize) => {
+        console.log(current, pageSize);
+        setOnPage(pageSize);
+    };
 
     const handleEditorOpen = (value) => {
         if (value && value.key){
@@ -113,6 +172,23 @@ const ClaimManagerPage = (props) => {
     useEffect(()=>{
         setUserList(baseUserList);
     },[baseUserList]);
+
+
+    const handleFilterChanged = (filter) => {
+
+        filter.page = page;
+        filter.onPage = onPage;
+        if (typeSelect){
+            filter.type = typeSelect;
+        }
+        setFilterPack(filter);
+        console.log('filter', filter)
+    }
+
+    useEffect(() => {
+      handleFilterChanged(filterPack);
+    }, [typeSelect, page, onPage]);
+
 
 
     // ------------------ FetchWorld ----------------------
@@ -254,7 +330,7 @@ const ClaimManagerPage = (props) => {
         <div>
             <div style={{padding: '6px'}} className={'sk-mw-1400'}>
             <br/>
-            
+
 
 
             <div className={'sk-usp-layout-container'}>
@@ -282,84 +358,19 @@ const ClaimManagerPage = (props) => {
                 <div className="sk-flex-space"> 
         
                     <div className={`sk-claiman-type-selector`}>
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === null ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(null)}} 
-                        >
+                        {typeOptions.map(option => (
+                            <div
+                            key={option.value === null ? 'all' : option.value}
+                            className={`sk-claiman-typeselect-item ${typeSelect === option.value ? 'sk-active' : ''}`}
+                            onClick={() => setTypeSelect(option.value)}
+                            style={{ background: option.background }}
+                            >
                             <div>
-                            <span><BlockOutlined /></span> <span>Все заявки</span>
+                                <span className="sk-claim-select-icon">{option.icon}</span>
+                                <span>{option.label}</span>
                             </div>
-                                
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 9 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(9)}}
-                            style={{background: "#c4e8e5"}}
-                        >
-                            <div>
-                                <span><MoonOutlined /></span> <span>Отпуск СВ</span>
-
                             </div>
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 8 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(8)}}
-                            style={{background: "#e3dbf1"}}
-                        >
-                            <div>
-                                <span><CarOutlined /></span> <span>Крат. ком.</span>
-
-                            </div>
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 7 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(7)}}
-                            style={{background: "#e2b4e9"}}
-                        >
-                            <div>
-                            <span><RocketOutlined /></span> <span>Длит. ком.</span>
-
-                            </div>
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 10 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(10)}}
-                            style={{background: "#7adfd6"}}
-                        >
-                            <div>
-                            <span><SmileOutlined /></span> <span>Отпуск</span>
-
-                            </div>
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 11 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(11)}}
-                            style={{background: "#00ff97"}}
-                        >
-                            <div>
-                            <span><DollarOutlined /></span> <span>Сверхурочн.</span>
-
-                            </div>
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 6 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(6)}}
-                            style={{background: "#ffa8a8"}}
-                        >
-                            <div>
-                            <span><MedicineBoxOutlined /></span> <span>Больничн.</span>
-
-                            </div>
-                        </div>
-
-                        <div className={`sk-claiman-typeselect-item  ${typeSelect === 13 ? "sk-active" : ""}`}
-                            onClick={()=>{setTypeSelect(13)}}
-                            style={{background: "#ffc107"}}
-                        >
-                            <div>
-                            <span><MedicineBoxOutlined /></span> <span>Контейн.</span>
-
-                            </div>
-                        </div>
+                        ))}
                     </div>
                     <div>
                         <Dropdown
@@ -383,91 +394,108 @@ const ClaimManagerPage = (props) => {
                         user_list={baseUserList}
                         depart_list={departList}
                         company_list={userData?.companies}
-
+                        on_change_filter={handleFilterChanged}
                     />
                 </div>
 
 
-                <div className="sk-usp-content-col">
-                    <div className={'sk-arche-stack'}>
-                    <Affix offsetTop={0}>
-                    <div className="sk-clamen-headerrow">
-                    <div className={'sk-clamen-card'}>
-                        <div >
-                            <div>
-                                id
+                <div >
+
+                    <div>
+                        <Pagination
+                            showSizeChanger
+                            onShowSizeChange={onShowSizeChange}
+                            defaultCurrent={3}
+                            total={total}
+                            onChange={setPage}
+                            defaultPageSize={30}
+                            pageSizeOptions={[30,60,100,200,300]}
+                        />
+                    </div>
+                    <br />
+
+                    <div className="sk-usp-content-col">
+                        <div className={'sk-arche-stack'}>
+                        <Affix offsetTop={0}>
+                        <div className="sk-clamen-headerrow">
+                        <div className={'sk-clamen-card'}>
+                            <div >
+                                <div>
+                                    id
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Имя пользователя
+                            <div >
+                                <div>
+                                    Имя пользователя
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Тип
+                            <div >
+                                <div>
+                                    Тип
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Начало
+                            <div >
+                                <div>
+                                    Начало
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Конец
+                            <div >
+                                <div>
+                                    Конец
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                дней
+                            <div >
+                                <div>
+                                    дней
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Рук.
+                            <div >
+                                <div>
+                                    Рук.
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Причина
+                            <div >
+                                <div>
+                                    Причина
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Детали
+                            <div >
+                                <div>
+                                    Детали
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                Статус
+                            <div >
+                                <div>
+                                    Статус
+                                </div>
                             </div>
-                        </div>
-                        <div >
-                            <div>
-                                
+                            <div >
+                                <div>
+                                    
+                                </div>
                             </div>
+
                         </div>
 
+
+
+                        </div>
+                        </Affix>
+                            <ClaimManagerCard />
+                            <ClaimManagerCard />
+                            <ClaimManagerCard />
+                            <ClaimManagerCard />
+                            <ClaimManagerCard />
+                            <ClaimManagerCard />
+                            <ClaimManagerCard />
+                        </div>
                     </div>
-                    </div>
-                    </Affix>
-                        <ClaimManagerCard />
-                        <ClaimManagerCard />
-                        <ClaimManagerCard />
-                        <ClaimManagerCard />
-                        <ClaimManagerCard />
-                        <ClaimManagerCard />
-                        <ClaimManagerCard />
-                    </div>
+
+
+
+
                 </div>
-
-
-
-
             </div>
-
-
             
             </div>
 
