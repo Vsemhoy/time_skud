@@ -11,7 +11,7 @@ import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, CloseSquareOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
-import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
+import { WordDayNumerate } from '../../../components/Helpers/TextHelpers';
 
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';

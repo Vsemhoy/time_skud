@@ -6,7 +6,7 @@ import { Space, Typography } from 'antd';
 import './style/schedmodaleditor.css';
 import dayjs, { Dayjs } from "dayjs";
 import { DS_PROD_CALENDARS, DS_SCHED_TYPES, DS_SCHED_UNITS, DS_SCHEDULE_LIST, SKUD_SCHED_HISTORY } from "../../../CONFIG/DEFAULTSTATE";
-import { formatUnixToStringTime, globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { formatUnixToStringTime, globalTimeToDaySeconds, secondsValueToGlobalTime } from "../../../components/Helpers/TextHelpers";
 import TextArea from "antd/es/input/TextArea";
 import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined, UnderlineOutlined } from "@ant-design/icons";
 import SchedCalendar from "./SchedCalendar";

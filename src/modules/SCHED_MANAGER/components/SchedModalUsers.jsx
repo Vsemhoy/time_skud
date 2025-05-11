@@ -6,7 +6,7 @@ import { Space, Typography } from 'antd';
 import './style/schedmodalusers.css';
 import { CSRF_TOKEN } from "../../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
-import { ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { ShortName } from "../../../components/Helpers/TextHelpers";
 
 const { Text, Link } = Typography;
 

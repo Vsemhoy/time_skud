@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { secondsToTime } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { secondsToTime } from "../../../components/Helpers/TextHelpers";
 import dayjs from "dayjs";
 
 const UmScheduleMiniCard = (props) => {

@@ -4,7 +4,7 @@ import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT, DS_DEFAULT_SCHED } from "../../../CONFIG/DEFAULTSTATE";
-import { generateYearOptions, getMonthName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { generateYearOptions, getMonthName } from "../../../components/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
 import { months } from "moment";

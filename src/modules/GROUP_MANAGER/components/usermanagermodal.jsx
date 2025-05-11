@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Empty, Flex, Modal, Transfer } from 'antd';
-import { generateGradientBackground, ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { generateGradientBackground, ShortName } from "../../../components/Helpers/TextHelpers";
 
 const UserManagerModal= (props) => {
     const [open, setOpen] = useState(false);

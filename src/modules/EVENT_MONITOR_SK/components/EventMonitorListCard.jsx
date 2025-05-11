@@ -1,7 +1,7 @@
 import { Tag } from "antd";
 import dayjs from "dayjs";
 import React from "react";
-import { getWeekDayString } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { RobotOutlined } from "@ant-design/icons";
 
 const EventMonitorListCard = (props) => {

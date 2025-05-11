@@ -5,7 +5,9 @@ import { DS_SKUD_GROUPS } from "../../../CONFIG/DEFAULTSTATE";
 import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, QuestionCircleFilled, QuestionCircleOutlined, QuestionCircleTwoTone, ToolOutlined } from "@ant-design/icons";
 import Checkbox from "antd/es/checkbox/Checkbox";
 import dayjs from "dayjs";
-import { StateContext } from "../../../GlobalComponents/providers/StateProvider";
+
+import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
+import Her from "../../../components/HybridEmbeddedRouter/Her";
 
 
 const UserManagerExtraTools = (props)=>{
@@ -118,12 +120,7 @@ const [openModalRuleTypeInfo, setOpenModalRuleTypeInfo] = useState(false);
     },
     [props.ruleTypes]);
 
-  const setLocation = (value)=>{
-    setState(prevState => ({
-        ...prevState,
-        location: value
-      }));
-  }
+
 
 
 //   useEffect(()=>{
@@ -457,7 +454,7 @@ const tagRender = (props) => {
                             <br />
 
                             <div>
-                                Группы существуют только для группировки пользователей для удобства поиска.
+                                <Her href={'manager/groups'} >Группы</Her> существуют только для группировки пользователей для удобства поиска.
                             <br />
                             <br />
                                 Назначенная группа ни на что не влияет.
@@ -544,8 +541,7 @@ const tagRender = (props) => {
                             <br />
                             <br />
                             <br />
-                            <a onClick={()=>{setLocation('schedules')}}>Менеджер графиков</a>
-
+                            <Her href='manager/schedules' >Менеджер графиков</Her>
                             <br />
                             <br />
                             <div>
@@ -635,7 +631,7 @@ const tagRender = (props) => {
                             <br />
                             <br />
                             <br />
-                            <a onClick={()=>{setLocation('rules')}}>Менеджер правил учёта РВ</a>
+                            <Her href='manager/rules' >Менеджер  правил учёта РВ</Her>
 
                             <br />
                             <br />

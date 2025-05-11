@@ -5,7 +5,7 @@ import { DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import './style/prodcalunit.css';
 import { months } from "moment";
 import { Tooltip } from "antd";
-import { getMonthName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { getMonthName } from "../../../components/Helpers/TextHelpers";
 
 const ProdCalUnit = ({targetYear, targetMonth, prodCalendar, onDayClick, onDayToggle})=>{
     const [calendarDays, setCalendarDays] = useState([]);

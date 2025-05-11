@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ConfigProvider, theme } from 'antd';
-import { StateProvider } from './GlobalComponents/providers/StateProvider';
+import { StateProvider } from './components/ComStateProvider25/ComStateProvider25';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

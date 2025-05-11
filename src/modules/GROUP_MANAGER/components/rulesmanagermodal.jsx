@@ -8,7 +8,7 @@ import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, Exclamat
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
-import { WordDayNumerate } from '../../../GlobalComponents/Helpers/TextHelpers';
+import { WordDayNumerate } from '../../../components/Helpers/TextHelpers';
 
 
 

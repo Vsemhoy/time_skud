@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import { secondsToTime } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { secondsToTime } from "../../../components/Helpers/TextHelpers";
 import { DS_SCHED_UNITS } from "../../../CONFIG/DEFAULTSTATE";
 import { HOST_COMPONENT_ROOT } from "../../../CONFIG/config";
 

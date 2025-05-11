@@ -2,7 +2,7 @@ import { Badge, Button, Card, Checkbox, Dropdown, Empty, Tag, Transfer } from "a
 import React, { useEffect, useState } from "react";
 import "./style/groupcarditem.css";
 import { ArrowDownOutlined, ArrowRightOutlined, BorderBottomOutlined, ClockCircleOutlined, DownOutlined, EditOutlined, PlusCircleOutlined, PlusOutlined, UpOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
-import { generateGradientBackground, ShortName } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { generateGradientBackground, ShortName } from "../../../components/Helpers/TextHelpers";
 import dayjs from "dayjs";
 
 // import SchedStdSVG from "../../../media/schedule-std.svg";

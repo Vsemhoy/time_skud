@@ -1,5 +1,5 @@
 import { Button, Collapse, DatePicker, Drawer, Select } from "antd";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, use, useContext } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
@@ -9,10 +9,12 @@ import '../../../components/TimeSkud/Style/timeskud.css'
 import { BranchesOutlined, CrownOutlined, DoubleLeftOutlined, DoubleRightOutlined, RightOutlined, RightSquareOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../CONFIG/config";
-import { getMonthName, getWeekDayString } from "../../../GlobalComponents/Helpers/TextHelpers";
+import { getMonthName, getWeekDayString } from "../../../components/Helpers/TextHelpers";
+import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
 
 
 const UserListToolbar = (props) => {
+    const { state, setState } = useContext(StateContext);
     const {onChange, userData} = props;
     const location = useLocation();
     const navigate = useNavigate();
@@ -158,7 +160,8 @@ const UserListToolbar = (props) => {
 
     // Отслеживаем и отсылаем внешние фильтры на сервер
     useEffect(() => {
-        changeAddressBarParam('date',usedDate.unix(),[0]);
+        
+        setDateInContext(usedDate);
         if (props.onChangeExternalFilters){
             let params = {};
     
@@ -215,18 +218,18 @@ const UserListToolbar = (props) => {
 
     const handleUsedCompanyChange = (value) => {
         setUsedCompany(value);
-        changeAddressBarParam('tgc',value,[0]);
+        // changeAddressBarParam('tgc',value,[0]);
     };
     const handleUsedDepartmentChange = (value) => {
         setUsedDepartment(value);
-        changeAddressBarParam('dep',value,[0]);
+        // changeAddressBarParam('dep',value,[0]);
     };
     const handleUsedDateChange = (value) => {
         if (value == null){
             value = dayjs();
         }
         setUsedDate(value);
-        changeAddressBarParam('date',value.valueOf(),[0]);
+        setDateInContext(usedDate);
     }
 
     const increaseDate = () => {
@@ -242,7 +245,20 @@ const UserListToolbar = (props) => {
     }
 
 
+    const setDateInContext = (value) => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('date', value.unix());
+        navigate(`?${params.toString()}`);
+        // if (deleteOn.includes('date')){
+        //     params.delete('date');
+        // } else {
+        // };
 
+        setState(prevState => ({
+        ...prevState, // Сохраняем все текущие значения
+        date: value, // Обновляем только `date`
+        }));
+    }
 
     const changeAddressBarParam = (key, value, deleteOn = [null]) =>
     {
