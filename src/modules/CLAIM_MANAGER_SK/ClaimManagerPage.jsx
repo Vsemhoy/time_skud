@@ -114,7 +114,7 @@ const ClaimManagerPage = (props) => {
     const [editorOpened, setEditorOpened] = useState(false);
 
     const [formType, setFormType] = useState(null);
-    const [filterPack, setFilterPack] = useState([]);
+    const [filterPack, setFilterPack] = useState({});
 
     const [baseUserList, setBaseUserList] = useState([]);
     const [userList, setUserList] = useState([]);
