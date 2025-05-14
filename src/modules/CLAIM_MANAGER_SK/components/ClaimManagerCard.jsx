@@ -1,4 +1,4 @@
-import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, DislikeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Dropdown } from "antd";
 import React, { useState } from "react";
 import ClaimIcon from "./ClaimIcon";
@@ -54,7 +54,7 @@ const ClaimManagerCard = (props) => {
        className={'sk-clamen-card-wrapper'} style={{background: props.data?.state_color}}>
         <div className={'sk-clamen-card'}>
             <div >
-                <div>
+                <div className={'sk-align-center'}>
                     {props.data?.id}
                 </div>
             </div>
@@ -80,7 +80,7 @@ const ClaimManagerCard = (props) => {
             </div>
 
             <div>
-                <div>
+                <div className={'sk-align-center'}>
                     {props.data.days_count}
                 </div>
             </div>
@@ -98,21 +98,27 @@ const ClaimManagerCard = (props) => {
             </div>
 
             <div>
-                <div>
-                    {props.data.is_approved ? (
-                        <div className={'sk-icon-success'}
-                            title={'Согласовано'}
-                        >
-                            <CheckSquareOutlined />
-                        </div>
-                    ):(
-                        <div className={'sk-icon-base'}
-                            title={'Требует согласования'}
-                        >
-                            <InfoCircleOutlined />
-                        </div>
-                    )}
-                </div>
+                {props.data.state === 0 && (
+                    <div className={'sk-icon-base'}
+                        title={'Ожидает согласования'}
+                    >
+                        <InfoCircleOutlined />
+                    </div>
+                )}
+                {props.data.state === 1 && (
+                    <div className={'sk-icon-success'}
+                        title={'Согласовано'}
+                    >
+                        <CheckSquareOutlined />
+                    </div>
+                )}
+                {props.data.state === 2 && (
+                    <div className={'sk-icon-fail'}
+                        title={'Отклонено'}
+                    >
+                        <DislikeOutlined />
+                    </div>
+                )}
             </div>
 
             <div>

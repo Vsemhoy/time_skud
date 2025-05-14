@@ -489,7 +489,7 @@ font-size: smaller;
 
 .sk-icon-success {
     font-size: large;
-    color: green;
+    color: #009688;
         display: flex;
     align-items: center;
     justify-content: center;
@@ -500,4 +500,16 @@ font-size: smaller;
         display: flex;
     align-items: center;
     justify-content: center;
+}
+.sk-icon-fail {
+    font-size: large;
+    color: #f44336;
+        display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.sk-align-center {
+    text-align: center;
 }
