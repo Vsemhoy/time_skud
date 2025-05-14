@@ -59,7 +59,7 @@ const claimTypes = [
 
 const typeOptions = [
   {
-    value: null,
+    value: 0,
     label: 'Все заявки',
     icon: <BlockOutlined />,
     background: '#c3c3c3'
@@ -118,6 +118,8 @@ const ClaimManagerPage = (props) => {
 
     const [baseUserList, setBaseUserList] = useState([]);
     const [userList, setUserList] = useState([]);
+
+
     const [departList, setDepartList] = useState([]);
     const [bossList, setBossList] = useState([]);
     const [baseApproverList, setBaseApproverList] = useState([]);
@@ -173,6 +175,9 @@ const ClaimManagerPage = (props) => {
         setUserList(baseUserList);
     },[baseUserList]);
 
+    useEffect(()=>{
+        setClaimList(baseClaimList);
+    },[baseClaimList]);
 
     const handleFilterChanged = (filter) => {
 
@@ -301,16 +306,15 @@ const ClaimManagerPage = (props) => {
     }
 
 
-    const create_claim = async (req, res) => {
+    const create_claim = async (claimObj, req, res) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim', 
                 {
-                    data: {
-                    
-                    },
+                    data: claimObj,
                     _token: CSRF_TOKEN
                 });
                 console.log('response data => ', response.data);
+                get_claimList();
         } catch (e) {
             console.log(e)
         } finally {
@@ -322,9 +326,23 @@ const ClaimManagerPage = (props) => {
 
 
 
+    const handleSetTypeSelect = (ev, value) => {
 
+        if (ev.button === 0){
+            setTypeSelect(value);
+            
+        } else if (ev.button === 1 && value !== 0){
+            // Средней кнопкой мыши мы открываем редактор
+            ev.preventDefault();
+            setFormType(value);
+            setEditorOpened(true);
+        }
+    }
 
-
+    const handleMakeClaim = (claim) => {
+        console.log(claim);
+        create_claim(claim);
+    }
 
     return (
         <div>
@@ -362,7 +380,7 @@ const ClaimManagerPage = (props) => {
                             <div
                             key={option.value === null ? 'all' : option.value}
                             className={`sk-claiman-typeselect-item ${typeSelect === option.value ? 'sk-active' : ''}`}
-                            onClick={() => setTypeSelect(option.value)}
+                            onMouseDown={(ev)=>{handleSetTypeSelect(ev, option.value)}}
                             style={{ background: option.background }}
                             >
                             <div>
@@ -481,13 +499,11 @@ const ClaimManagerPage = (props) => {
 
                         </div>
                         </Affix>
-                            <ClaimManagerCard />
-                            <ClaimManagerCard />
-                            <ClaimManagerCard />
-                            <ClaimManagerCard />
-                            <ClaimManagerCard />
-                            <ClaimManagerCard />
-                            <ClaimManagerCard />
+                        {claimList.map((claim) => (
+                            <ClaimManagerCard data={claim} />
+                        ))}
+                            
+
                         </div>
                     </div>
 
@@ -505,6 +521,7 @@ const ClaimManagerPage = (props) => {
                 claim_type={formType}
                 on_close={()=>{setEditorOpened(false)}}
                 claim_types={claimTypes}
+                on_send={handleMakeClaim}
             />
         </div>
     )

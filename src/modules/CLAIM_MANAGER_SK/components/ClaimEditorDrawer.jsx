@@ -31,6 +31,8 @@ const ClaimEditorDrawer = (props) => {
   
   const [userList, setUserList] = useState([]);
 
+  const [formValid, setFormValid] = useState(true);
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -134,9 +136,21 @@ const ClaimEditorDrawer = (props) => {
 
     result.info = res2;
 
-    console.log(result);
+    // console.log(result);
+    if (props.on_send){
+      props.on_send(result);
+    }
   }
 
+
+  useEffect(()=>{
+    console.log('HELLOFD');
+    if (formUsers.length > 0){
+      setFormValid(true);
+    } else {
+      setFormValid(false);
+    }
+  },[formUsers]);
 
   return (
     <>
@@ -151,14 +165,14 @@ const ClaimEditorDrawer = (props) => {
             paddingBottom: 80,
           },
         }}
-        extra={
-          <Space>
-            <Button onClick={onClose}>Cancel</Button>
-            <Button onClick={handleSubmitForm} type="primary">
-              Submit
-            </Button>
-          </Space>
-        }
+        // extra={
+        //   <Space>
+        //     <Button onClick={onClose}>Cancel</Button>
+        //     <Button onClick={handleSubmitForm} type="primary">
+        //       Submit
+        //     </Button>
+        //   </Space>
+        // }
       >
         <div style={{display: 'flex', flexDirection: 'column'}}>
 
@@ -171,7 +185,7 @@ const ClaimEditorDrawer = (props) => {
                     style={{ width: '100%' }}
                     placeholder={'Имя пользователя'}
                     options={userList}
-                
+                      onChange={setFormUsers}
                     />
             </div>
 
@@ -380,6 +394,15 @@ const ClaimEditorDrawer = (props) => {
             </div>
           )}
         </div>
+          <br />
+          <br />
+          <div>
+            {formValid ? (
+              <Button type={'primary'} onClick={handleSubmitForm} block>Отправить</Button>
+            ): (
+              <Button danger disabled block>Отправить</Button>
+                        )} 
+          </div>
 
         </div>
       </Drawer>

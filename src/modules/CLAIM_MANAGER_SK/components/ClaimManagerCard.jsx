@@ -40,16 +40,19 @@ const items = [
 
 const ClaimManagerCard = (props) => {
 
+
+
     return (
+      <div className={'sk-clamen-card-wrapper'} style={{background: props.data?.state_color}}>
         <div className={'sk-clamen-card'}>
             <div >
                 <div>
-                    id
+                    {props.data?.id}
                 </div>
             </div>
             <div >
                 <div>
-                    Name useera
+                    {props.data.usr_surname} {props.data.usr_name} {props.data.usr_patronymic}
                 </div>
             </div>
             <div>
@@ -110,6 +113,7 @@ const ClaimManagerCard = (props) => {
                     <BarsOutlined />
                 </Dropdown>
             </div>
+        </div>
         </div>
     )
 };

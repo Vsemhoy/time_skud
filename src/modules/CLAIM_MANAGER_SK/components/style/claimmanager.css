@@ -57,6 +57,14 @@
     display: block;
     text-align: center;
 }
+
+.sk-clamen-card-wrapper > .sk-clamen-card {
+    background-color: rgba(255, 255, 255, 0.644);
+    transition: all 0.3s;
+}
+/* .sk-clamen-card-wrapper:hover > .sk-clamen-card {
+    background-color: rgba(255, 255, 255, 0.301);
+} */
 .sk-clamen-card {
     display: grid;
         grid-template-columns: 32px auto 50px 70px 70px 50px 50px 70px 70px 50px  30px;
