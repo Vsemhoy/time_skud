@@ -27,7 +27,23 @@ const ClaimManagerSidebar = (props) => {
         },
     ];
 
-
+    const evalStatuses = [
+        {
+            key: 'cs145354324',
+            label: 'Все',
+            value: null
+        },
+        {
+            key: 'cs24535234524',
+            label: 'Неисполненные',
+            value: 0
+        },
+        {
+            key: 'cs345372452424',
+            label: 'Исполненные',
+            value: 1
+        }
+    ];
 
     const initialstate = {
         filterUserName: '',
@@ -37,10 +53,11 @@ const ClaimManagerSidebar = (props) => {
         filterBoss: null,
         filterEventInterval: [null, null],
         filterStatus: null,
-        filterShowClosed: false,
+        filterShowDeleted: false,
         filterApprover: '',
         filterDurationStart: 0,
-        filterDurationEnd: 0
+        filterDurationEnd: 0, 
+        filterShowEvaluated: 0
     }
     
     const [filterUserName, setFilterUserName] = useState('');
@@ -50,7 +67,8 @@ const ClaimManagerSidebar = (props) => {
     const [filterBoss, setFilterBoss] = useState(null);
     const [filterEventInterval, setFilterEventInterval] = useState([null, null]);
     const [filterStatus, setFilterStatus] = useState(null);
-    const [filterShowClosed, setFilterShowClosed] = useState(false);
+    const [filterShowDeleted, setFilterShowDeleted] = useState(false);
+    const [filterShowEvaluated, setFilterShowEvaluated] = useState(0);
     const [filterApprover, setFilterApprover] = useState('');
     const [filterDurationStart, setFilterDurationStart] = useState(0);
     const [filterDurationEnd, setFilterDurationEnd] = useState(0);
@@ -64,10 +82,11 @@ const ClaimManagerSidebar = (props) => {
         setFilterBoss(initialstate.filterBoss);
         setFilterEventInterval(initialstate.filterEventInterval);
         setFilterStatus(initialstate.filterStatus);
-        setFilterShowClosed(initialstate.filterShowClosed);
+        setFilterShowDeleted(initialstate.filterShowDeleted);
         setFilterApprover(initialstate.filterApprover);
         setFilterDurationStart(initialstate.filterDurationStart);
         setFilterDurationEnd(initialstate.filterDurationEnd);
+        setFilterShowEvaluated(initialstate.filterShowEvaluated);
     };
 
 
@@ -115,8 +134,8 @@ const ClaimManagerSidebar = (props) => {
       useEffect(()=>{
         console.log('props.company_list', props.company_list);
         if (props.company_list){
-            setCompanyList(
-                props.company_list.filter(com => com.id != 1)
+            setCompanyList([{ key: 0, value: 0, label: 'Все компании' },
+                    ...props.company_list.filter(com => com.id != 1)
                 .map(com => ({
                     key: `usercom_${com.id}`,
                     value: com.id,
@@ -127,7 +146,8 @@ const ClaimManagerSidebar = (props) => {
                       </div>
                     ),
                   })
-            ));
+            )]
+        );
         }
 
       },[props.company_list]);
@@ -137,14 +157,16 @@ const ClaimManagerSidebar = (props) => {
 
     useEffect(() => {
       const params = {};
-        if (filterUserName?.trim()) params.userName = filterUserName.trim();
+        if (filterUserName?.trim()) params.username = filterUserName.trim();
         if (filterReason?.trim()) params.reason = filterReason.trim();
-        if (filterCompany) params.id_company = filterCompany;
-        if (filterDepartment) params.departmentId = filterDepartment;
-        if (filterBoss) params.boss = filterBoss;
-        if (filterStatus !== null) params.status = filterStatus;
+        if (filterCompany) params.company = filterCompany;
+        if (filterDepartment) params.department = filterDepartment;
+        if (filterBoss) params.boss_id = filterBoss;
+        if (filterStatus !== null) params.state = filterStatus;
         if (filterApprover) params.approver = filterApprover;
-        if (filterShowClosed) params.showClosed = true;
+
+        if (filterShowDeleted) params.deleted = true;
+        if (filterShowEvaluated !== null) params.evaluated = filterShowEvaluated;
         
         // Обработка интервала дат
         if (filterEventInterval[0]?.isValid() && filterEventInterval[1]?.isValid()) {
@@ -166,8 +188,8 @@ const ClaimManagerSidebar = (props) => {
     }, [
         filterUserName, filterReason, filterCompany, 
         filterDepartment, filterBoss, filterEventInterval,
-        filterStatus, filterShowClosed, filterApprover,
-        filterDurationStart, filterDurationEnd]);
+        filterStatus, filterShowDeleted, filterApprover,
+        filterDurationStart, filterDurationEnd, filterShowEvaluated]);
 
 
 
@@ -186,10 +208,10 @@ const ClaimManagerSidebar = (props) => {
 
 
             <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Причина</span>
+                <span className={'sk-usp-filter-col-label'}>Текс полей описания</span>
                 <Input
                     style={{ width: '100%' }}
-                    placeholder={'Поиск в тексте причины события'}
+                    placeholder={'Поиск в доп.полях события'}
                     allowClear={true}
                     value={filterReason}
                     onChange={(ev)=>{setFilterReason(ev.target.value)}}
@@ -264,10 +286,22 @@ const ClaimManagerSidebar = (props) => {
 
 
             <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Закрытые архивные заявки</span>
+                <span className={'sk-usp-filter-col-label'}>Исполненность</span>
+                <Select
+                    style={{ width: '100%' }}
+                    placeholder={'Статус исполнения'}
+                    value={filterShowEvaluated}
+                    options={evalStatuses}
+                    onChange={(ev)=>{setFilterShowEvaluated(ev)}}
+                    allowClear
+                    />
+            </div>
+
+            <div className={'sk-usp-filter-col-item'} >
+                <span className={'sk-usp-filter-col-label'}>Удаленные заявки</span>
                 <Switch
-                    checked={filterShowClosed}
-                    onChange={(ev)=>{setFilterShowClosed(ev)}}
+                    checked={filterShowDeleted}
+                    onChange={(ev)=>{setFilterShowDeleted(ev)}}
                 ></Switch>
             </div>
 

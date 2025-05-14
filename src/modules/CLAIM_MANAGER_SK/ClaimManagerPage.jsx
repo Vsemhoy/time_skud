@@ -9,7 +9,7 @@ import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS } from "./CLAIM_MOCK";
+import { CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS, CLAIMS_MOCKS } from "./CLAIM_MOCK";
 
 
 const claimTypes = [
@@ -162,12 +162,13 @@ const ClaimManagerPage = (props) => {
             get_stateList();
             get_userList();
             get_approverList();
-            get_claimList();
+            get_claimList([]);
         } else {
             //mock data
             setDepartList(CLAIM_DEPARTS);
             setBaseUserList(CLAIM_USERS);
             setStateList(CLAIM_STATES);
+            setBaseClaimList(CLAIMS_MOCKS);
         }
     },[]);
 
@@ -188,6 +189,7 @@ const ClaimManagerPage = (props) => {
         }
         setFilterPack(filter);
         console.log('filter', filter)
+
     }
 
     useEffect(() => {
@@ -195,18 +197,27 @@ const ClaimManagerPage = (props) => {
     }, [typeSelect, page, onPage]);
 
 
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            let pack = JSON.parse(JSON.stringify(filterPack));
+            if (typeSelect){
+                pack.type = typeSelect;
+            }
+            get_claimList(pack);
+        }, 800);
+        return () => clearTimeout(debounceTimer);
+    }, [filterPack, typeSelect]);
 
     // ------------------ FetchWorld ----------------------
 
 
 
-    const get_claimList = async (req, res) => {
+    const get_claimList = async (filters, req, res) => {
         try {
+            console.log("FILTERES" , filters);
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims', 
                 {
-                    data: {
-                    
-                    },
+                    data: filters,
                     _token: CSRF_TOKEN
                 });
                 setBaseClaimList(response.data.content);
@@ -314,7 +325,7 @@ const ClaimManagerPage = (props) => {
                     _token: CSRF_TOKEN
                 });
                 console.log('response data => ', response.data);
-                get_claimList();
+                get_claimList(filterPack);
         } catch (e) {
             console.log(e)
         } finally {
@@ -356,21 +367,6 @@ const ClaimManagerPage = (props) => {
                 <div
                 style={{fontSize:'16px', fontWeight:'500', padding: '16px 0px'}}
                     >Менеджер пользовательских заявок</div>
-                    {/* <div
-                  
-                    >
-                        Персона
-                    </div>
-                    <div
-                       
-                    >
-                        Группа
-                    </div>
-                    <div
-                     
-                    >
-                        Все
-                    </div> */}
                 </div>
 
                 <div className="sk-flex-space"> 
