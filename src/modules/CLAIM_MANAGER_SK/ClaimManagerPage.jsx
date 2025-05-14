@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS, CLAIMS_MOCKS } from "./CLAIM_MOCK";
+import ClaimModalView from "./components/ClaimModalView";
 
 
 const claimTypes = [
@@ -112,6 +113,10 @@ const ClaimManagerPage = (props) => {
     const [userData, setUserData] = useState(null);
     const [typeSelect, setTypeSelect] = useState(null);
     const [editorOpened, setEditorOpened] = useState(false);
+    const [vieverOpened, setViewerOpened] = useState(false);
+
+    const [openedId, setOpenedId] = useState(null);
+
 
     const [formType, setFormType] = useState(null);
     const [filterPack, setFilterPack] = useState({});
@@ -355,6 +360,17 @@ const ClaimManagerPage = (props) => {
         create_claim(claim);
     }
 
+
+    const handleOpenInfo = (id) => {
+        setViewerOpened(true);
+        setOpenedId(id);
+    }
+
+    const handleCloseInfo = () => {
+        setViewerOpened(false);
+        setOpenedId(null);
+    }
+
     return (
         <div>
             <div style={{padding: '6px'}} className={'sk-mw-1400'}>
@@ -404,12 +420,15 @@ const ClaimManagerPage = (props) => {
 
             <div className={'sk-usp-layout-container'}>
                 <div className="sk-usp-filter-col">
+                <Affix offsetTop={0}>
+
                     <ClaimManagerSidebar 
                         user_list={baseUserList}
                         depart_list={departList}
                         company_list={userData?.companies}
                         on_change_filter={handleFilterChanged}
                     />
+                </Affix>
                 </div>
 
 
@@ -429,7 +448,9 @@ const ClaimManagerPage = (props) => {
                     <br />
 
                     <div className="sk-usp-content-col">
-                        <div className={'sk-arche-stack'}>
+                        <div className={'sk-arche-stack'}
+                         style={{paddingBottom: '44vw'}}
+                        >
                         <Affix offsetTop={0}>
                         <div className="sk-clamen-headerrow">
                         <div className={'sk-clamen-card'}>
@@ -496,7 +517,9 @@ const ClaimManagerPage = (props) => {
                         </div>
                         </Affix>
                         {claimList.map((claim) => (
-                            <ClaimManagerCard data={claim} />
+                            <ClaimManagerCard data={claim}
+                                on_click={handleOpenInfo}
+                            />
                         ))}
                             
 
@@ -519,6 +542,12 @@ const ClaimManagerPage = (props) => {
                 claim_types={claimTypes}
                 on_send={handleMakeClaim}
             />
+
+            <ClaimModalView
+                open={vieverOpened}
+                item_id={openedId}
+                on_close={handleCloseInfo}
+                />
         </div>
     )
 }

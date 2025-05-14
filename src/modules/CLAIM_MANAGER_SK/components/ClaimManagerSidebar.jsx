@@ -194,7 +194,7 @@ const ClaimManagerSidebar = (props) => {
 
 
     return (
-        <div>
+        <div style={{maxHeight: '100vh', overflow: 'auto'}}>
             <div className={'sk-usp-filter-col-item'} >
                 <span className={'sk-usp-filter-col-label'}>Пользователь</span>
                 <Input
@@ -343,6 +343,7 @@ const ClaimManagerSidebar = (props) => {
             >
                 Очистить фильтры
             </Button>
+            <br /><br />
             </div>
         </div>
     )

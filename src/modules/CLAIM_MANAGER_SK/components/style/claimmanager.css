@@ -67,7 +67,7 @@
 } */
 .sk-clamen-card {
     display: grid;
-        grid-template-columns: 32px auto 50px 70px 70px 50px 50px 70px 70px 50px  30px;
+        grid-template-columns: 40px auto 40px 80px 80px 50px 50px 70px 70px 50px  30px;
         border: 1px solid #80808061;
         border-top: none;
         background: var(--row-main-bg-color);

@@ -1,6 +1,7 @@
-import { BarChartOutlined, BarsOutlined } from "@ant-design/icons";
+import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Dropdown } from "antd";
-import React from "react";
+import React, { useState } from "react";
+import ClaimIcon from "./ClaimIcon";
 
 const items = [
   {
@@ -39,11 +40,18 @@ const items = [
 
 
 const ClaimManagerCard = (props) => {
+    const [itemId, setItemId] = useState(props.data.id);
 
-
+    const handleDoubleClickOnRow = () => {
+        if (props.on_click){
+            props.on_click(itemId);
+        }
+    }
 
     return (
-      <div className={'sk-clamen-card-wrapper'} style={{background: props.data?.state_color}}>
+      <div
+        onDoubleClick={handleDoubleClickOnRow}
+       className={'sk-clamen-card-wrapper'} style={{background: props.data?.state_color}}>
         <div className={'sk-clamen-card'}>
             <div >
                 <div>
@@ -56,30 +64,24 @@ const ClaimManagerCard = (props) => {
                 </div>
             </div>
             <div>
-                <div>
-                    nbg
+                <div className={'sk-claimicon'}>
+                    <ClaimIcon title={props.data.state_title} icon={props.data.state_icon}/>
                 </div>
             </div>
             <div >
                 <div>
-                    13:00
+                    {props.data.start}
                 </div>
             </div>
             <div >
                 <div>
-                    22:00
+                    {props.data.end}
                 </div>
             </div>
 
             <div>
                 <div>
-
-                </div>
-            </div>
-
-            <div>
-                <div>
-                    
+                    {props.data.days_count}
                 </div>
             </div>
 
@@ -97,7 +99,37 @@ const ClaimManagerCard = (props) => {
 
             <div>
                 <div>
-                    
+                    {props.data.is_approved ? (
+                        <div className={'sk-icon-success'}
+                            title={'Согласовано'}
+                        >
+                            <CheckSquareOutlined />
+                        </div>
+                    ):(
+                        <div className={'sk-icon-base'}
+                            title={'Требует согласования'}
+                        >
+                            <InfoCircleOutlined />
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    {props.data.evaluated ? (
+                        <div className={'sk-icon-success'}
+                            title={'Исполнено'}
+                        >
+                            <CarryOutOutlined />
+                        </div>
+                    ):(
+                        <div className={'sk-icon-base'}
+                            title={'Ждет исполнения'}
+                        >
+                            <ClockCircleOutlined />
+                        </div>
+                    )}
                 </div>
             </div>
 

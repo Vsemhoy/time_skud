@@ -475,6 +475,29 @@ font-size: smaller;
 .sk-ant-no-padding > .ant-drawer-body {
     padding: 0px !important;
 }
+
 .sk-w-padding-18 {
     padding: 18px;
+}
+
+.sk-claimicon {
+    font-size: large;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sk-icon-success {
+    font-size: large;
+    color: green;
+        display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sk-icon-base {
+    font-size: large;
+    color: gray;
+        display: flex;
+    align-items: center;
+    justify-content: center;
 }

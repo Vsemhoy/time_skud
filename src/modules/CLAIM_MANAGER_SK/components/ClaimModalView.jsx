@@ -6,9 +6,10 @@ const ClaimModalView = (props) => {
     const [opened, setOpened] = useState(false);
 
     useEffect(() => {
-      if (props.item_id && props.open){
+      console.log('itemId', itemId)
+      if (props.open){
         setItemId(props.item_id);
-        setOpened(props.open);
+        setOpened(true);
       }
     }, [props.open]);
 
@@ -16,6 +17,9 @@ const ClaimModalView = (props) => {
     const handleCloseForm = () =>{
 
         setOpened(false);
+        if (props.on_close){
+          props.on_close();
+        }
     }
 
   return (
@@ -23,6 +27,7 @@ const ClaimModalView = (props) => {
         open={opened}
         onCancel={handleCloseForm}
         onClose={handleCloseForm}
+         title="Basic Modal"
     >   
         <div>HEllo wolf!</div>
     </Modal>
