@@ -184,12 +184,8 @@ const ClaimManagerPage = (props) => {
 
         filter.page = page;
         filter.onPage = onPage;
-        if (typeSelect){
-            filter.type = typeSelect;
-        }
         setFilterPack(filter);
         console.log('filter', filter)
-
     }
 
     useEffect(() => {
@@ -199,10 +195,14 @@ const ClaimManagerPage = (props) => {
 
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
+            
             let pack = JSON.parse(JSON.stringify(filterPack));
-            if (typeSelect){
+            if (typeSelect !== 0){
                 pack.type = typeSelect;
+            } else {
+                pack.type = null;
             }
+            console.log('PACK', pack);
             get_claimList(pack);
         }, 800);
         return () => clearTimeout(debounceTimer);
