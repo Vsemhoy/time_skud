@@ -513,3 +513,12 @@ font-size: smaller;
 .sk-align-center {
     text-align: center;
 }
+
+
+.sk-dark {
+    background-color: gray;
+}
+.sk-page-body{
+    min-height: 100vh;
+    color: white;
+}

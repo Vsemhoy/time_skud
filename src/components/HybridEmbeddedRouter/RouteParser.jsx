@@ -133,6 +133,13 @@ const getLocationName = (loc, result) => {
             }
         }
 
+        if (q[0].toLowerCase() == 'admin'){
+            if (req2 == 'aclskud'){
+                result.location = 'aclskud';
+                return result;
+            }
+        }
+
         if (q[0].toLowerCase() == 'manager'){
             if (req2 == 'usermanager'){
                 result.location = 'usermanager';

@@ -39,6 +39,7 @@ import ClaimManagerPage from './modules/CLAIM_MANAGER_SK/ClaimManagerPage';
 
 import useWebSocket from 'react-use-websocket';
 import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
+import AclSkud from './modules/ADMIN/ACLSKUD/AclSkudPage';
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -339,6 +340,8 @@ function App() {
             {state.location === 'notificator' && <NotifierPage userdata={userAct} />}
 
             {state.location === 'claims' && <ClaimManagerPage userdata={userAct} />}
+
+            {state.location === 'aclskud' && <AclSkud userdata={userAct} />}
 
             {/* {!state.location && <NotFoundPage />} */}
             {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
