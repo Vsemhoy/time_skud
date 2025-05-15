@@ -169,9 +169,10 @@ const ClaimManagerSidebar = (props) => {
         if (filterShowEvaluated !== null) params.evaluated = filterShowEvaluated;
         
         // Обработка интервала дат
-        if (filterEventInterval[0]?.isValid() && filterEventInterval[1]?.isValid()) {
-            params.startDate = filterEventInterval[0].format('YYYY-MM-DD');
-            params.endDate = filterEventInterval[1].format('YYYY-MM-DD');
+        if (filterEventInterval !== null && filterEventInterval.length > 1 && filterEventInterval[0] !== null &&
+            filterEventInterval[0]?.isValid() && filterEventInterval[1]?.isValid()) {
+            params.startTime = filterEventInterval[0].format('YYYY-MM-DD');
+            params.endTime = filterEventInterval[1].format('YYYY-MM-DD');
         }
         
         // Фильтр по продолжительности
@@ -316,19 +317,19 @@ const ClaimManagerSidebar = (props) => {
             </div>
 
             <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Продолжительность в днях от __ до __</span>
+                <span className={'sk-usp-filter-col-label'}>Временной интервал для поиска</span>
                 <div className="sk-flex-space">
                     <Input
                         type="number"
                         min={0}
                         value={filterDurationStart}
-                        onChange={(ev)=>{setFilterDurationStart(ev.target.value)}}
+                        onChange={(ev)=>{setFilterDurationStart(ev.target?.value)}}
                     />
                     <Input
                         type="number"
                         min={0}
                         value={filterDurationEnd}
-                        onChange={(ev)=>{setFilterDurationEnd(ev.target.value)}}
+                        onChange={(ev)=>{setFilterDurationEnd(ev.target?.value)}}
                     />
                 </div>
 
