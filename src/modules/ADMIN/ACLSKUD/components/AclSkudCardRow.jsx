@@ -1,4 +1,4 @@
-import { CaretDownOutlined, CaretUpOutlined, ClearOutlined, CopyOutlined, DiffOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, CaretUpOutlined, ClearOutlined, CopyOutlined, DeliveredProcedureOutlined, DiffOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 
@@ -56,6 +56,7 @@ const AclSkudCardRow = (props) => {
     const [itemId, setItemId] = useState(props.data.user_id ? props.data.user_id : props.data.id );
     const [cooxedRow, setCooxedRow] = useState(true);
 
+    const [templateMode, setTemplateMode] = useState(false);
 
     const handleCooxAction = (ev) => {
         ev.preventDefault();
@@ -123,27 +124,15 @@ const AclSkudCardRow = (props) => {
                     <div></div>
                     <div></div>
                     <div></div>
-                </div>
-            </div>
-            <div>
-                {/* <AclSkudChecker /> */}
-                <div className={'sk-table-aclskud-multicol'} >
+                    <div></div>
+                    <div></div>
+                    <div></div>
                     <div></div>
                     <div></div>
                     <div></div>
                 </div>
             </div>
-            {/* <div>
-                <AclSkudChecker />
-            </div> */}
-            <div>
-                {/* <AclSkudChecker /> */}
-                <div className={'sk-table-aclskud-multicol'} >
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-            </div>
+        
             <div className='sk-flex sk-table-triggers'>
                 {!props.data.type ? (
                     <>
@@ -152,14 +141,18 @@ const AclSkudCardRow = (props) => {
                     <div><ClearOutlined /></div>
                     </>
                 ):(
-                    <div>Шаблон</div>
+                    <div className={'sk-flex'}
+                        onClick={()=>{setTemplateMode(!templateMode)}}
+                    >
+                    <div style={{padding: '3px', cursor:'pointer'}}><span>ШАБЛОН </span> <DeliveredProcedureOutlined /></div>
+                    </div>
                 )}
 
             </div>
         </div>
         
-        {!cooxedRow && props.data.user_surname && claimTypes.map((ct)=>(
-            <div className={'sk-table-aclskud-row sk-table-aclskud-data sk-act-subrow'}
+        {(!cooxedRow && props.data.user_surname || templateMode && props.data.type) && claimTypes.map((ct)=>(
+            <div className={`sk-table-aclskud-row sk-table-aclskud-data ${templateMode ? "sk-act-templaterow" : "sk-act-subrow"}`}
             key={`checkdser${itemId}_${ct.value}`}
             >
                 <div>
@@ -178,15 +171,15 @@ const AclSkudCardRow = (props) => {
                 <div>
                     <AclSkudChecker  key={`${itemId}_${ct.value}_per`} addkey={`${itemId}_${ct.value}_per`}/>
                 </div>
-                <div>
+                {/* <div>
                     <AclSkudChecker  key={`${itemId}_${ct.value}_emp`} addkey={`${itemId}_${ct.value}_emp`} />
-                </div>
+                </div> */}
                 {/* <div>
                     <AclSkudChecker />
                 </div> */}
-                <div>
+                {/* <div>
                     <AclSkudChecker  key={`${itemId}_${ct.value}_all`} addkey={`${itemId}_${ct.value}_all`} />
-                </div>
+                </div> */}
                 <div className='sk-flex sk-table-triggers'>
                     <div><CopyOutlined /></div>
                     <div><DiffOutlined /></div>

@@ -218,53 +218,24 @@ const AclSkud = (props) => {
                         </div>
                     </div>
                     <div className={'sk-table-aclskud-groupcol'}>
-                        <div>
-                            Личные заявки
+                        <div className={'sk-teble-prehead'}>
+                            <div style={{padding: '3px'}}>Личные заявки</div>
+                            <div style={{padding: '3px'}}>Заявки подчиненных</div>
+                            <div style={{padding: '3px'}}>Заявки всех пользователей</div>
                         </div>
                         <div className={'sk-table-aclskud-multicol'}>
-                            {/* <div title='Просмотр'><EyeOutlined /></div> */}
-                            <div title='Создание '><DiffOutlined /></div>
-                            <div title='Редактирование'><EditOutlined /></div>
-                            {/* <div title='Удаление'><DeleteOutlined /></div> */}
-                            <div title='Согласование и отклонение'><CheckCircleOutlined /></div>
+                            <div title='Создание '>Созд.<DiffOutlined /></div>
+                            <div title='Редактирование'>Ред.<EditOutlined /></div>
+                            <div title='Согласование и отклонение'>Согл.<CheckCircleOutlined /></div>
+                            <div title='Создание'>Созд.<DiffOutlined /></div>
+                            <div title='Редактирование'>Ред.<EditOutlined /></div>
+                            <div title='Согласование и отклонение'>Согл.<CheckCircleOutlined /></div>
+                            <div title='Создание'>Созд.<DiffOutlined /></div>
+                            <div title='Редактирование'>Ред.<EditOutlined /></div>
+                            <div title='Согласование и отклонение'>Согл.<CheckCircleOutlined /></div>
                         </div>
                     </div>
-                    {/* <div className={'sk-table-aclskud-groupcol'}>
-                        <div>
-                            Заявки внутри отдела
-                        </div>
-                        <div className={'sk-table-aclskud-multicol'}>
-                            <div title='Просмотр'><EyeOutlined /></div>
-                            <div title='Создание'><DiffOutlined /></div>
-                            <div title='Редактирование'><EditOutlined /></div>
-                            <div title='Удаление'><DeleteOutlined /></div>
-                            <div title='Согласование и отклонение'><CheckCircleOutlined /></div>
-                        </div>
-                    </div> */}
-                    <div className={'sk-table-aclskud-groupcol'}>
-                        <div>
-                            Заявки подчиненных
-                        </div>
-                        <div className={'sk-table-aclskud-multicol'}>
-                            {/* <div title='Просмотр'><EyeOutlined /></div> */}
-                            <div title='Создание'><DiffOutlined /></div>
-                            <div title='Редактирование'><EditOutlined /></div>
-                            {/* <div title='Удаление'><DeleteOutlined /></div> */}
-                            <div title='Согласование и отклонение'><CheckCircleOutlined /></div>
-                        </div>
-                    </div>
-                    <div className={'sk-table-aclskud-groupcol'}>
-                        <div>
-                            Заявки всех пользователей
-                        </div>
-                        <div className={'sk-table-aclskud-multicol'}>
-                            {/* <div title='Просмотр'><EyeOutlined /></div> */}
-                            <div title='Создание'><DiffOutlined /></div>
-                            <div title='Редактирование'><EditOutlined /></div>
-                            {/* <div title='Удаление'><DeleteOutlined /></div> */}
-                            <div title='Согласование и отклонение'><CheckCircleOutlined /></div>
-                        </div>
-                    </div>
+
                     <div>
 
                     </div>
