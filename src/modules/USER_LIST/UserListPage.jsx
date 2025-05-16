@@ -343,7 +343,7 @@ const UserList = (props)=>{
     }
 
     const getDepartmentNameById = (id) => {
-      const department = DS_DEPARTMENTS.find(dept => dept.id === id);
+      const department = departments.find(dept => dept.id === id);
       return department ? department.name : null; // Возвращаем имя или null, если не найдено
   };
 
