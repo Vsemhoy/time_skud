@@ -62,6 +62,7 @@ const AppMenu23 = (props) => {
        <Menu mode="horizontal" style={{ background: '#00000000', flex: 1}}>
           <Menu.Item key="home" icon={<HomeOutlined  style={{ fontSize: '20px', color: '#3b3b3b', marginTop: '6px',
            textAlign: 'center', paddingLeft: '6px' }} />} ><a href={HTTP_ROOT}></a></Menu.Item>
+          <Menu.SubMenu key="menu1" title="Моё">
             {/* <MenuItem
             key={'menu_52d34ds'}>
               <Link
@@ -69,7 +70,6 @@ const AppMenu23 = (props) => {
               >Моё</Link>
             </MenuItem> */}
 
-          <Menu.SubMenu key="menu1" title="Моё">
             <MenuItem
             key={'menu_52s34'}>
                 <Her href={'userlist'} >
@@ -93,6 +93,8 @@ const AppMenu23 = (props) => {
                     Администрирование заявок
                 </Her>
             </MenuItem>
+
+
 
           </Menu.SubMenu>
 
@@ -158,7 +160,6 @@ const AppMenu23 = (props) => {
           </Menu.SubMenu>
 
 
-
           <Menu.SubMenu key="menu634" title="Админ">
             <MenuItem
             key={'menu_52s354'}>
@@ -168,7 +169,6 @@ const AppMenu23 = (props) => {
             </MenuItem>
 
           </Menu.SubMenu>
-
         </Menu>
 
         {/* Вторая группа */}

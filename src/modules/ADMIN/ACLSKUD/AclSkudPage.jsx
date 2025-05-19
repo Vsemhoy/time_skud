@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './components/style/aclskud.css';
 import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, DiffOutlined, DownSquareOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
-import { Affix, Checkbox } from 'antd';
-import { PRODMODE } from '../../../CONFIG/config';
+import { Affix, Checkbox, Radio, Select, Tabs } from 'antd';
+import { CSRF_TOKEN, PRODMODE } from '../../../CONFIG/config';
 import { DS_DEPARTMENTS, DS_USERLIST_USERS } from '../../../CONFIG/DEFAULTSTATE';
 import AclSkudCardRow from './components/AclSkudCardRow';
+import { PROD_AXIOS_INSTANCE } from '../../../API/API';
 
 
 
@@ -17,6 +18,12 @@ const AclSkud = (props) => {
 
     const [cooxStateDeparts, setCooxStateDepars] = useState([]);
     const [cooxStateUsers, setCooxStateUsers] = useState([]);
+
+    const [visibleCompany, setVisibleCompany] = useState(2);
+
+    const [triggerTemplates, setTriggerTemplates] = useState(false);
+
+    const [copyRows, setCopyRows] = useState([]);
 
     const claimTypes = [
         {
@@ -63,15 +70,17 @@ const AclSkud = (props) => {
         }
     ];
 
+
     
     useEffect(() => {
       if (PRODMODE){
-
+          get_departments();
+          get_users();
       } else {
+          setDepartments(DS_DEPARTMENTS);
+          setBaseUserCollection(DS_USERLIST_USERS);
 
       }
-      setDepartments(DS_DEPARTMENTS);
-      setBaseUserCollection(DS_USERLIST_USERS);
     }, []);
 
     useEffect(() => {
@@ -136,6 +145,58 @@ const AclSkud = (props) => {
     };
 
 
+    /** ------------------ FETCHES ---------------- */
+        /**
+         * Получение списка отделов
+         * @param {*} req 
+         * @param {*} res 
+         */
+        const get_departments = async (req, res) => {
+          try {
+              let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdeparts', 
+                {
+                    data: [],
+                    _token: CSRF_TOKEN
+                });
+              console.log('departs', response);
+              // setOrganizations(organizations_response.data.org_list)
+              // setTotal(organizations_response.data.total_count)
+              setDepartments(response.data.data);
+          } catch (e) {
+              console.log(e)
+          } finally {
+              // setLoadingOrgs(false)
+          }
+      }
+    
+    
+          /**
+           * Получение списка пользователей
+           * @param {*} req 
+           * @param {*} res 
+           */
+          const get_users = async (filters, req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getusers', 
+                    {
+                        data: {
+                            id_company: visibleCompany
+                        },
+                        _token: CSRF_TOKEN
+                    });
+                    if (response && response.data){
+                      setBaseUserCollection(response.data.content);
+                    }
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // setLoadingOrgs(false)
+            }
+        }
+      /** ------------------ FETCHES END ---------------- */
+
+
+
     const handleCooxDepart = (id, shift)=> {
         console.log(id);
         let newd = JSON.parse(JSON.stringify(cooxStateDeparts)) ;
@@ -194,11 +255,71 @@ const AclSkud = (props) => {
         }
     }
 
+    const toggleTemplatesOpen = (state) => {
+        console.log(state, "HELJDLKFJ");
+        setTriggerTemplates(state);
+      }
+
+      const options = [
+        { label: 'Arstel', value: 2 },
+        { label: 'Rondo', value: 3 },
+      ];
+
+
+      const handleVisibleCompanyChange = (ev) =>
+      {
+        console.log(ev);
+        setVisibleCompany(ev.target.value);
+      }
+
+      const handleCopyRows = (type, id, object) => {
+        console.log(type, id, object);
+      }
+
+      const handlePasteRows = (type, id, object) => {
+        console.log(type, id, object);
+      }
+
+      const handleClearRows = (type, id, object) => {
+        console.log(type, id, object);
+      }
+
   return (
     <div className='sk-page-body'>
         <div style={{padding: '6px'}} className={'sk-mw-1400'}>
+            <div>
+                dkfajslkdjfkas
+            </div>
             <br/>
-            <div>AclSkud</div>
+            <div className={'sk-flex-space'}>
+                <div className={'sk-flex'}>
+                    <div className={'sk-select-visicom'}>Доступы к компании: </div>
+                    <div>
+                    <Radio.Group
+                    block
+                    options={options}
+                    defaultValue={2}
+                    value={visibleCompany}
+                    optionType="button"
+                    buttonStyle="solid"
+                    onChange={handleVisibleCompanyChange}
+                />
+                        </div>
+                </div>
+                <div className={'sk-flex'}>
+                    <div className={'sk-select-visicom'}>Показать сотрудников компании: </div>
+                    <div>
+                        <Select
+                            options={options}
+                            />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <br/>
+        <div style={{padding: '6px'}} className={'sk-mw-1400'}>
+
                
 
             <div className={'sk-table-aclskud'}>
@@ -246,12 +367,17 @@ const AclSkud = (props) => {
                     !user.type && cooxStateDeparts.includes(user.department_id) ? (
                         ""
                     ) : (
-                            <AclSkudCardRow data={user}
+                        <AclSkudCardRow data={user}
                             on_dep_coox={handleCooxDepart}
                             on_user_coox={handleCooxUsers}
                             cooxed_users={cooxStateUsers}
                             cooxed_departs={cooxStateDeparts}
-                        key={'rower_' + user.user_id ? user.user_id : user.id}
+                            key={'rower_' + user.user_id ? user.user_id : user.id}
+                            trigger_templates={triggerTemplates}
+                            on_toggle_all_templates={toggleTemplatesOpen}
+                            on_copy_rows={handleCopyRows}
+                            on_paste_rows={handlePasteRows}
+                            on_clear_rows={handleClearRows}
                         />
                     )
                 

@@ -58,9 +58,21 @@ const AclSkudCardRow = (props) => {
 
     const [templateMode, setTemplateMode] = useState(false);
 
+    const [userData, setUserData] = useState({});
+
+    const [copyItems, setCopyItems] = useState([]);
+
+    useEffect(() => {
+      setUserData(props.data);
+    }, [props.data]);
+
+    useEffect(() => {
+        setTemplateMode(props.trigger_templates);
+    }, [props.trigger_templates]);
+
     const handleCooxAction = (ev) => {
         ev.preventDefault();
-        if (props.data.type){
+        if (userData.type){
             if (props.on_dep_coox){
                 props.on_dep_coox(itemId, ev.shiftKey);
             }
@@ -72,7 +84,7 @@ const AclSkudCardRow = (props) => {
     };
 
     useEffect(() => {
-      if (!props.data.type){
+      if (!userData.type){
         if (props.cooxed_users.includes(itemId)){
             setCooxedRow(true);
         } else {
@@ -82,7 +94,7 @@ const AclSkudCardRow = (props) => {
     }, [props.cooxed_users]);
 
     useEffect(() => {
-        if (props.data.type){
+        if (userData.type){
             if (props.cooxed_departs.includes(itemId)){
                 setCooxedRow(true);
             } else {
@@ -92,30 +104,78 @@ const AclSkudCardRow = (props) => {
       }, [props.cooxed_departs]);
 
 
+
+      const handleCopyRow = (type, row_id, user) => {
+        if (props.on_copy_rows){
+            props.on_copy_rows(type, row_id, user);
+        }
+      }
+
+      const handlePasteRow = (type, row_id, user) => {
+        if (props.on_paste_rows){
+            props.on_paste_rows(type, row_id, user);
+        }
+      }
+
+      const handleClearRow = (type, row_id, user) => {
+        if (props.on_clear_rows){
+            props.on_clear_rows(type, row_id, user);
+        }
+      }
+
+
+
+      const handleSetTemplateMode = (ev) => {
+        if (ev.shiftKey){
+            ev.preventDefault();
+            if (props.on_toggle_all_templates)
+            {
+                console.log('HLKFDDKL');
+                props.on_toggle_all_templates(!templateMode);
+            }
+        } else {
+            setTemplateMode(!templateMode);
+        }
+
+      }
+
   return (
-    <div key={`checker${useId()}`}>
-        <div className={`sk-table-aclskud-row sk-table-aclskud-data  ${props.data.type ? "sk-act-divider" : "sk-act-mainrow"}`}
+    <div key={`checker${useId()}`} className={`${templateMode && userData.type ? 'sk-row-wrapper-of-template' : ''}`}>
+        <div className={`sk-table-aclskud-row sk-table-aclskud-data  ${userData.type ? "sk-act-divider" : "sk-act-mainrow"}`}
             onDoubleClick={handleCooxAction}
         >
                 <div title={itemId}>
                     <Checkbox></Checkbox>
                 </div>
             <div>
-                <div onClick={handleCooxAction} className={`${!props.data.type ? "sk-offset-x" : ''}`}>
+                <div onClick={handleCooxAction} className={`${!userData.type ? "sk-offset-x" : ''}`}>
                     {cooxedRow ? (
-                        <div className={'sk-cooxer-arrow'}>
+                        <div className={'sk-cooxer-arrow'} title='Показать вложенные элементы'>
                         <CaretDownOutlined />
                         </div>
                     ) : (
-                        <div className={'sk-cooxer-arrow'}>
+                        <div className={'sk-cooxer-arrow'}  title='Скрыть вложенные элементы'>
                         <CaretUpOutlined />
                         </div>
                     )}
                 </div>
             </div>
             <div title={itemId}>
-                <div className={'sk-table-userName'}>
-                    {props.data?.user_name} {props.data?.name}
+                <div className={'sk-table-userName sk-flex-space'}>
+                    <div>
+                    {userData?.user_name} {userData?.name}
+                    </div>
+                    {userData.type && (
+                        <div>
+                            <div className={'sk-flex sk-table-template-trigger'}
+                                onMouseDown={handleSetTemplateMode}
+                                title='Для открытия/скрытия всех шаблонов кликнуть с зажатым Shift'
+                            >
+                            <div style={{padding: '3px', cursor:'pointer'}}>
+                                <span>ШАБЛОН </span> <DeliveredProcedureOutlined /></div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
             <div>
@@ -133,26 +193,48 @@ const AclSkudCardRow = (props) => {
                 </div>
             </div>
         
-            <div className='sk-flex sk-table-triggers'>
-                {!props.data.type ? (
+            <div className={`sk-flex sk-table-triggers ${templateMode ? 'sk-fttx-buttons': ''}`}>
+                {!userData.type ? (
                     <>
-                    <div><CopyOutlined /></div>
-                    <div><DiffOutlined /></div>
-                    <div><ClearOutlined /></div>
+                    <div
+                        onClick={()=>{handleCopyRow('all_user', userData.user_id, userData)}}
+                        title={'Скопировать все строки'}
+                    ><CopyOutlined /></div>
+                    <div
+                        onClick={handlePasteRow('all_user', userData.user_id, userData)}
+                        title={'Заменить все строки'}
+                    ><DiffOutlined /></div>
+                    <div
+                        onClick={handleClearRow('all_user', userData.user_id, userData)}
+                        title={'Очистить все строки'}
+                    ><ClearOutlined /></div>
                     </>
                 ):(
-                    <div className={'sk-flex'}
-                        onClick={()=>{setTemplateMode(!templateMode)}}
-                    >
-                    <div style={{padding: '3px', cursor:'pointer'}}><span>ШАБЛОН </span> <DeliveredProcedureOutlined /></div>
-                    </div>
+                        <>
+                        {templateMode && (
+                            <>
+                                <div
+                                    title='Скопировать все строки шаблона'
+                                    onClick={()=>{handleCopyRow('all_template', userData.id, null)}}
+                                    ><CopyOutlined /></div>
+                                <div
+                                    title='Вставить все строки шаблона'
+                                    onClick={handlePasteRow('all_template', userData.id, null)}
+                                    ><DiffOutlined /></div>
+                                <div
+                                    title='Очистить шаблон'
+                                    onClick={handleClearRow('all_template', userData.id, null)}
+                                ><ClearOutlined /></div>
+                            </>
+                        )}
+                        </>
                 )}
 
             </div>
         </div>
         
-        {(!cooxedRow && props.data.user_surname || templateMode && props.data.type) && claimTypes.map((ct)=>(
-            <div className={`sk-table-aclskud-row sk-table-aclskud-data ${templateMode ? "sk-act-templaterow" : "sk-act-subrow"}`}
+        {(!cooxedRow && userData.user_surname || templateMode && userData.type) && claimTypes.map((ct)=>(
+            <div className={`sk-table-aclskud-row sk-table-aclskud-data ${templateMode && userData.type ? "sk-act-templaterow" : "sk-act-subrow"}`}
             key={`checkdser${itemId}_${ct.value}`}
             >
                 <div>
@@ -181,9 +263,18 @@ const AclSkudCardRow = (props) => {
                     <AclSkudChecker  key={`${itemId}_${ct.value}_all`} addkey={`${itemId}_${ct.value}_all`} />
                 </div> */}
                 <div className='sk-flex sk-table-triggers'>
-                    <div><CopyOutlined /></div>
-                    <div><DiffOutlined /></div>
-                    <div><ClearOutlined /></div>
+                    <div
+                        title='Скопировать строку'
+                        onClick={()=>{handleCopyRow( userData.type ? 'template_row' : 'user_row', ct.value, userData)}}
+                        ><CopyOutlined /></div>
+                    <div
+                        title='Вставить строку'
+                        onClick={()=>{handlePasteRow( userData.type ? 'template_row' : 'user_row', ct.value, userData)}}
+                        ><DiffOutlined /></div>
+                    <div
+                        title='Очистить строку'
+                        onClick={()=>{handleClearRow( userData.type ? 'template_row' : 'user_row', ct.value, userData)}}
+                    ><ClearOutlined /></div>
                 </div>
             </div>
             ))}

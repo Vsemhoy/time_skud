@@ -637,6 +637,7 @@ const UserList = (props)=>{
                               its_me={userdata.user.id == arche.user_id}
                               on_double_click={handleShowUserInfo}
                               selected_columns={selectedColumns}
+
                           />
                       ))}
                   </>
