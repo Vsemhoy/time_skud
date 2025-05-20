@@ -50,7 +50,9 @@ const UserList = (props)=>{
 
   const [messageApi, contextHolder] = message.useMessage();
   const info = () => {
-    messageApi.info('Данные обновлены');
+    // messageApi.info('Данные обновлены');
+    console.clear();
+    console.log("DATA UPDATED BY TRIGGER");
   };
 
   useEffect(() => {

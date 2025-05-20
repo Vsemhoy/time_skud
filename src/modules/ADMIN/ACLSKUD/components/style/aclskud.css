@@ -97,6 +97,7 @@
     font-size:larger;
     padding: 3px;
     width: 100%;
+    user-select: none;
     /* color: white; */
 }
 
@@ -205,4 +206,8 @@
 }
 .sk-fttx-buttons {
     background-color: #fff7df;
+}
+
+.sk-table-aclskud * {
+    user-select: none;
 }

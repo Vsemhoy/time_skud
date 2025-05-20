@@ -7,6 +7,7 @@ import { CSRF_TOKEN, PRODMODE } from '../../../CONFIG/config';
 import { DS_DEPARTMENTS, DS_USERLIST_USERS } from '../../../CONFIG/DEFAULTSTATE';
 import AclSkudCardRow from './components/AclSkudCardRow';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
+import { ACL_DEPARTS, ACL_SK_USERS } from './components/AclSkudData';
 
 
 
@@ -25,50 +26,8 @@ const AclSkud = (props) => {
 
     const [copyRows, setCopyRows] = useState([]);
 
-    const claimTypes = [
-        {
-            key: 'clt_9',
-            value: 9, 
-            label: 'Отпуск за свой счёт',
-            icon: <MoonOutlined />
-        },
-        {
-            key: 'clt_8',
-            value: 8, 
-            label: 'Кратковременная командировка',
-            icon: <CarOutlined />
-        },
-        {
-            key: 'clt_7',
-            value: 7, 
-            label: 'Длительная командировка',
-            icon: <RocketOutlined />
-        },
-        {
-            key: 'clt_10',
-            value: 10, 
-            label: 'Отпуск',
-            icon: <SmileOutlined />
-        },
-        {
-            key: 'clt_11',
-            value: 11, 
-            label: 'Сверхурочные',
-            icon: <DollarOutlined />
-        },
-        {
-            key: 'clt_6',
-            value: 6, 
-            label: 'Больничные',
-            icon: <MedicineBoxOutlined />
-        },
-        {
-            key: 'clt_13',
-            value: 13, 
-            label: 'Контейнеры',
-            icon: <TruckOutlined />
-        }
-    ];
+    const [pageLoaded, setPageLoaded] = useState(false);
+
 
 
     
@@ -77,26 +36,35 @@ const AclSkud = (props) => {
           get_departments();
           get_users();
       } else {
-          setDepartments(DS_DEPARTMENTS);
-          setBaseUserCollection(DS_USERLIST_USERS);
+          setDepartments(ACL_DEPARTS);
+          setBaseUserCollection(ACL_SK_USERS);
 
       }
     }, []);
 
     useEffect(() => {
-        let coox = [];
-        for (let i = 0; i < departments.length; i++) {
-            coox.push(departments[i].id);
+        get_departments();
+        get_users();
+    }, [visibleCompany]);
+
+    useEffect(() => {
+        if (!pageLoaded){
+            if (departments){
+                let coox = [];
+                for (let i = 0; i < departments.length; i++) {
+                    coox.push(departments[i].id);
+                }
+                setCooxStateDepars(coox);
+                setPageLoaded(true);
+            }
         }
-        setCooxStateDepars(coox);
     }, [departments]);
 
 
     useEffect(() => {
-        setUserCollection(insertDepartmentNames(baseUserCollection.sort((a, b) => b.department - a.department)));
+        setUserCollection(insertDepartmentNames(baseUserCollection.sort((a, b) => a.id_departament - b.id_departament)));
     //   setUserCollection(baseUserCollection);
-      console.log('base', baseUserCollection)
-    }, [baseUserCollection]);
+    }, [baseUserCollection, departments]);
 
 
 
@@ -105,28 +73,27 @@ const AclSkud = (props) => {
   const customRow = (dep_id) => {
     return {
         id: dep_id,
-      key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
-      name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
-      surname: null,
-      patronymic: null,
-      enter: '', // Пустые значения для других полей
-      exit: '',
-      losttime: '',
-      type: 'header'
+        key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
+        name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
+        surname: null,
+        patronymic: null,
+        enter: '', // Пустые значения для других полей
+        exit: '',
+        losttime: '',
+        type: 'header',
+        acls: departments.find((item) =>  item.id === dep_id)?.acls,
       };
   };
 
   const insertDepartmentNames = (dataArray) => {
     let newDataArray = [];
     let next = -1; // next department ID
-
+    if (!dataArray){return;}
     for (let i = 0; i < dataArray.length; i++){
-      let dep_id = dataArray[i].department_id;
-      
+      let dep_id = dataArray[i].id_departament;
       if (dep_id != next){
         // insert custom row
         let crow = customRow(dep_id);
-        // console.log('crow', crow);
         newDataArray.push(crow);
       }
       if (i < dataArray.length - 1){
@@ -135,11 +102,11 @@ const AclSkud = (props) => {
         newDataArray.push(dataArray[i]);
       }
     
-    // console.log('dataArray' + ' => ' + newDataArray);
     return newDataArray;
   }
 
   const getDepartmentNameById = (id, shift) => {
+    if (!departments) {return ""};
     const department = departments.find(dept => dept.id === id);
     return department ? department.name : null; // Возвращаем имя или null, если не найдено
     };
@@ -155,13 +122,15 @@ const AclSkud = (props) => {
           try {
               let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdeparts', 
                 {
-                    data: [],
+                    data: {
+                        id_company: visibleCompany
+                    },
                     _token: CSRF_TOKEN
                 });
               console.log('departs', response);
               // setOrganizations(organizations_response.data.org_list)
               // setTotal(organizations_response.data.total_count)
-              setDepartments(response.data.data);
+              setDepartments(response.data.content);
           } catch (e) {
               console.log(e)
           } finally {
@@ -193,19 +162,66 @@ const AclSkud = (props) => {
                 // setLoadingOrgs(false)
             }
         }
+
+
+        /**
+         * save
+         * @param {*} req 
+         * @param {*} res 
+         */
+                const save_acl_users = async (dataset, req, res) => {
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/saveuseracls', 
+                        {
+                            data: dataset,
+                            _token: CSRF_TOKEN
+                        });
+                        if (response && response.data){
+                            // get_users();
+                        }
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    // setLoadingOrgs(false)
+                }
+            }
+
+        /**
+         * save dep
+         * @param {*} req 
+         * @param {*} res 
+         */
+        const save_acl_departs = async (dataset, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/savedepartacls', 
+                {
+                    data: dataset,
+                    _token: CSRF_TOKEN
+                });
+                if (response && response.data){
+                    // get_departments();
+                }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
       /** ------------------ FETCHES END ---------------- */
 
 
 
     const handleCooxDepart = (id, shift)=> {
-        console.log(id);
+        console.log(id, cooxStateDeparts);
         let newd = JSON.parse(JSON.stringify(cooxStateDeparts)) ;
         if (cooxStateDeparts.includes(id)){
             newd = newd.filter((iden) => iden !== id);
         } else {
             newd.push(id);
-        }
+            console.log(id);
+        }   
         if (!shift){
+            console.log('newds',newd);
             setCooxStateDepars(newd);
         }
 
@@ -226,14 +242,13 @@ const AclSkud = (props) => {
                     }
                 }
             }
-            setCooxStateUsers(invertedDepart);   
+            setCooxStateDepars(invertedDepart);   
         } else {
             
         }
     }
 
     const handleCooxUsers = (id)=> {
-        console.log(id);
         let newd = JSON.parse(JSON.stringify(cooxStateUsers)) ;
         if (cooxStateUsers.includes(id)){
             newd = newd.filter((iden) => iden !== id);
@@ -268,20 +283,65 @@ const AclSkud = (props) => {
 
       const handleVisibleCompanyChange = (ev) =>
       {
-        console.log(ev);
+        // console.log(ev);
         setVisibleCompany(ev.target.value);
       }
 
       const handleCopyRows = (type, id, object) => {
-        console.log(type, id, object);
+        // console.log(type, id, object);
       }
 
       const handlePasteRows = (type, id, object) => {
-        console.log(type, id, object);
+        // console.log(type, id, object);
       }
 
       const handleClearRows = (type, id, object) => {
-        console.log(type, id, object);
+        // console.log(type, id, object);
+      }
+
+      const handleChangeAcls = (data) => {
+            console.log(data);
+            data.id_company = visibleCompany;
+            if (data.table === 'users'){
+                save_acl_users(data);
+
+                setBaseUserCollection(prev => prev.map(element => {
+                    if (element.id === data.id) {
+                        // Только нужный элемент обновляем
+                        return {
+                            ...element,
+                            acls: {
+                                ...element.acls,
+                                [data.type]: {
+                                    ...element.acls[data.type],
+                                    items: data.values
+                                }
+                            }
+                        };
+                    }
+                    return element;
+                }));
+
+            } else {
+                save_acl_departs(data);
+
+                setDepartments(prev => prev.map(element => {
+                    if (element.id === data.id) {
+                        // Только нужный элемент обновляем
+                        return {
+                            ...element,
+                            acls: {
+                                ...element.acls,
+                                [data.type]: {
+                                    ...element.acls[data.type],
+                                    items: data.values
+                                }
+                            }
+                        };
+                    }
+                    return element;
+                }));
+            }
       }
 
   return (
@@ -318,15 +378,15 @@ const AclSkud = (props) => {
         </div>
 
             <br/>
-        <div style={{padding: '6px'}} className={'sk-mw-1400'}>
 
                
+        <div style={{padding: '6px'}} className={'sk-mw-1400'} key={'fashdjkfjaklsjdf'}>
 
             <div className={'sk-table-aclskud'}>
                 <Affix offsetTop={0}>                
                     <div className={'sk-table-aclskud-row sk-table-aclskud-header'}>
                         <div>
-                            <Checkbox></Checkbox>
+                            {/* <Checkbox></Checkbox> */}
                         </div>
                     <div>
                         <div className='sk-cooxer-arrow' onClick={toggleAllDepCooxed}>
@@ -364,7 +424,7 @@ const AclSkud = (props) => {
                 </Affix>
 
                 {userCollection.map((user)=>
-                    !user.type && cooxStateDeparts.includes(user.department_id) ? (
+                    !user.type && cooxStateDeparts.includes(user.id_departament) ? (
                         ""
                     ) : (
                         <AclSkudCardRow data={user}
@@ -372,12 +432,13 @@ const AclSkud = (props) => {
                             on_user_coox={handleCooxUsers}
                             cooxed_users={cooxStateUsers}
                             cooxed_departs={cooxStateDeparts}
-                            key={'rower_' + user.user_id ? user.user_id : user.id}
+                            key={'rower_' + user.id}
                             trigger_templates={triggerTemplates}
                             on_toggle_all_templates={toggleTemplatesOpen}
                             on_copy_rows={handleCopyRows}
                             on_paste_rows={handlePasteRows}
                             on_clear_rows={handleClearRows}
+                            on_change_acls={handleChangeAcls}
                         />
                     )
                 

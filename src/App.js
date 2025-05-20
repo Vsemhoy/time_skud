@@ -15,7 +15,6 @@ import MenuItem from 'antd/es/menu/MenuItem';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
 import { CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
-import AdminPage from './modules/ADMIN/AdminPage';
 import CalendarPage from './modules/CALENDAR/CalendarPage';
 import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
 import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
@@ -329,7 +328,6 @@ function App() {
             {state.location === '' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
             {state.location === 'personal' && <AccountPage userdata={userAct} />}
             {state.location === 'statistic' && <UserStatisticsPage userdata={userAct} />}
-            {state.location === 'admin' && <AdminPage />}
             {state.location === 'rules' && <RuleManagerPage userdata={userAct} />}
             {state.location === 'schedules' && <SchedManagerPage userdata={userAct} />}
             {state.location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={()=>{console.log('999')}} />}
