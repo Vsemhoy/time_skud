@@ -1,109 +1,120 @@
-import React, { useEffect, useState, memo  } from "react";
-import { ACLSKUDROW, ACLSKUDROW2 } from "./AclSkudData";
+import React, { useEffect, useState, useRef, memo } from "react";
 import { CheckOutlined } from "@ant-design/icons";
 
+const AclCheckbox = memo(({ checked, title, onToggle }) => (
+  <div
+    className={`sk-aclchecker ${checked ? "ack-checked" : ""}`}
+    title={title}
+    onClick={onToggle}
+    style={{ cursor: "pointer", userSelect: "none" }}
+  >
+    {checked && <CheckOutlined />}
+  </div>
+));
 
-const AclCheckbox = memo(({ checked, title, onToggle }) => {
-  // console.log(`Render checkbox: ${title}`); // Для отладки перерисовок
+const DEBOUNCE_DELAY = 3000; // 3 секунды
 
-  return (
-    <div
-      className={`sk-aclchecker ${checked ? "ack-checked" : ""}`}
-      title={title}
-      onClick={onToggle}
-      style={{ cursor: "pointer", userSelect: "none" }}
-    >
-      <div>{checked && <CheckOutlined />}</div>
-    </div>
-  );
-});
+const AclSkudChecker = ({ checkboxes: initialCheckboxes, data, on_change, onForceSave, canClose }) => {
+  const [checkboxes, setCheckboxes] = useState({ ...initialCheckboxes });
+  const [status, setStatus] = useState("saved"); // saved | pending | saving
+  const debounceTimer = useRef(null);
+  const prevCheckboxes = useRef(initialCheckboxes);
 
+  // Обновляем локальное состояние при изменении пропсов
+  useEffect(() => {
+    setCheckboxes({ ...initialCheckboxes });
+    prevCheckboxes.current = initialCheckboxes;
+    setStatus("saved");
+  }, [initialCheckboxes]);
 
-const AclSkudChecker = (props) => {
-    const [toSend, setToSend] = useState(null);
-    const [lastToggled, setLastToggled] = useState(null);
-    const [loaded, setLoaded] = useState(false);
-    const [checkboxes, setCheckboxes] = useState(
-        {
-          param_pers_create: false,
-          param_pers_edit: false,
-          param_pers_approve: false,
-          param_subo_create: false,
-          param_subo_edit: false,
-          param_subo_approve: false,
-          param_any_create: false,
-          param_any_edit: false,
-          param_any_approve: false,
-      }
-    );
-    const [prevBox, setPrevBox] = useState(checkboxes);
-
-    useEffect(() => {
-      if (!loaded){
-        setCheckboxes(
-            {
-              param_pers_create:  props.checkboxes.param_pers_create,
-              param_pers_edit:    props.checkboxes.param_pers_edit,
-              param_pers_approve: props.checkboxes.param_pers_approve,
-              param_subo_create:  props.checkboxes.param_subo_create,
-              param_subo_edit:    props.checkboxes.param_subo_edit, 
-              param_subo_approve: props.checkboxes.param_subo_approve,
-              param_any_create:   props.checkboxes.param_any_create,
-              param_any_edit:     props.checkboxes.param_any_edit,  
-              param_any_approve:  props.checkboxes.param_any_approve, 
+  const handleCheckboxToggle = (ev, key) => {
+    setCheckboxes((prev) => {
+      const newState = { ...prev };
+      if (ev.shiftKey) {
+        let run = false;
+        let setValue = null;
+        for (const k in newState) {
+          if (!run) {
+            run = true;
+            setValue = !newState[k];
           }
-        )
-        console.log('uFFECT', checkboxes);
-        setLoaded(true);
-      }
-    }, [props.checkboxes]);
-
-    const handleChecboxToggle = (ev, key) => {
-        if (ev.shiftKey){
-            let run = false;
-            let setValue = null;
-            console.log(lastToggled,key);
-            let newChecks = JSON.parse(JSON.stringify(checkboxes));
-            for (const keyer in newChecks) {
-              if (Object.prototype.hasOwnProperty.call(newChecks, keyer)) {
-                if (!run){
-                  run = true;
-                  setValue = !newChecks[keyer];
-                };
-                newChecks[keyer] = setValue;
-                
-              }
-            }
-            console.log(newChecks);
-            setCheckboxes(newChecks);
-        } else {
-
-          setCheckboxes((prev) => ({
-                ...prev,
-                [key]: !checkboxes[key],
-              }));
-              setLastToggled(key);
+          newState[k] = setValue;
         }
-        setToSend(checkboxes);
-    };
+      } else {
+        newState[key] = !prev[key];
+      }
+      return newState;
+    });
+    setStatus("pending");
+  };
 
-    useEffect(() => {
-      
-        props.on_change(checkboxes, props.data.type);
-      
-    }, [toSend]);
+  // Функция сохранения — вызывается и по таймеру, и принудительно
+  const saveChanges = () => {
+    if (JSON.stringify(prevCheckboxes.current) === JSON.stringify(checkboxes)) {
+      // Нет изменений — ничего не делаем
+      setStatus("saved");
+      return Promise.resolve();
+    }
+    setStatus("saving");
+    return new Promise((resolve) => {
+      on_change(checkboxes, data.type);
+      prevCheckboxes.current = checkboxes;
+      setStatus("saved");
+      resolve();
+    });
+  };
+
+  // Debounce эффект для автоматического сохранения
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    if (status === "pending") {
+      debounceTimer.current = setTimeout(() => {
+        saveChanges();
+        debounceTimer.current = null;
+      }, DEBOUNCE_DELAY);
+    }
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, [checkboxes, status]);
+
+  // Обработка принудительного сохранения при закрытии
+  // useEffect(() => {
+  //   if (canClose) {
+  //     console.log('ONFORCE');  
+  //     // Если есть несохранённые изменения — сохранить перед закрытием
+  //     if (status === "pending") {
+  //       if (debounceTimer.current) {
+  //         clearTimeout(debounceTimer.current);
+  //         debounceTimer.current = null;
+  //       }
+  //       saveChanges().then(() => {
+  //         if (onForceSave) onForceSave(); 
+  //       });
+  //     } else {
+  //       if (onForceSave) onForceSave();
+  //     }
+  //   }
+  // }, [canClose]);
 
   return (
-    <div className={'sk-table-aclskud-multicol'} >
-      {Object.entries(checkboxes).map(([key, value])=>(
-        <AclCheckbox 
-        key={`accheck_${key}`}
-        checked={checkboxes[key]}
-        title={key}
-        onToggle={(ev)=>{handleChecboxToggle(ev, key)}} ></AclCheckbox>
-
+    <div className={`sk-table-aclskud-multicol ${status === "pending" ? 'sk-pending-row' : ''} ${status === "saving" ? 'sk-saving-row' : ''} ${status === "saved" ? 'sk-saved-row' : ''}`}>
+      {Object.entries(checkboxes).map(([key, value]) => (
+        <AclCheckbox
+          key={`accheck_${key}`}
+          checked={value}
+          title={key}
+          onToggle={(ev) => handleCheckboxToggle(ev, key)}
+        />
       ))}
-      </div>
+      {/* <div style={{ marginTop: 8, fontSize: 12, color: status === "pending" ? "orange" : status === "saving" ? "blue" : "green" }}>
+        {status === "pending" && "Есть несохранённые изменения"}
+        {status === "saving" && "Сохраняем..."}
+        {status === "saved" && "Все изменения сохранены"}
+      </div> */}
+    </div>
   );
 };
 

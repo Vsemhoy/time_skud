@@ -2,7 +2,7 @@ import { CaretDownOutlined, CaretUpOutlined, ClearOutlined, CopyOutlined, Delive
 import { Checkbox } from 'antd';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 
-import React, { useEffect, useState, useId } from 'react';
+import React, { useEffect, useState, useId, memo } from 'react';
 import AclSkudChecker from './AclSkudChecker';
 
 const claimTypes = [
@@ -52,7 +52,7 @@ const claimTypes = [
 
 
 
-const AclSkudCardRow = (props) => {
+const AclSkudCardRow = memo((props) => {
     const [itemId, setItemId] = useState(props.data.user_id ? props.data.user_id : props.data.id );
     const [cooxedRow, setCooxedRow] = useState(true);
 
@@ -61,6 +61,7 @@ const AclSkudCardRow = (props) => {
     const [userData, setUserData] = useState({});
 
     const [copyItems, setCopyItems] = useState([]);
+
 
     useEffect(() => {
       setUserData(props.data);
@@ -72,6 +73,7 @@ const AclSkudCardRow = (props) => {
 
     const handleCooxAction = (ev) => {
         if (ev.target.closest('.sk-table-template-trigger')){ return ;}
+        console.log('COOX');
         ev.preventDefault();
         if (userData.type){
             if (props.on_dep_coox){
@@ -87,6 +89,7 @@ const AclSkudCardRow = (props) => {
     useEffect(() => {
       if (!userData.type){
         if (props.cooxed_users.includes(itemId)){
+            console.log('close users');
             setCooxedRow(true);
         } else {
             setCooxedRow(false);
@@ -158,7 +161,9 @@ const AclSkudCardRow = (props) => {
         }
       };
 
-
+      const handleForceSave = () => {
+        console.log('canclose');
+      }
 
 
   return (
@@ -255,59 +260,49 @@ const AclSkudCardRow = (props) => {
             </div>
         </div>
         
-        {(!cooxedRow && userData.surname || templateMode && userData.type) && Object.keys(userData.acls).map((key, index)=>(
-            <div className={`sk-table-aclskud-row sk-table-aclskud-data ${templateMode && userData.type ? "sk-act-templaterow" : "sk-act-subrow"}`}
-            key={`checkdser${itemId}_${key}`}
-            >
-                <div>
-                    <Checkbox></Checkbox>
-                </div>
-                <div>
-                    <div>
-                        {key}
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        {userData.acls[key].name}
-                    </div>
-                </div>
-                <div>
-                    <AclSkudChecker
-                        key={`${itemId}_${key}_per`}
-                        addkey={`${itemId}_${key}_per`}
-                        checkboxes={userData.acls[key].items}
-                        on_change={handleCheckboxesChange}
-                        data={{type: key }}
-                    />
-                </div>
-                {/* <div>
-                    <AclSkudChecker  key={`${itemId}_${ct.value}_emp`} addkey={`${itemId}_${ct.value}_emp`} />
-                </div> */}
-                {/* <div>
-                    <AclSkudChecker />
-                </div> */}
-                {/* <div>
-                    <AclSkudChecker  key={`${itemId}_${ct.value}_all`} addkey={`${itemId}_${ct.value}_all`} />
-                </div> */}
-                <div className='sk-flex sk-table-triggers'>
-                    <div
-                        title='Скопировать строку'
-                        onClick={()=>{handleCopyRow( userData.type ? 'template_row' : 'user_row', key, userData)}}
-                        ><CopyOutlined /></div>
-                    <div
-                        title='Вставить строку'
-                        onClick={()=>{handlePasteRow( userData.type ? 'template_row' : 'user_row', key, userData)}}
-                        ><DiffOutlined /></div>
-                    <div
-                        title='Очистить строку'
-                        onClick={()=>{handleClearRow( userData.type ? 'template_row' : 'user_row', key, userData)}}
-                    ><ClearOutlined /></div>
-                </div>
-            </div>
+        {(!cooxedRow && userData.surname || templateMode && userData.type ) && Object.keys(userData.acls).map((key, index)=>(
+                <AclRow
+                    key={`checkdser${itemId}_${key}`}
+                    itemId={itemId}
+                    keyName={key}
+                    aclData={userData.acls[key]}
+                    userType={userData.type}
+                    onChange={handleCheckboxesChange}
+                    onCopy={handleCopyRow}
+                    onPaste={handlePasteRow}
+                    onClear={handleClearRow}
+              />
             ))}
         </div>
         );
-    };
+    });
 
 export default AclSkudCardRow;
+
+
+
+
+const AclRow = React.memo(({ itemId, keyName, aclData, userType, onChange, onCopy, onPaste, onClear, forceSave, onForceSave, canClose }) => {
+    return (
+      <div className={`sk-table-aclskud-row sk-table-aclskud-data ${userType ? "sk-act-templaterow" : "sk-act-subrow"}`} key={`checkdser${itemId}_${keyName}`}>
+        <div><Checkbox /></div>
+        <div><div>{keyName}</div></div>
+        <div><div>{aclData.name}</div></div>
+        <div>
+          <AclSkudChecker
+            addkey={`${itemId}_${keyName}_per`}
+            checkboxes={aclData.items}
+            on_change={onChange}
+            data={{ type: keyName }}
+            forceSave={forceSave}
+
+          />
+        </div>
+        <div className='sk-flex sk-table-triggers'>
+          <div title='Скопировать строку' onClick={() => onCopy(userType ? 'template_row' : 'user_row', keyName)}><CopyOutlined /></div>
+          <div title='Вставить строку' onClick={() => onPaste(userType ? 'template_row' : 'user_row', keyName)}><DiffOutlined /></div>
+          <div title='Очистить строку' onClick={() => onClear(userType ? 'template_row' : 'user_row', keyName)}><ClearOutlined /></div>
+        </div>
+      </div>
+    );
+  });

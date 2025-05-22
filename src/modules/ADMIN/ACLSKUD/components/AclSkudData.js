@@ -33,8 +33,279 @@ export const ACLSKUDROW2 = [
 
 
 
+export const ACL_STATES = [
+    {
+        "id": 9,
+        "title": "св.отпуск",
+        "text": "Отпуск за свой счёт",
+        "color": "#c4e8e5",
+        "icon": "MoonOutlined",
+        "need_work": 1,
+        "need_approved": 0,
+        "sort_order": 1,
+        "fillable": 1
+    },
+    {
+        "id": 8,
+        "title": "местн.выезд.",
+        "text": "Кратковременная местная командировка",
+        "color": "#e3dbf1",
+        "icon": "CarOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 2,
+        "fillable": 1
+    },
+    {
+        "id": 7,
+        "title": "командировк.",
+        "text": "Длительная командировка",
+        "color": "#e2b4e9",
+        "icon": "RocketOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 3,
+        "fillable": 1
+    },
+    {
+        "id": 10,
+        "title": "отпуск",
+        "text": "Плановый отпуск",
+        "color": "#7adfb8",
+        "icon": "SmileOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 4,
+        "fillable": 1
+    },
+    {
+        "id": 11,
+        "title": "сверхурочные",
+        "text": "Работа вне установленного графиком рабочего времени",
+        "color": "#b7ff5c",
+        "icon": "DollarOutlined",
+        "need_work": 3,
+        "need_approved": 0,
+        "sort_order": 5,
+        "fillable": 1
+    },
+    {
+        "id": 6,
+        "title": "больничный",
+        "text": "На больничном",
+        "color": "#ffa8a8",
+        "icon": "MedicineBoxOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 6,
+        "fillable": 1
+    },
+    {
+        "id": 13,
+        "title": "контейнеры",
+        "text": "Разгрузка контейнеров на складе",
+        "color": "#ffc107",
+        "icon": "TruckOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 7,
+        "fillable": 1
+    }
+];
 
 
+export const ACL_CLEAR_DEPARTS = [
+    {
+        "id": 1,
+        "name": "Администрация",
+        "rang": 1,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 2,
+        "name": "Отдел персонала",
+        "rang": 30,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 3,
+        "name": "Бухгалтерия",
+        "rang": 10,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 4,
+        "name": "Техническая группа проектного отдела",
+        "rang": 140,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 5,
+        "name": "Отдел оптовых продаж",
+        "rang": 50,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 6,
+        "name": "Отдел рекламы",
+        "rang": 70,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 7,
+        "name": "Технический отдел трансляционного звука",
+        "rang": 60,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 8,
+        "name": "Проектный отдел",
+        "rang": 100,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 9,
+        "name": "Склад Санкт-Петербург",
+        "rang": 120,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 11,
+        "name": "Строительный отдел",
+        "rang": 110,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 12,
+        "name": "АХЧ",
+        "rang": 200,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 13,
+        "name": "Дилерский отдел",
+        "rang": 130,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 14,
+        "name": "Отдел информационных технологий",
+        "rang": 90,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 15,
+        "name": "Отдел информации",
+        "rang": 40,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 17,
+        "name": "Пулково КПП",
+        "rang": 150,
+        "visible": false,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 18,
+        "name": "Пулково 19",
+        "rang": 170,
+        "visible": false,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 19,
+        "name": "Контрагенты",
+        "rang": 180,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 20,
+        "name": "Технический отдел профессионального звука",
+        "rang": 80,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    },
+    {
+        "id": 21,
+        "name": "Отдел Логистики",
+        "rang": 20,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "acls": []
+    }
+];
 
 
 export const ACL_DEPARTS = [
@@ -11491,5 +11762,792 @@ export const ACL_SK_USERS = [
             }
         },
         "user_id": 568
+    }
+]
+
+
+export const ACL_ACTUAL_USERS = [
+    {
+        "id": 43,
+        "name": "Елена",
+        "surname": "Дурнева",
+        "secondname": "Витальевна",
+        "depart_id": 9,
+        "id_company": 2,
+        "occupy": "начальник оптового склада СПб",
+        "acls": []
+    },
+    {
+        "id": 46,
+        "name": "Александр",
+        "surname": "Кошелев",
+        "secondname": "Станиславович",
+        "depart_id": 1,
+        "id_company": 2,
+        "occupy": "коммерческий директор",
+        "acls": []
+    },
+    {
+        "id": 47,
+        "name": "Валентина",
+        "surname": "Кошелева",
+        "secondname": "Григорьевна",
+        "depart_id": 19,
+        "id_company": 2,
+        "occupy": "финансовый директор",
+        "acls": []
+    },
+    {
+        "id": 57,
+        "name": "Дмитрий",
+        "surname": "Печников",
+        "secondname": "Валерьевич",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "менеджер региональный",
+        "acls": []
+    },
+    {
+        "id": 91,
+        "name": "Сергей",
+        "surname": "Фокин",
+        "secondname": "Петрович",
+        "depart_id": 7,
+        "id_company": 2,
+        "occupy": "радиоинженер",
+        "acls": []
+    },
+    {
+        "id": 133,
+        "name": "Виктория",
+        "surname": "Друговейко",
+        "secondname": "Юрьевна",
+        "depart_id": 3,
+        "id_company": 2,
+        "occupy": "главный бухгалтер",
+        "acls": []
+    },
+    {
+        "id": 134,
+        "name": "Сергей",
+        "surname": "Безбородов",
+        "secondname": "Дмитриевич",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "менеджер проектов",
+        "acls": []
+    },
+    {
+        "id": 180,
+        "name": "Леонид",
+        "surname": "Александров",
+        "secondname": "Алексеевич",
+        "depart_id": 9,
+        "id_company": 2,
+        "occupy": "водитель-экспедитор",
+        "acls": []
+    },
+    {
+        "id": 198,
+        "name": "Валентина",
+        "surname": "Рогалева",
+        "secondname": "Евгеньевна",
+        "depart_id": 15,
+        "id_company": 2,
+        "occupy": "менеджер отдела информации",
+        "acls": []
+    },
+    {
+        "id": 226,
+        "name": "Анна ",
+        "surname": "Столярова",
+        "secondname": "Владимировна",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "Ведущий менеджер",
+        "acls": []
+    },
+    {
+        "id": 271,
+        "name": "Раджаббой ",
+        "surname": "Ашуров ",
+        "secondname": "Фуркатович ",
+        "depart_id": 18,
+        "id_company": 2,
+        "occupy": "рабочий",
+        "acls": []
+    },
+    {
+        "id": 272,
+        "name": "Фуркат",
+        "surname": "Ашуров  ",
+        "secondname": "Пардакулович ",
+        "depart_id": 18,
+        "id_company": 2,
+        "occupy": "рабочий",
+        "acls": []
+    },
+    {
+        "id": 280,
+        "name": "",
+        "surname": "Администратор",
+        "secondname": "",
+        "depart_id": 19,
+        "id_company": 2,
+        "occupy": "Администратор",
+        "acls": []
+    },
+    {
+        "id": 282,
+        "name": "Руслан",
+        "surname": "Шалин",
+        "secondname": "Викторович",
+        "depart_id": 11,
+        "id_company": 2,
+        "occupy": "главный инженер",
+        "acls": []
+    },
+    {
+        "id": 283,
+        "name": "Жанна",
+        "surname": "Булгакова",
+        "secondname": "Владимировна",
+        "depart_id": 11,
+        "id_company": 2,
+        "occupy": "дизайнер интерьеров",
+        "acls": []
+    },
+    {
+        "id": 287,
+        "name": "Олег",
+        "surname": "Бибик",
+        "secondname": "Николаевич",
+        "depart_id": 17,
+        "id_company": 2,
+        "occupy": "контролер ",
+        "acls": []
+    },
+    {
+        "id": 289,
+        "name": "Геннадий",
+        "surname": "Рябков",
+        "secondname": "Иванович",
+        "depart_id": 17,
+        "id_company": 2,
+        "occupy": "контролер КПП",
+        "acls": []
+    },
+    {
+        "id": 304,
+        "name": "Ирина",
+        "surname": "Зеленко",
+        "secondname": "Вячеславовна",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "менеджер-координатор",
+        "acls": []
+    },
+    {
+        "id": 309,
+        "name": "Александр ",
+        "surname": "Бобко ",
+        "secondname": "Владимирович ",
+        "depart_id": 8,
+        "id_company": 2,
+        "occupy": "инженер-проектировщик",
+        "acls": []
+    },
+    {
+        "id": 327,
+        "name": "Вячеслав",
+        "surname": "Кобяков",
+        "secondname": "Борисович",
+        "depart_id": 17,
+        "id_company": 2,
+        "occupy": "контроллер КПП",
+        "acls": []
+    },
+    {
+        "id": 334,
+        "name": "Мария",
+        "surname": "Глинтерник",
+        "secondname": "Алексеевна",
+        "depart_id": 2,
+        "id_company": 2,
+        "occupy": "менеджер по персоналу",
+        "acls": []
+    },
+    {
+        "id": 337,
+        "name": "Олег",
+        "surname": "Иванов",
+        "secondname": "Рудольфович",
+        "depart_id": 7,
+        "id_company": 2,
+        "occupy": "радиоинженер",
+        "acls": []
+    },
+    {
+        "id": 339,
+        "name": "Ксения",
+        "surname": "Горяева",
+        "secondname": "Викторовна",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "менеджер-координатор",
+        "acls": []
+    },
+    {
+        "id": 340,
+        "name": "Павел",
+        "surname": "Петровский",
+        "secondname": "Сергеевич",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "менеджер региональный",
+        "acls": []
+    },
+    {
+        "id": 361,
+        "name": "Иван",
+        "surname": "Журба",
+        "secondname": "Анатольевич",
+        "depart_id": 18,
+        "id_company": 2,
+        "occupy": "прораб",
+        "acls": []
+    },
+    {
+        "id": 371,
+        "name": "Константин",
+        "surname": "Батов",
+        "secondname": "Александрович",
+        "depart_id": 8,
+        "id_company": 2,
+        "occupy": "радиоинженер",
+        "acls": []
+    },
+    {
+        "id": 374,
+        "name": "Евгений",
+        "surname": "Котоликов",
+        "secondname": "Алексеевич",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "региональный менеджер",
+        "acls": []
+    },
+    {
+        "id": 393,
+        "name": "отдел",
+        "surname": "Строительный",
+        "secondname": "",
+        "depart_id": 11,
+        "id_company": 2,
+        "occupy": "",
+        "acls": []
+    },
+    {
+        "id": 400,
+        "name": "Сергей",
+        "surname": "Шевченко",
+        "secondname": "Витальевич",
+        "depart_id": 7,
+        "id_company": 2,
+        "occupy": "радиоинженер",
+        "acls": []
+    },
+    {
+        "id": 405,
+        "name": "Максим",
+        "surname": "Турлов",
+        "secondname": "Георгиевич",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "менеджер-координатор",
+        "acls": []
+    },
+    {
+        "id": 411,
+        "name": "Павел",
+        "surname": "Мельников",
+        "secondname": "Валерьевич",
+        "depart_id": 7,
+        "id_company": 2,
+        "occupy": "инженер-консультант",
+        "acls": []
+    },
+    {
+        "id": 436,
+        "name": "Владимир",
+        "surname": "Горев",
+        "secondname": "Сергеевич",
+        "depart_id": 9,
+        "id_company": 2,
+        "occupy": "грузчик-комплектовщик",
+        "acls": []
+    },
+    {
+        "id": 463,
+        "name": "Дмитрий",
+        "surname": "Нестеренко",
+        "secondname": "Сергеевич",
+        "depart_id": 11,
+        "id_company": 2,
+        "occupy": "Заместитель директора",
+        "acls": []
+    },
+    {
+        "id": 474,
+        "name": "Алексей",
+        "surname": "Федянин",
+        "secondname": "Валерьевич",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "вэб-дизайнер",
+        "acls": []
+    },
+    {
+        "id": 482,
+        "name": "Артём",
+        "surname": "Дрюков",
+        "secondname": "Владимирович",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "3д-дизайнер",
+        "acls": []
+    },
+    {
+        "id": 483,
+        "name": "Максим",
+        "surname": "Матченков",
+        "secondname": "Юрьевич",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "Программист",
+        "acls": []
+    },
+    {
+        "id": 486,
+        "name": "Андрей",
+        "surname": "Шаранда",
+        "secondname": "Дмитриевич",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "Программист",
+        "acls": []
+    },
+    {
+        "id": 493,
+        "name": "Юрий",
+        "surname": "Дегелевич",
+        "secondname": "Евгеньевич",
+        "depart_id": 1,
+        "id_company": 2,
+        "occupy": "Технический директор",
+        "acls": []
+    },
+    {
+        "id": 498,
+        "name": "Ольга",
+        "surname": "Булышева",
+        "secondname": "Александровна",
+        "depart_id": 21,
+        "id_company": 2,
+        "occupy": "менеджер ВЭД",
+        "acls": []
+    },
+    {
+        "id": 499,
+        "name": "София",
+        "surname": "Сорокина",
+        "secondname": "Евгеньевна",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "Графический дизайнер",
+        "acls": []
+    },
+    {
+        "id": 521,
+        "name": "Любовь",
+        "surname": "Палагушина",
+        "secondname": "Владимировна",
+        "depart_id": 3,
+        "id_company": 2,
+        "occupy": "Бухгалтер",
+        "acls": []
+    },
+    {
+        "id": 522,
+        "name": "Александр",
+        "surname": "Степанченко",
+        "secondname": "Николаевич",
+        "depart_id": 20,
+        "id_company": 2,
+        "occupy": "Инженер",
+        "acls": []
+    },
+    {
+        "id": 528,
+        "name": "Роман",
+        "surname": "Карташов",
+        "secondname": "Станиславович",
+        "depart_id": 9,
+        "id_company": 2,
+        "occupy": "Кладовщик",
+        "acls": []
+    },
+    {
+        "id": 530,
+        "name": "Станислав",
+        "surname": "Самарин",
+        "secondname": "Александрович",
+        "depart_id": 17,
+        "id_company": 2,
+        "occupy": "Контролер КПП",
+        "acls": []
+    },
+    {
+        "id": 531,
+        "name": "Анна",
+        "surname": "Захарова",
+        "secondname": "Юрьевна",
+        "depart_id": 3,
+        "id_company": 2,
+        "occupy": "Бухгалтер",
+        "acls": []
+    },
+    {
+        "id": 533,
+        "name": "Татьяна",
+        "surname": "Балабанова",
+        "secondname": "Алексеевна",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "Графический дизайнер",
+        "acls": []
+    },
+    {
+        "id": 536,
+        "name": "Екатерина",
+        "surname": "Филиппова",
+        "secondname": "Юрьевна",
+        "depart_id": 15,
+        "id_company": 2,
+        "occupy": "Менеджер",
+        "acls": []
+    },
+    {
+        "id": 537,
+        "name": "Сергей",
+        "surname": "Иванов",
+        "secondname": "Алексеевич",
+        "depart_id": 7,
+        "id_company": 2,
+        "occupy": "Инженер",
+        "acls": []
+    },
+    {
+        "id": 538,
+        "name": "Геннадий",
+        "surname": "Бакланов",
+        "secondname": "Валентинович",
+        "depart_id": 20,
+        "id_company": 2,
+        "occupy": "Инженер",
+        "acls": []
+    },
+    {
+        "id": 540,
+        "name": "Лидия",
+        "surname": "Точилина",
+        "secondname": "Львовна",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "Начальник",
+        "acls": []
+    },
+    {
+        "id": 547,
+        "name": "Геннадий",
+        "surname": "Балымов",
+        "secondname": "Робертович",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "Региональный менеджер",
+        "acls": []
+    },
+    {
+        "id": 549,
+        "name": "Алан",
+        "surname": "Рясянен",
+        "secondname": "Раймович",
+        "depart_id": 20,
+        "id_company": 2,
+        "occupy": "Начальник",
+        "acls": []
+    },
+    {
+        "id": 553,
+        "name": "Людмила",
+        "surname": "Владимирская",
+        "secondname": "Павловна",
+        "depart_id": 19,
+        "id_company": 2,
+        "occupy": "Уборщица",
+        "acls": []
+    },
+    {
+        "id": 555,
+        "name": "Мария",
+        "surname": "Ладыгина",
+        "secondname": "Владимировна",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "Региональный менеджер",
+        "acls": []
+    },
+    {
+        "id": 556,
+        "name": "Юнус",
+        "surname": "Азизкулов",
+        "secondname": "Хусаинович",
+        "depart_id": 18,
+        "id_company": 2,
+        "occupy": "контролер",
+        "acls": []
+    },
+    {
+        "id": 557,
+        "name": "Маруфжон",
+        "surname": "Назаров",
+        "secondname": "Одилович",
+        "depart_id": 18,
+        "id_company": 2,
+        "occupy": "Подсобный рабочий",
+        "acls": []
+    },
+    {
+        "id": 558,
+        "name": "Богдан",
+        "surname": "Красников",
+        "secondname": "Юрьевич",
+        "depart_id": 14,
+        "id_company": 2,
+        "occupy": "Самый лучший программист",
+        "acls": []
+    },
+    {
+        "id": 562,
+        "name": "Анастасия",
+        "surname": "Коляскина",
+        "secondname": "Константиновна",
+        "depart_id": 5,
+        "id_company": 2,
+        "occupy": "Руководитель отдела продаж Рондо",
+        "acls": []
+    },
+    {
+        "id": 563,
+        "name": "Сергей",
+        "surname": "Гельмбрехт",
+        "secondname": "Сергеевич",
+        "depart_id": 7,
+        "id_company": 2,
+        "occupy": "Инженер",
+        "acls": []
+    }
+];
+
+export const ACL_DEPARTS_WITH_COUNT = [
+    {
+        "id": 1,
+        "name": "Администрация",
+        "rang": 1,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 2
+    },
+    {
+        "id": 2,
+        "name": "Отдел персонала",
+        "rang": 30,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 1
+    },
+    {
+        "id": 3,
+        "name": "Бухгалтерия",
+        "rang": 10,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 3
+    },
+    {
+        "id": 4,
+        "name": "Техническая группа проектного отдела",
+        "rang": 140,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 0
+    },
+    {
+        "id": 5,
+        "name": "Отдел оптовых продаж",
+        "rang": 50,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 11
+    },
+    {
+        "id": 6,
+        "name": "Отдел рекламы",
+        "rang": 70,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 0
+    },
+    {
+        "id": 7,
+        "name": "Технический отдел трансляционного звука",
+        "rang": 60,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 6
+    },
+    {
+        "id": 8,
+        "name": "Проектный отдел",
+        "rang": 100,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 2
+    },
+    {
+        "id": 9,
+        "name": "Склад Санкт-Петербург",
+        "rang": 120,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 4
+    },
+    {
+        "id": 11,
+        "name": "Строительный отдел",
+        "rang": 110,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 4
+    },
+    {
+        "id": 12,
+        "name": "АХЧ",
+        "rang": 200,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 0
+    },
+    {
+        "id": 13,
+        "name": "Дилерский отдел",
+        "rang": 130,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 0
+    },
+    {
+        "id": 14,
+        "name": "Отдел информационных технологий",
+        "rang": 90,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 8
+    },
+    {
+        "id": 15,
+        "name": "Отдел информации",
+        "rang": 40,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 2
+    },
+    {
+        "id": 17,
+        "name": "Пулково КПП",
+        "rang": 150,
+        "visible": false,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 4
+    },
+    {
+        "id": 18,
+        "name": "Пулково 19",
+        "rang": 170,
+        "visible": false,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 5
+    },
+    {
+        "id": 19,
+        "name": "Контрагенты",
+        "rang": 180,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 3
+    },
+    {
+        "id": 20,
+        "name": "Технический отдел профессионального звука",
+        "rang": 80,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 3
+    },
+    {
+        "id": 21,
+        "name": "Отдел Логистики",
+        "rang": 20,
+        "visible": true,
+        "deleted": false,
+        "position": null,
+        "icon": null,
+        "users_count": 1
     }
 ]

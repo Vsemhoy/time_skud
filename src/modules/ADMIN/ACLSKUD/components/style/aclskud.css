@@ -70,7 +70,7 @@
     font-size: larger;
     min-height: 29px;
 }
-.sk-aclchecker > div {
+.sk-aclchecker  {
     background-color: rgba(255, 255, 255, 0.541);
     border: 1px solid rgba(0, 0, 0, 0.021);
     height: 100%;
@@ -81,7 +81,7 @@
     padding: 3px;
     transition: all 0.2s;
 }
-.sk-aclchecker > div:hover {
+.sk-aclchecker:hover {
     
     border: 1px solid rgba(7, 145, 236, 0.671) !important;
     /* background-color: rgba(3, 125, 207, 0.171); */
@@ -137,7 +137,7 @@
     background-color: #ffc10721;
 }
 
-.sk-table-aclskud-row:hover .sk-aclchecker > div {
+.sk-table-aclskud-row:hover .sk-aclchecker {
     border: 1px solid rgba(128, 128, 128, 0.452);
 }
 .sk-row-wrapper-of-template {
@@ -211,3 +211,26 @@
 .sk-table-aclskud * {
     user-select: none;
 }
+.sk-table-aclskud {
+    padding-bottom: 50vh;
+}
+
+.sk-table-aclskud-multicol {
+    background-color: #80808000;
+    transition: all 0.5s;
+}
+.sk-saved-row {
+    background-color: #80808000;
+}
+.sk-pending-row {
+    background-color: rgba(251, 255, 0, 0.411);
+}
+.sk-saving-row {
+    background-color: rgba(0, 217, 255, 0.411);
+}
+.sk-aclchecker {
+    box-shadow: inset 0px 0px 0px 3px rgba(255, 255, 255, 0.644);
+}
+/* .sk-aclchecker.ack-checked {
+    box-shadow: inset 0px 0px 0px 1px rgba(0, 150, 0, 0.397);
+} */

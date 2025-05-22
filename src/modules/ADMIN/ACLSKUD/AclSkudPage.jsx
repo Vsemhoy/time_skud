@@ -35,6 +35,10 @@ const AclSkud = (props) => {
       if (PRODMODE){
           get_departments();
           get_users();
+          get_departs2();
+          get_departtemplates();
+          get_states();
+          get_departusers();
       } else {
           setDepartments(ACL_DEPARTS);
           setBaseUserCollection(ACL_SK_USERS);
@@ -49,7 +53,7 @@ const AclSkud = (props) => {
 
     useEffect(() => {
         if (!pageLoaded){
-            if (departments){
+            if (departments.length > 0){
                 let coox = [];
                 for (let i = 0; i < departments.length; i++) {
                     coox.push(departments[i].id);
@@ -162,6 +166,86 @@ const AclSkud = (props) => {
                 // setLoadingOrgs(false)
             }
         }
+
+
+
+                  const get_departs2 = async (filters, req, res) => {
+                    try {
+                        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdeparts2', 
+                            {
+                                data: {
+                                    id_company: visibleCompany
+                                },
+                                _token: CSRF_TOKEN
+                            });
+                            if (response && response.data){
+                            //   setBaseUserCollection(response.data.content);
+                            }
+                    } catch (e) {
+                        console.log(e)
+                    } finally {
+                        // setLoadingOrgs(false)
+                    }
+                }
+
+
+                  const get_states = async (filters, req, res) => {
+                    try {
+                        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getstates', 
+                            {
+                                data: {
+                                    id_company: visibleCompany
+                                },
+                                _token: CSRF_TOKEN
+                            });
+                            if (response && response.data){
+                            //   setBaseUserCollection(response.data.content);
+                            }
+                    } catch (e) {
+                        console.log(e)
+                    } finally {
+                        // setLoadingOrgs(false)
+                    }
+                }
+
+            const get_departusers = async (filters, req, res) => {
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdepartusers', 
+                        {
+                            data: {
+                                id_company: visibleCompany
+                            },
+                            _token: CSRF_TOKEN
+                        });
+                        if (response && response.data){
+                        //   setBaseUserCollection(response.data.content);
+                        }
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    // setLoadingOrgs(false)
+                }
+            }
+
+            const get_departtemplates = async (filters, req, res) => {
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdeparttemplates', 
+                        {
+                            data: {
+                                id_company: visibleCompany
+                            },
+                            _token: CSRF_TOKEN
+                        });
+                        if (response && response.data){
+                        //   setBaseUserCollection(response.data.content);
+                        }
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    // setLoadingOrgs(false)
+                }
+            }
+
 
 
         /**
@@ -303,7 +387,9 @@ const AclSkud = (props) => {
             console.log(data);
             data.id_company = visibleCompany;
             if (data.table === 'users'){
-                save_acl_users(data);
+                if (PRODMODE){
+                    save_acl_users(data);
+                }
 
                 setBaseUserCollection(prev => prev.map(element => {
                     if (element.id === data.id) {
@@ -323,7 +409,9 @@ const AclSkud = (props) => {
                 }));
 
             } else {
-                save_acl_departs(data);
+                if (PRODMODE){
+                    save_acl_departs(data);
+                }
 
                 setDepartments(prev => prev.map(element => {
                     if (element.id === data.id) {
