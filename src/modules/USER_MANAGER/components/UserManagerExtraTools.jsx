@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
 import Her from "../../../components/HybridEmbeddedRouter/Her";
+import { Link } from "react-router-dom";
+import { BASE_ROUTE } from "../../../CONFIG/config";
 
 
 const UserManagerExtraTools = (props)=>{
@@ -454,7 +456,8 @@ const tagRender = (props) => {
                             <br />
 
                             <div>
-                                <Her href={'manager/groups'} >Группы</Her> существуют только для группировки пользователей для удобства поиска.
+                                <Link to={BASE_ROUTE + "/hr/groups"}>Группы</Link> существуют только для группировки пользователей для удобства поиска.
+
                             <br />
                             <br />
                                 Назначенная группа ни на что не влияет.
@@ -541,7 +544,7 @@ const tagRender = (props) => {
                             <br />
                             <br />
                             <br />
-                            <Her href='manager/schedules' >Менеджер графиков</Her>
+                            <Link to={BASE_ROUTE + "/hr/schedules"}>Менеджер графиков</Link>
                             <br />
                             <br />
                             <div>
@@ -631,7 +634,7 @@ const tagRender = (props) => {
                             <br />
                             <br />
                             <br />
-                            <Her href='manager/rules' >Менеджер  правил учёта РВ</Her>
+                            <Link to={BASE_ROUTE + "/hr/rules"}>Менеджер  правил учёта РВ</Link>
 
                             <br />
                             <br />

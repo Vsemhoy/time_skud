@@ -5,7 +5,8 @@ import {
   BrowserRouter as Router,
   Route,
   Link,
-  Routes
+  Routes,
+  BrowserRouter
 } from "react-router-dom";
 import HomePage from './modules/DEFAULT_PAGE/HomePage';
 import UserListPage from './modules/USER_LIST/UserListPage';
@@ -14,7 +15,7 @@ import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar, Dra
 import MenuItem from 'antd/es/menu/MenuItem';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
-import { CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
+import { BASE_NAME, BASE_ROUTE, CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
 import CalendarPage from './modules/CALENDAR/CalendarPage';
 import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
 import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
@@ -39,6 +40,7 @@ import ClaimManagerPage from './modules/CLAIM_MANAGER_SK/ClaimManagerPage';
 import useWebSocket from 'react-use-websocket';
 import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
 import AclSkud from './modules/ADMIN/ACLSKUD/AclSkudPage';
+import AclSkudPage2 from './modules/ADMIN/ACLSKUD/AclSkudPage2';
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -67,6 +69,8 @@ const useCookieState = (key, defaultValue) => {
 
 function App() {
   const menuItems = [];
+
+
 
   const { state, setState } = useContext(StateContext);
 
@@ -166,30 +170,30 @@ function App() {
 
   
 
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const searchParams = new URLSearchParams(window.location.search);
-      const locationParam = searchParams.get('location');
+  // useEffect(() => {
+  //   const handleLocationChange = () => {
+  //     const searchParams = new URLSearchParams(window.location.search);
+  //     const locationParam = searchParams.get('location');
       
-      if (locationParam) {
-        const path = decodeURIComponent(searchParams);
-        const newState = ParseRoute(path);
+  //     if (locationParam) {
+  //       const path = decodeURIComponent(searchParams);
+  //       const newState = ParseRoute(path);
 
-        console.log('newState:', newState);
-        setState(newState);
-      }
-    };
+  //       console.log('newState:', newState);
+  //       setState(newState);
+  //     }
+  //   };
 
-    // Обрабатываем начальный URL
-    handleLocationChange();
+  //   // Обрабатываем начальный URL
+  //   handleLocationChange();
 
-    // Подписываемся на изменения истории
-    window.addEventListener('popstate', handleLocationChange);
+  //   // Подписываемся на изменения истории
+  //   window.addEventListener('popstate', handleLocationChange);
     
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('popstate', handleLocationChange);
+  //   };
+  // }, []);
 
 
 
@@ -291,13 +295,13 @@ function App() {
 
   return (
     <Layout style={{background: '#fff'}}>
-          <Router>
+        <BrowserRouter basename={ BASE_NAME}>
           <div >
 
        <AppMenu23 
         user_act={userAct}
        />
-
+      <h1>{BASE_ROUTE}</h1>
 
       {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && (
         <Alert
@@ -325,7 +329,7 @@ function App() {
         <div>
             {/* {location === '' && <HomePage />} */}
             {/* {location === 'home' && <HomePage />} */}
-            {state.location === '' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
+            {/* {state.location === '' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
             {state.location === 'personal' && <AccountPage userdata={userAct} />}
             {state.location === 'statistic' && <UserStatisticsPage userdata={userAct} />}
             {state.location === 'rules' && <RuleManagerPage userdata={userAct} />}
@@ -340,9 +344,10 @@ function App() {
             {state.location === 'claims' && <ClaimManagerPage userdata={userAct} />}
 
             {state.location === 'aclskud' && <AclSkud userdata={userAct} />}
+            {state.location === 'aclskud2' && <AclSkudPage2 userdata={userAct} />}
 
+            {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>} */}
             {/* {!state.location && <NotFoundPage />} */}
-            {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
 
           </div>
           ) : (
@@ -351,7 +356,51 @@ function App() {
             </div>
           )} 
         
+          
+          <Routes>
+          <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/my'} element={<AccountPage userdata={userAct}/>} />
 
+            <Route path={BASE_ROUTE + '/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
+
+            <Route path={BASE_ROUTE + '/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/hr/schedules'} element={<SchedManagerPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/hr/rules'} element={<RuleManagerPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/hr/notify'} element={<NotifierPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/hr/usersettings'} element={<UserManagerPage userdata={userAct}/>} />
+
+            
+
+            <Route path={BASE_ROUTE + '/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
+
+
+            <Route path={BASE_ROUTE + '/admin/aclold'}  element={<AclSkud userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />            
+            
+            <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
+
+            <Route path={'/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
+
+            <Route path={'/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
+            <Route path={'/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />
+            <Route path={'/hr/schedules'} element={<SchedManagerPage userdata={userAct}/>} />
+            <Route path={'/hr/rules'} element={<RuleManagerPage userdata={userAct}/>} />
+            <Route path={'/hr/notify'} element={<NotifierPage userdata={userAct}/>} />
+            <Route path={'/hr/usersettings'} element={<UserManagerPage userdata={userAct}/>} />
+
+            
+
+            <Route path={'/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
+
+
+            <Route path={'/admin/aclold'}  element={<AclSkud userdata={userAct}/>} />
+            <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
+          </Routes>
+          
         
         {/* <Routes>
           <Route path="/" element={<HomePage />} />
@@ -368,13 +417,16 @@ function App() {
             renders the first one that matches the current URL. */}
 
 
-
-
-
       </div>
-    </Router>
+
+
+
+      </BrowserRouter>
     </Layout>
   );
 }
 
 export default App;
+
+
+

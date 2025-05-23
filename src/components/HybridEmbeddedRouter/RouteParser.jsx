@@ -138,6 +138,10 @@ const getLocationName = (loc, result) => {
                 result.location = 'aclskud';
                 return result;
             }
+            if (req2 == 'aclskud2'){
+                result.location = 'aclskud2';
+                return result;
+            }
         }
 
         if (q[0].toLowerCase() == 'manager'){

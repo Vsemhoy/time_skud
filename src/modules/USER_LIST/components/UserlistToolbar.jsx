@@ -119,7 +119,7 @@ const UserListToolbar = (props) => {
     useEffect(()=>{
 
         let deps = [{ key: 0, value: 0, label: 'Все отделы' },
-                  { key: 'dep_634567', value: userData.user.id_departament, label: 'Мой отдел'},
+                  { key: 'dep_634567', value: userData?.user?.id_departament, label: 'Мой отдел'},
                   ...props.departments.map((dep)=>
                       ({
                       key: `departament_${dep.id}`,
@@ -203,10 +203,10 @@ const UserListToolbar = (props) => {
 
 
     useEffect(() => {
-        if (CSRF_TOKEN){
+        if (userData.companies){
             setCompanies([
                 { key: 'nullCompany', value: 0, label: 'Все компании' },
-                ...userData.companies.filter((item) => { return item.id !== 1}).map((com) => ({
+                ...userData?.companies?.filter((item) => { return item.id !== 1}).map((com) => ({
                     key: com.id,
                     value: Number(com.id),
                     label: com.name,

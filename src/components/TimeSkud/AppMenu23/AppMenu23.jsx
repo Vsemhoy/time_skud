@@ -3,7 +3,7 @@ import MenuItem from 'antd/es/menu/MenuItem';
 import React, { useContext, useState } from 'react';
 import { HTTP_ROOT } from '../../../CONFIG/config';
 import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation  } from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 import Her from './../../HybridEmbeddedRouter/Her';
@@ -16,8 +16,11 @@ const AppMenu23 = (props) => {
     const changePage = () =>{
 
     }
+    const location = useLocation();
+    const selectedKey = location.pathname;
 
-
+    // alert(selectedKey);
+    console.log(selectedKey);
 
   const showNotyBar = () => {
     setNotificatorOpened(true);
@@ -30,7 +33,7 @@ const AppMenu23 = (props) => {
   };
 
     const userMenu = (
-      <Menu>
+      <Menu  selectedKeys={[selectedKey]}>
         <Menu.Item key="status">Статус: Онлайн</Menu.Item>
         {/* <Menu.Item key="settings" icon={<SettingOutlined />}>
           Настройки
@@ -38,10 +41,13 @@ const AppMenu23 = (props) => {
         {/* <Menu.Item key="block" icon={<ThunderboltOutlined />}>
           Заблокировать
         </Menu.Item> */}
-        <Menu.Item key="block" icon={<ThunderboltOutlined />}>
-            <Her href={'notificator'} >
+        <Menu.Item key="hr/notify" icon={<ThunderboltOutlined />}>
+            {/* <Her href={'notificator'} >
                 Нотификатор
-            </Her>
+            </Her> */}
+            <NavLink to="/hr/notify" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Нотификатор
+            </NavLink>
         </Menu.Item>
         <Menu.Item key="logout" icon={<LoginOutlined />}>
           Выйти
@@ -59,7 +65,8 @@ const AppMenu23 = (props) => {
        
 
 
-       <Menu mode="horizontal" style={{ background: '#00000000', flex: 1}}>
+       <Menu mode="horizontal" style={{ background: '#00000000', flex: 1}}
+       selectedKeys={[selectedKey]}>
           <Menu.Item key="home" icon={<HomeOutlined  style={{ fontSize: '20px', color: '#3b3b3b', marginTop: '6px',
            textAlign: 'center', paddingLeft: '6px' }} />} ><a href={HTTP_ROOT}></a></Menu.Item>
           <Menu.SubMenu key="menu1" title="Моё">
@@ -71,27 +78,30 @@ const AppMenu23 = (props) => {
             </MenuItem> */}
 
             <MenuItem
-            key={'menu_52s34'}>
-                <Her href={'userlist'} >
-                    Список сотрудников
-                </Her>
+              
+              key={'menu_52s34'}>
+                <NavLink to="/" >
+                  Список сотрудников
+                </NavLink>
             </MenuItem>
 
             <MenuItem
-            key={'menu_52d3994'}>
-                <Her href={'statistic'} >
-                    Статистика
-                </Her>
+              key={'/monitor/stat'}>
+                <NavLink to="/monitor/stat">
+                  Статистика
+                </NavLink>
             </MenuItem>
+
+
 
           </Menu.SubMenu>
 
           <Menu.SubMenu key="menu109" title="Администратор">
             <MenuItem
-            key={'menu_52d34'}>
-                <Her href={'claims'} >
-                    Администрирование заявок
-                </Her>
+            key={'/claims'}>
+                <NavLink to="/claims">
+                  Заявки
+                </NavLink>
             </MenuItem>
 
 
@@ -101,33 +111,33 @@ const AppMenu23 = (props) => {
 
           <Menu.SubMenu key="menu2" title="Персонал">
           <MenuItem
-            key={'menu_5234734565'}>
-                <Her href={'manager/usermanager'} >
-                    Управление пользователями
-                </Her>
+            key={'/hr/usersettings'}>
+                <NavLink to="/hr/usersettings">
+                  Управление пользователями
+                </NavLink>
             </MenuItem>
 
           <MenuItem
-            key={'menu_52342'}>
-                <Her href={'manager/rules'} >
-                    Правила
-                </Her>
+            key={'/hr/rules'}>
+                <NavLink to="/hr/rules">
+                  Правила
+                </NavLink>
             </MenuItem>
 
             <MenuItem
-            key={'menu_5234qq'}>
-                <Her href={'manager/schedules'} >
-                    Графики работы
-                </Her>
+            key={'/hr/schedules'}>
+                <NavLink to="/hr/schedules">
+                  Графики работы
+                </NavLink>
             </MenuItem>
 
 
 
             <MenuItem
-            key={'menu_235234'}>
-                <Her href={'manager/calendars'} >
-                    Производственные календари
-                </Her>
+            key={'/hr/calendars'}>
+                <NavLink to="/hr/calendars">
+                Производственные календари
+                </NavLink>
             </MenuItem>
 
 
@@ -138,10 +148,10 @@ const AppMenu23 = (props) => {
             </MenuItem>  */}
 
             <MenuItem
-            key={'menu_5234765'}>
-                <Her href={'manager/groups'} >
-                    Группы пользователей
-                </Her>
+            key={'/hr/groups'}>
+                <NavLink to="/hr/groups">
+                Группы пользователей
+                </NavLink>
             </MenuItem>
 
             {/* <MenuItem
@@ -151,23 +161,28 @@ const AppMenu23 = (props) => {
               >RMXR</Link>
             </MenuItem> */}
 
-            <MenuItem
-            key={'menu_523566744'}>
-                <Her href={'pro/eventmonitor'} >
-                    Монитор событий
-                </Her>
+          <MenuItem
+            key={'/monitor/events'}>
+                <NavLink to="/monitor/events" className={({ isActive }) => (isActive ? 'active' : '')}>
+                  Монитор событий
+                </NavLink>
             </MenuItem>
           </Menu.SubMenu>
 
 
           <Menu.SubMenu key="menu634" title="Админ">
             <MenuItem
-            key={'menu_52s354'}>
-                <Her href={'admin/aclskud'} >
-                    Права доступа к заявкам
-                </Her>
+            key={'/admin/aclold'}>
+                <NavLink to="admin/aclold">
+                  СКУД права старые
+                </NavLink>
             </MenuItem>
-
+            <MenuItem
+            key={'/admin/aclskud'}>
+                <NavLink to="admin/aclskud">
+                  СКУД доступы и права
+                </NavLink>
+            </MenuItem>
           </Menu.SubMenu>
         </Menu>
 
