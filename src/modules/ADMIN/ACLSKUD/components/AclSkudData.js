@@ -12551,3 +12551,96 @@ export const ACL_DEPARTS_WITH_COUNT = [
         "users_count": 1
     }
 ]
+
+export const ACL_COLUMNS = [
+    {
+        id: 1,
+        code: 'CLAIM_CREATE_MINE',
+        title: 'Созд. свои',
+        text: 'Можно создавать заявки только себе',
+        icon: 'PlusCircleOutlined',
+        color: '#2196f3',
+        sort_order: 1,
+        deleted: 0     
+    },
+        {
+        id: 2,
+        code: 'CLAIM_EDIT_MINE',
+        title: 'Ред. свои',
+        text: 'dfaksd',
+        icon: 'FormOutlined',
+        color: '#2196f3',
+        sort_order: 2,
+        deleted: 0     
+    },
+        {
+        id: 3,
+        code: 'CLAIM_APPRPVE_MINE',
+        title: 'Согл. свои',
+        text: 'dfaksd',
+        icon: 'CheckOutlined',
+        color: '#2196f3',
+        sort_order: 3,
+        deleted: 0     
+    },
+        {
+        id: 4,
+        code: 'CLAIM_CREATE_EMPLOY',
+        title: 'Созд. подчин.',
+        text: 'dfaksd',
+        icon: 'PlusCircleOutlined',
+        color: '#ff9800',
+        sort_order: 4,
+        deleted: 0     
+    },
+        {
+        id: 5,
+        code: 'CLAIM_EDIT_EMPLOY',
+        title: 'Ред. подчин.',
+        text: 'Редактирование заявок для всех подчиненных',
+        icon: 'FormOutlined',
+        color: '#ff9800',
+        sort_order: 5,
+        deleted: 0     
+    },
+        {
+        id: 6,
+        code: 'CLAIM_APPRPVE_EMPLOY',
+        title: 'Согл. подчин.',
+        text: 'Согласование заявок для всех подчиненных',
+        icon: 'CheckOutlined',
+        color: '#ff9800',
+        sort_order: 6,
+        deleted: 0     
+    },
+        {
+        id: 7,
+        code: 'CLAIM_CREATE_ALL',
+        title: 'Созд. всем',
+        text: 'Создание заявок для всех пользователей выбранной компании',
+        icon: 'PlusCircleOutlined',
+        color: '#673ab7',
+        sort_order: 7,
+        deleted: 0     
+    },
+        {
+        id: 8,
+        code: 'CLAIM_EDIT_ALL',
+        title: 'Ред. всем',
+        text: 'Редактирование заявок для всех пользователей выбранной компании',
+        icon: 'FormOutlined',
+        color: '#673ab7',
+        sort_order: 8,
+        deleted: 0     
+    },
+        {
+        id: 9,
+        code: 'CLAIM_APPRPVE_ALL',
+        title: 'Согл. всем',
+        text: 'Согласование заявок для всех пользователей выбранной компании',
+        icon: 'CheckOutlined',
+        color: '#673ab7',
+        sort_order: 9,
+        deleted: 0     
+    },
+]

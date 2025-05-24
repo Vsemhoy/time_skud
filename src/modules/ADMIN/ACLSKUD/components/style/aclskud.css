@@ -1,11 +1,6 @@
 
 
 
-.sk-table-aclskud-row {
-    display: grid;
-    grid-template-columns: 30px  53px 2fr 3fr 100px;
-    /* color: rgb(199, 199, 199); */
-}
 
 .sk-table-aclskud-row:hover:not(.sk-act-divider):not(.sk-table-aclskud-header) > div {
     background-color: var(--row-hovered-bg-color);
@@ -61,38 +56,7 @@
 .sk-table-aclskud-header .sk-table-aclskud-multicol {
     text-align: center;
 }
-.sk-aclchecker {
-    cursor: pointer;
-    height: 100%;
-    width: 100%;
-    transition: all 0.3s;
-    padding: 2px;
-    font-size: larger;
-    min-height: 29px;
-}
-.sk-aclchecker  {
-    background-color: rgba(255, 255, 255, 0.541);
-    border: 1px solid rgba(0, 0, 0, 0.021);
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3px;
-    transition: all 0.2s;
-}
-.sk-aclchecker:hover {
-    
-    border: 1px solid rgba(7, 145, 236, 0.671) !important;
-    /* background-color: rgba(3, 125, 207, 0.171); */
-    background-color: rgba(255, 255, 255, 0.801);
-}
 
-
-.sk-table-aclskud-row:not(.sk-table-aclskud-header) > div {
-    display: flex;
-    align-items: center;
-}
 .sk-table-userName {
     font-size:larger;
     padding: 3px;
@@ -229,7 +193,7 @@
     background-color: rgba(0, 217, 255, 0.411);
 }
 .sk-aclchecker {
-    box-shadow: inset 0px 0px 0px 3px rgba(255, 255, 255, 0.644);
+    /* box-shadow: inset 0px 0px 0px 3px rgba(255, 255, 255, 0.644); */
 }
 /* .sk-aclchecker.ack-checked {
     box-shadow: inset 0px 0px 0px 1px rgba(0, 150, 0, 0.397);

@@ -1,0 +1,103 @@
+.sk-table-aclskud-row {
+    display: grid;
+    grid-template-columns: 30px  53px 2fr 3fr 120px;
+    /* color: rgb(199, 199, 199); */
+}
+
+
+.sk-table-aclskud-multicol2 {
+    display: grid;
+    width: 100%;
+    text-align: center;
+        height: 100%;
+}
+
+.sk-table-aclskud-cell:hover > div {
+    /* background-color: #ffffff89; */
+}
+.sk-table-aclskud-cell > div {
+    transition: all 0.2s;
+    /* background-color: #ffffffb9; */
+    padding: 3px;
+}
+.sk-table-aclskud-row-name {
+    display: block !important;
+    width: 100%;
+}
+.sk-table-aclskud-row-name span {
+    padding: 6px;
+}
+.sk-count-badge {
+    padding-left: 6px;
+}
+.sk-table-triggers span {
+    opacity: 0.4;
+}
+.sk-table-triggers .sk-trigger-active span {
+    opacity: 1;
+}
+.sk-trigger-active {
+    color: var(--row-selected-color_2);
+}
+
+.sk-act-templaterow {
+    background-color: #ffc10721;
+    box-shadow: 1px 1px 16px rgba(0, 0, 0, 0.274);
+
+}
+
+
+.sk-aclchecker  {
+    font-size: larger;
+    min-height: 26px;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.64);
+    border: 1px solid rgba(128, 128, 128, 0.34);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px;
+    transition: all 0.2s;
+    border-radius: 2px;
+}
+.sk-aclchecker:hover {
+    
+    border: 1px solid rgba(7, 145, 236, 0.671) !important;
+    /* background-color: rgba(3, 125, 207, 0.171); */
+    background-color: rgba(255, 255, 255, 0.938);
+}
+
+
+.sk-table-aclskud-row:not(.sk-table-aclskud-header) > div {
+    display: flex;
+    align-items: center;
+}
+
+.sk-table-aclskud-row:hover .sk-aclchecker {
+    background-color: rgba(255, 255, 255, 0.768);
+}
+
+.sk-table-template-control {
+    display: grid;
+    grid-template-columns: 83px 2fr 120px;
+    padding: 2px;
+}
+.sk-table-template-control-button {
+    color: gray;
+    padding: 4px;
+    transition: all 0.2s;
+    font-size: smaller;
+    cursor: pointer;
+}
+.sk-table-template-control-button:hover {
+    color: rgb(49, 49, 49);
+    background-color: rgba(146, 146, 146, 0.148);
+}
+.sk-table-template-control-button:active {
+    color: rgb(20, 20, 20);
+    background-color: rgba(227, 227, 227, 0.377);
+}
