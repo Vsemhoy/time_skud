@@ -135,10 +135,12 @@
     border-right: 1px solid var(--table-border-divider-color);
     margin-top: 4px;
     margin-bottom: 4px;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    outline: 0px solid rgba(0, 145, 255, 0.889);
 }
 .sk-opened-box:hover {
-    box-shadow: 0px 3px 16px rgba(0, 0, 0, 0.341);
+    /* box-shadow: 0px 3px 16px rgba(0, 0, 0, 0.341); */
+    outline: 1px solid rgba(0, 145, 255, 0.889);
     z-index: 999;
 }
 
