@@ -1,9 +1,25 @@
 .sk-table-aclskud-row {
+    display: block !important;
+}
+.sk-table-aclskud-row > .sk-tas-inwrap {
     display: grid;
     grid-template-columns: 30px  53px 2fr 3fr 120px;
+    transition: all 0.2s;
     /* color: rgb(199, 199, 199); */
 }
-
+.sk-table-aclskud-row > .sk-tas-inwrap:hover:not(.sk-act-divider):not(.sk-table-aclskud-header) > div {
+    background-color: var(--row-hovered-bg-color);
+}
+.sk-aclskud-row-inner {
+    display: block;
+    width: 100%;
+}
+.sk-tas-inwrap > div:first-child {
+        display: flex;
+    color: gray;
+    align-items: center;
+    justify-content: center;
+}
 
 .sk-table-aclskud-multicol2 {
     display: grid;
@@ -72,12 +88,12 @@
 }
 
 
-.sk-table-aclskud-row:not(.sk-table-aclskud-header) > div {
+.sk-table-aclskud-row  > .sk-tas-inwrap:not(.sk-table-aclskud-header) > div {
     display: flex;
     align-items: center;
 }
 
-.sk-table-aclskud-row:hover .sk-aclchecker {
+.sk-table-aclskud-row > .sk-tas-inwrap:hover .sk-aclchecker {
     background-color: rgba(255, 255, 255, 0.768);
 }
 
@@ -100,4 +116,43 @@
 .sk-table-template-control-button:active {
     color: rgb(20, 20, 20);
     background-color: rgba(227, 227, 227, 0.377);
+}
+
+.sk-act-depusererow {
+    background-color: rgb(237, 237, 237);
+}
+.sk-tas-userrow {
+   background-color: rgba(0, 145, 255, 0.064);
+}
+.sk-tas-userrow-border {
+    border-bottom: 1px solid var(--table-border-divider-color);
+
+}
+.sk-opened-box {
+    /* border: 1px solid #75a6c6; */
+    border-top: 1px solid var(--table-border-divider-color);
+    border-left: 1px solid var(--table-border-divider-color);
+    border-right: 1px solid var(--table-border-divider-color);
+    margin-top: 4px;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+}
+.sk-opened-box:hover {
+    box-shadow: 0px 3px 16px rgba(0, 0, 0, 0.341);
+    z-index: 999;
+}
+
+
+.sk-false-check {
+    display: flex;
+    color: gray;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+.sk-false-check:hover {
+    opacity: 1;
 }

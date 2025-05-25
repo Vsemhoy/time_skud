@@ -2,9 +2,7 @@
 
 
 
-.sk-table-aclskud-row:hover:not(.sk-act-divider):not(.sk-table-aclskud-header) > div {
-    background-color: var(--row-hovered-bg-color);
-}
+
 .sk-table-aclskud-header {
     background-color: var(--row-header-color);
     padding-top: 3px;
@@ -127,9 +125,9 @@
     outline: 1px solid rgba(128, 128, 128, 0.295);
 }
 .sk-table-aclskud-row > div:first-child {
-    display: flex;
+    /* display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
 }
 .sk-table-triggers > div {
     width: 100%;
