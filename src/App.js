@@ -358,7 +358,10 @@ function App() {
         
           
           <Routes>
-          <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            
+            <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/my'} element={<AccountPage userdata={userAct}/>} />
 
             <Route path={BASE_ROUTE + '/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
@@ -379,8 +382,7 @@ function App() {
             <Route path={BASE_ROUTE + '/admin/aclold'}  element={<AclSkud userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />            
             
-            <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
-            <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
+
 
             <Route path={'/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
 

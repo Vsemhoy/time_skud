@@ -226,7 +226,10 @@ td:first-child {
     max-width: 1600px;
     margin: auto;
 }
-
+.sk-mw-1900 {
+    max-width: 1900px;
+    margin: auto;
+}
 .sk-smaller {
 font-size: smaller;
 }

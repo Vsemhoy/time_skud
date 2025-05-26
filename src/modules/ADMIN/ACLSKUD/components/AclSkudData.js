@@ -12093,7 +12093,7 @@ export const ACL_ACTUAL_USERS = [
         "surname": "Нестеренко",
         "secondname": "Сергеевич",
         "depart_id": 11,
-        "id_company": 2,
+        "id_company": 3,
         "occupy": "Заместитель директора",
         "acls": []
     },
@@ -12644,3 +12644,5 @@ export const ACL_COLUMNS = [
         deleted: 0     
     },
 ]
+
+export const trueAcls = [];
