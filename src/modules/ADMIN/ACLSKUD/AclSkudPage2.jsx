@@ -547,14 +547,25 @@ const toggleUsersOpen = (ev, id, dep_id) => {
     console.log(user_id, depart_id, info);
 
     if (info.key === "u_cmd_copy_access"){
-      // CALLBACK_ON_UPDATE_USERS_ACLS = cmd_CopyUserAccesses;
-      // CALLBACK_DATA_USERS_ACLS = {user_id: user_id, depart_id: depart_id};
-    //  cmd_CopyUserAccesses(user_id, depart_id);
       get_users_acls([user_id], cmd_CopyUserAccesses, {user_id: user_id, depart_id: depart_id});
      }
 
     if (info.key === "u_cmd_paste_access") cmd_PasteUserAccesses(user_id, depart_id);
     if (info.key === "u_cmd_clear_access") cmd_ClearUserAccesses(user_id, depart_id);
+
+    if (info.key === "u_cmd_set_access_to_depart"){
+      get_users_acls([user_id], cmd_SetAllUsersInDepart, {user_id: user_id, depart_id: depart_id});
+    } 
+    if (info.key === "u_cmd_set_access_to_template"){
+      get_users_acls([user_id], cmd_SetToDepartTemplate, {user_id: user_id, depart_id: depart_id});
+    }
+    if (info.key === "u_cmd_set_access_all_selected"){
+      if (selectedUsers.length == 0){
+        alert('Не выделено ни одного пользователя :(');
+        return;
+      }
+      get_users_acls([user_id], cmd_SetAllUsersSelected, {user_id: user_id, depart_id: depart_id});
+    }
   }
 
 
@@ -645,6 +656,134 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       set_acl_users(obj, [user_id]);
   }
 
+  const cmd_SetAllUsersInDepart = (object, response) => {
+    let acl_data = [];
+    console.log('COMMAND CALLBACK',object, response);
+    let trueAcls = response[object.user_id];
+    let sourceUser = object.user_id;
+    console.log(trueAcls);
+    let departTarget = object.depart_id;
+    // const sourcedata = userAcls
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
+          if (fo && fo.value == true){
+            value = true;
+          }
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                value: value,
+              }
+            )
+        }
+      }
+
+      let usersToUpdate = [];
+      let usersInDep = userCollection.filter(item => item.depart_id == departTarget);
+      let real_acl_data = [];
+      for (let i = 0; i < usersInDep.length; i++) {
+        const tuser = usersInDep[i];
+        usersToUpdate.push(tuser.id);
+        for (let n = 0; n < acl_data.length; n++) {
+          const acda = acl_data[n];
+          real_acl_data.push({
+                state_id: acda.state_id,
+                col_id: acda.col_id,
+                value: acda.value,
+                depart_id: tuser.depart_id,
+                user_id: tuser.id,
+          });
+        }
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'users',
+        acl_data: real_acl_data
+      };
+      set_acl_users(obj, [usersToUpdate]);
+  }
+
+  const cmd_SetToDepartTemplate = (object, response) => {
+    let acl_data = [];
+    console.log('COMMAND CALLBACK',object, response);
+    let trueAcls = response[object.user_id];
+    console.log(trueAcls);
+    // const sourcedata = userAcls
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
+          if (fo && fo.value == true){
+            value = true;
+          }
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                value: value,
+              }
+            )
+        }
+      }
+      console.log('acl_data', acl_data) ;
+  }
+
+    // Set acls from source to all selected Users
+    const cmd_SetAllUsersSelected = (object, response) => {
+    let acl_data = [];
+    console.log('COMMAND CALLBACK',object, response);
+    let trueAcls = response[object.user_id];
+    console.log(trueAcls);
+    // const sourcedata = userAcls
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
+          if (fo && fo.value == true){
+            value = true;
+          }
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                value: value,
+                // depart_id: depart_id,
+                // user_id: user_id,
+              }
+            )
+        }
+      }
+      let real_acl_data = [];
+      for (let i = 0; i < selectedUsers.length; i++) {
+        const usr_id = selectedUsers[i];
+        const dep = userCollection.find((item)=> item.id === usr_id)?.depart_id;
+        for (let n = 0; n < acl_data.length; n++) {
+          const acda = acl_data[n];
+          real_acl_data.push({
+                state_id: acda.state_id,
+                col_id: acda.col_id,
+                value: acda.value,
+                depart_id: dep,
+                user_id: usr_id,
+          });
+        }
+      };
+        let obj = {
+        id_company: visibleCompany,
+        table: 'users',
+        acl_data: real_acl_data
+      };
+      set_acl_users(obj, [selectedUsers]);
+  }
   /* -------------------------- MENU HANDLERS END --------------------- */
 
 
@@ -724,16 +863,6 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         }
       }
     };
-
-
-
-    // for (let i = 0; i < userCollection.length; i++) {
-    //   const usr = userCollection[i];
-    //   if (usr.)
-    //   if (selectedDeparts.includes(usr.depart_id)){
-    //     usersToSelect.push(usr.id);
-    //   }
-    // }
   }
 
 
