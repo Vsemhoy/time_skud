@@ -43,7 +43,10 @@ const AclSkudPage2 = (props) => {
 
     const [copyBuffer, setCopyBuffer] = useState([]);
 
-    
+    const [selectedDeparts, setselectedDeparts] = useState([]);
+    const [selectedDepartsInermed, setselectedDepartsIntermed] = useState([]);
+    const [selectedUsers, setselectedUsers] = useState([]);
+
     const rowMenuItems = [
       {
         key: 'u_cmd_copy_access',
@@ -592,35 +595,57 @@ const toggleUsersOpen = (ev, id, dep_id) => {
     let trueAcls = response[object.user_id];
     console.log(trueAcls);
     // const sourcedata = userAcls
-    //   for (let i = 0; i < aclColumns.length; i++) {
-    //     const column = aclColumns[i];
-    //     for (let n = 0; n < eventTypes.length; n++) {
-    //       const type = eventTypes[n];
-    //       let value = false;
-
-    //         acl_data.push(
-    //           {
-    //             state_id: type.id,
-    //             col_id: column.id,
-    //             value: false,
-    //           }
-    //         )
-    //     }
-    //   }
-    //   let obj = {
-    //     id_company: visibleCompany,
-    //     table: 'users',
-    //     acl_data: acl_data
-    //   };
-
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
+          if (fo && fo.value == true){
+            value = true;
+          }
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                value: value,
+              }
+            )
+        }
+      }
+      setCopyBuffer(acl_data);
   }
 
     const cmd_PasteUserAccesses = (user_id, depart_id) => {
+      if (copyBuffer.length == 0){
+        alert("Нет данных для вставки :(");
+        return;
+      };
     console.log(user_id, depart_id);
+       let acl_data = [];
+      for (let i = 0; i < copyBuffer.length; i++) {
+        const buffer = copyBuffer[i];
 
+            acl_data.push(
+              {
+                state_id: buffer.state_id,
+                col_id: buffer.col_id,
+                depart_id: depart_id,
+                user_id: user_id,
+                value: buffer.value,
+              }
+            )
+        
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'users',
+        acl_data: acl_data
+      };
+      set_acl_users(obj, [user_id]);
   }
 
-  /* -------------------------- MENU HANDLERS --------------------- */
+  /* -------------------------- MENU HANDLERS END --------------------- */
 
 
 
@@ -629,15 +654,91 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
 
 
+  /* -------------------------- CHECKBOX HANDLERS --------------------- */
+
+  const handleMasterCheckbox = (ev) => {
+    if (ev.target.checked){
+      setselectedDeparts(departments.map(item => item.id));
+    } else {
+      setselectedDeparts([]);
+      setselectedUsers([]);
+    }
+  }
+
+  const handleDepartCheckbox = (ev, depart_id) => {
+    if (ev.target.checked){
+      setselectedDeparts([...selectedDeparts, depart_id]);
+    } else {
+      setselectedDeparts(selectedDeparts.filter(item => item != depart_id));
+    }
+    setselectedDepartsIntermed(selectedDepartsInermed.filter(item => item != depart_id));
+  }
+
+  useEffect(() => {
+    let usersToSelect = [];
+    for (let i = 0; i < userCollection.length; i++) {
+      const usr = userCollection[i];
+      if (selectedDeparts.includes(usr.depart_id)){
+        usersToSelect.push(usr.id);
+      }
+    }
+    setselectedUsers(usersToSelect);
+  }, [selectedDeparts]);
+
+
+  const handleUserCheckbox = (ev, user_id) => {
+    if (ev.target.checked){
+      setselectedUsers([...selectedUsers, user_id]);
+    } else {
+      setselectedUsers(selectedUsers.filter(item => item != user_id));
+    }
+    console.log('value', ev);
+
+    let filledFull = false;
+    let intermeded = false;
+    let counter = ev.target.checked ? 1 : -1;
+    let tlength = 0;
+    let user_dep = userCollection.find((item)=> item.id === user_id)?.depart_id;
+    if (user_dep){
+      const localUdes = userCollection.filter((item)=> item.depart_id === user_dep);
+      tlength = localUdes.length;
+      for (let i = 0; i < localUdes.length; i++) {
+        const uid = localUdes[i].id;
+        if (selectedUsers.includes(uid)){
+          counter++;
+        }
+      }
+    }
+    // Set intermediate marker
+    if (counter != tlength && counter != 0){
+      console.log('NOT EQUAL', tlength, counter);
+      setselectedDepartsIntermed([...selectedDepartsInermed, user_dep]);
+    } else {
+      console.log('EQUAL', tlength);
+      if (user_dep){
+        setselectedDepartsIntermed(selectedDepartsInermed.filter(item => item != user_dep));
+        if (counter > 0){
+          setselectedDeparts([...selectedDeparts, user_dep]);
+        } else {
+          setselectedDeparts(selectedDeparts.filter(item => item != user_dep));
+        }
+      }
+    };
 
 
 
+    // for (let i = 0; i < userCollection.length; i++) {
+    //   const usr = userCollection[i];
+    //   if (usr.)
+    //   if (selectedDeparts.includes(usr.depart_id)){
+    //     usersToSelect.push(usr.id);
+    //   }
+    // }
+  }
 
 
 
-
-
-
+/* -------------------------- CHECKBOX HANDLERS END --------------------- */
 
 
 
@@ -646,7 +747,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         <div className='sk-page-body'>
                 <div style={{padding: '6px'}} className={'sk-mw-1600'}>
                     <div>
-                        dkfajslkdjfkas
+                        
                     </div>
                     <br/>
                     <div className={'sk-flex-space'}>
@@ -691,7 +792,11 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                             <div className={'sk-table-aclskud-row sk-table-aclskud-header'}>
                             <div className='sk-tas-inwrap'>
                                 <div>
-                                    {/* <Checkbox></Checkbox> */}
+                                    <Checkbox
+                                      checked={selectedDeparts.length == departments.length}
+                                      indeterminate={selectedDeparts.length > 0 && selectedDeparts.length != departments.length}
+                                      onClick={handleMasterCheckbox}
+                                    />
                                 </div>
                             <div>
                
@@ -740,7 +845,12 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                               onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
                               className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkdser${item.id}_${item.id}`}>
                               <div className='sk-tas-inwrap sk-tas-inwrap-depart'>
-                              <div><Checkbox /></div>
+                              <div><Checkbox
+                                checked={selectedDeparts.includes(item.id)}
+                                onChange={(ev)=>{handleDepartCheckbox(ev, item.id)}}
+                                disabled={count_users_in === 0}
+                                indeterminate={selectedDepartsInermed.includes(item.id)}
+                              /></div>
                               <div><div><span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#3e6c93'}`}}>{item.id}</span></div></div>
                               <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                 <span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#3e6c93'}`}}>{item.name}</span>
@@ -841,7 +951,10 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                                       onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
                                       className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkusr${item.id}_${user.id}`}>
                                       <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}`}>
-                                      <div><Checkbox /></div>
+                                      <div><Checkbox
+                                        checked={selectedUsers.includes(user.id)}
+                                        onChange={(val)=>{handleUserCheckbox(val, user.id)}}
+                                      /></div>
                                       <div><div>{user.id}</div></div>
                                       <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                         <span>{user.surname} {user.name} {user.secondname}</span>
