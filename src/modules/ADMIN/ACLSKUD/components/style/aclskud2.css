@@ -110,13 +110,7 @@
     grid-template-columns: 83px 2fr 120px;
     padding: 2px;
 }
-.sk-table-template-control-button {
-    color: gray;
-    padding: 4px;
-    transition: all 0.2s;
-    font-size: smaller;
-    cursor: pointer;
-}
+
 .sk-table-template-control-button:hover {
     color: rgb(49, 49, 49);
     background-color: rgba(146, 146, 146, 0.148);

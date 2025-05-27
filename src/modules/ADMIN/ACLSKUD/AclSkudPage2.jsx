@@ -21,7 +21,7 @@ const AclSkudPage2 = (props) => {
 
     // { user_id as key, [{ acl data}, ...]}
     const [userAcls, setUserAcls] = useState({});
-    const [departAcls, setDepartAcls] = useState([]);
+    const [templateAcls, setTemplateAcls] = useState([]);
     
 
     const [eventTypes, setEventTypes] = useState([]);
@@ -99,6 +99,49 @@ const AclSkudPage2 = (props) => {
       },
     ];
 
+    const templateMenuItems = [
+      {
+        key: 't_cmd_copy_access',
+        label: (
+          <div>
+            Скопировать доступы
+          </div>
+        ),
+      },
+      {
+        key: 't_cmd_paste_access',
+        label: (
+          <div>
+            Вставить доступы
+          </div>
+        ),
+      },
+      {
+        key: 't_cmd_clear_access',
+        label: (
+          <div>
+            Очистить доступы
+          </div>
+        ),
+      },
+      {
+        key: 't_cmd_set_access_to_depart',
+        label: (
+          <div className='sk-mitem-special'>
+            Установить эти доступы всем в отделе 
+          </div>
+        ),
+      },
+      {
+        key: 't_cmd_set_access_all_selected',
+        label: (
+          <div className='sk-mitem-special'>
+            Установить эти доступы  всем выделенным
+          </div>
+        ),
+      },
+    ];
+
 
     useEffect(() => {
       if (PRODMODE){
@@ -123,7 +166,9 @@ const AclSkudPage2 = (props) => {
 
     useEffect(() => {
         setUserAcls([]);
+        setTemplateAcls([]);
         get_users_acls(openedUsers);
+        get_temlate_acls(openedTemplates);
     }, [visibleCompany]);
 
 
@@ -242,7 +287,7 @@ const AclSkudPage2 = (props) => {
           {
               data: {
                 departs: items,
-                table: 'users',
+                table: 'templates',
                 id_company: visibleCompany
               },
               _token: CSRF_TOKEN
@@ -254,7 +299,7 @@ const AclSkudPage2 = (props) => {
               callbackFn(callbackData, response.data.content);  
             }
 
-            let prev = JSON.parse(JSON.stringify(userAcls));
+            let prev = JSON.parse(JSON.stringify(templateAcls));
             console.log(response.data.content);
             for (const key in response.data.content) {
               if (Object.prototype.hasOwnProperty.call(response.data.content, key)) {
@@ -262,7 +307,7 @@ const AclSkudPage2 = (props) => {
                 prev[key] = element;
               }
             }
-            setUserAcls(prev);
+            setTemplateAcls(prev);
           }
       } catch (e) {
           console.log(e)
@@ -354,17 +399,31 @@ const AclSkudPage2 = (props) => {
     /** ------------------ FETCHES END ---------------- */
 
 
-    const toggleAllDepCooxed = () => {
-        if (cooxStateDeparts.length){
-            setCooxStateDepars([]);
-        } else {
-            let coox = [];
-            for (let i = 0; i < departments.length; i++) {
-                coox.push(departments[i].id);
-            }
-            setCooxStateDepars(coox);
-        }
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // const toggleAllDepCooxed = () => {
+    //     if (cooxStateDeparts.length){
+    //         setCooxStateDepars([]);
+    //     } else {
+    //         let coox = [];
+    //         for (let i = 0; i < departments.length; i++) {
+    //             coox.push(departments[i].id);
+    //         }
+    //         setCooxStateDepars(coox);
+    //     }
+    // }
 
 const toggleTemplatesOpen = (ev, id) => {
     if (ev.shiftKey){
@@ -404,7 +463,7 @@ const toggleTemplatesOpen = (ev, id) => {
       console.log('Удалились:', removed);
     }
 
-    prevOpenedTemplates.current = openedDeparts;
+    prevOpenedTemplates.current = openedTemplates;
   }, [openedTemplates]);
 
 
@@ -532,7 +591,28 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       set_acl_users(obj, [user_id]);
       console.log(acl_data);
     } else {
-      // for template
+      if (ev.ctrlKey){
+        // Remove checks in column
+        checked = false;
+      };
+      for (let i = 0; i < eventTypes.length; i++) {
+        const element = eventTypes[i];
+        acl_data.push(
+          {
+            state_id: element.id,
+            col_id: column,
+            depart_id: dep_id,
+            value: checked,
+          }
+        )
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'templates',
+        acl_data: acl_data
+      };
+      set_acl_templates(obj, [dep_id]);
+      console.log(acl_data);
     }
   }
 
@@ -567,8 +647,29 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       };
       set_acl_users(obj, [user_id]);
       console.log(acl_data);
-    } else {
-      // for template
+    } else { ///////////////////////////////////////////
+      if (ev.ctrlKey){
+        // Remove checks in column
+        checked = false;
+      };
+      for (let i = 0; i < aclColumns.length; i++) {
+        const element = aclColumns[i];
+        acl_data.push(
+          {
+            state_id: row_id,
+            col_id: element.id,
+            depart_id: dep_id,
+            value: checked,
+          }
+        )
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'templates',
+        acl_data: acl_data
+      };
+      set_acl_templates(obj, [dep_id]);
+      console.log(acl_data);
     }
       
   }
@@ -591,6 +692,34 @@ const toggleUsersOpen = (ev, id, dep_id) => {
     };
     set_acl_users(obj);
   }
+
+
+
+
+  
+
+  const toggleSingleChecboxTemplate = (ev, user_id, depart_id, column_id, row_id, state) => {
+    console.log(user_id, column_id, row_id, state);
+
+    let obj = {
+      id_company: visibleCompany,
+      table: 'templates',
+      acl_data: [
+        {
+          state_id: row_id,
+          col_id: column_id,
+          depart_id: depart_id,
+          user_id: user_id,
+          value: state,
+        }
+      ]
+    };
+    set_acl_templates(obj);
+  }
+
+
+
+
 
 
   // Отслеживаем что изменилось в списке открытых юзеров и делаем запрос на их получение
@@ -617,21 +746,42 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       get_users_acls([user_id], cmd_CopyUserAccesses, {user_id: user_id, depart_id: depart_id});
      }
 
+    if (info.key === "t_cmd_copy_access"){
+      get_temlate_acls([depart_id], cmd_CopyTemplateAccesses, {depart_id: depart_id});
+     }
+
     if (info.key === "u_cmd_paste_access") cmd_PasteUserAccesses(user_id, depart_id);
+    if (info.key === "t_cmd_paste_access") cmd_PasteTemplateAccesses(depart_id);
     if (info.key === "u_cmd_clear_access") cmd_ClearUserAccesses(user_id, depart_id);
+    if (info.key === "t_cmd_clear_access") cmd_ClearTemplateAccesses(depart_id);
 
     if (info.key === "u_cmd_set_access_to_depart"){
       get_users_acls([user_id], cmd_SetAllUsersInDepart, {user_id: user_id, depart_id: depart_id});
     } 
+    if (info.key === "t_cmd_set_access_to_depart"){
+      get_temlate_acls([depart_id], cmd_SetAllUsersInDepartFromTemplate, {depart_id: depart_id});
+    } 
+
+    // Установить в шаблон
     if (info.key === "u_cmd_set_access_to_template"){
       get_users_acls([user_id], cmd_SetToDepartTemplate, {user_id: user_id, depart_id: depart_id});
     }
+    
+
     if (info.key === "u_cmd_set_access_all_selected"){
-      if (selectedUsers.length == 0){
+      if (selectedUsers.length === 0){
         alert('Не выделено ни одного пользователя :(');
         return;
       }
       get_users_acls([user_id], cmd_SetAllUsersSelected, {user_id: user_id, depart_id: depart_id});
+    }
+    
+    if (info.key === "t_cmd_set_access_all_selected"){
+      if (selectedUsers.length === 0){
+        alert('Не выделено ни одного пользователя :(');
+        return;
+      }
+      get_temlate_acls([depart_id], cmd_SetAllUsersSelectedFromTemplate, {depart_id: depart_id});
     }
   }
 
@@ -665,6 +815,31 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       };
       set_acl_users(obj, [user_id]);
   }
+  const cmd_ClearTemplateAccesses = (depart_id) => {
+    let acl_data = [];
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                depart_id: depart_id,
+                value: false,
+              }
+            )
+        }
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'templates',
+        acl_data: acl_data
+      };
+      set_acl_templates(obj, [depart_id]);
+  }
+
+
 
     // Метод вызывается через коллбэк при загрузке аклов для юзеров, если коллбэк передан на вызывающей стороне
   const cmd_CopyUserAccesses = (object, response) => {
@@ -694,6 +869,36 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       }
       setCopyBuffer(acl_data);
   }
+  const cmd_CopyTemplateAccesses = (object, response) => {
+    let acl_data = [];
+    console.log('COMMAND CALLBACK',object, response);
+    let trueAcls = response[object.depart_id];
+    console.log(trueAcls);
+    setCopySource({id: object.depart_id, type: 'templates'});
+    // const sourcedata = userAcls
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id === column.id && fitem.skud_current_state_id === type.id);
+          if (fo && fo.value === true){
+            value = true;
+          }
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                value: value,
+              }
+            )
+        }
+      }
+      setCopyBuffer(acl_data);
+  }
+
+
+
 
     const cmd_PasteUserAccesses = (user_id, depart_id) => {
       if (copyBuffer.length == 0){
@@ -725,11 +930,41 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       set_acl_users(obj, [user_id]);
   }
 
+    const cmd_PasteTemplateAccesses = (depart_id) => {
+      if (copyBuffer.length == 0){
+        alert("Нет данных для вставки :(");
+        return;
+      };
+    console.log( depart_id);
+      let acl_data = [];
+      for (let i = 0; i < copyBuffer.length; i++) {
+        const buffer = copyBuffer[i];
+
+            acl_data.push(
+              {
+                state_id: buffer.state_id,
+                col_id: buffer.col_id,
+                depart_id: depart_id,
+                value: buffer.value,
+              }
+            )
+        
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'templates',
+        acl_data: acl_data
+      };
+      console.log(obj);
+      set_acl_templates(obj, [depart_id]);
+  }
+
+
+
   const cmd_SetAllUsersInDepart = (object, response) => {
     let acl_data = [];
     console.log('COMMAND CALLBACK',object, response);
     let trueAcls = response[object.user_id];
-    let sourceUser = object.user_id;
     console.log(trueAcls);
     let departTarget = object.depart_id;
     // const sourcedata = userAcls
@@ -777,19 +1012,20 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       set_acl_users(obj, usersToUpdate);
   }
 
-  const cmd_SetToDepartTemplate = (object, response) => {
+  const cmd_SetAllUsersInDepartFromTemplate = (object, response) => {
     let acl_data = [];
     console.log('COMMAND CALLBACK',object, response);
-    let trueAcls = response[object.user_id];
+    let trueAcls = response[object.depart_id];
     console.log(trueAcls);
+    let departTarget = object.depart_id;
     // const sourcedata = userAcls
       for (let i = 0; i < aclColumns.length; i++) {
         const column = aclColumns[i];
         for (let n = 0; n < eventTypes.length; n++) {
           const type = eventTypes[n];
           let value = false;
-          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
-          if (fo && fo.value == true){
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column.id && fitem.skud_current_state_id == type.id);
+          if (fo && fo.value === true){
             value = true;
           }
             acl_data.push(
@@ -801,7 +1037,68 @@ const toggleUsersOpen = (ev, id, dep_id) => {
             )
         }
       }
-      console.log('acl_data', acl_data) ;
+
+      let usersToUpdate = [];
+      let usersInDep = userCollection.filter(item => item.depart_id === departTarget);
+      let real_acl_data = [];
+      for (let i = 0; i < usersInDep.length; i++) {
+        const tuser = usersInDep[i];
+        usersToUpdate.push(tuser.id);
+        for (let n = 0; n < acl_data.length; n++) {
+          const acda = acl_data[n];
+          real_acl_data.push({
+                state_id: acda.state_id,
+                col_id: acda.col_id,
+                value: acda.value,
+                depart_id: tuser.depart_id,
+                user_id: tuser.id,
+          });
+        }
+      }
+      let obj = {
+        id_company: visibleCompany,
+        table: 'users',
+        acl_data: real_acl_data
+      };
+      set_acl_users(obj, usersToUpdate);
+  }
+
+
+  const cmd_SetToDepartTemplate = (object, response) => {
+    let acl_data = [];
+    console.log('COMMAND CALLBACK',object, response);
+    let trueAcls = response[object.user_id];
+    console.log(trueAcls);
+    // const sourcedata = userAcls
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column.id && fitem.skud_current_state_id == type.id);
+          if (fo && fo.value === true){
+            value = true;
+          }
+            acl_data.push(
+            {
+              depart_id: object.depart_id,
+              state_id: type.id,
+              col_id: column.id,
+              value: value,
+            }
+          )
+        }
+      }
+
+      let obj = {
+        id_company: visibleCompany,
+        table: 'templates',
+        acl_data: acl_data
+      };
+      console.log(obj);
+      set_acl_templates(obj, [object.depart_id]);
+
+      console.log('acl_data', acl_data);
   }
 
     // Set acls from source to all selected Users
@@ -827,6 +1124,53 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                 value: value,
                 // depart_id: depart_id,
                 // user_id: user_id,
+              }
+            )
+        }
+      }
+      let real_acl_data = [];
+      for (let i = 0; i < selectedUsers.length; i++) {
+        const usr_id = selectedUsers[i];
+        const dep = userCollection.find((item)=> item.id === usr_id)?.depart_id;
+        for (let n = 0; n < acl_data.length; n++) {
+          const acda = acl_data[n];
+          real_acl_data.push({
+                state_id: acda.state_id,
+                col_id: acda.col_id,
+                value: acda.value,
+                depart_id: dep,
+                user_id: usr_id,
+          });
+        }
+      };
+        let obj = {
+        id_company: visibleCompany,
+        table: 'users',
+        acl_data: real_acl_data
+      };
+      set_acl_users(obj, selectedUsers);
+  }
+
+  const cmd_SetAllUsersSelectedFromTemplate = (object, response) => {
+    let acl_data = [];
+    console.log('COMMAND CALLBACK',object, response);
+    let trueAcls = response[object.depart_id];
+    console.log(trueAcls);
+    // const sourcedata = userAcls
+      for (let i = 0; i < aclColumns.length; i++) {
+        const column = aclColumns[i];
+        for (let n = 0; n < eventTypes.length; n++) {
+          const type = eventTypes[n];
+          let value = false;
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id === column.id && fitem.skud_current_state_id === type.id);
+          if (fo && fo.value == true){
+            value = true;
+          }
+            acl_data.push(
+              {
+                state_id: type.id,
+                col_id: column.id,
+                value: value,
               }
             )
         }
@@ -1044,7 +1388,7 @@ useEffect(() => {
                             <div 
                               onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
                               className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkdser${item.id}_${item.id}`}>
-                              <div className='sk-tas-inwrap sk-tas-inwrap-depart'>
+                              <div className={`sk-tas-inwrap sk-tas-inwrap-depart ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource' : ''}`}>
                               <div><Checkbox
                                 checked={selectedDeparts.includes(item.id)}
                                 onChange={(ev)=>{handleDepartCheckbox(ev, item.id)}}
@@ -1061,29 +1405,71 @@ useEffect(() => {
                                     gridTemplateColumns: `repeat(${aclColumns.length}, 1fr)`,
                                   }}
                                 >
-                                {aclColumns.map((item)=>(
+                                {aclColumns.map((itemcol)=>(
                                       <div 
                                         className='sk-table-aclskud-cell'
-                                        style={{background: `${item.color}26`}}
-                                        title={item.text}
+                                        style={{background: `${itemcol.color}26`}}
+                                        title={itemcol.text}
                                       >
-                                        <div><div></div></div>
+                                          
+                                        {openedTemplates.includes(item.id) && (
+                                              <div className='sk-false-check'
+                                                onMouseDown={(ev)=>{setColumnChecked(ev, 'templates', itemcol.id, null, item.id)}}
+                                              >
+                                              <div>
+                                                <CheckOutlined />
+                                               </div>
+                                              </div>
+                                            )}
                                       
                                       </div>
                                     ))}
                                 </div>
                               </div>
                               <div className='sk-flex sk-table-triggers'>
+
+
                                 <div title='Пользователи отдела'
                                   className={`${openedDeparts.includes(item.id) ? 'sk-trigger-active' : ''}`}
                                   onMouseDown={(ev)=>{toggleDepartsOpen(ev, item.id)}}
-                                ><UserSwitchOutlined /> <span className={'sk-count-badge'}>{count_users_in}</span></div>
+                                ><UserSwitchOutlined /> 
+                                    {!openedTemplates.includes(item.id) && (
+                                    <span className={'sk-count-badge'}>{count_users_in}</span>
+                                  )}
+                                </div>
+
                                 <div title='Шаблон отдела'
                                 className={`${openedTemplates.includes(item.id) ? 'sk-trigger-active' : ''}`}
                                   onMouseDown={(ev)=>{toggleTemplatesOpen(ev, item.id)}}
                                 ><BuildOutlined /></div>
+                                {openedTemplates.includes(item.id) && (
+                                  <>
+                                    {copySource && copySource.type === 'templates' && copySource.id === item.id ? (
+                                    <div className='sk-mitem-extra-button'
+                                      onClick={()=>{setCopySource(null); setCopyBuffer(null)}}
+                                      title={"очистить буфер копирования"}
+                                    >
+                                      <CloseOutlined />
+                                    </div>
+                                  ) : (
+                                    <Dropdown menu={{items: templateMenuItems,
+                                      onClick: (info) => handleUserSubMenuClick(null, item.id, info)
+                                    }}
+                                      onClick={(ev)=>{console.log(ev)}}
+                                    >
+                                  <div className='sk-tablerow-toggle-menu'>
+                                      <BarsOutlined />
+                                  </div>
+                                    </Dropdown>
+                                      )}
+                                    </>
+                                )}
                                 {/* <div title='Очистить строку' ><ClearOutlined /></div> */}
                               </div>
+                                  
+
+
+
                               </div>
                             </div>
 
@@ -1091,13 +1477,15 @@ useEffect(() => {
                             { openedTemplates.includes(item.id) && (
                               <div className='sk-act-templaterow'>
                                   {eventTypes.map(typyrow => {
-                                    const localDepartAcls = departAcls[item.id]?.filter(itemt => itemt.skud_current_state_id === typyrow.id);
+                                    const localDepartAcls = templateAcls[item.id]?.filter(itemt => itemt.skud_current_state_id === typyrow.id);
                                     return(
                                 <div 
                                   className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checktempl${item.id}_${typyrow.id}`}>
                                   <div className='sk-tas-inwrap'>
-                                  <div><Checkbox /></div>
-                                  <div><div>{typyrow.id}</div></div>
+                                  <div></div>
+                                  <div>
+                                    {/* <div>{typyrow.id}</div> */}
+                                    </div>
                                   <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                     <span>{typyrow.title}</span>
                                     </div></div>
@@ -1112,7 +1500,7 @@ useEffect(() => {
                                       return (
                                           <div 
                                             className='sk-table-aclskud-cell'
-                                            style={{background: `${item.color}26`}}
+                                            style={{background: `${accolum.color}26`}}
                                             title={accolum.text}
                                           >
                                             <div><div><AclCheckbox
@@ -1120,7 +1508,7 @@ useEffect(() => {
                                               column_id={accolum.id}
                                               row_id={typyrow.id}
                                               depart_id={current_depart}
-                                              onToggle={toggleSingleChecboxUser}
+                                              onToggle={toggleSingleChecboxTemplate}
                                               checked={localMainCheck ? localMainCheck.value : false}
                                              /></div></div>
                                           
@@ -1129,18 +1517,24 @@ useEffect(() => {
                                     </div>
                                   </div>
                                   <div className='sk-flex sk-table-triggers'>
+                                    <div className='sk-false-check'
+                                      title={'Нажать для заполнения строки ИЛИ зажать нажать с CTRL для очистки строки'}
+                                      onMouseDown={(ev)=>{setRowChecked(ev, 'templates', typyrow.id, null, item.id)}}
+                                    >
+                                      <div>
+                                        <CheckOutlined />
+                                      </div>
+                                    </div>
+                                    <div>
+                                    </div>
                                     </div>
                                 </div>
                                 </div>
                                   )})}
                                 <div className={'sk-table-template-control'}>
                                   <div></div>
-                                  <div className='sk-flex'>
-                                    <div className={'sk-table-template-control-button'}>Установить шаблон всем в отделе</div>
-                                    <div className={'sk-table-template-control-button'}>Скопировать шаблон</div>
-                                    <div className={'sk-table-template-control-button'}>Вставить шаблон</div>
-                                    <div className={'sk-table-template-control-button'}>Установить выделенные всем</div>
-                                    <div className={'sk-table-template-control-button'}>Установить снятые всем</div>
+                                  <div className='sk-flex' style={{color: 'gray', padding: '4px'}}>
+                                    Шаблоны применяются автоматически при создании пользователя или переводе его в другой отдел.
                                   </div>
                                   <div></div>
                                 </div>
@@ -1211,7 +1605,7 @@ useEffect(() => {
                                   {copySource && copySource.type === 'users' && copySource.id === user.id ? (
                                     <div className='sk-mitem-extra-button'
                                       onClick={()=>{setCopySource(null); setCopyBuffer(null)}}
-                                      title={"очистить буфек копирования"}
+                                      title={"очистить буфер копирования"}
                                     >
                                       <CloseOutlined />
                                     </div>
@@ -1238,7 +1632,9 @@ useEffect(() => {
                                           className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checktempl${item.id}_${type.id}`}>
                                           <div className='sk-tas-inwrap'>
                                           <div></div>
-                                          <div><div>{type.id}</div></div>
+                                          <div>
+                                            {/* <div>{type.id}</div> */}
+                                            </div>
                                           <div className={'sk-table-aclskud-row-name'}
                                             title={type.text}
                                           ><div className={'sk-flex-space'}>
