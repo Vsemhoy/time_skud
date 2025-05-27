@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useId, useRef } from 'react';
 import './components/style/aclskud2.css';
-import { BarsOutlined, BuildOutlined, CheckCircleOutlined, CheckOutlined, ClearOutlined, CloseCircleOutlined, ClusterOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DiffOutlined, DownSquareOutlined, EditOutlined, EyeOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { BarsOutlined, BuildOutlined, CheckCircleOutlined, CheckOutlined, ClearOutlined, CloseCircleOutlined, CloseOutlined, ClusterOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DiffOutlined, DownSquareOutlined, EditOutlined, EyeOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 import { Affix, Checkbox, Dropdown, Radio, Select, Tabs } from 'antd';
 import { CSRF_TOKEN, PRODMODE } from '../../../CONFIG/config';
@@ -42,6 +42,7 @@ const AclSkudPage2 = (props) => {
     const prevOpenedTemplates = useRef([]);
 
     const [copyBuffer, setCopyBuffer] = useState([]);
+    const [copySource, setCopySource] = useState(null)
 
     const [selectedDeparts, setselectedDeparts] = useState([]);
     const [selectedDepartsInermed, setselectedDepartsIntermed] = useState([]);
@@ -75,24 +76,24 @@ const AclSkudPage2 = (props) => {
       {
         key: 'u_cmd_set_access_to_depart',
         label: (
-          <div>
-            Установить всем в отделе
+          <div className='sk-mitem-special'>
+            Установить эти доступы всем в отделе 
           </div>
         ),
       },
       {
         key: 'u_cmd_set_access_to_template',
         label: (
-          <div>
-            Установить в шаблон
+          <div className='sk-mitem-special'>
+            Установить эти доступы в шаблон 
           </div>
         ),
       },
       {
         key: 'u_cmd_set_access_all_selected',
         label: (
-          <div>
-            Установить всем выделенным
+          <div className='sk-mitem-special'>
+            Установить эти доступы  всем выделенным
           </div>
         ),
       },
@@ -121,10 +122,14 @@ const AclSkudPage2 = (props) => {
     }, []);
 
     useEffect(() => {
-        // get_departments();
-        // get_users();
+        setUserAcls([]);
+        get_users_acls(openedUsers);
     }, [visibleCompany]);
 
+
+    useEffect(() => {
+      console.log(copyBuffer);
+    }, [copyBuffer]);
 
 
     useEffect(() => {
@@ -231,18 +236,34 @@ const AclSkudPage2 = (props) => {
       }
   }
 
-  const get_temlate_acls = async (filters, req, res) => {
+  const get_temlate_acls = async (items, callbackFn = null, callbackData = null) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getaclentits', 
-              {
-                  data: {
-                      id_company: visibleCompany
-                  },
-                  _token: CSRF_TOKEN
-              });
-              if (response && response.data){
-              //   setBaseUserCollection(response.data.content);
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getaclentits', 
+          {
+              data: {
+                departs: items,
+                table: 'users',
+                id_company: visibleCompany
+              },
+              _token: CSRF_TOKEN
+          });
+          if (response && response.data){
+          //   setBaseUserCollection(response.data.content);
+            // setUserAcls(prev => [...prev, response.data.content]);
+            if (callbackFn){
+              callbackFn(callbackData, response.data.content);  
+            }
+
+            let prev = JSON.parse(JSON.stringify(userAcls));
+            console.log(response.data.content);
+            for (const key in response.data.content) {
+              if (Object.prototype.hasOwnProperty.call(response.data.content, key)) {
+                const element = response.data.content[key];
+                prev[key] = element;
               }
+            }
+            setUserAcls(prev);
+          }
       } catch (e) {
           console.log(e)
       } finally {
@@ -286,6 +307,27 @@ const AclSkudPage2 = (props) => {
   }
 
 
+
+  const set_acl_templates = async (dataset, itemToUpdate = [], req, res) => {
+    try {
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/setacls', 
+            {
+                data: dataset,
+                _token: CSRF_TOKEN
+            });
+            if (response && response.data){
+              // Если в массиве юзеры, то их нужно перегрузить
+                if (itemToUpdate.length){
+                  console.log('USERS TO UPDATE', itemToUpdate);
+                  get_temlate_acls(itemToUpdate);
+                }
+            }
+    } catch (e) {
+        console.log(e)
+    } finally {
+        // setLoadingOrgs(false)
+    }
+}
 
       const set_acl_users = async (dataset, usersToUpdate = [], req, res) => {
         try {
@@ -333,7 +375,6 @@ const toggleTemplatesOpen = (ev, id) => {
         let nt = [];
         for (let i = 0; i < departments.length; i++) {
           nt.push(departments[i].id);
-          
         }
         setOpenedTemplates(nt);
       }
@@ -349,6 +390,25 @@ const toggleTemplatesOpen = (ev, id) => {
     });
   }
 };
+
+  // Отслеживаем что изменилось в списке открытых templates и делаем запрос на их получение
+  useEffect(() => {
+    const added = openedTemplates.filter(id => !prevOpenedTemplates.current.includes(id));
+    const removed = prevOpenedTemplates.current.filter(id => !openedTemplates.includes(id));
+
+    if (added.length > 0) {
+      console.log('Добавились:', added);
+      get_temlate_acls(added);
+    }
+    if (removed.length > 0) {
+      console.log('Удалились:', removed);
+    }
+
+    prevOpenedTemplates.current = openedDeparts;
+  }, [openedTemplates]);
+
+
+
 
 const toggleDepartsOpen = (ev, id) => {
   console.log('ev', ev)
@@ -375,6 +435,8 @@ const toggleDepartsOpen = (ev, id) => {
   }
 };
 
+
+
 // Если открывается целый отдел, а внутри есть открытые юзера их надо перегрузить с сервера
 const refreshUsersForDeparts = (departs) => {
   let user_ids = [];
@@ -393,6 +455,9 @@ const refreshUsersForDeparts = (departs) => {
     get_users_acls(user_ids);
   }
 };
+
+
+
 
 
 const toggleUsersOpen = (ev, id, dep_id) => {
@@ -428,6 +493,8 @@ const toggleUsersOpen = (ev, id, dep_id) => {
     });
   }
 };
+
+
 
 
   const toggleDoubleClickDepart = (row_id) => {
@@ -605,14 +672,15 @@ const toggleUsersOpen = (ev, id, dep_id) => {
     console.log('COMMAND CALLBACK',object, response);
     let trueAcls = response[object.user_id];
     console.log(trueAcls);
+    setCopySource({id: object.user_id, type: 'users'});
     // const sourcedata = userAcls
       for (let i = 0; i < aclColumns.length; i++) {
         const column = aclColumns[i];
         for (let n = 0; n < eventTypes.length; n++) {
           const type = eventTypes[n];
           let value = false;
-          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
-          if (fo && fo.value == true){
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id === column.id && fitem.skud_current_state_id === type.id);
+          if (fo && fo.value === true){
             value = true;
           }
             acl_data.push(
@@ -653,6 +721,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         table: 'users',
         acl_data: acl_data
       };
+      console.log(obj);
       set_acl_users(obj, [user_id]);
   }
 
@@ -669,8 +738,8 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         for (let n = 0; n < eventTypes.length; n++) {
           const type = eventTypes[n];
           let value = false;
-          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
-          if (fo && fo.value == true){
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column.id && fitem.skud_current_state_id == type.id);
+          if (fo && fo.value === true){
             value = true;
           }
             acl_data.push(
@@ -684,7 +753,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       }
 
       let usersToUpdate = [];
-      let usersInDep = userCollection.filter(item => item.depart_id == departTarget);
+      let usersInDep = userCollection.filter(item => item.depart_id === departTarget);
       let real_acl_data = [];
       for (let i = 0; i < usersInDep.length; i++) {
         const tuser = usersInDep[i];
@@ -705,7 +774,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         table: 'users',
         acl_data: real_acl_data
       };
-      set_acl_users(obj, [usersToUpdate]);
+      set_acl_users(obj, usersToUpdate);
   }
 
   const cmd_SetToDepartTemplate = (object, response) => {
@@ -747,7 +816,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         for (let n = 0; n < eventTypes.length; n++) {
           const type = eventTypes[n];
           let value = false;
-          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id == column && fitem.skud_current_state_id == type);
+          let fo = trueAcls.find((fitem)=> fitem.skud_acl_column_id === column.id && fitem.skud_current_state_id === type.id);
           if (fo && fo.value == true){
             value = true;
           }
@@ -782,7 +851,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         table: 'users',
         acl_data: real_acl_data
       };
-      set_acl_users(obj, [selectedUsers]);
+      set_acl_users(obj, selectedUsers);
   }
   /* -------------------------- MENU HANDLERS END --------------------- */
 
@@ -865,7 +934,9 @@ const toggleUsersOpen = (ev, id, dep_id) => {
     };
   }
 
-
+useEffect(() => {
+  console.log(copySource);
+}, [copySource]);
 
 /* -------------------------- CHECKBOX HANDLERS END --------------------- */
 
@@ -1019,15 +1090,16 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
                             { openedTemplates.includes(item.id) && (
                               <div className='sk-act-templaterow'>
-                                  {eventTypes.map(type => (
-                                    
+                                  {eventTypes.map(typyrow => {
+                                    const localDepartAcls = departAcls[item.id]?.filter(itemt => itemt.skud_current_state_id === typyrow.id);
+                                    return(
                                 <div 
-                                  className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checktempl${item.id}_${type.id}`}>
+                                  className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checktempl${item.id}_${typyrow.id}`}>
                                   <div className='sk-tas-inwrap'>
                                   <div><Checkbox /></div>
-                                  <div><div>{type.id}</div></div>
+                                  <div><div>{typyrow.id}</div></div>
                                   <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
-                                    <span>{type.title}</span>
+                                    <span>{typyrow.title}</span>
                                     </div></div>
                                   <div>
                                     <div className={'sk-table-aclskud-multicol2'}
@@ -1035,25 +1107,32 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                                         gridTemplateColumns: `repeat(${aclColumns.length}, 1fr)`,
                                       }}
                                     >
-                                    {aclColumns.map((item)=>(
+                                    {aclColumns.map((accolum)=>{
+                                      const localMainCheck = localDepartAcls?.find((iteme) => iteme.skud_acl_column_id === accolum.id);
+                                      return (
                                           <div 
                                             className='sk-table-aclskud-cell'
                                             style={{background: `${item.color}26`}}
-                                            title={item.text}
+                                            title={accolum.text}
                                           >
                                             <div><div><AclCheckbox
-
+                                              user_id={null}
+                                              column_id={accolum.id}
+                                              row_id={typyrow.id}
+                                              depart_id={current_depart}
+                                              onToggle={toggleSingleChecboxUser}
+                                              checked={localMainCheck ? localMainCheck.value : false}
                                              /></div></div>
                                           
                                           </div>
-                                        ))}
+                                        )})}
                                     </div>
                                   </div>
                                   <div className='sk-flex sk-table-triggers'>
                                     </div>
                                 </div>
                                 </div>
-                                  ))}
+                                  )})}
                                 <div className={'sk-table-template-control'}>
                                   <div></div>
                                   <div className='sk-flex'>
@@ -1079,7 +1158,11 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                                     <div 
                                       onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
                                       className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkusr${item.id}_${user.id}`}>
-                                      <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}`}>
+
+                                      <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}
+                                       ${copySource && copySource.type === 'users' && copySource.id === user.id ? 'sk-copysource' : ''}`}>
+
+
                                       <div><Checkbox
                                         checked={selectedUsers.includes(user.id)}
                                         onChange={(val)=>{handleUserCheckbox(val, user.id)}}
@@ -1125,15 +1208,24 @@ const toggleUsersOpen = (ev, id, dep_id) => {
                                       <ClusterOutlined />
                                     )}
                                   </div>
-                                    <div>
+                                  {copySource && copySource.type === 'users' && copySource.id === user.id ? (
+                                    <div className='sk-mitem-extra-button'
+                                      onClick={()=>{setCopySource(null); setCopyBuffer(null)}}
+                                      title={"очистить буфек копирования"}
+                                    >
+                                      <CloseOutlined />
+                                    </div>
+                                  ) : (
                                       <Dropdown menu={{items: rowMenuItems,
                                         onClick: (info) => handleUserSubMenuClick(user.id, item.id, info)
                                       }}
                                         onClick={(ev)=>{console.log(ev)}}
                                       >
+                                    <div className='sk-tablerow-toggle-menu'>
                                         <BarsOutlined />
-                                      </Dropdown>
                                     </div>
+                                      </Dropdown>
+                                  )}
                                 </div>
                                 </div>
                                  <div className={'sk-aclskud-row-inner'}>

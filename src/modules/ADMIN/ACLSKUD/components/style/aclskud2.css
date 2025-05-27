@@ -52,7 +52,10 @@
     padding-left: 6px;
 }
 .sk-table-triggers span {
-    opacity: 0.4;
+    opacity: 0.6;
+}
+.sk-table-triggers > div {
+    min-height: 90%;
 }
 .sk-table-triggers .sk-trigger-active span {
     opacity: 1;
@@ -169,4 +172,26 @@
 }
 .sk-tas-inwrap-depart {
     background-color: var(--row-divider-color);
+}
+
+.sk-copysource {
+    outline: 2px solid var(--row-self-accent-color_2);
+}
+.sk-mitem-extra-button {
+    background: var(--row-self-accent-color_2);
+    height: 100%;
+    color: white;
+    font-size: large;
+}
+.sk-mitem-special {
+    color: #076ca9;
+}
+.sk-tablerow-toggle-menu {
+    background-color: #e0e0e0;
+    height: 100%;
+    box-shadow: 1px 2px 4px #00000030;
+    transition: all 0.2s;
+}
+.sk-tablerow-toggle-menu:hover {
+    box-shadow: 1px 2px 7px #00000070;
 }
