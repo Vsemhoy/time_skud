@@ -179,11 +179,11 @@ const ScheduleManagerModal= (props) => {
           setFormStart(dayjs().startOf('day').add(1, 'day'));
         };
 
-        if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
-          setFormEnd(dayjs().endOf('day'));
-        };
-  
         if (formEnd){
+          if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
+            setFormEnd(dayjs().endOf('day'));
+          };
+          
           let a = formStart.unix();
           let b = formEnd.unix();
           console.log('item time', a, b, 'today time');
@@ -833,12 +833,13 @@ const TableRowItem = (props) => {
 
   useEffect(()=>{
     if (editMode){
-      if (endTime.endOf('day').unix() < dayjs().endOf('day').unix()){
-        // setStartTime(dayjs().startOf('day').add(1, 'day'));
-        setEndTime(dayjs().endOf('day'));
-      };
-
+      
       if (endTime){
+        if (endTime.endOf('day').unix() < dayjs().endOf('day').unix()){
+          // setStartTime(dayjs().startOf('day').add(1, 'day'));
+          setEndTime(dayjs().endOf('day'));
+        };
+
         let a = startTime.unix();
         let b = endTime.unix();
         if (a > b)
@@ -946,6 +947,7 @@ const TableRowItem = (props) => {
             value={startTime}
             onChange={(val)=>{setStartTime(val)}}
             onKeyDown={(event)=> {handleKeyDown(event, setStartTime)} }
+            placeholder='Начальная дата'
           />
         ):(
           startTime.format("DD-MM-YYYY")
@@ -957,6 +959,7 @@ const TableRowItem = (props) => {
             value={endTime}
             onChange={(val)=>{setEndTime(val)}}
             onKeyDown={(event)=> {handleKeyDown(event, setEndTime)} }
+            placeholder='Конечная дата'
           />
         ):(
           endTime ? endTime.format("DD-MM-YYYY") : " - - - "

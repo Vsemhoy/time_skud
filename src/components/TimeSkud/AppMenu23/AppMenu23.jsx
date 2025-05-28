@@ -172,12 +172,6 @@ const AppMenu23 = (props) => {
 
           <Menu.SubMenu key="menu634" title="Админ">
             <MenuItem
-            key={'/admin/aclold'}>
-                <NavLink to="admin/aclold">
-                  СКУД права старые
-                </NavLink>
-            </MenuItem>
-            <MenuItem
             key={'/admin/aclskud'}>
                 <NavLink to="admin/aclskud">
                   СКУД доступы и права

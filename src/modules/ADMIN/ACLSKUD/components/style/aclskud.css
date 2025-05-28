@@ -98,10 +98,10 @@
 .sk-act-templaterow {
     background-color: #ffc10721;
 }
-
+/* 
 .sk-table-aclskud-row:hover .sk-aclchecker {
     border: 1px solid rgba(128, 128, 128, 0.452);
-}
+} */
 .sk-row-wrapper-of-template {
     outline: 1px solid rgba(128, 128, 128, 0.295);
     box-shadow: 1px 1px 16px rgba(0, 0, 0, 0.274);

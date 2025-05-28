@@ -1359,7 +1359,7 @@ useEffect(() => {
                                     {aclColumns.map((item)=>(
                                       <div 
                                       className='sk-table-aclskud-cell'
-                                        style={{background: `${item.color}26`}}
+                                        // style={{background: `${item.color}26`}}
                                         title={item.text}
                                       >
                                         <div>
@@ -1384,47 +1384,30 @@ useEffect(() => {
                             const count_users_in = userCollection.filter((user)=> user.depart_id === item.id).length;
                             const current_depart = item.id;
                             return (
-                            <div className={`${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "}`}>
+                            <div className={`sk-rdepart-section ${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "} ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource-tpl' : ''}`}>
                             <div 
                               onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
                               className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkdser${item.id}_${item.id}`}>
-                              <div className={`sk-tas-inwrap sk-tas-inwrap-depart ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource' : ''}`}>
+                              <div className={`sk-tas-inwrap sk-tas-inwrap-depart`}>
                               <div><Checkbox
                                 checked={selectedDeparts.includes(item.id)}
                                 onChange={(ev)=>{handleDepartCheckbox(ev, item.id)}}
                                 disabled={count_users_in === 0}
                                 indeterminate={selectedDepartsInermed.includes(item.id)}
                               /></div>
-                              <div><div><span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#3e6c93'}`}}>{item.id}</span></div></div>
+                              <div><div><span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#0000008f'}`}}>{item.id}</span></div></div>
                               <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
-                                <span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#3e6c93'}`}}>{item.name}</span>
+                                <span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#0000008f'}`}}>{item.name}</span>
                                 </div></div>
-                              <div>
-                                <div className={'sk-table-aclskud-multicol2'}
-                                 style={{
-                                    gridTemplateColumns: `repeat(${aclColumns.length}, 1fr)`,
-                                  }}
-                                >
-                                {aclColumns.map((itemcol)=>(
-                                      <div 
-                                        className='sk-table-aclskud-cell'
-                                        style={{background: `${itemcol.color}26`}}
-                                        title={itemcol.text}
-                                      >
-                                          
-                                        {openedTemplates.includes(item.id) && (
-                                              <div className='sk-false-check'
-                                                onMouseDown={(ev)=>{setColumnChecked(ev, 'templates', itemcol.id, null, item.id)}}
-                                              >
-                                              <div>
-                                                <CheckOutlined />
-                                               </div>
-                                              </div>
-                                            )}
-                                      
-                                      </div>
-                                    ))}
-                                </div>
+                              <div className={'sk-table-aclskud-multicol2'}>
+                                {aclColumns.map((item_acco)=>(
+                                          <div 
+                                            className='sk-table-aclskud-cell'
+                                            title={item_acco.code}
+                                          >
+                                            
+                                          </div>
+                                        ))}
                               </div>
                               <div className='sk-flex sk-table-triggers'>
 
@@ -1444,25 +1427,8 @@ useEffect(() => {
                                 ><BuildOutlined /></div>
                                 {openedTemplates.includes(item.id) && (
                                   <>
-                                    {copySource && copySource.type === 'templates' && copySource.id === item.id ? (
-                                    <div className='sk-mitem-extra-button'
-                                      onClick={()=>{setCopySource(null); setCopyBuffer(null)}}
-                                      title={"очистить буфер копирования"}
-                                    >
-                                      <CloseOutlined />
-                                    </div>
-                                  ) : (
-                                    <Dropdown menu={{items: templateMenuItems,
-                                      onClick: (info) => handleUserSubMenuClick(null, item.id, info)
-                                    }}
-                                      onClick={(ev)=>{console.log(ev)}}
-                                    >
-                                  <div className='sk-tablerow-toggle-menu'>
-                                      <BarsOutlined />
-                                  </div>
-                                    </Dropdown>
-                                      )}
-                                    </>
+                                    
+                                  </>
                                 )}
                                 {/* <div title='Очистить строку' ><ClearOutlined /></div> */}
                               </div>
@@ -1474,8 +1440,66 @@ useEffect(() => {
                             </div>
 
 
+
                             { openedTemplates.includes(item.id) && (
                               <div className='sk-act-templaterow'>
+                                <div className={'sk-table-template-control sk-template-header-row '} >
+                                  <div></div>
+                                  <div className={'sk-flex sk-template-header-title'} >
+                                    Шаблон отдела
+                                  </div>
+                                  <div>
+                                  <div className={'sk-table-aclskud-multicol2'}
+                                 style={{
+                                    gridTemplateColumns: `repeat(${aclColumns.length}, 1fr)`,
+                                  }}
+                                >
+                                {aclColumns.map((itemcol)=>(
+                                      <div 
+                                        className='sk-table-aclskud-cell'
+                                        // style={{background: `${itemcol.color}26`}}
+                                        title={itemcol.text}
+                                      >
+                                          
+                                        {openedTemplates.includes(item.id) && (
+                                              <div className='sk-false-check'
+                                                onMouseDown={(ev)=>{setColumnChecked(ev, 'templates', itemcol.id, null, item.id)}}
+                                              >
+                                              <div>
+                                                <CheckOutlined />
+                                               </div>
+                                              </div>
+                                            )}
+                                      
+                                      </div>
+                                    ))}
+                                </div>
+                                  </div>
+                                  <div className='sk-flex sk-table-triggers'>
+                                    <div></div>
+
+                                    {copySource && copySource.type === 'templates' && copySource.id === item.id ? (
+                                      <div className='sk-mitem-extra-button'
+                                        onClick={()=>{setCopySource(null); setCopyBuffer(null)}}
+                                        title={"очистить буфер копирования"}
+                                          >
+                                            <CloseOutlined />
+                                          </div>
+                                        ) : (
+                                          <Dropdown menu={{items: templateMenuItems,
+                                            onClick: (info) => handleUserSubMenuClick(null, item.id, info)
+                                          }}
+                                            onClick={(ev)=>{console.log(ev)}}
+                                          >
+                                        <div className='sk-tablerow-toggle-menu'>
+                                            <BarsOutlined />
+                                        </div>
+                                          </Dropdown>
+                                      )}
+                                 
+                                    </div>
+                                </div>
+
                                   {eventTypes.map(typyrow => {
                                     const localDepartAcls = templateAcls[item.id]?.filter(itemt => itemt.skud_current_state_id === typyrow.id);
                                     return(
@@ -1500,7 +1524,7 @@ useEffect(() => {
                                       return (
                                           <div 
                                             className='sk-table-aclskud-cell'
-                                            style={{background: `${accolum.color}26`}}
+                                            // style={{background: `${accolum.color}26`}}
                                             title={accolum.text}
                                           >
                                             <div><div><AclCheckbox
@@ -1542,6 +1566,8 @@ useEffect(() => {
                             )}
 
 
+
+
                             
                             { openedDeparts.includes(item.id) && (
                               <div>
@@ -1550,11 +1576,11 @@ useEffect(() => {
                                   const userLocalAcls = userAcls[user.id] ? userAcls[user.id] : [];
                                   return (
                                     <div 
-                                      onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
-                                      className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkusr${item.id}_${user.id}`}>
+                                      className={`sk-table-aclskud-row sk-table-aclskud-data ${copySource && copySource.type === 'users' && copySource.id === user.id ? 'sk-copysource' : ''}`} key={`checkusr${item.id}_${user.id}`}>
 
-                                      <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}
-                                       ${copySource && copySource.type === 'users' && copySource.id === user.id ? 'sk-copysource' : ''}`}>
+                                      <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}`}
+                                       onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
+                                       >
 
 
                                       <div><Checkbox
@@ -1574,7 +1600,7 @@ useEffect(() => {
                                         {aclColumns.map((item_acco)=>(
                                           <div 
                                             className='sk-table-aclskud-cell'
-                                            style={{background: `${item_acco.color}26`}}
+                                            // style={{background: `${item_acco.color}26`}}
                                             title={'Нажать для заполнения колонки ИЛИ зажать нажать с CTRL для очистки колонки'}
                                           >
                                             {openedUsers.includes(user.id) && (
@@ -1651,7 +1677,7 @@ useEffect(() => {
                                               return (
                                                   <div 
                                                     className='sk-table-aclskud-cell'
-                                                    style={{background: `${acc_item.color}26`}}
+                                                    // style={{background: `${acc_item.color}26`}}
                                                     title={acc_item.text}
                                                   >
                                                     <div><div><AclCheckbox

@@ -39,7 +39,7 @@ import ClaimManagerPage from './modules/CLAIM_MANAGER_SK/ClaimManagerPage';
 
 import useWebSocket from 'react-use-websocket';
 import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
-import AclSkud from './modules/ADMIN/ACLSKUD/AclSkudPage';
+
 import AclSkudPage2 from './modules/ADMIN/ACLSKUD/AclSkudPage2';
 const WS_URL = 'ws://192.168.1.16:5002';
 
@@ -301,7 +301,7 @@ function App() {
        <AppMenu23 
         user_act={userAct}
        />
-      <h1>{BASE_ROUTE}</h1>
+   
 
       {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && (
         <Alert
@@ -379,7 +379,6 @@ function App() {
             <Route path={BASE_ROUTE + '/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
 
 
-            <Route path={BASE_ROUTE + '/admin/aclold'}  element={<AclSkud userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />            
             
 
@@ -399,7 +398,6 @@ function App() {
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
 
 
-            <Route path={'/admin/aclold'}  element={<AclSkud userdata={userAct}/>} />
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
           </Routes>
           

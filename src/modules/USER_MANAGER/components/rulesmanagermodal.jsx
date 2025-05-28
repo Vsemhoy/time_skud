@@ -144,11 +144,11 @@ const RulesManagerModal= (props) => {
           setFormStart(dayjs().startOf('day').add(1, 'day'));
         };
 
-        if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
-          setFormEnd(dayjs().endOf('day'));
-        };
-  
         if (formEnd){
+          if (formEnd.endOf('day').unix() < dayjs().endOf('day').unix()){
+            setFormEnd(dayjs().endOf('day'));
+          };
+          
           let a = formStart.unix();
           let b = formEnd.unix();
           console.log('item time', a, b, 'today time');
