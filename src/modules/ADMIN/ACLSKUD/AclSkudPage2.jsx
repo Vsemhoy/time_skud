@@ -167,8 +167,13 @@ const AclSkudPage2 = (props) => {
     useEffect(() => {
         setUserAcls([]);
         setTemplateAcls([]);
-        get_users_acls(openedUsers);
-        get_temlate_acls(openedTemplates);
+        if (openedUsers.length){
+          get_users_acls(openedUsers);
+        };
+        if (openedTemplates.length){
+          get_temlate_acls(openedTemplates);
+        }
+
     }, [visibleCompany]);
 
 
@@ -396,6 +401,27 @@ const AclSkudPage2 = (props) => {
     }
 
 
+    const set_mass_acl_users = async (dataset, usersToUpdate = [], req, res) => {
+      try {
+          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/setmassuseracls', 
+              {
+                  data: dataset,
+                  _token: CSRF_TOKEN
+              });
+              if (response && response.data){
+                // Если в массиве юзеры, то их нужно перегрузить
+                  if (usersToUpdate.length){
+                    console.log('USERS TO UPDATE', usersToUpdate);
+                    get_users_acls(usersToUpdate);
+                  }
+              }
+      } catch (e) {
+          console.log(e)
+      } finally {
+          // setLoadingOrgs(false)
+      }
+  }
+
     /** ------------------ FETCHES END ---------------- */
 
 
@@ -577,7 +603,6 @@ const toggleUsersOpen = (ev, id, dep_id) => {
           {
             state_id: element.id,
             col_id: column,
-            depart_id: dep_id,
             user_id: user_id,
             value: checked,
           }
@@ -634,7 +659,6 @@ const toggleUsersOpen = (ev, id, dep_id) => {
           {
             state_id: row_id,
             col_id: element.id,
-            depart_id: dep_id,
             user_id: user_id,
             value: checked,
           }
@@ -674,9 +698,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
       
   }
 
-  const toggleSingleChecboxUser = (ev, user_id, depart_id, column_id, row_id, state) => {
-    console.log(user_id, column_id, row_id, state);
-
+  const toggleSingleChecboxUser = (ev, user_id, column_id, row_id, state) => {
     let obj = {
       id_company: visibleCompany,
       table: 'users',
@@ -684,13 +706,12 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         {
           state_id: row_id,
           col_id: column_id,
-          depart_id: depart_id,
           user_id: user_id,
           value: state,
         }
       ]
     };
-    set_acl_users(obj);
+    set_acl_users(obj, [user_id]);
   }
 
 
@@ -698,9 +719,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
   
 
-  const toggleSingleChecboxTemplate = (ev, user_id, depart_id, column_id, row_id, state) => {
-    console.log(user_id, column_id, row_id, state);
-
+  const toggleSingleChecboxTemplate = (ev, user_id, column_id, row_id, state, depart_id) => {
     let obj = {
       id_company: visibleCompany,
       table: 'templates',
@@ -714,7 +733,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         }
       ]
     };
-    set_acl_templates(obj);
+    set_acl_templates(obj, [depart_id]);
   }
 
 
@@ -790,8 +809,8 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
   /* -------------------------- MENU HANDLERS --------------------- */
   // Очистка всех чекбоксов юзера
-  const cmd_ClearUserAccesses = (user_id, depart_id) => {
-    console.log(user_id, depart_id);
+  const cmd_ClearUserAccesses = (user_id) => {
+    // console.log(user_id, depart_id);
     let acl_data = [];
       for (let i = 0; i < aclColumns.length; i++) {
         const column = aclColumns[i];
@@ -801,7 +820,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
               {
                 state_id: type.id,
                 col_id: column.id,
-                depart_id: depart_id,
+                // depart_id: depart_id,
                 user_id: user_id,
                 value: false,
               }
@@ -900,12 +919,12 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
 
 
-    const cmd_PasteUserAccesses = (user_id, depart_id) => {
+    const cmd_PasteUserAccesses = (user_id) => {
       if (copyBuffer.length == 0){
         alert("Нет данных для вставки :(");
         return;
       };
-    console.log(user_id, depart_id);
+    
        let acl_data = [];
       for (let i = 0; i < copyBuffer.length; i++) {
         const buffer = copyBuffer[i];
@@ -914,7 +933,7 @@ const toggleUsersOpen = (ev, id, dep_id) => {
               {
                 state_id: buffer.state_id,
                 col_id: buffer.col_id,
-                depart_id: depart_id,
+                // depart_id: depart_id,
                 user_id: user_id,
                 value: buffer.value,
               }
@@ -987,29 +1006,16 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         }
       }
 
-      let usersToUpdate = [];
       let usersInDep = userCollection.filter(item => item.depart_id === departTarget);
-      let real_acl_data = [];
-      for (let i = 0; i < usersInDep.length; i++) {
-        const tuser = usersInDep[i];
-        usersToUpdate.push(tuser.id);
-        for (let n = 0; n < acl_data.length; n++) {
-          const acda = acl_data[n];
-          real_acl_data.push({
-                state_id: acda.state_id,
-                col_id: acda.col_id,
-                value: acda.value,
-                depart_id: tuser.depart_id,
-                user_id: tuser.id,
-          });
-        }
-      }
+      let usersToUpdate = usersInDep.map(item => item.id);
+
       let obj = {
+        users: usersToUpdate,
         id_company: visibleCompany,
         table: 'users',
-        acl_data: real_acl_data
+        acl_data: acl_data
       };
-      set_acl_users(obj, usersToUpdate);
+      set_mass_acl_users(obj, usersToUpdate);
   }
 
   const cmd_SetAllUsersInDepartFromTemplate = (object, response) => {
@@ -1038,29 +1044,16 @@ const toggleUsersOpen = (ev, id, dep_id) => {
         }
       }
 
-      let usersToUpdate = [];
       let usersInDep = userCollection.filter(item => item.depart_id === departTarget);
-      let real_acl_data = [];
-      for (let i = 0; i < usersInDep.length; i++) {
-        const tuser = usersInDep[i];
-        usersToUpdate.push(tuser.id);
-        for (let n = 0; n < acl_data.length; n++) {
-          const acda = acl_data[n];
-          real_acl_data.push({
-                state_id: acda.state_id,
-                col_id: acda.col_id,
-                value: acda.value,
-                depart_id: tuser.depart_id,
-                user_id: tuser.id,
-          });
-        }
-      }
+      let usersToUpdate = usersInDep.map(item => item.id);
+
       let obj = {
+        users: usersToUpdate,
         id_company: visibleCompany,
         table: 'users',
-        acl_data: real_acl_data
+        acl_data: acl_data
       };
-      set_acl_users(obj, usersToUpdate);
+      set_mass_acl_users(obj, usersToUpdate);
   }
 
 
@@ -1128,27 +1121,14 @@ const toggleUsersOpen = (ev, id, dep_id) => {
             )
         }
       }
-      let real_acl_data = [];
-      for (let i = 0; i < selectedUsers.length; i++) {
-        const usr_id = selectedUsers[i];
-        const dep = userCollection.find((item)=> item.id === usr_id)?.depart_id;
-        for (let n = 0; n < acl_data.length; n++) {
-          const acda = acl_data[n];
-          real_acl_data.push({
-                state_id: acda.state_id,
-                col_id: acda.col_id,
-                value: acda.value,
-                depart_id: dep,
-                user_id: usr_id,
-          });
-        }
-      };
-        let obj = {
+
+      let obj = {
+        users: selectedUsers,
         id_company: visibleCompany,
         table: 'users',
-        acl_data: real_acl_data
+        acl_data: acl_data
       };
-      set_acl_users(obj, selectedUsers);
+      set_mass_acl_users(obj, selectedUsers);
   }
 
   const cmd_SetAllUsersSelectedFromTemplate = (object, response) => {
@@ -1175,27 +1155,13 @@ const toggleUsersOpen = (ev, id, dep_id) => {
             )
         }
       }
-      let real_acl_data = [];
-      for (let i = 0; i < selectedUsers.length; i++) {
-        const usr_id = selectedUsers[i];
-        const dep = userCollection.find((item)=> item.id === usr_id)?.depart_id;
-        for (let n = 0; n < acl_data.length; n++) {
-          const acda = acl_data[n];
-          real_acl_data.push({
-                state_id: acda.state_id,
-                col_id: acda.col_id,
-                value: acda.value,
-                depart_id: dep,
-                user_id: usr_id,
-          });
-        }
-      };
-        let obj = {
+      let obj = {
+        users: selectedUsers,
         id_company: visibleCompany,
         table: 'users',
-        acl_data: real_acl_data
+        acl_data: acl_data
       };
-      set_acl_users(obj, selectedUsers);
+      set_mass_acl_users(obj, selectedUsers);
   }
   /* -------------------------- MENU HANDLERS END --------------------- */
 
@@ -1684,7 +1650,6 @@ useEffect(() => {
                                                       user_id={user.id}
                                                       column_id={acc_item.id}
                                                       row_id={type.id}
-                                                      depart_id={current_depart}
                                                       onToggle={toggleSingleChecboxUser}
                                                       checked={localMainCheck ? localMainCheck.value : false}
                                                     /></div></div>

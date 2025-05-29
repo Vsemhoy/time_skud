@@ -1,52 +1,71 @@
 import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, DislikeOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Dropdown } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ClaimIcon from "./ClaimIcon";
 
-const items = [
-  {
-    key: '1',
-    label: (
-      <a>
-        Отозвать заявку
-      </a>
-    ),
-  },
-  {
-    key: '2',
-    label: (
-      <a>
-        Согласовать
-      </a>
-    ),
-  },
-  {
-    key: '3',
-    label: (
-      <a>
-        Отклонить
-      </a>
-    ),
-  },
-{
-    key: '4',
-    label: (
-      <a>
-        Редактировать
-      </a>
-    ),
-  },
-];
+// const items = [
+//   {
+//     key: '1',
+//     label: (
+//       <a>
+//         Отозвать заявку
+//       </a>
+//     ),
+//   },
+//   {
+//     key: '2',
+//     label: (
+//       <a>
+//         Согласовать
+//       </a>
+//     ),
+//   },
+//   {
+//     key: '3',
+//     label: (
+//       <a>
+//         Отклонить
+//       </a>
+//     ),
+//   },
+// {
+//     key: '4',
+//     label: (
+//       <a>
+//         Редактировать
+//       </a>
+//     ),
+//   },
+// ];
 
 
 const ClaimManagerCard = (props) => {
     const [itemId, setItemId] = useState(props.data.id);
+    const [MYID, setMYID] = useState(0);
+    const [acls, setAcls] = useState({});
+
+    const [item, setItem] = useState(null);
+
+    const [menuItems, setMenuItems] = useState(null);
 
     const handleDoubleClickOnRow = () => {
         if (props.on_click){
             props.on_click(itemId);
         }
     }
+
+    useEffect(() => {
+      setItem(props.data);
+    }, [props.data]);
+
+      useEffect(() => {
+        setAcls(props.acl_base)
+      }, [props.acl_base]);
+    
+    
+      useEffect(() => {
+        setMYID(props.my_id);
+      }, [props.my_id]);
 
     return (
       <div
@@ -141,15 +160,18 @@ const ClaimManagerCard = (props) => {
 
 
             <div>
-                <Dropdown
-                    menu={{
-                    items,
-                    }}
-                    placement="bottomRight"
-                    className={'sk-clamen-card-trigger'}
-                >
-                    <BarsOutlined />
-                </Dropdown>
+                {menuItems && (
+
+                    <Dropdown
+                        menu={
+                        {menuItems}
+                        }
+                        placement="bottomRight"
+                        className={'sk-clamen-card-trigger'}
+                    >
+                        <BarsOutlined />
+                    </Dropdown>
+                )}
             </div>
         </div>
         </div>

@@ -1,4 +1,4 @@
-import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
+
 import { Affix, Button, Dropdown, Pagination, Select } from "antd";
 import React, { useEffect, useState } from "react";
 
@@ -9,105 +9,57 @@ import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS, CLAIMS_MOCKS } from "./CLAIM_MOCK";
+import { CLAIM_ACL_MOCK, CLAIM_BASE_CLAIM_TYPES, CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS, CLAIMS_MOCKS } from "./CLAIM_MOCK";
 import ClaimModalView from "./components/ClaimModalView";
 
+import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
+    MinusCircleOutlined,
+    AppleOutlined,
+    RestOutlined,
+    CheckOutlined,
+    SafetyCertificateOutlined,
+    MedicineBoxOutlined,
+    RocketOutlined,
+    CarOutlined,
+    MoonOutlined,
+    SmileOutlined,
+    DollarOutlined,
+    HeatMapOutlined,
+    TruckOutlined,
+    BlockOutlined,
+    DockerOutlined,
+    PlusOutlined,
+    PlusCircleOutlined
+ } from "@ant-design/icons";
 
-const claimTypes = [
-    {
-        key: 'clt_9',
-        value: 9, 
-        label: 'Отпуск за свой счёт',
-        icon: <MoonOutlined />
-    },
-    {
-        key: 'clt_8',
-        value: 8, 
-        label: 'Кратковременная командировка',
-        icon: <CarOutlined />
-    },
-    {
-        key: 'clt_7',
-        value: 7, 
-        label: 'Длительная командировка',
-        icon: <RocketOutlined />
-    },
-    {
-        key: 'clt_10',
-        value: 10, 
-        label: 'Отпуск',
-        icon: <SmileOutlined />
-    },
-    {
-        key: 'clt_11',
-        value: 11, 
-        label: 'Сверхурочные',
-        icon: <DollarOutlined />
-    },
-    {
-        key: 'clt_6',
-        value: 6, 
-        label: 'Больничные',
-        icon: <MedicineBoxOutlined />
-    },
-    {
-        key: 'clt_13',
-        value: 13, 
-        label: 'Контейнеры',
-        icon: <TruckOutlined />
-    }
-];
 
-const typeOptions = [
-  {
-    value: 0,
-    label: 'Все заявки',
-    icon: <BlockOutlined />,
-    background: '#c3c3c3'
-  },
-  {
-    value: 9,
-    label: 'Отпуск СВ',
-    icon: <MoonOutlined />,
-    background: '#c4e8e5'
-  },
-  {
-    value: 8,
-    label: 'Крат. ком.',
-    icon: <CarOutlined />,
-    background: '#e3dbf1'
-  },
-  {
-    value: 7,
-    label: 'Длит. ком.',
-    icon: <RocketOutlined />,
-    background: '#e2b4e9'
-  },
-  {
-    value: 10,
-    label: 'Отпуск',
-    icon: <SmileOutlined />,
-    background: '#7adfb8'
-  },
-  {
-    value: 11,
-    label: 'Сверхурочн.',
-    icon: <DollarOutlined />,
-    background: '#b7ff5c'
-  },
-  {
-    value: 6,
-    label: 'Больничн.',
-    icon: <MedicineBoxOutlined />,
-    background: '#ffa8a8'
-  },
-  {
-    value: 13,
-    label: 'Контейн.',
-    icon: <DockerOutlined />,
-    background: '#ffc107'
-  }
-];
+const iconMap = {
+    MinusCircleOutlined,
+    AppleOutlined,
+    RestOutlined,
+    CheckOutlined,
+    SafetyCertificateOutlined,
+    MedicineBoxOutlined,
+    RocketOutlined,
+    CarOutlined,
+    MoonOutlined,
+    SmileOutlined,
+    DollarOutlined,
+    HeatMapOutlined,
+    TruckOutlined,
+    BlockOutlined,
+    DockerOutlined,
+    PlusOutlined
+  };
+
+const DynamicIcon = ({ iconName, ...props }) => {
+    const IconComponent = iconMap[iconName];
+    return IconComponent ? <IconComponent {...props} /> : null;
+  };
+{/* <DynamicIcon iconName={props.data.state_icon} />}); */}
+
+
+
 
 const ClaimManagerPage = (props) => {
     const [userData, setUserData] = useState(null);
@@ -133,9 +85,15 @@ const ClaimManagerPage = (props) => {
     const [claimList, setClaimList] = useState([]);
     const [baseClaimList, setBaseClaimList] = useState([]);
 
+    const [aclBase, setAclBase] = useState({});
+
     const [page, setPage] = useState(1);
     const [onPage, setOnPage] = useState(30);
     const [total, setTotal] = useState(30);
+
+    const [baseClaimTypes, setBaseClaimTypes] = useState(CLAIM_BASE_CLAIM_TYPES);
+    const [claimTypes, setClaimTypes] = useState([]);
+    const [claimTypeOptions, setClaimTypeOptions] = useState([]);
 
     const onShowSizeChange = (current, pageSize) => {
         console.log(current, pageSize);
@@ -157,12 +115,14 @@ const ClaimManagerPage = (props) => {
 
     useEffect(()=>{
         setUserData(props.userdata);
+        console.log('U S E R   D A T A', props.userdata);
     },[props.userdata]);
 
 
 
     useEffect(()=>{
         if (PRODMODE){
+            get_aclbase();
             get_departlist();
             get_stateList();
             get_userList();
@@ -170,12 +130,76 @@ const ClaimManagerPage = (props) => {
             get_claimList([]);
         } else {
             //mock data
+            setAclBase(CLAIM_ACL_MOCK);
             setDepartList(CLAIM_DEPARTS);
             setBaseUserList(CLAIM_USERS);
             setStateList(CLAIM_STATES);
             setBaseClaimList(CLAIMS_MOCKS);
         }
     },[]);
+
+
+
+    useEffect(() => {
+      let clats = [];
+        let clabs = [
+            {
+                value: 0,
+                label: 'Все заявки',
+                icon: <BlockOutlined />,
+                background: '#c3c3c3',
+                creatable: false
+            }
+        ];
+        const MYID = userData?.user?.id;
+        if (!MYID){
+            return;
+        }
+
+        // Фильтруем кнопки разных типов, чтоыбы не выводить запрещенные пользователю
+        for (let i = 0; i < baseClaimTypes.length; i++) {
+            const claimType = baseClaimTypes[i];
+            const formType  = claimType.id;
+            let allowType = false;
+            for (let n = 0; n < baseUserList.length; n++) {
+                const userCard = baseUserList[n];
+                if (aclBase[userCard.id_company] && aclBase[userCard.id_company][formType] && aclBase[userCard.id_company][formType]?.includes('ANY_CLAIM_CREATE')){
+                    // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+                    allowType = true;
+                    break;
+                } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][formType] && aclBase[userCard.id_company][formType]?.includes('TEAM_CLAIM_CREATE')){
+                    // Если челик мой подчиненный и у меня есть права добавлять подчиненным
+                    allowType = true;
+                    break;
+                } else if (userCard.id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][formType] && aclBase[userCard.id_company][formType]?.includes('PERS_CLAIM_CREATE')){
+                    allowType = true;
+                    break;
+                }
+            }
+            if (allowType){
+                clats.push({
+                    key: `clt_${claimType.id}`,
+                    value: claimType.id, 
+                    label: claimType.text,
+                    color: claimType.color,
+                    icon: <DynamicIcon iconName={claimType.icon} />
+                })
+                clabs.push(
+                    {
+                        value: claimType.id, 
+                        label: claimType.badge,
+                        icon: <DynamicIcon iconName={claimType.icon} />,
+                        background: claimType.color,
+                    }
+                )
+            };
+
+        }
+        setClaimTypes(clats);
+        setClaimTypeOptions(clabs);
+
+    }, [baseClaimTypes, aclBase, userData]);
+
 
     useEffect(()=>{
         setUserList(baseUserList);
@@ -233,6 +257,21 @@ const ClaimManagerPage = (props) => {
         }
     }
 
+    const get_aclbase = async (req, res) => {
+        try {
+            
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+                {
+                    data: [],
+                    _token: CSRF_TOKEN
+                });
+                setAclBase(response.data.content);
+                console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
 
     const get_userList = async (req, res) => {
         try {
@@ -388,7 +427,7 @@ const ClaimManagerPage = (props) => {
                 <div className="sk-flex-space"> 
         
                     <div className={`sk-claiman-type-selector`}>
-                        {typeOptions.map(option => (
+                        {claimTypeOptions.map(option => (
                             <div
                             key={option.value === null ? 'all' : option.value}
                             className={`sk-claiman-typeselect-item ${typeSelect === option.value ? 'sk-active' : ''}`}
@@ -403,17 +442,20 @@ const ClaimManagerPage = (props) => {
                         ))}
                     </div>
                     <div>
-                        <Dropdown
-                            menu={menuProps}
-                            onClick={handleEditorOpen}
-                        >
-                        <Button 
-                            icon={<PlusOutlined />}
-                            type={'primary'}
-                        >
-                            Создать заявку
-                        </Button>
-                        </Dropdown>
+                        {claimTypes.length > 0 && (
+
+                            <Dropdown
+                                menu={menuProps}
+                                onClick={handleEditorOpen}
+                            >
+                            <Button 
+                                icon={<PlusOutlined />}
+                                type={'primary'}
+                            >
+                                Создать заявку
+                            </Button>
+                            </Dropdown>
+                        )}
                     </div>
                 </div>
             </div>
@@ -535,12 +577,14 @@ const ClaimManagerPage = (props) => {
             </div>
 
             <ClaimEditorDrawer
+                acl_base={aclBase}
                 user_list={userList}
                 opened={editorOpened}
                 claim_type={formType}
                 on_close={()=>{setEditorOpened(false)}}
                 claim_types={claimTypes}
                 on_send={handleMakeClaim}
+                my_id={userData?.user?.id}
             />
 
             <ClaimModalView

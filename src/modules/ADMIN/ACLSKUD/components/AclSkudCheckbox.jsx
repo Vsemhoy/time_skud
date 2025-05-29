@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, memo } from "react";
 import { CheckOutlined, StopOutlined } from "@ant-design/icons";
 
-const AclCheckbox = memo(({ checked, title, onToggle, user_id, column_id, row_id, depart_id }) => {
+const AclCheckbox = memo(({ checked, title, onToggle, user_id, column_id, row_id, depart_id = null }) => {
     const [isChecked, setIsChecked] = useState(checked);
     const [blinClass, setBlinClass] = useState(false);
     const toggleState = (ev) => {
       if (onToggle){
-        onToggle(ev, user_id, depart_id, column_id, row_id, !isChecked);
+        onToggle(ev, user_id, column_id, row_id, !isChecked, depart_id);
       }
       setIsChecked(!isChecked);
     }

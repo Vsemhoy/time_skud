@@ -4,6 +4,9 @@ import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, TimeP
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 const { Option } = Select;
+
+
+
 const ClaimEditorDrawer = (props) => {
   const [open, setOpen] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
@@ -29,9 +32,15 @@ const ClaimEditorDrawer = (props) => {
   
   const [formResult, setFormResult] = useState('');               // 11,
   
+  const [baseUserList, setBaseUserList] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [acls, setAcls] = useState({});
 
   const [formValid, setFormValid] = useState(true);
+
+  const [MYID, setMYID] = useState(0);
+
+  const [personalModeUser, setPersonalModeUser] = useState(null);
 
   const showDrawer = () => {
     setOpen(true);
@@ -43,15 +52,55 @@ const ClaimEditorDrawer = (props) => {
     }
   };
 
+  useEffect(() => {
+    setAcls(props.acl_base)
+  }, [props.acl_base]);
+
+
+  useEffect(() => {
+    setMYID(props.my_id);
+  }, [props.my_id]);
+
   useEffect(()=>{
-    if (props.user_list){
-      setUserList(props.user_list.map((item)=>{
+    masterFilterUserList();
+  },[baseUserList, acls, formType]);
+
+
+  const masterFilterUserList = ()=>{
+    
+    let filteredUsers = [];
+    console.log(acls);
+    for (let i = 0; i < baseUserList.length; i++) {
+      const userCard = baseUserList[i];
+      // console.log(userCard);
+      if (acls[userCard.id_company] && acls[userCard.id_company][formType] && acls[userCard.id_company][formType]?.includes('ANY_CLAIM_CREATE')){
+        // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+        filteredUsers.push(userCard);
+        setPersonalModeUser(null);
+      } else if (userCard.boss_id === MYID && acls[userCard.id_company] && acls[userCard.id_company][formType] && acls[userCard.id_company][formType]?.includes('TEAM_CLAIM_CREATE')){
+        // Если челик мой подчиненный и у меня есть права добавлять подчиненным
+        filteredUsers.push(userCard);
+        setPersonalModeUser(null);
+      } else if (userCard.id === MYID && acls[userCard.id_company] && acls[userCard.id_company][formType] && acls[userCard.id_company][formType]?.includes('PERS_CLAIM_CREATE')){
+        filteredUsers.push(userCard);
+        setPersonalModeUser(userCard);
+      }
+    }
+
+      setUserList(filteredUsers.map((item)=>{
         return {
           'key': `userkey_${item.id}`,
           'value': item.id,
           'label': <div className={'sk-flex-space'}><div>{item.surname + " " + item.name + " " + item.patronymic}</div> <div>{item.id}</div></div>,
         }
       }));
+    
+  }
+
+
+  useEffect(()=>{
+    if (props.user_list){
+      setBaseUserList(props.user_list);
     }
   },[props.user_list]);
 

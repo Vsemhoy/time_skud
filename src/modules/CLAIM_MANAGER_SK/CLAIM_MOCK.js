@@ -349,7 +349,7 @@ export const CLAIM_USERS = [
         "surname": "Булышева",
         "patronymic": "Александровна",
         "id_departament": 21,
-        "id_company": 2,
+        "id_company": 3,
         "boss_id": 46
     },
     {
@@ -502,7 +502,7 @@ export const CLAIM_USERS = [
         "surname": "Назаров",
         "patronymic": "Одилович",
         "id_departament": 18,
-        "id_company": 2,
+        "id_company": 3,
         "boss_id": 0
     },
     {
@@ -511,7 +511,7 @@ export const CLAIM_USERS = [
         "surname": "Красников",
         "patronymic": "Юрьевич",
         "id_departament": 14,
-        "id_company": 2,
+        "id_company": 3,
         "boss_id": 0
     },
     {
@@ -1388,3 +1388,352 @@ export const CLAIMS_MOCKS = [
         "depart_name": "Отдел оптовых продаж"
     }
 ]
+
+
+export const CLAIM_ACL_MOCK = {
+    "2": {
+        "6": [
+            "ANY_CLAIM_APPROVE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "7": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "8": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "9": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "10": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "11": [
+            "TEAM_CLAIM_UPDATE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "13": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ]
+    },
+    "3": {
+        "6": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "7": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "8": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "9": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "10": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "11": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "13": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ]
+    }
+}
+
+// export const CLAIM_BASE_CLAIM_TYPES = [
+//     {
+//         key: 'clt_9',
+//         value: 9, 
+//         label: 'Отпуск за свой счёт',
+//         icon: <MoonOutlined />
+//     },
+//     {
+//         key: 'clt_8',
+//         value: 8, 
+//         label: 'Кратковременная командировка',
+//         icon: <CarOutlined />
+//     },
+//     {
+//         key: 'clt_7',
+//         value: 7, 
+//         label: 'Длительная командировка',
+//         icon: <RocketOutlined />
+//     },
+//     {
+//         key: 'clt_10',
+//         value: 10, 
+//         label: 'Отпуск',
+//         icon: <SmileOutlined />
+//     },
+//     {
+//         key: 'clt_11',
+//         value: 11, 
+//         label: 'Сверхурочные',
+//         icon: <DollarOutlined />
+//     },
+//     {
+//         key: 'clt_6',
+//         value: 6, 
+//         label: 'Больничные',
+//         icon: <MedicineBoxOutlined />
+//     },
+//     {
+//         key: 'clt_13',
+//         value: 13, 
+//         label: 'Контейнеры',
+//         icon: <TruckOutlined />
+//     }
+// ];
+
+export const CLAIM_BASE_CLAIM_TYPES = [
+    {
+        "id": 9,
+        "badge": "св.отпуск",
+        "text": "Отпуск за свой счёт",
+        "color": "#c4e8e5",
+        "icon": "MoonOutlined",
+        "need_work": 1,
+        "need_approved": 0,
+        "sort_order": 1,
+        "fillable": 1,
+        "title": "Отпуск за свой счёт"
+    },
+    {
+        "id": 8,
+        "badge": "местн.выезд.",
+        "text": "Кратковременная местная командировка",
+        "color": "#e3dbf1",
+        "icon": "CarOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 2,
+        "fillable": 1,
+        "title": "Местная командировка"
+    },
+    {
+        "id": 7,
+        "badge": "командировк.",
+        "text": "Длительная командировка",
+        "color": "#e2b4e9",
+        "icon": "RocketOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 3,
+        "fillable": 1,
+        "title": "Командировка длительная"
+    },
+    {
+        "id": 10,
+        "badge": "отпуск",
+        "text": "Плановый отпуск",
+        "color": "#7adfb8",
+        "icon": "SmileOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 4,
+        "fillable": 1,
+        "title": "Очередные отпуска"
+    },
+    {
+        "id": 11,
+        "badge": "сверхурочные",
+        "text": "Работа вне установленного графиком рабочего времени",
+        "color": "#b7ff5c",
+        "icon": "DollarOutlined",
+        "need_work": 3,
+        "need_approved": 0,
+        "sort_order": 5,
+        "fillable": 1,
+        "title": "Сверхурочные"
+    },
+    {
+        "id": 6,
+        "badge": "больничный",
+        "text": "На больничном",
+        "color": "#ffa8a8",
+        "icon": "MedicineBoxOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 6,
+        "fillable": 1,
+        "title": "Больничные"
+    },
+    {
+        "id": 13,
+        "badge": "контейнеры",
+        "text": "Разгрузка контейнеров на складе",
+        "color": "#ffc107",
+        "icon": "TruckOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 7,
+        "fillable": 1,
+        "title": "Разгрузка контейнеров"
+    }
+]
+
+// const typeOptions = [
+//   {
+//     value: 0,
+//     label: 'Все заявки',
+//     icon: <BlockOutlined />,
+//     background: '#c3c3c3'
+//   },
+//   {
+//     value: 9,
+//     label: 'Отпуск СВ',
+//     icon: <MoonOutlined />,
+//     background: '#c4e8e5'
+//   },
+//   {
+//     value: 8,
+//     label: 'Крат. ком.',
+//     icon: <CarOutlined />,
+//     background: '#e3dbf1'
+//   },
+//   {
+//     value: 7,
+//     label: 'Длит. ком.',
+//     icon: <RocketOutlined />,
+//     background: '#e2b4e9'
+//   },
+//   {
+//     value: 10,
+//     label: 'Отпуск',
+//     icon: <SmileOutlined />,
+//     background: '#7adfb8'
+//   },
+//   {
+//     value: 11,
+//     label: 'Сверхурочн.',
+//     icon: <DollarOutlined />,
+//     background: '#b7ff5c'
+//   },
+//   {
+//     value: 6,
+//     label: 'Больничн.',
+//     icon: <MedicineBoxOutlined />,
+//     background: '#ffa8a8'
+//   },
+//   {
+//     value: 13,
+//     label: 'Контейн.',
+//     icon: <DockerOutlined />,
+//     background: '#ffc107'
+//   }
+// ];

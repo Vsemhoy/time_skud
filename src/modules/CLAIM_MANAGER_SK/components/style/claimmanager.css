@@ -4,7 +4,9 @@
     margin-bottom: 12px;
 }
 .sk-claiman-type-selector > div  {
+    min-width: 66px;
     height: 100%;
+    text-align: center;
     /* background-color: rgba(255, 255, 255, 0.6); */
     padding-bottom: 4px;
 }
@@ -114,4 +116,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     background-color: rgba(255, 255, 255, 0.074);
     font-size: large;
     cursor: pointer;
+}
+.sk-claim-select-icon-creatable {
+    position: absolute;
 }
