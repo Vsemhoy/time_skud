@@ -36,7 +36,7 @@ const GroupEditorModal = (props) => {
         form.setFieldsValue({
           name: "Группа_" + dayjs().unix(),
           description: "",
-          id_company: props.user_data.user.id_company
+          id_company: props.user_data?.user?.id_company
         });
         setEditedItem(null);
       }
@@ -48,7 +48,8 @@ const GroupEditorModal = (props) => {
     const [companies, setCompanies] = useState([]);
 
     useEffect(() => {
-      if (props.user_data && props.user_data.companies) {
+      console.log("PRP USERDATA", props);
+      if (props.user_data && props.user_data?.companies) {
           setCompanies(
               props.user_data.companies.reverse().map((com) => ({
                   key: com.id,
@@ -139,8 +140,8 @@ const GroupEditorModal = (props) => {
           name="name"
           rules={[
             { required: true, message: 'Введите название группы' },
-            {    min: 9, 
-                message: 'Минимум 9 символов'
+            {    min: 3, 
+                message: 'Минимум 3 символа'
             },
             {   max: 60, 
                 message: 'Максимум 60 символов'

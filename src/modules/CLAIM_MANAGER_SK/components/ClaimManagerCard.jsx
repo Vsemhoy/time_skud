@@ -42,9 +42,9 @@ import ClaimIcon from "./ClaimIcon";
 const ClaimManagerCard = (props) => {
     const [itemId, setItemId] = useState(props.data.id);
     const [MYID, setMYID] = useState(0);
-    const [acls, setAcls] = useState({});
+    const [aclBase, setAclBase] = useState({});
 
-    const [item, setItem] = useState(null);
+    const [userCard, setUserCard] = useState(null);
 
     const [menuItems, setMenuItems] = useState(null);
 
@@ -55,17 +55,98 @@ const ClaimManagerCard = (props) => {
     }
 
     useEffect(() => {
-      setItem(props.data);
+        setUserCard(props.data);
     }, [props.data]);
 
       useEffect(() => {
-        setAcls(props.acl_base)
+        setAclBase(props.acl_base)
       }, [props.acl_base]);
     
     
       useEffect(() => {
         setMYID(props.my_id);
       }, [props.my_id]);
+
+      // Добавить пункты меню в соответствии с правами
+      useEffect(() => {
+        if (userCard === null ||  !aclBase ||  MYID === 0){ return};
+        let menu = [];
+        let allowBack = false;
+        let allowEdit = false;
+        let allowApprove = false;
+
+        if  (userCard.evaluated === 0 && userCard.id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_CREATE')){
+            allowBack = true;
+        };
+
+        if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_EDIT')){
+            // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+            allowEdit = true;
+        } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_EDIT')){
+            // Если челик мой подчиненный и у меня есть права добавлять подчиненным
+            allowEdit = true;
+        } else if (userCard.id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_EDIT')){
+            allowEdit = true;
+        };
+
+        if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_APPROVE')){
+            // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+            allowApprove = true;
+        } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_APPROVE')){
+            // Если челик мой подчиненный и у меня есть права добавлять подчиненным
+            allowApprove = true;
+        } else if (userCard.id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')){
+            allowApprove = true;
+        };
+
+        if (allowBack){
+                menu.push(
+                    {
+                        key: '1',
+                        label: (
+                        <a>
+                            Отозвать заявку
+                        </a>
+                        ),
+                    }
+                );
+            };
+        if (allowEdit){
+            menu.push(
+                {
+                    key: '2',
+                    label: (
+                    <a>
+                        Редактировать заявку
+                    </a>
+                    ),
+                }
+            );
+        };
+        if (allowApprove){
+            menu.push(
+                {
+                    key: '3',
+                    label: (
+                    <a>
+                        Отклонить заявку
+                    </a>
+                    ),
+                }
+            );
+            menu.push(
+                {
+                    key: '3',
+                    label: (
+                    <a>
+                        Согласовать заявку
+                    </a>
+                    ),
+                }
+            );
+        }
+        setMenuItems(menu);
+      }, [userCard, aclBase, MYID]);
 
     return (
       <div

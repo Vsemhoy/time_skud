@@ -40,7 +40,7 @@
     height: 0px;
     background-color: #223c5025;
 }
-
+/* 
 .sk-rule-type-1  {
     border-left: 6px solid #ff000069;
 }
@@ -55,14 +55,14 @@
 }
 .sk-rule-type-5 {
     border-left: 6px solid #00f5ab69;
-}
+} */
 
 .sk-rule-info {
     padding-left: 16px;
     padding-right: 16px;
     border-radius: 6px;
 }
-.sk-rule-info-1  {
+/* .sk-rule-info-1  {
     border: 1px solid #ff000069;
     background-color:  #ff00002c;
 }
@@ -81,4 +81,4 @@
 .sk-rule-info-5 {
     border: 1px solid #00f5ab69;
     background-color:  #00f5ac3a;
-}
+} */

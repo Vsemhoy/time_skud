@@ -19,6 +19,7 @@ const RuleToolbar = (props) =>{
 
     const [typeName, setTypeName] = useState(null);
     const [typeDescr, setTypeDescr] = useState(null);
+    const [typeColor, setTypeColor] = useState('');
 
     const [usedSort, setUsedSort] = useState(0);
     const [sortByValues, setSortByValues] = useState([
@@ -74,14 +75,20 @@ const RuleToolbar = (props) =>{
         },
     ]);
 
-    const [companies, setCompanies] = useState([
-        { key: 0, value: 0, label: 'Все компании' },
-        ...userData.companies.reverse().map((com) => ({
-            key: com.id,
-            value: Number(com.id),
-            label: com.name,
-        })),
-    ]);
+    const [companies, setCompanies] = useState([]);
+
+    useEffect(() => {
+        if(userData?.companies){
+            setCompanies([
+                { key: 0, value: 0, label: 'Все компании' },
+                ...userData.companies?.reverse().map((com) => ({
+                    key: com.id,
+                    value: Number(com.id),
+                    label: com.name,
+                })),
+            ])
+        };
+    }, [userData.companies]);
 
     console.log(ruleTypes);
     const [rules, setRules] = useState([
@@ -165,12 +172,14 @@ const RuleToolbar = (props) =>{
                     if (element.id == value){
                         setTypeName(element.name);
                         setTypeDescr(element.description);
+                        setTypeColor(element.color);
                         break;
                     }
                 }
             } else {
                 setTypeName(null);
                 setTypeDescr(null);
+                setTypeColor('');
             }
         }
         
@@ -231,7 +240,8 @@ const RuleToolbar = (props) =>{
             </div>
             </div>
             {typeName != null ? (
-                <div className={`sk-rule-info sk-rule-info-${usedType}`}>
+                <div className={`sk-rule-info `}
+                    style={{border: `1px solid ${typeColor}`, background: `${typeColor.slice(0, -2)}22`}}>
                     <h3>{typeName}</h3>
                     <p >{typeDescr}</p>
                     </div>

@@ -96,7 +96,6 @@ const ClaimManagerPage = (props) => {
     const [claimTypeOptions, setClaimTypeOptions] = useState([]);
 
     const onShowSizeChange = (current, pageSize) => {
-        console.log(current, pageSize);
         setOnPage(pageSize);
     };
 
@@ -115,12 +114,12 @@ const ClaimManagerPage = (props) => {
 
     useEffect(()=>{
         setUserData(props.userdata);
-        console.log('U S E R   D A T A', props.userdata);
     },[props.userdata]);
 
 
 
     useEffect(()=>{
+        setAclBase([]);
         if (PRODMODE){
             get_aclbase();
             get_departlist();
@@ -197,8 +196,7 @@ const ClaimManagerPage = (props) => {
         }
         setClaimTypes(clats);
         setClaimTypeOptions(clabs);
-
-    }, [baseClaimTypes, aclBase, userData]);
+    }, [baseUserList, baseClaimTypes, aclBase, userData]);
 
 
     useEffect(()=>{
@@ -214,7 +212,6 @@ const ClaimManagerPage = (props) => {
         filter.page = page;
         filter.onPage = onPage;
         setFilterPack(filter);
-        console.log('filter', filter)
     }
 
     useEffect(() => {
@@ -231,7 +228,6 @@ const ClaimManagerPage = (props) => {
             } else {
                 pack.type = null;
             }
-            console.log('PACK', pack);
             get_claimList(pack);
         }, 800);
         return () => clearTimeout(debounceTimer);
@@ -243,7 +239,6 @@ const ClaimManagerPage = (props) => {
 
     const get_claimList = async (filters, req, res) => {
         try {
-            console.log("FILTERES" , filters);
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims', 
                 {
                     data: filters,
@@ -395,7 +390,6 @@ const ClaimManagerPage = (props) => {
     }
 
     const handleMakeClaim = (claim) => {
-        console.log(claim);
         create_claim(claim);
     }
 
@@ -559,8 +553,11 @@ const ClaimManagerPage = (props) => {
                         </div>
                         </Affix>
                         {claimList.map((claim) => (
-                            <ClaimManagerCard data={claim}
+                            <ClaimManagerCard
+                            data={claim}
+                                my_id={userData?.user?.id}
                                 on_click={handleOpenInfo}
+                                acl_base={aclBase}
                             />
                         ))}
                             

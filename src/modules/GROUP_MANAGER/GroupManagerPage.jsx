@@ -19,7 +19,7 @@ import UserManagerModal from "./components/usermanagermodal";
 
 
 const GroupManagerPage = (props)=>{
-    const [userData, setUserData] = useState(props.userdata);
+
     const [companies, setCompanies] = useState([
         { key: 0, value: 0, label: 'Все компании' },
         ...DS_USER.companies.reverse().map((com) => ({
@@ -501,7 +501,7 @@ const GroupManagerPage = (props)=>{
             <h2>Группировка пользователей</h2>
             <GroupPageToolbar
                 companies={companies}
-                userData={userData}
+                userData={props.userdata}
                 onChangeFilter={onSetFilters}
                 // schedTypes={scheduleTypes}
                 onAddNewClick={openBlankEditor}
@@ -519,7 +519,7 @@ const GroupManagerPage = (props)=>{
                         base_users={userList}
                         on_link_update={updateUserLinks}
                         on_open_editor={openModalEditor}
-                        user_data={userData}
+                        user_data={props.userdata}
                         rule_types={ruleTypes}
 
                         open_rule_modal={openRulesEditor}
@@ -546,7 +546,7 @@ const GroupManagerPage = (props)=>{
                     on_cancel={cancelModalEditor}
                     ctrl_key={ctrlKey}
                     on_delete={deleteGroup}
-                    user_data={userData}
+                    user_data={props.userdata}
                     on_save={saveGroup}
                 />
                 

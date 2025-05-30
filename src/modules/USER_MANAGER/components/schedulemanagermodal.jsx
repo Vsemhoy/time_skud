@@ -162,6 +162,7 @@ const ScheduleManagerModal= (props) => {
           error();
         }
   
+        if (formEnd){
           let a = formStart.unix();
           let b = formEnd.unix();
           console.log('item time', a, b, 'today time');
@@ -169,6 +170,7 @@ const ScheduleManagerModal= (props) => {
           {
             setFormEnd(formStart);
           }
+        }
       }
     },[formStart]);
   
@@ -325,7 +327,7 @@ const ScheduleManagerModal= (props) => {
             setBaseLinks(response.data.data.map((item) => ({
               ...item,
               start: dayjs(item.start),
-              end: dayjs(item.end),
+              end: item.end ? dayjs(item.end) : null,
               created_at: dayjs(item.created_at),
             })));
           } else {
@@ -334,7 +336,7 @@ const ScheduleManagerModal= (props) => {
               ...response.data.data.map((item) => ({
                 ...item,
                 start: dayjs(item.start),
-                end: dayjs(item.end),
+                end: item.end ? dayjs(item.end) : null,
                 created_at: dayjs(item.created_at),
               })),
             ]);
@@ -761,7 +763,7 @@ const TableRowItem = (props) => {
 
   const [intersect, setintersect] = useState(false);
 
-  
+  console.log('SET ROW', props);
 
   useEffect(()=>{
     if (!editMode && props.intersects != null && props.intersects.includes(item_id))
@@ -833,7 +835,7 @@ const TableRowItem = (props) => {
 
   useEffect(()=>{
     if (editMode){
-      
+      console.log('editmode', endTime);
       if (endTime){
         if (endTime.endOf('day').unix() < dayjs().endOf('day').unix()){
           // setStartTime(dayjs().startOf('day').add(1, 'day'));
@@ -962,7 +964,7 @@ const TableRowItem = (props) => {
             placeholder='Конечная дата'
           />
         ):(
-          endTime ? endTime.format("DD-MM-YYYY") : " - - - "
+          endTime ? endTime.format("DD-MM-YYYY") : " бессрочно " + JSON.stringify(endTime)
         )}
       </div>
       { archieved ? (

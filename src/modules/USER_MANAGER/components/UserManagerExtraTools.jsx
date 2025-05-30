@@ -144,7 +144,7 @@ useEffect(()=>{
 },[props.selected_users]);
 
 useEffect(()=>{
-    if (props.companies.length){
+    if (props.companies?.length){
         let coms = props.companies.filter((item)=>{return item.id !== 1});
         if (coms.length > 1){
             coms.push({

@@ -318,7 +318,7 @@ const RulesManagerModal= (props) => {
             setBaseLinks(response.data.data.map((item) => ({
               ...item,
               start: dayjs(item.start),
-              end: dayjs(item.end),
+              end: item.end ? dayjs(item.end) : null,
               created_at: dayjs(item.created_at),
             })));
           } else {
@@ -327,7 +327,7 @@ const RulesManagerModal= (props) => {
               ...response.data.data.map((item) => ({
                 ...item,
                 start: dayjs(item.start),
-                end: dayjs(item.end),
+                end: item.end ? dayjs(item.end) : null,
                 created_at: dayjs(item.created_at),
               })),
             ]);
@@ -965,7 +965,7 @@ const TableRowItem = (props) => {
             onKeyDown={(event)=> {handleKeyDown(event, setEndTime)} }
           />
         ):(
-          endTime ? endTime.format("DD-MM-YYYY") : " - - - "
+          endTime ? endTime.format("DD-MM-YYYY") : " бессрочно "
         )}
       </div>
       { archieved ? (

@@ -38,7 +38,6 @@ const Sched_type_icon = (type) => {
 
 
 const UmCardSchedRow = (props)=>{
-    console.log("UmCardSchedRow", props);
     const [unitName, setUnitName] = useState("");
 
     const [schedule, setSchedule] = useState(props.schedule_item);

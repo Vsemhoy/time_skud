@@ -6,7 +6,7 @@ import Recycle from "../../../media/ruletypes/recycle-svgrepo-com.svg";
 import Magic from "../../../media/ruletypes/magic-svgrepo-com.svg";
 import Bed from "../../../media/ruletypes/bed-svgrepo-com.svg";
 import Eraser from "../../../media/ruletypes/eraser-svgrepo-com.svg";
-
+import Auto from "../../../media/ruletypes/auto-focus-svgrepo-com.svg";
 
 import Owl from "../../../media/zodiac/owl-bird-shape-svgrepo-com.svg";
 
@@ -29,6 +29,8 @@ const RuleIcons = ({ type }) => {
                 return ( <img src={HOST_COMPONENT_ROOT + Eraser} title='Глобальная отработка'/>);
             case 5:
                 return ( <img src={HOST_COMPONENT_ROOT + Pig} title='Накопление времени'/>);
+            case 6:
+                return ( <img src={HOST_COMPONENT_ROOT + Auto} title='Автозавершение смены'/>);
 
             default:
                 return ( <img src={HOST_COMPONENT_ROOT + Owl} title='Не тот бот'/>);

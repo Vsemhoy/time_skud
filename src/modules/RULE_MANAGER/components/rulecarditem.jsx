@@ -16,6 +16,7 @@ const RuleCardItem = (props)=>{
     const [userCount, setUserCount] = useState(props.data.user_count);
     const [groupCount, setGroupCount] = useState(props.data.group_count);
     const [ruleType, setRuleType] = useState(props.data.rule_type_id);
+    const [ruleColor, setRuleColor] = useState(props.data.type_color);
 
 
 
@@ -172,6 +173,7 @@ const RuleCardItem = (props)=>{
     return (
         <Card className={`ant-card-small sk-rule-type-${ruleType}`} 
         onDoubleClick={onDoubleClick}
+        style={{borderLeft: '6px solid '+ ruleColor}}
         > 
         <div className={`sk-rule-card ${opened ? "opened" : "cooxed"}`}
         >
@@ -183,7 +185,7 @@ const RuleCardItem = (props)=>{
                         {name}
                     </div>
                       <div className="sk-com-tag">
-                          { props.user_data && props.user_data.companies.length > 1? (
+                          { props.user_data && props.user_data?.companies?.length > 1? (
                             <Tag title={rule_id} color={props.data.company_color} >{props.data.company_name.toUpperCase()}</Tag>
                           ) : (<span className={'sk-card-id-tag'}>{rule_id}</span>)
                           }

@@ -29,6 +29,11 @@
     --icon-color-std-hover: #4a4c50;
 
     --column-divider-color: #00000038;
+
+    --table-depart-color: #84bdd3;
+    --table-user-color: #c3d7df78;
+    --table-sub-sub-accent-color: #ffe00738;
+
 }
 
 .sk-flex-gap {

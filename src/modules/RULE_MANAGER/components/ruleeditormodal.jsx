@@ -48,7 +48,7 @@ const RuleEditorModal = (props) => {
         form.setFieldsValue({
           name: "Правило_" + dayjs().unix(),
           rule_type_id: 1,
-          id_company: props.user_data.user.id_company,
+          id_company: props.user_data?.user?.id_company,
           duration_time: 60,
           variable_a: 0,
           variable_b: 0,

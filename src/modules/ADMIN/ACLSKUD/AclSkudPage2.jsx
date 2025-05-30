@@ -1261,7 +1261,7 @@ useEffect(() => {
                     </div>
                     <br/>
                     <div className={'sk-flex-space'}>
-                        <div className={'sk-flex'}>
+                        <div className={'sk-flex'} style={{alignContent: 'center', alignItems: 'center'}}>
                             <div className={'sk-select-visicom'}>Доступы к компании: </div>
                             <div>
                             <Radio.Group
@@ -1276,7 +1276,7 @@ useEffect(() => {
                                 </div>
                         </div>
                         <div className={'sk-flex'}>
-                            <div className={'sk-select-visicom'}>Показать сотрудников компании: </div>
+                            <div className={'sk-select-visicom'} style={{alignContent: 'center', alignItems: 'center'}}>Показать сотрудников компании: </div>
                             <div>
                                 <Select
                                   style={{width: '240px'}}
@@ -1350,7 +1350,7 @@ useEffect(() => {
                             const count_users_in = userCollection.filter((user)=> user.depart_id === item.id).length;
                             const current_depart = item.id;
                             return (
-                            <div className={`sk-rdepart-section ${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "} ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource-tpl' : ''}`}>
+                            <div className={`sk-rdepart-section ${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "} ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource-tpl' : ''} ${count_users_in ? '' : 'sk-table-users-empty'}`}>
                             <div 
                               onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
                               className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkdser${item.id}_${item.id}`}>
@@ -1361,7 +1361,7 @@ useEffect(() => {
                                 disabled={count_users_in === 0}
                                 indeterminate={selectedDepartsInermed.includes(item.id)}
                               /></div>
-                              <div><div><span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#0000008f'}`}}>{item.id}</span></div></div>
+                              <div><div><span style={{ fontWeight: '500'}}>{item.id}</span></div></div>
                               <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                 <span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#0000008f'}`}}>{item.name}</span>
                                 </div></div>
@@ -1412,7 +1412,7 @@ useEffect(() => {
                                 <div className={'sk-table-template-control sk-template-header-row '} >
                                   <div></div>
                                   <div className={'sk-flex sk-template-header-title'} >
-                                    Шаблон отдела
+                                    Доступы к отделу по умолчанию
                                   </div>
                                   <div>
                                   <div className={'sk-table-aclskud-multicol2'}
@@ -1521,7 +1521,7 @@ useEffect(() => {
                                 </div>
                                 </div>
                                   )})}
-                                <div className={'sk-table-template-control'}>
+                                <div className={'sk-table-template-control sk-template-footer-row'}>
                                   <div></div>
                                   <div className='sk-flex' style={{color: 'gray', padding: '4px'}}>
                                     Шаблоны применяются автоматически при создании пользователя или переводе его в другой отдел.
