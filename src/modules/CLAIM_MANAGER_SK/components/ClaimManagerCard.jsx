@@ -245,7 +245,7 @@ const ClaimManagerCard = (props) => {
 
                     <Dropdown
                         menu={
-                        {menuItems}
+                        { items: menuItems}
                         }
                         placement="bottomRight"
                         className={'sk-clamen-card-trigger'}
