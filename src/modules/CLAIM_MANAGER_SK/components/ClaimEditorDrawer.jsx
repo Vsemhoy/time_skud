@@ -35,7 +35,7 @@ const ClaimEditorDrawer = (props) => {
   const [baseUserList, setBaseUserList] = useState([]);
   const [userList, setUserList] = useState([]);
   const [acls, setAcls] = useState({});
-
+  const [editMode, setEditMode] = useState('create');
   const [formValid, setFormValid] = useState(true);
 
   const [MYID, setMYID] = useState(0);
@@ -51,6 +51,56 @@ const ClaimEditorDrawer = (props) => {
         props.on_close();
     }
   };
+
+  useEffect(() => {
+    if (editMode === 'update' && props.data){
+      console.log(props.data);
+      let res2 = JSON.parse(props.data.info);
+
+      /// ДОделать тут
+      if (res2.target_point){
+        setFormTargetPoint(res2.target_point);
+      };
+      if (formTargetAddress?.trim()){
+        res2.target_address = formTargetAddress;
+      };
+      if (formContactFace?.trim()){
+        res2.contact_person = formContactFace;
+      };
+      if (formContactFacePhone?.trim()){
+        res2.contact_phone = formContactFacePhone;
+      };
+      if (formTask?.trim()){
+        res2.task = formTask;
+      };
+      if (formComment?.trim()){
+        res2.comment = formComment;
+      };
+      if (formSubwayCount > 0){
+        res2.subway_count = parseInt(formSubwayCount);
+      };
+      if (formBusCount > 0){
+        res2.bus_count = parseInt(formBusCount);
+      };
+      if (formReason?.trim()){
+        res2.reason = formReason;
+      };
+      if (formDescription?.trim()){
+        res2.description = formDescription;
+      };
+      if (formDiseaseNumber?.trim()){
+        res2.disease_number = formDiseaseNumber;
+      };
+      if (formResult?.trim()){
+        res2.result = formResult;
+      };
+
+    }
+  }, [props.data, editMode]);
+
+  useEffect(() => {
+    setEditMode(props.mode)
+  }, [props.mode]);
 
   useEffect(() => {
     setAcls(props.acl_base)
@@ -193,7 +243,7 @@ const ClaimEditorDrawer = (props) => {
 
 
   useEffect(()=>{
-    console.log('HELLOFD');
+    // console.log('HELLOFD');
     if (formUsers.length > 0){
       setFormValid(true);
     } else {
@@ -228,7 +278,8 @@ const ClaimEditorDrawer = (props) => {
         <div>
           <div style={{padding: '9px 0px'}}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Сотрудник</span>
-                <Select
+                {editMode === 'create' ? (
+                  <Select
                     mode="multiple"
                     allowClear
                     style={{ width: '100%' }}
@@ -236,6 +287,10 @@ const ClaimEditorDrawer = (props) => {
                     options={userList}
                       onChange={setFormUsers}
                     />
+                ) : (
+                  <Input value={`${props.data?.usr_surname} ${props.data?.usr_name} ${props.data?.usr_patronymic}`}  />
+                )}
+
             </div>
 
             {/* Диапазон дат с временем */}

@@ -95,6 +95,10 @@ const ClaimManagerPage = (props) => {
     const [claimTypes, setClaimTypes] = useState([]);
     const [claimTypeOptions, setClaimTypeOptions] = useState([]);
 
+    const [shoOnlyCrew, setShowOnlyCrew] = useState(false);
+    const [editorMode, setEditorMode] = useState('create');
+    const [editedClaim, setEditedClaim] = useState(null);
+
     const onShowSizeChange = (current, pageSize) => {
         setOnPage(pageSize);
     };
@@ -221,7 +225,6 @@ const ClaimManagerPage = (props) => {
 
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
-            
             let pack = JSON.parse(JSON.stringify(filterPack));
             if (typeSelect !== 0){
                 pack.type = typeSelect;
@@ -231,7 +234,7 @@ const ClaimManagerPage = (props) => {
             get_claimList(pack);
         }, 800);
         return () => clearTimeout(debounceTimer);
-    }, [filterPack, typeSelect]);
+    }, [filterPack, typeSelect, shoOnlyCrew]);
 
     // ------------------ FetchWorld ----------------------
 
@@ -239,6 +242,10 @@ const ClaimManagerPage = (props) => {
 
     const get_claimList = async (filters, req, res) => {
         try {
+            if (shoOnlyCrew){
+                filters.boss_id = userData?.user.id;
+            };
+
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims', 
                 {
                     data: filters,
@@ -385,6 +392,7 @@ const ClaimManagerPage = (props) => {
             // Средней кнопкой мыши мы открываем редактор
             ev.preventDefault();
             setFormType(value);
+            setEditorMode('create');
             setEditorOpened(true);
         }
     }
@@ -402,6 +410,31 @@ const ClaimManagerPage = (props) => {
     const handleCloseInfo = () => {
         setViewerOpened(false);
         setOpenedId(null);
+    }
+
+
+    const handleEditEvent = (id, obj)=> {
+        let type = obj.skud_current_state_id;
+        setEditedClaim(obj);
+        setFormType(type);
+        setEditorMode('update');
+        setEditorOpened(true);
+    }
+
+    const handleApproveEvent = (id, type)=> {
+        console.log(id, type);
+    }
+
+    const handleDeclineEvent = (id, type)=> {
+        console.log(id, type);
+    }
+
+    const handleGetBackEvent = (id, obj)=> {
+        let type = obj.skud_current_state_id;
+        setEditedClaim(obj);
+        setFormType(type);
+        setEditorMode('update');
+        setEditorOpened(true);
     }
 
     return (
@@ -470,7 +503,7 @@ const ClaimManagerPage = (props) => {
 
                 <div >
 
-                    <div>
+                    <div className={'sk-flex-space'}>
                         <Pagination
                             showSizeChanger
                             onShowSizeChange={onShowSizeChange}
@@ -480,6 +513,9 @@ const ClaimManagerPage = (props) => {
                             defaultPageSize={30}
                             pageSizeOptions={[30,60,100,200,300]}
                         />
+                        <Button color="default" variant={shoOnlyCrew ? "solid" : "filled"}
+                            onClick={()=>{setShowOnlyCrew(!shoOnlyCrew)}}
+                        >Мои подчиненные</Button>
                     </div>
                     <br />
 
@@ -558,6 +594,11 @@ const ClaimManagerPage = (props) => {
                                 my_id={userData?.user?.id}
                                 on_click={handleOpenInfo}
                                 acl_base={aclBase}
+
+                                on_approve={handleApproveEvent}
+                                on_decline={handleDeclineEvent}
+                                on_edit={handleEditEvent}
+                                on_get_back={handleGetBackEvent}
                             />
                         ))}
                             
@@ -574,6 +615,8 @@ const ClaimManagerPage = (props) => {
             </div>
 
             <ClaimEditorDrawer
+                data={editedClaim}
+                mode={editorMode}
                 acl_base={aclBase}
                 user_list={userList}
                 opened={editorOpened}

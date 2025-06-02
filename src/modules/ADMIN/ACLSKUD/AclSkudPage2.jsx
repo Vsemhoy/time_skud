@@ -48,6 +48,9 @@ const AclSkudPage2 = (props) => {
     const [selectedDepartsInermed, setselectedDepartsIntermed] = useState([]);
     const [selectedUsers, setselectedUsers] = useState([]);
 
+    const [lastSetRowChecked, setLastSetRowChecked] = useState({});
+    const [lastSetColumnChecked, setLastSetColumnChecked] = useState({});
+
     const rowMenuItems = [
       {
         key: 'u_cmd_copy_access',
@@ -589,6 +592,9 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
   const setColumnChecked = (ev, targtype, column, user_id, dep_id ) =>
   {
+    const chop = (ev.ctrlKey ? 1 : 0) + targtype + column + user_id + dep_id;
+    if (chop === lastSetColumnChecked){ return; }
+    setLastSetColumnChecked(chop);
     let checked = true;
     let acl_data = [];
     
@@ -645,6 +651,9 @@ const toggleUsersOpen = (ev, id, dep_id) => {
   
   const setRowChecked = (ev, targtype, row_id, user_id, dep_id ) =>
   {
+    const chop = (ev.ctrlKey ? 1 : 0) + targtype + row_id + user_id + dep_id;
+    if (chop === lastSetRowChecked){ return; }
+    setLastSetRowChecked(chop);
     let checked = true;
     let acl_data = [];
     
@@ -1352,7 +1361,7 @@ useEffect(() => {
                             return (
                             <div className={`sk-rdepart-section ${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "} ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource-tpl' : ''} ${count_users_in ? '' : 'sk-table-users-empty'}`}>
                             <div 
-                              onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
+                              
                               className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkdser${item.id}_${item.id}`}>
                               <div className={`sk-tas-inwrap sk-tas-inwrap-depart`}>
                               <div><Checkbox
@@ -1361,8 +1370,12 @@ useEffect(() => {
                                 disabled={count_users_in === 0}
                                 indeterminate={selectedDepartsInermed.includes(item.id)}
                               /></div>
-                              <div><div><span style={{ fontWeight: '500'}}>{item.id}</span></div></div>
-                              <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
+                              <div
+                                onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
+                              ><div><span style={{ fontWeight: '500'}}>{item.id}</span></div></div>
+                              <div 
+                                onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
+                                className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                 <span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#0000008f'}`}}>{item.name}</span>
                                 </div></div>
                               <div className={'sk-table-aclskud-multicol2'}>
@@ -1544,17 +1557,16 @@ useEffect(() => {
                                     <div 
                                       className={`sk-table-aclskud-row sk-table-aclskud-data ${copySource && copySource.type === 'users' && copySource.id === user.id ? 'sk-copysource' : ''}`} key={`checkusr${item.id}_${user.id}`}>
 
-                                      <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}`}
-                                       onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
-                                       >
-
+                                      <div className={`sk-tas-inwrap sk-tas-userrow ${openedUsers.includes(user.id) ? 'sk-tas-userrow-border' : ''}`}>
 
                                       <div><Checkbox
                                         checked={selectedUsers.includes(user.id)}
                                         onChange={(val)=>{handleUserCheckbox(val, user.id)}}
                                       /></div>
-                                      <div><div>{user.id}</div></div>
-                                      <div className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
+                                      <div onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}><div>{user.id}</div></div>
+                                      <div 
+                                        onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
+                                        className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                         <span>{user.surname} {user.name} {user.secondname}</span>
                                         </div></div>
                                       <div>

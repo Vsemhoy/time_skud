@@ -2,6 +2,7 @@ import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, 
 import { Dropdown } from "antd";
 import React, { useEffect, useState } from "react";
 import ClaimIcon from "./ClaimIcon";
+import dayjs from "dayjs";
 
 // const items = [
 //   {
@@ -74,12 +75,22 @@ const ClaimManagerCard = (props) => {
         let allowBack = false;
         let allowEdit = false;
         let allowApprove = false;
+        let allowDecline = false;
 
         if  (userCard.evaluated === 0 && userCard.user_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_CREATE')){
-            allowBack = true;
+            // Заявку можно отозвать вчера и если она не согласована
+            if (!userCard.is_approved === 0){
+                allowBack = true;
+                // let start = dayjs(userCard.start).startOf('day').unix();
+                // let today = dayjs().startOf('day').unix();
+                // if (start > today){
+                // }
+            }
+
         };
 
-        if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
+
+        if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_UPDATE')){
             // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
             allowEdit = true;
         } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
@@ -89,22 +100,54 @@ const ClaimManagerCard = (props) => {
             allowEdit = true;
         };
 
-        if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_APPROVE')){
-            // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
-            allowApprove = true;
-        } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_APPROVE')){
-            // Если челик мой подчиненный и у меня есть права добавлять подчиненным
-            allowApprove = true;
-        } else if (userCard.user_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')){
-            allowApprove = true;
-        };
+        if (userCard.need_approved === 1)
+        {
+            // Согласовываем только те, что требуют согласования
+            if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_APPROVE')){
+                // фильтр, если есть привилегия согласовывать кому угодно
+                if (userCard.is_approved === 0){
+                    allowApprove = true;
+                    allowDecline = true;
+                } else {
+                    let start = dayjs(userCard.start).startOf('day').unix();
+                    let today = dayjs().startOf('day').unix();
+                    if (start > today){
+                        allowDecline = true;
+                    }
+                }
+            } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_APPROVE')){
+                // Если челик мой подчиненный и у меня есть право ему согласовывать
+                if (userCard.is_approved === 0){
+                    allowApprove = true;
+                    allowDecline = true;
+                } else {
+                    let start = dayjs(userCard.start).startOf('day').unix();
+                    let today = dayjs().startOf('day').unix();
+                    if (start > today){
+                        allowDecline = true;
+                    }
+                }
+            } else if (userCard.user_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')){
+                if (userCard.is_approved === 0){
+                    allowApprove = true;
+                    allowDecline = true;
+                } else {
+                    let start = dayjs(userCard.start).startOf('day').unix();
+                    let today = dayjs().startOf('day').unix();
+                    if (start > today){
+                        allowDecline = true;
+                    }
+                }
+            };
+        }
 
         if (allowBack){
                 menu.push(
                     {
                         key: '1',
+                        value: 'getback',
                         label: (
-                        <a>
+                        <a onClick={handleGetBackEvent}>
                             Отозвать заявку
                         </a>
                         ),
@@ -115,9 +158,23 @@ const ClaimManagerCard = (props) => {
             menu.push(
                 {
                     key: '2',
+                    value: 'edit',
                     label: (
-                    <a>
+                    <a onClick={handleEditEvent}>
                         Редактировать заявку
+                    </a>
+                    ),
+                }
+            );
+        };
+        if (allowDecline){
+            menu.push(
+                {
+                    key: '3',
+                    value: 'decline',
+                    label: (
+                <a onClick={handleDeclineEvent}>
+                        Отклонить заявку
                     </a>
                     ),
                 }
@@ -126,19 +183,10 @@ const ClaimManagerCard = (props) => {
         if (allowApprove){
             menu.push(
                 {
-                    key: '3',
-                    label: (
-                    <a>
-                        Отклонить заявку
-                    </a>
-                    ),
-                }
-            );
-            menu.push(
-                {
                     key: '4',
+                    value: 'approve',
                     label: (
-                    <a>
+                        <a onClick={handleApproveEvent}>
                         Согласовать заявку
                     </a>
                     ),
@@ -147,6 +195,36 @@ const ClaimManagerCard = (props) => {
         }
         setMenuItems(menu);
       }, [userCard, aclBase, MYID]);
+
+
+    const handleEditEvent = ()=> {
+        console.log(itemId);
+        if (props.on_edit){
+            props.on_edit(itemId, userCard)
+        }
+    }
+
+    const handleApproveEvent = ()=> {
+        if (props.on_approve){
+            props.on_approve(itemId, userCard);
+        }   
+    }
+
+    const handleDeclineEvent = ()=> {
+        if (props.on_decline){
+            props.on_decline(itemId, userCard);
+        }  
+    }
+
+    const handleGetBackEvent = ()=> {
+        if (props.on_get_back){
+            props.on_get_back(itemId, userCard);
+        }  
+    }
+
+    // const handleMenuClick = (info) => {
+    //     console.log(info);
+    // }
 
     return (
       <div
@@ -241,12 +319,13 @@ const ClaimManagerCard = (props) => {
 
 
             <div>
-                {menuItems && (
+                {menuItems && menuItems.length > 0 && (
 
                     <Dropdown
-                        menu={
-                        { items: menuItems}
-                        }
+                        menu={{ 
+                            items: menuItems,
+                            // onClick: (info) => handleMenuClick(info)
+                        }}
                         placement="bottomRight"
                         className={'sk-clamen-card-trigger'}
                     >
