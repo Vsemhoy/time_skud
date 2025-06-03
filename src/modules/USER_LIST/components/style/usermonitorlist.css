@@ -307,3 +307,8 @@
     color: var(--icon-color-std);
     user-select: none;
 }
+
+
+.sk-shadow-flash {
+    opacity: 0.55;
+}

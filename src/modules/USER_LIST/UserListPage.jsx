@@ -33,7 +33,7 @@ const UserList = (props)=>{
   const [selectedColumns, setSelectedColumns] = useState([]);
 
 
-
+  const [toolbarCommand, setToolbarCommand] = useState(null);
 
   // Await data from header, then load data from setver
   const [extFilters, setExtFilters] = useState([]);
@@ -73,11 +73,47 @@ const UserList = (props)=>{
       setIsModalVisible(true); // Открываем модальное окно
     };
       
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     useEffect(()=>{
       setUserListData(baseUserListData.sort((a, b) => b.department - a.department));
-    }, [baseUserListData])
+
+
+    }, [baseUserListData]);
+
+    useEffect(() => {
+      async function animateRows() {
+        const rows = document.querySelectorAll('.sk-evemonic-norcard');
+        // 1. Последовательно добавляем класс с задержкой 150мс
+        for (let i = 0; i < rows.length; i++) {
+          rows[i].classList.add('sk-shadow-flash');
+          await sleep(1); // Интервал волны
+        }
+        // 2. Ждём 1 секунду после последнего
+        // await sleep(1000);
+    
+        // 3. Последовательно убираем класс с задержкой 150мс
+
+      }
+    
+      animateRows();
+    }, [targetDate]);
   
+    useEffect(() => {
+      async function animateRows() {
+        const rows = document.querySelectorAll('.sk-evemonic-norcard');
+        // 1. Последовательно добавляем класс с задержкой 150мс
+        // 3. Последовательно убираем класс с задержкой 150мс
+        for (let i = 0; i < rows.length; i++) {
+          rows[i].classList.remove('sk-shadow-flash');
+          await sleep(1);
+        }
+      }
+    
+      animateRows();
+    }, [baseUserListData]);
   
     useEffect(() => {
       if (PRODMODE){
@@ -104,6 +140,16 @@ const UserList = (props)=>{
     },[extFilters]);
 
 
+    useEffect(() => {
+      if (openUserInfo && markedUsers[0]){
+        let user_id = markedUsers[0];
+        handleMarkUser(user_id);
+        setOpenUserInfo(true);
+        let usr = baseUserListData.find((item)=> item.user_id === user_id);
+        setTargetUserInfo(usr);
+      }
+    }, [baseUserListData]);
+
 
     // Callback from socket
     useEffect(()=>{
@@ -115,6 +161,7 @@ const UserList = (props)=>{
           return () => clearTimeout(debounceTimer);
       }
     },[props.refresh_trigger]);
+
 
     
   /** ------------------ FETCHES ---------------- */
@@ -269,7 +316,18 @@ const UserList = (props)=>{
               nref = sortedUserRef.current[currentIndex + 2]?.user_id;
             }
           }
+        } else if (event.key === "ArrowLeft") {
+          setToolbarCommand("sub_day");
+          handleMarkUser(currentUser.user_id);
+          setTargetUserInfo(currentUser);
+          
+        } else if (event.key === "ArrowRight") {
+          setToolbarCommand("add_day");
+          handleMarkUser(currentUser.user_id);
+          setTargetUserInfo(currentUser);
         }
+
+        
       
         if (nref) {
           // Проверяем, что setUserListData принимает правильный формат
@@ -286,6 +344,9 @@ const UserList = (props)=>{
     };
   }, []); // Обработчик добавляется один раз
 
+  useEffect(() => {
+    setToolbarCommand(null);
+  }, [toolbarCommand]);
 
 
   const toggleSelectedColumn = (col) => {
@@ -384,70 +445,6 @@ const UserList = (props)=>{
 
 
 
-  
-    // useEffect(()=>{
-    //   // Filter data
-    //   console.log(innerFilters);
-    //   let userList = JSON.parse(JSON.stringify(baseUserListData));
-
-    //   let companyFilter = innerFilters.find((item)=> item.key === 'id_company');
-    //   if (companyFilter) {
-    //     userList = filterUserListByCompany(userList, companyFilter.value);
-    //   };
-    //   let departFilter = innerFilters.find((item)=> item.key === 'depart_id');
-    //   if (departFilter){
-    //     userList = filterUserListByDepartment(userList, departFilter.value);
-    //   };
-
-    //   // SortData
-    //   let sortedData = userList;
-    //   switch (innerSortByValue) {
-    //       case "department_asc":
-    //           sortedData.sort((a, b) => a.department_id - b.department_id);
-    //           sortedData = move_boss_to_top(sortedData);
-    //           sortedData = insertDepartmentNames(sortedData);
-    //           break;
-  
-    //       case "department_desc":
-    //           sortedData.sort((a, b) => b.department_id - a.department_id);
-    //           break;
-  
-    //       case "name_asc":
-    //           sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
-    //           break;
-  
-    //       case "name_desc":
-    //           sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
-    //           break;
-  
-    //       case "surname_asc":
-    //           sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
-    //           break;
-  
-    //       case "surname_desc":
-    //           sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
-    //           break;
-  
-    //       case "state_asc":
-    //           sortedData.sort((a, b) => a.current_state - b.current_state);
-    //           break;
-  
-    //       case "state_desc":
-    //         sortedData.sort((a, b) => b.current_state - a.current_state);
-    //       //   console.log( sortedData);
-    //         break;
-  
-    //       default:
-    //           // Сортировка по умолчанию (например, по department ASC)
-    //           sortedData.sort((a, b) => a.department_id - b.department_id);
-    //           sortedData = move_boss_to_top(sortedData);
-    //           sortedData = insertDepartmentNames(sortedData);
-    //           break;
-    //   }
-    //   setUserListData(sortedData);
-
-    // },[innerFilters, innerSortByValue]);
-
 
     const filteredUsers = useMemo(() => {
       let userList = JSON.parse(JSON.stringify(baseUserListData));
@@ -521,6 +518,7 @@ const UserList = (props)=>{
 
     const toggleExternalFilters = (filters) => {
       setExtFilters(filters);
+
     }
 
 
@@ -538,6 +536,7 @@ const UserList = (props)=>{
               onChangeExternalFilters={toggleExternalFilters}
               onChangeInnerSort={toggleInnerSorts}
               onChangeInnerFilers={toggleInnerFilters}
+              command={toolbarCommand}
             />
             
             {/* <Table 
@@ -636,7 +635,7 @@ const UserList = (props)=>{
                               data={arche}
                               on_mark_user={handleMarkUser}
                               marked_users={markedUsers}
-                              its_me={userdata.user.id == arche.user_id}
+                              its_me={userdata.user.id === arche.user_id}
                               on_double_click={handleShowUserInfo}
                               selected_columns={selectedColumns}
 
@@ -668,7 +667,7 @@ const UserList = (props)=>{
 
 
               <UserListSidebar
-              key="djafklsdjklfjaskl"
+                key="djafklsdjklfjaskl"
                 target_user_guys={targetUserGuys}
                 target_user_info={targetUserInfo}
                 userdata={userdata}
