@@ -96,6 +96,7 @@ const ClaimManagerPage = (props) => {
     const [claimTypeOptions, setClaimTypeOptions] = useState([]);
 
     const [shoOnlyCrew, setShowOnlyCrew] = useState(false);
+    const [showOnlyMine, setShowOnlyMine] = useState(false);
     const [editorMode, setEditorMode] = useState('create');
     const [editedClaim, setEditedClaim] = useState(null);
 
@@ -106,6 +107,7 @@ const ClaimManagerPage = (props) => {
     const handleEditorOpen = (value) => {
         if (value && value.key){
             let key = parseInt(value.key.replace('clt_', ''));
+            setEditorMode('create');
             setEditorOpened(true);
             setFormType(key);
         }
@@ -234,7 +236,7 @@ const ClaimManagerPage = (props) => {
             get_claimList(pack);
         }, 800);
         return () => clearTimeout(debounceTimer);
-    }, [filterPack, typeSelect, shoOnlyCrew]);
+    }, [filterPack, typeSelect, shoOnlyCrew, showOnlyMine]);
 
     // ------------------ FetchWorld ----------------------
 
@@ -244,6 +246,9 @@ const ClaimManagerPage = (props) => {
         try {
             if (shoOnlyCrew){
                 filters.boss_id = userData?.user.id;
+            };
+            if (showOnlyMine){
+                filters.user_id = userData?.user.id;
             };
 
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims', 
@@ -378,6 +383,36 @@ const ClaimManagerPage = (props) => {
         }
     }
 
+    const update_claim = async (claimObj, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim', 
+                {
+                    data: claimObj,
+                    _token: CSRF_TOKEN
+                });
+                console.log('response data => ', response.data);
+                get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
+    const update_claim_state = async (claimObj, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate', 
+                {
+                    data: claimObj,
+                    _token: CSRF_TOKEN
+                });
+                console.log('response data => ', response.data);
+                get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
 
     // ------------------ FetchWorld ----------------------
 
@@ -397,8 +432,13 @@ const ClaimManagerPage = (props) => {
         }
     }
 
-    const handleMakeClaim = (claim) => {
-        create_claim(claim);
+    const handleSaveClaim = (claim, editmode) => {
+        if (editmode === 'create'){
+            create_claim(claim);
+        } else if (editmode === 'update'){
+            console.log('update claim');
+            update_claim(claim);
+        }
     }
 
 
@@ -422,11 +462,19 @@ const ClaimManagerPage = (props) => {
     }
 
     const handleApproveEvent = (id, type)=> {
-        console.log(id, type);
+        const obj = {
+            id: id,
+            state: 1,
+        };
+        update_claim_state(obj)
     }
 
     const handleDeclineEvent = (id, type)=> {
-        console.log(id, type);
+        const obj = {
+            id: id,
+            state: 2,
+        };
+        update_claim_state(obj)
     }
 
     const handleGetBackEvent = (id, obj)=> {
@@ -504,18 +552,25 @@ const ClaimManagerPage = (props) => {
                 <div >
 
                     <div className={'sk-flex-space'}>
-                        <Pagination
-                            showSizeChanger
-                            onShowSizeChange={onShowSizeChange}
-                            defaultCurrent={3}
-                            total={total}
-                            onChange={setPage}
-                            defaultPageSize={30}
-                            pageSizeOptions={[30,60,100,200,300]}
-                        />
-                        <Button color="default" variant={shoOnlyCrew ? "solid" : "filled"}
-                            onClick={()=>{setShowOnlyCrew(!shoOnlyCrew)}}
-                        >Мои подчиненные</Button>
+                        <div>
+                            <Pagination
+                                showSizeChanger
+                                onShowSizeChange={onShowSizeChange}
+                                defaultCurrent={3}
+                                total={total}
+                                onChange={setPage}
+                                defaultPageSize={30}
+                                pageSizeOptions={[30,60,100,200,300]}
+                            />
+                        </div>
+                        <div className="sk-flex-space">
+                            <Button color="default" variant={showOnlyMine ? "solid" : "filled"}
+                                onClick={()=>{setShowOnlyCrew(false); setShowOnlyMine(!showOnlyMine)}}
+                            >Мои заявки</Button>
+                            <Button color="default" variant={shoOnlyCrew ? "solid" : "filled"}
+                                onClick={()=>{setShowOnlyCrew(!shoOnlyCrew); setShowOnlyMine(false)}}
+                            >Мои сотрудники</Button>
+                        </div>
                     </div>
                     <br />
 
@@ -558,22 +613,17 @@ const ClaimManagerPage = (props) => {
                             </div>
                             <div >
                                 <div>
-                                    Рук.
+                                    п
                                 </div>
                             </div>
                             <div >
                                 <div>
-                                    Причина
+                                    утв
                                 </div>
                             </div>
                             <div >
                                 <div>
-                                    Детали
-                                </div>
-                            </div>
-                            <div >
-                                <div>
-                                    Статус
+                                    исп
                                 </div>
                             </div>
                             <div >
@@ -623,11 +673,12 @@ const ClaimManagerPage = (props) => {
                 claim_type={formType}
                 on_close={()=>{setEditorOpened(false)}}
                 claim_types={claimTypes}
-                on_send={handleMakeClaim}
+                on_send={handleSaveClaim}
                 my_id={userData?.user?.id}
             />
 
             <ClaimModalView
+                centered
                 open={vieverOpened}
                 item_id={openedId}
                 on_close={handleCloseInfo}

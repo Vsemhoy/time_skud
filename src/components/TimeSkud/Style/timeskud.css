@@ -14,6 +14,9 @@
     --row-self-accent-color: #FE938C;
     --row-self-accent-faded-color: #f5d5d3;
     --row-self-accent-color_2: #ff6b6b;
+    /* --row-self-accent-faded-color: #f5d5d3; */
+    --row-self-accent-color-2: #27c5c2;
+    --row-self-accent-faded-color-2: #27c5c291;
     /* #bde9d1 */
     --row-divider-color: #C1CAD6d9;
     --row-divider-color_2: #aadabf;
@@ -34,6 +37,10 @@
     --table-user-color: #c3d7df78;
     --table-sub-sub-accent-color: #ffe00738;
 
+}
+
+.sk-fs-medium {
+    font-size: medium;
 }
 
 .sk-flex-gap {

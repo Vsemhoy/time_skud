@@ -1,5 +1,5 @@
-import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, DislikeOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { Dropdown } from "antd";
+import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, DislikeOutlined, InfoCircleOutlined, LikeOutlined } from "@ant-design/icons";
+import { Dropdown, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import ClaimIcon from "./ClaimIcon";
 import dayjs from "dayjs";
@@ -49,6 +49,8 @@ const ClaimManagerCard = (props) => {
 
     const [menuItems, setMenuItems] = useState(null);
 
+    const [jsonData, setJsonData] = useState({});
+
     const handleDoubleClickOnRow = () => {
         if (props.on_click){
             props.on_click(itemId);
@@ -57,6 +59,8 @@ const ClaimManagerCard = (props) => {
 
     useEffect(() => {
         setUserCard(props.data);
+        setJsonData( JSON.parse(props.data?.info));
+        console.log(props.data?.info);
     }, [props.data]);
 
       useEffect(() => {
@@ -167,6 +171,20 @@ const ClaimManagerCard = (props) => {
                 }
             );
         };
+
+        if (allowApprove){
+            menu.push(
+                {
+                    key: '4',
+                    value: 'approve',
+                    label: (
+                        <a onClick={handleApproveEvent}>
+                        Согласовать заявку
+                    </a>
+                    ),
+                }
+            );
+        };
         if (allowDecline){
             menu.push(
                 {
@@ -180,19 +198,6 @@ const ClaimManagerCard = (props) => {
                 }
             );
         };
-        if (allowApprove){
-            menu.push(
-                {
-                    key: '4',
-                    value: 'approve',
-                    label: (
-                        <a onClick={handleApproveEvent}>
-                        Согласовать заявку
-                    </a>
-                    ),
-                }
-            );
-        }
         setMenuItems(menu);
       }, [userCard, aclBase, MYID]);
 
@@ -226,48 +231,72 @@ const ClaimManagerCard = (props) => {
     //     console.log(info);
     // }
 
+    const clearTimeString = (str) => {
+        let s = str.replace(' 00:00:00', '');
+        let st = s.split(' ');
+        if (st.length == 2){
+            let time = st[1].split(':');
+            return <div><span>{st[0]}</span>  <span>{time[0]}:{time[1]}</span></div> ;
+        } else {
+            return <div><span>{st[0]}</span></div> ;
+        }
+    }
+
     return (
       <div
         onDoubleClick={handleDoubleClickOnRow}
-       className={'sk-clamen-card-wrapper'} style={{background: props.data?.state_color}}>
-        <div className={'sk-clamen-card'}>
-            <div >
-                <div className={'sk-align-center'}>
-                    {props.data?.id}
+       className={'sk-clamen-card-wrapper'} > 
+        <div className={'sk-clamen-card'}
+        // style={{ boxShadow: props.data?.state_color + 'ff -4px 3px 0px -1px' }}
+        >
+            <div style={{ background: props.data?.state_color}}>
+                <div className={'sk-align-center'} title={props.data?.id} >
+                <div className={'sk-claimicon'}>
+                    <ClaimIcon title={props.data.state_title} icon={props.data.state_icon}/>
+                </div>
                 </div>
             </div>
-            <div >
-                <div>
+            <div className={'sk-fs-medium'}>
+                <div style={{paddingLeft: '9px'}}>
                     {props.data.usr_surname} {props.data.usr_name} {props.data.usr_patronymic}
                 </div>
             </div>
             <div>
-                <div className={'sk-claimicon'}>
-                    <ClaimIcon title={props.data.state_title} icon={props.data.state_icon}/>
+                <div className={'sk-claiminfo'}>
+                    {jsonData.comment && (
+                        <Typography.Paragraph style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}</Typography.Paragraph>
+                    )}
+                    {jsonData.reason && (
+                        <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
+                    )}
+                    {jsonData.target_point && (
+                        <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}</Typography.Paragraph>
+                    )}
+                    {jsonData.formTask && (
+                        <Typography.Paragraph><i>Задача:</i> {jsonData.formTask}</Typography.Paragraph>
+                    )}
+                    {jsonData.description && (
+                        <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>
+                    )}
                 </div>
             </div>
             <div >
-                <div>
-                    {props.data.start}
+                <div className={'sk-timestring-claim'}>
+                    {clearTimeString(props.data.start)}
                 </div>
             </div>
             <div >
-                <div>
-                    {props.data.end}
+                <div className={'sk-timestring-claim'}>
+                    {clearTimeString(props.data.end)}
                 </div>
             </div>
 
             <div>
-                <div className={'sk-align-center'}>
+                <div className={'sk-align-center sk-fs-medium'}>
                     {props.data.days_count}
                 </div>
             </div>
 
-            <div>
-                <div>
-                    
-                </div>
-            </div>
 
             <div>
                 <div>
@@ -280,14 +309,14 @@ const ClaimManagerCard = (props) => {
                     <div className={'sk-icon-base'}
                         title={'Ожидает согласования'}
                     >
-                        <InfoCircleOutlined />
+                        <ClockCircleOutlined />
                     </div>
                 )}
                 {props.data.state === 1 && (
                     <div className={'sk-icon-success'}
                         title={'Согласовано'}
                     >
-                        <CheckSquareOutlined />
+                        <LikeOutlined />
                     </div>
                 )}
                 {props.data.state === 2 && (
@@ -311,7 +340,7 @@ const ClaimManagerCard = (props) => {
                         <div className={'sk-icon-base'}
                             title={'Ждет исполнения'}
                         >
-                            <ClockCircleOutlined />
+                            {/* <ClockCircleOutlined /> */}
                         </div>
                     )}
                 </div>
@@ -319,19 +348,21 @@ const ClaimManagerCard = (props) => {
 
 
             <div>
-                {menuItems && menuItems.length > 0 && (
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    {menuItems && menuItems.length > 0 && (
 
-                    <Dropdown
-                        menu={{ 
-                            items: menuItems,
-                            // onClick: (info) => handleMenuClick(info)
-                        }}
-                        placement="bottomRight"
-                        className={'sk-clamen-card-trigger'}
-                    >
-                        <BarsOutlined />
-                    </Dropdown>
-                )}
+                        <Dropdown
+                            menu={{ 
+                                items: menuItems,
+                                // onClick: (info) => handleMenuClick(info)
+                            }}
+                            placement="bottomRight"
+                            className={'sk-clamen-card-trigger'}
+                        >
+                            <BarsOutlined />
+                        </Dropdown>
+                    )}
+                </div>
             </div>
         </div>
         </div>

@@ -24,12 +24,54 @@ const ClaimModalView = (props) => {
 
   return (
     <Modal
+    centered
         open={opened}
         onCancel={handleCloseForm}
         onClose={handleCloseForm}
-         title="Basic Modal"
+        title="Basic Modal"
     >   
-        <div>HEllo wolf!</div>
+        <div className={'sk-claim-modalinfo-body'}>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+          <div className={'sk-claim-modalinfo-row'}>
+            <div>Param</div>
+            <div>value</div>
+          </div>
+        </div>
     </Modal>
   );
 };

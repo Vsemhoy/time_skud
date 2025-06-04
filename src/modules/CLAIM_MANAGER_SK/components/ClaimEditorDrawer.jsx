@@ -11,6 +11,7 @@ const ClaimEditorDrawer = (props) => {
   const [open, setOpen] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
 
+  const [itemId, setItemId] = useState(null);
   const [formType, setFormType] = useState(0);
 
   const [formUsers, setFormUsers] = useState([]); // all 
@@ -53,53 +54,84 @@ const ClaimEditorDrawer = (props) => {
   };
 
   useEffect(() => {
+    if (props.opened){
+      setOpen(true);
+    };
+    let title = "";
+    console.log(editMode);
     if (editMode === 'update' && props.data){
       console.log(props.data);
       let res2 = JSON.parse(props.data.info);
 
       /// ДОделать тут
-      if (res2.target_point){
-        setFormTargetPoint(res2.target_point);
-      };
-      if (formTargetAddress?.trim()){
-        res2.target_address = formTargetAddress;
-      };
-      if (formContactFace?.trim()){
-        res2.contact_person = formContactFace;
-      };
-      if (formContactFacePhone?.trim()){
-        res2.contact_phone = formContactFacePhone;
-      };
-      if (formTask?.trim()){
-        res2.task = formTask;
-      };
-      if (formComment?.trim()){
-        res2.comment = formComment;
-      };
-      if (formSubwayCount > 0){
-        res2.subway_count = parseInt(formSubwayCount);
-      };
-      if (formBusCount > 0){
-        res2.bus_count = parseInt(formBusCount);
-      };
-      if (formReason?.trim()){
-        res2.reason = formReason;
-      };
-      if (formDescription?.trim()){
-        res2.description = formDescription;
-      };
-      if (formDiseaseNumber?.trim()){
-        res2.disease_number = formDiseaseNumber;
-      };
-      if (formResult?.trim()){
-        res2.result = formResult;
+      if (res2.target_address){
+        setFormTargetAddress(res2.target_address);
       };
 
+      if (res2.contact_person){
+        setFormContactFace(res2.contact_person);
+      };
+      if (res2.contact_phone){
+        setFormContactFacePhone(res2.contact_phone);
+      };
+
+
+      if (res2.task){
+        setFormTask(res2.task);
+      };
+      if (res2.comment){
+        setFormComment(res2.comment);
+      };
+
+      if (res2.subway_count){
+        setFormSubwayCount(res2.subway_count);
+      };
+      if (res2.bus_count){
+        setFormBusCount(res2.bus_count);
+      };
+
+      if (res2.reason){
+        setFormReason(res2.reason);
+      };
+      if (res2.description){
+        setFormDescription(res2.description);
+      };
+
+      if (res2.disease_number){
+        setFormDiseaseNumber(res2.disease_number);
+      };
+      if (res2.result){
+        setFormResult(res2.result);
+      };
+
+      setFormDateRange([dayjs(props.data.start), props.data.end ? dayjs(props.data.end) : null]);
+      setItemId(props.data.id);
+      setFormType(props.data.skud_current_state_id);
+
+      if (props.claim_types)
+        {
+          title = props.claim_types.find((item)=> item.value === props.data.skud_current_state_id)?.label;
+        }
+    } else if (editMode === 'create'){
+
+        setItemId(null);
+        refreshForm();
+        setFormType(props.claim_type);
+        if (props.claim_types)
+        {
+          title = props.claim_types.find((item)=> item.value === props.claim_type)?.label;
+        }
     }
-  }, [props.data, editMode]);
+    console.log(props.claim_types);
+
+        setPageTitle(title);
+  }, [props.opened, props.claim_type, props.claim_types, props.data, editMode]);
+
+
+
 
   useEffect(() => {
-    setEditMode(props.mode)
+    setEditMode(props.mode);
   }, [props.mode]);
 
   useEffect(() => {
@@ -154,19 +186,22 @@ const ClaimEditorDrawer = (props) => {
     }
   },[props.user_list]);
 
-  useEffect(()=>{
-    if (props.opened){
-        setOpen(true);
-        refreshForm();
-        let title = "";
-        if (props.claim_types)
-        {
-          title = props.claim_types.find((item)=> item.value === props.claim_type)?.label;
-          setFormType(props.claim_type);
-        }
-        setPageTitle(title);
-    }
-  },[props.opened, props.claim_type]);
+  // useEffect(()=>{
+  //   if (props.opened){
+  //     setOpen(true);
+  //     if (editMode === 'create'){
+  //       setItemId(null);
+  //       refreshForm();
+  //     };
+  //       let title = "";
+  //       if (props.claim_types)
+  //       {
+  //         title = props.claim_types.find((item)=> item.value === props.claim_type)?.label +  itemId ? (" [" + itemId + "]"): "";
+  //         setFormType(props.claim_type);
+  //       }
+  //       setPageTitle(title);
+  //   }
+  // },[props.opened, props.claim_type, editMode]);
   
 
   const refreshForm = () => {
@@ -237,7 +272,10 @@ const ClaimEditorDrawer = (props) => {
 
     // console.log(result);
     if (props.on_send){
-      props.on_send(result);
+      if (itemId){
+        result.id = itemId;
+      };
+      props.on_send(result, editMode);
     }
   }
 
@@ -255,7 +293,7 @@ const ClaimEditorDrawer = (props) => {
     <>
       
       <Drawer
-        title={'Заявка на: ' + pageTitle + " " + props.claim_type}
+        title={'Заявка: ' + pageTitle + " " + props.claim_type}
         width={720}
         onClose={onClose}
         open={open}
@@ -501,7 +539,7 @@ const ClaimEditorDrawer = (props) => {
           <br />
           <br />
           <div>
-            {formValid ? (
+            {formValid || itemId ? (
               <Button type={'primary'} onClick={handleSubmitForm} block>Отправить</Button>
             ): (
               <Button danger disabled block>Отправить</Button>
