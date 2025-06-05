@@ -48,19 +48,22 @@ const ClaimManagerCard = (props) => {
     const [userCard, setUserCard] = useState(null);
 
     const [menuItems, setMenuItems] = useState(null);
-
+    const [selected, setSelected] = useState(false);
     const [jsonData, setJsonData] = useState({});
 
     const handleDoubleClickOnRow = () => {
         if (props.on_click){
-            props.on_click(itemId);
+            props.on_click(itemId, userCard);
         }
     }
 
     useEffect(() => {
+      setSelected(props.selected)
+    }, [props.selected]);
+
+    useEffect(() => {
         setUserCard(props.data);
         setJsonData( JSON.parse(props.data?.info));
-        console.log(props.data?.info);
     }, [props.data]);
 
       useEffect(() => {
@@ -85,12 +88,12 @@ const ClaimManagerCard = (props) => {
             // Заявку можно отозвать вчера и если она не согласована
             if (!userCard.is_approved === 0){
                 allowBack = true;
-                // let start = dayjs(userCard.start).startOf('day').unix();
-                // let today = dayjs().startOf('day').unix();
-                // if (start > today){
-                // }
             }
-
+            let start = dayjs(userCard.start).startOf('day').unix();
+            let today = dayjs().startOf('day').unix();
+            if (start > today){
+                allowBack = true;
+            }
         };
 
 
@@ -127,7 +130,7 @@ const ClaimManagerCard = (props) => {
                 } else {
                     let start = dayjs(userCard.start).startOf('day').unix();
                     let today = dayjs().startOf('day').unix();
-                    if (start > today){
+                    if (start > today && userCard.is_approved === 1){
                         allowDecline = true;
                     }
                 }
@@ -138,7 +141,7 @@ const ClaimManagerCard = (props) => {
                 } else {
                     let start = dayjs(userCard.start).startOf('day').unix();
                     let today = dayjs().startOf('day').unix();
-                    if (start > today){
+                    if (start > today && userCard.is_approved === 1){
                         allowDecline = true;
                     }
                 }
@@ -203,7 +206,6 @@ const ClaimManagerCard = (props) => {
 
 
     const handleEditEvent = ()=> {
-        console.log(itemId);
         if (props.on_edit){
             props.on_edit(itemId, userCard)
         }
@@ -242,11 +244,13 @@ const ClaimManagerCard = (props) => {
         }
     }
 
+
+
     return (
       <div
         onDoubleClick={handleDoubleClickOnRow}
        className={'sk-clamen-card-wrapper'} > 
-        <div className={'sk-clamen-card'}
+        <div className={`sk-clamen-card ${selected ? 'sk-claimcard-selected' : ''}`}
         // style={{ boxShadow: props.data?.state_color + 'ff -4px 3px 0px -1px' }}
         >
             <div style={{ background: props.data?.state_color}}>
@@ -257,7 +261,7 @@ const ClaimManagerCard = (props) => {
                 </div>
             </div>
             <div className={'sk-fs-medium'}>
-                <div style={{paddingLeft: '9px'}}>
+                <div style={{paddingLeft: '9px', userSelect: 'none'}}>
                     {props.data.usr_surname} {props.data.usr_name} {props.data.usr_patronymic}
                 </div>
             </div>
@@ -272,8 +276,11 @@ const ClaimManagerCard = (props) => {
                     {jsonData.target_point && (
                         <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}</Typography.Paragraph>
                     )}
-                    {jsonData.formTask && (
-                        <Typography.Paragraph><i>Задача:</i> {jsonData.formTask}</Typography.Paragraph>
+                    {jsonData.task && (
+                        <Typography.Paragraph><i>Задача:</i> {jsonData.task}</Typography.Paragraph>
+                    )}
+                    {jsonData.result && (
+                        <Typography.Paragraph><i>Результат:</i> {jsonData.result}</Typography.Paragraph>
                     )}
                     {jsonData.description && (
                         <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>

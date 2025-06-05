@@ -75,11 +75,13 @@
     border-radius: 5px;
     color: rgb(31, 31, 31);
     max-height: 100px;
+    transition: background 2.5s;
 }
 .sk-clamen-card-wrapper > .sk-clamen-card > div:first-child > div {
     background-color: rgba(255, 255, 255, 0.664);
     transition: all 0.3s;
     border-radius: 5px;
+    border-bottom: 1px #8080804d solid;
 }
 .sk-clamen-card-wrapper:hover > .sk-clamen-card > div:first-child > div {
     background-color: rgba(255, 255, 255, 0.163);
@@ -89,13 +91,16 @@
 } */
 .sk-clamen-card {
     display: grid;
-        grid-template-columns: 40px 3fr  2fr 100px 100px 50px 30px 38px 38px  36px;
+        grid-template-columns: 40px 2fr  3fr 100px 100px 50px 30px 38px 38px  36px;
         /* border: 1px solid #80808061; */
         border-top: none;
         background: var(--row-main-bg-color);
         transition: all ease 0.2s;
         box-shadow: -1px 1px 3px #00000042;
         max-height: 111px;
+}
+.sk-clamen-card > div:first-child {
+    border-radius: 5px;
 }
 .sk-timestring-claim span:nth-child(2){
     color: rgb(22 119 255);
@@ -166,7 +171,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     padding: 3px;
 }
 .sk-claiminfo > div:not(:first-child){
-    border-top: 1px solid rgb(194, 194, 194);
+    border-top: 1px dashed rgb(194, 194, 194);
 }
 
 .sk-claim-modalinfo-row {
@@ -174,3 +179,13 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     grid-template-columns: 1fr 3fr;
     border-bottom: 1px solid gray;
 }
+.sk-claimcard-selected {
+    background-color: var(--row-selected-color) !important;
+}
+
+/* input[readonly], textarea[readonly], .ant-input-textarea-affix-wrapper  {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0px;
+  } */

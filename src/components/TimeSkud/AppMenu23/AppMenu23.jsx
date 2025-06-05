@@ -69,13 +69,24 @@ const AppMenu23 = (props) => {
        selectedKeys={[selectedKey]}>
           <Menu.Item key="home" icon={<HomeOutlined  style={{ fontSize: '20px', color: '#3b3b3b', marginTop: '6px',
            textAlign: 'center', paddingLeft: '6px' }} />} ><a href={HTTP_ROOT}></a></Menu.Item>
-          <Menu.SubMenu key="menu1" title="Моё">
-            {/* <MenuItem
-            key={'menu_52d34ds'}>
-              <Link
-                onClick={()=>{ changePage(2)}}
-              >Моё</Link>
-            </MenuItem> */}
+          
+          
+          <MenuItem
+              
+              key={'menu_52s34'}>
+                <NavLink to="/" >
+                  Сотрудники
+                </NavLink>
+            </MenuItem>
+
+            <MenuItem
+            key={'/claims'}>
+                <NavLink to="/claims">
+                  Заявки
+                </NavLink>
+            </MenuItem>
+
+          {/* <Menu.SubMenu key="menu1" title="Моё">
 
             <MenuItem
               
@@ -106,7 +117,7 @@ const AppMenu23 = (props) => {
 
 
 
-          </Menu.SubMenu>
+          </Menu.SubMenu> */}
 
 
           <Menu.SubMenu key="menu2" title="Персонал">
@@ -170,7 +181,7 @@ const AppMenu23 = (props) => {
           </Menu.SubMenu>
 
 
-          <Menu.SubMenu key="menu634" title="Админ">
+          <Menu.SubMenu key="menu634" title="ACL">
             <MenuItem
             key={'/admin/aclskud'}>
                 <NavLink to="admin/aclskud">

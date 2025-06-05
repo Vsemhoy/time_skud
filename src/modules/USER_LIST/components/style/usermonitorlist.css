@@ -312,3 +312,23 @@
 .sk-shadow-flash {
     opacity: 0.55;
 }
+
+/* .sk-usp-filter-col-label {
+    border-bottom: 1px solid rgb(195, 195, 195);
+} */
+.sk-claim-read .sk-claimeditor-drawer-row {
+    border-bottom: 1px solid rgb(195, 195, 195);
+}
+
+.sk-claimeditor-drawer-row {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-top: 12px;
+}
+
+.sk-antipager-total {
+    background: #8080801c;
+    border-radius: 6px;
+    padding: 6px;
+    color: #838383;
+}

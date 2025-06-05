@@ -89,7 +89,7 @@ const ClaimManagerPage = (props) => {
 
     const [page, setPage] = useState(1);
     const [onPage, setOnPage] = useState(30);
-    const [total, setTotal] = useState(30);
+    const [total, setTotal] = useState(1);
 
     const [baseClaimTypes, setBaseClaimTypes] = useState(CLAIM_BASE_CLAIM_TYPES);
     const [claimTypes, setClaimTypes] = useState([]);
@@ -99,6 +99,8 @@ const ClaimManagerPage = (props) => {
     const [showOnlyMine, setShowOnlyMine] = useState(false);
     const [editorMode, setEditorMode] = useState('create');
     const [editedClaim, setEditedClaim] = useState(null);
+
+    const [selectedClaimId, setSelectedClaimId] = useState(0);
 
     const onShowSizeChange = (current, pageSize) => {
         setOnPage(pageSize);
@@ -214,7 +216,8 @@ const ClaimManagerPage = (props) => {
     },[baseClaimList]);
 
     const handleFilterChanged = (filter) => {
-
+        filter = JSON.parse(JSON.stringify(filter));
+        console.log('PAGE', page);
         filter.page = page;
         filter.onPage = onPage;
         setFilterPack(filter);
@@ -226,6 +229,7 @@ const ClaimManagerPage = (props) => {
 
 
     useEffect(() => {
+        console.log('FAPAK', filterPack);
         const debounceTimer = setTimeout(() => {
             let pack = JSON.parse(JSON.stringify(filterPack));
             if (typeSelect !== 0){
@@ -257,6 +261,7 @@ const ClaimManagerPage = (props) => {
                     _token: CSRF_TOKEN
                 });
                 setBaseClaimList(response.data.content);
+                setTotal(response.data.total);
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
@@ -413,6 +418,21 @@ const ClaimManagerPage = (props) => {
         }
     }
 
+    const delete_claim = async (claim_id, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim', 
+                {
+                    data: {id: claim_id},
+                    _token: CSRF_TOKEN
+                });
+                console.log('response data => ', response.data);
+                get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    }
+
 
     // ------------------ FetchWorld ----------------------
 
@@ -429,6 +449,7 @@ const ClaimManagerPage = (props) => {
             setFormType(value);
             setEditorMode('create');
             setEditorOpened(true);
+            setSelectedClaimId(0);
         }
     }
 
@@ -439,18 +460,26 @@ const ClaimManagerPage = (props) => {
             console.log('update claim');
             update_claim(claim);
         }
+        setEditorOpened(false);
+        setTimeout(() => {
+            setSelectedClaimId(0);
+            console.log(999999999);
+        }, 555);
     }
 
 
-    const handleOpenInfo = (id) => {
-        setViewerOpened(true);
-        setOpenedId(id);
+    const handleOpenInfo = (id, obj) => {
+        // setViewerOpened(true);
+        // setOpenedId(id);
+        let type = obj.skud_current_state_id;
+        setEditedClaim(obj);
+        setFormType(type);
+        setEditorMode('read');
+        setEditorOpened(true);
+        setSelectedClaimId(id);
     }
 
-    const handleCloseInfo = () => {
-        setViewerOpened(false);
-        setOpenedId(null);
-    }
+
 
 
     const handleEditEvent = (id, obj)=> {
@@ -459,6 +488,7 @@ const ClaimManagerPage = (props) => {
         setFormType(type);
         setEditorMode('update');
         setEditorOpened(true);
+        setSelectedClaimId(id);
     }
 
     const handleApproveEvent = (id, type)=> {
@@ -467,6 +497,11 @@ const ClaimManagerPage = (props) => {
             state: 1,
         };
         update_claim_state(obj)
+        setEditorOpened(false);
+        setTimeout(() => {
+            setSelectedClaimId(0);
+            console.log(888888333333);
+        }, 555);
     }
 
     const handleDeclineEvent = (id, type)=> {
@@ -474,16 +509,51 @@ const ClaimManagerPage = (props) => {
             id: id,
             state: 2,
         };
-        update_claim_state(obj)
+        update_claim_state(obj);
+        setEditorOpened(false);
+        setTimeout(() => {
+            setSelectedClaimId(0);
+            console.log(555555555555);
+        }, 555);
     }
 
-    const handleGetBackEvent = (id, obj)=> {
-        let type = obj.skud_current_state_id;
-        setEditedClaim(obj);
-        setFormType(type);
-        setEditorMode('update');
-        setEditorOpened(true);
+    const handleGetBackEvent = (id)=> {
+        // let type = obj.skud_current_state_id;
+        // setEditedClaim(obj);
+        // setFormType(type);
+        // setEditorMode('update');
+        setTimeout(() => {
+            setSelectedClaimId(0);
+            console.log(1111111111111);
+        }, 555);
+        setEditorOpened(false);
+        delete_claim(id);
     }
+
+    const handleCloseEditor = ()=> {
+        if (editorOpened){
+            setEditorOpened(false);
+            setEditorMode('read');
+    
+            setTimeout(() => {
+                console.log(2222222222222222);
+                setSelectedClaimId(0);
+            }, 555);
+        }
+    }
+
+    const handleSetPage = (ev) => {
+        console.log(ev);
+        setPage(ev);
+    }
+
+    // useEffect(() => {
+    //     if (!editorOpened && editedClaim == null){
+    //         setTimeout(() => {
+    //             setEditedClaim(null);
+    //         }, 555);
+    //     }
+    //   }, [editorOpened]);
 
     return (
         <div>
@@ -552,16 +622,18 @@ const ClaimManagerPage = (props) => {
                 <div >
 
                     <div className={'sk-flex-space'}>
-                        <div>
+                        <div className="sk-flex">
                             <Pagination
                                 showSizeChanger
                                 onShowSizeChange={onShowSizeChange}
-                                defaultCurrent={3}
+                                defaultCurrent={1}
                                 total={total}
-                                onChange={setPage}
+                                onChange={handleSetPage}
                                 defaultPageSize={30}
                                 pageSizeOptions={[30,60,100,200,300]}
+                                locale={{ items_per_page: 'на странице', jump_to: 'Перейти', jump_to_confirm: 'OK', page: 'Страница' }}
                             />
+                            <span className="sk-antipager-total">Всего найдено: {total}</span>
                         </div>
                         <div className="sk-flex-space">
                             <Button color="default" variant={showOnlyMine ? "solid" : "filled"}
@@ -640,11 +712,11 @@ const ClaimManagerPage = (props) => {
                         </Affix>
                         {claimList.map((claim) => (
                             <ClaimManagerCard
-                            data={claim}
+                                data={claim}
                                 my_id={userData?.user?.id}
                                 on_click={handleOpenInfo}
                                 acl_base={aclBase}
-
+                                selected={claim.id === selectedClaimId}
                                 on_approve={handleApproveEvent}
                                 on_decline={handleDeclineEvent}
                                 on_edit={handleEditEvent}
@@ -671,18 +743,16 @@ const ClaimManagerPage = (props) => {
                 user_list={userList}
                 opened={editorOpened}
                 claim_type={formType}
-                on_close={()=>{setEditorOpened(false)}}
+                on_close={handleCloseEditor}
                 claim_types={claimTypes}
                 on_send={handleSaveClaim}
                 my_id={userData?.user?.id}
+                on_get_back={handleGetBackEvent}
+                on_approve={handleApproveEvent}
+                on_decline={handleDeclineEvent}
             />
 
-            <ClaimModalView
-                centered
-                open={vieverOpened}
-                item_id={openedId}
-                on_close={handleCloseInfo}
-                />
+
         </div>
     )
 }
