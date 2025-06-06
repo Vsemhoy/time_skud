@@ -6,6 +6,17 @@ import dayjs from 'dayjs';
 const { Option } = Select;
 
 
+function nl2br(str) {
+  if (typeof str !== 'string') return str;
+  return str.split(/\r\n|\n|\r/).map((line, idx, arr) => (
+    <React.Fragment key={idx}>
+      {line}
+      {idx < arr.length - 1 && <br />}
+    </React.Fragment>
+  ));
+}
+
+
 
 const ClaimEditorDrawer = (props) => {
   const [open, setOpen] = useState(false);
@@ -87,6 +98,9 @@ const ClaimEditorDrawer = (props) => {
         setFormContactFacePhone(res2.contact_phone);
       };
 
+      if (res2.target_point){
+        setFormTargetPoint(res2.target_point);
+      };
 
       if (res2.task){
         setFormTask(res2.task);
@@ -409,7 +423,7 @@ const ClaimEditorDrawer = (props) => {
     <>
       
       <Drawer
-        title={'Заявка: ' + pageTitle + " " + props.claim_type}
+        title={`${itemId ? ("Заявка #" + itemId) : 'Новая заявка '}:  ${pageTitle}`} //props.claim_type
         width={720}
         onClose={onClose}
         open={open}
@@ -430,9 +444,9 @@ const ClaimEditorDrawer = (props) => {
         //   </Space>
         // }
       >
-        <div style={{display: 'flex', flexDirection: 'column'}}>
+        <div style={{display: 'flex', flexDirection: 'column'}} className={`${editMode === 'read' ? 'sk-claim-read' : ''}`} >
 
-        <div className={`${editMode === 'read' ? 'sk-claim-read' : ''}`}>
+        <div>
           <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Сотрудник</span>
                 {editMode === 'create' ? (
@@ -545,11 +559,11 @@ const ClaimEditorDrawer = (props) => {
             <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Место назначения</span>
               {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formTargetPoint}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formTargetPoint)}</div>
                     ) : (
                       <TextArea
                           readOnly={editMode === 'read'}
-                          style={{ width: '100%' }}
+                          style={{ width: '100%', minHeight: '140px' }}
                           value={formTargetPoint}
                           onChange={(ev)=>{setFormTargetPoint(ev.target.value)}}
                           allowClear={true}
@@ -562,11 +576,11 @@ const ClaimEditorDrawer = (props) => {
             <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Адрес</span>
               {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formTargetAddress}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formTargetAddress)}</div>
                     ) : (
                       <TextArea
                           readOnly={editMode === 'read'}
-                          style={{ width: '100%' }}
+                          style={{ width: '100%', minHeight: '140px' }}
                           value={formTargetAddress}
                           onChange={(ev)=>{setFormTargetAddress(ev.target.value)}}
                           allowClear={true}
@@ -661,12 +675,12 @@ const ClaimEditorDrawer = (props) => {
             <div className={'sk-claimeditor-drawer-row '}>
                 <span className={'sk-usp-filter-col-label sk-labed-um'}>Причина</span>
                 {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formReason}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formReason)}</div>
                     ) : (
 
                     <TextArea
                       readOnly={editMode === 'read'}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', minHeight: '140px' }}
                         allowClear={true}
                         value={formReason}
                         onChange={(ev)=>{setFormReason(ev.target.value)}}
@@ -681,11 +695,11 @@ const ClaimEditorDrawer = (props) => {
               <div className={'sk-claimeditor-drawer-row '}>
                   <span className={'sk-usp-filter-col-label sk-labed-um'}>Описание, доп. информация</span>
                   {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formDescription}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formDescription)}</div>
                     ) : (
                       <TextArea
                         readOnly={editMode === 'read'}
-                          style={{ width: '100%' }}
+                          style={{ width: '100%', minHeight: '140px' }}
                           allowClear={true}
                           value={formDescription}
                           onChange={(ev)=>{setFormDescription(ev.target.value)}}
@@ -700,11 +714,11 @@ const ClaimEditorDrawer = (props) => {
               <div className={'sk-claimeditor-drawer-row '}>
                   <span className={'sk-usp-filter-col-label sk-labed-um'}>Комментарий</span>
                   {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formComment}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formComment)}</div>
                     ) : (
                     <TextArea
                       readOnly={editMode === 'read'}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', minHeight: '140px' }}
                         allowClear={true}
                         value={formComment}
                         onChange={(ev)=>{setFormComment(ev.target.value)}}
@@ -720,12 +734,12 @@ const ClaimEditorDrawer = (props) => {
               <div className={'sk-claimeditor-drawer-row '}>
                   <span className={'sk-usp-filter-col-label sk-labed-um'}>Задача</span>
                   {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formTask}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formTask)}</div>
                     ) : (
 
                       <TextArea
                         readOnly={editMode === 'read'}
-                          style={{ width: '100%' }}
+                          style={{ width: '100%', minHeight: '140px' }}
                           allowClear={true}
                           value={formTask}
                           onChange={(ev)=>{setFormTask(ev.target.value)}}
@@ -739,11 +753,11 @@ const ClaimEditorDrawer = (props) => {
               <div className={'sk-claimeditor-drawer-row '}>
                   <span className={'sk-usp-filter-col-label sk-labed-um'}>Результат</span>
                     {editMode === 'read' ? (
-                      <div className={'sk-contend-um'}>{formResult}</div>
+                      <div className={'sk-contend-um'}>{nl2br(formResult)}</div>
                     ) : (
                       <TextArea
                           readOnly={editMode === 'read'}
-                          style={{ width: '100%' }}
+                          style={{ width: '100%', minHeight: '140px' }}
                           allowClear={true}
                           value={formResult}
                           onChange={(ev)=>{setFormResult(ev.target.value)}}

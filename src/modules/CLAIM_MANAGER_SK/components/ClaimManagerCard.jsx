@@ -306,8 +306,8 @@ const ClaimManagerCard = (props) => {
 
 
             <div>
-                <div>
-                    
+                <div className={'sk-hidden-text'}>
+                    #{itemId}
                 </div>
             </div>
 

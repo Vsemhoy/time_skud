@@ -31,6 +31,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     PlusOutlined,
     PlusCircleOutlined
  } from "@ant-design/icons";
+import { USER_STATE_PLACES } from "../../CONFIG/DEFFORMS";
 
 
 const iconMap = {
@@ -63,11 +64,9 @@ const DynamicIcon = ({ iconName, ...props }) => {
 
 const ClaimManagerPage = (props) => {
     const [userData, setUserData] = useState(null);
-    const [typeSelect, setTypeSelect] = useState(null);
+    const [typeSelect, setTypeSelect] = useState(0);
     const [editorOpened, setEditorOpened] = useState(false);
-    const [vieverOpened, setViewerOpened] = useState(false);
 
-    const [openedId, setOpenedId] = useState(null);
 
 
     const [formType, setFormType] = useState(null);
@@ -78,9 +77,7 @@ const ClaimManagerPage = (props) => {
 
 
     const [departList, setDepartList] = useState([]);
-    const [bossList, setBossList] = useState([]);
     const [baseApproverList, setBaseApproverList] = useState([]);
-    const [approverList, setApproverList] = useState([]);
     const [stateList, setStateList] = useState([]);
     const [claimList, setClaimList] = useState([]);
     const [baseClaimList, setBaseClaimList] = useState([]);
@@ -91,7 +88,7 @@ const ClaimManagerPage = (props) => {
     const [onPage, setOnPage] = useState(30);
     const [total, setTotal] = useState(1);
 
-    const [baseClaimTypes, setBaseClaimTypes] = useState(CLAIM_BASE_CLAIM_TYPES);
+    const [baseClaimTypes, setBaseClaimTypes] = useState([]);
     const [claimTypes, setClaimTypes] = useState([]);
     const [claimTypeOptions, setClaimTypeOptions] = useState([]);
 
@@ -105,6 +102,12 @@ const ClaimManagerPage = (props) => {
     const onShowSizeChange = (current, pageSize) => {
         setOnPage(pageSize);
     };
+
+    useEffect(() => {
+      if (total < page * onPage){
+        setPage(1);
+      }
+    }, [total]);
 
     const handleEditorOpen = (value) => {
         if (value && value.key){
@@ -142,6 +145,7 @@ const ClaimManagerPage = (props) => {
             setBaseUserList(CLAIM_USERS);
             setStateList(CLAIM_STATES);
             setBaseClaimList(CLAIMS_MOCKS);
+            setBaseClaimTypes(USER_STATE_PLACES);
         }
     },[]);
 
@@ -330,7 +334,7 @@ const ClaimManagerPage = (props) => {
                     },
                     _token: CSRF_TOKEN
                 });
-                setStateList(response.data.content);
+                setBaseClaimTypes(response.data.content);
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
@@ -660,12 +664,12 @@ const ClaimManagerPage = (props) => {
                             </div>
                             <div >
                                 <div>
-                                    Имя пользователя
+                                    Пользователь
                                 </div>
                             </div>
                             <div >
                                 <div>
-                                    Тип
+                                    Инфо
                                 </div>
                             </div>
                             <div >
@@ -679,13 +683,13 @@ const ClaimManagerPage = (props) => {
                                 </div>
                             </div>
                             <div >
-                                <div>
+                                <div title="количество дней в заявке">
                                     дней
                                 </div>
                             </div>
                             <div >
                                 <div>
-                                    п
+                                    id
                                 </div>
                             </div>
                             <div >
@@ -744,6 +748,7 @@ const ClaimManagerPage = (props) => {
                 opened={editorOpened}
                 claim_type={formType}
                 on_close={handleCloseEditor}
+                
                 claim_types={claimTypes}
                 on_send={handleSaveClaim}
                 my_id={userData?.user?.id}

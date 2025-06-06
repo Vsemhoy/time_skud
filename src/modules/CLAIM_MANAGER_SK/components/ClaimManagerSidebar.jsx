@@ -13,17 +13,17 @@ const ClaimManagerSidebar = (props) => {
         {
             key: 'cs2453524',
             label: 'Новые',
-            value: 1
+            value: 0
         },
         {
             key: 'cs34537424',
-            label: 'Принятые',
-            value: 2
+            label: 'Согласованные',
+            value: 1
         },
         {
             key: 'cs45327424',
             label: 'Отклоненные',
-            value: 3
+            value: 2
         },
     ];
 

@@ -4,33 +4,24 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Link,
   Routes,
   BrowserRouter
 } from "react-router-dom";
-import HomePage from './modules/DEFAULT_PAGE/HomePage';
 import UserListPage from './modules/USER_LIST/UserListPage';
-import UserPage from './modules/USER_PAGE/UserPage';
-import { Breadcrumb, Layout, Menu, Skeleton, theme, Input, Dropdown, Avatar, Drawer, Button, Badge, Alert } from 'antd';
-import MenuItem from 'antd/es/menu/MenuItem';
+import {  Layout, Menu, Skeleton, Button, Badge, Alert } from 'antd';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
 import { BASE_NAME, BASE_ROUTE, CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
-import CalendarPage from './modules/CALENDAR/CalendarPage';
 import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
 import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
 import ProdCalManagerPage from './modules/PROD_CAL_MANAGER/ProdCalManagerPage';
 import GroupManagerPage from './modules/GROUP_MANAGER/GroupManagerPage';
-import EventRandomixer from './modules/EVENT_RANDOMIXER/EventRandomixer';
 import AccountPage from './modules/ACCOUNT/AccountPage';
-import Search from 'antd/es/input/Search';
-import { HomeOutlined, LogoutOutlined, NotificationOutlined, SettingOutlined, SmileOutlined, ThunderboltOutlined, UserOutlined } from '@ant-design/icons';
 import NotifierPage from './modules/NOTIFIER/NotifierPage';
 import UserManagerPage from './modules/USER_MANAGER/UserManagerPage';
 import EventMonitorPage from './modules/EVENT_MONITOR_SK/EventMonitorPage';
 
 import { StateContext } from './components/ComStateProvider25/ComStateProvider25';
-import ParseRoute from './components/HybridEmbeddedRouter/RouteParser';
 
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs';
@@ -68,82 +59,13 @@ const useCookieState = (key, defaultValue) => {
 
 
 function App() {
-  const menuItems = [];
-
 
 
   const { state, setState } = useContext(StateContext);
 
   console.log('state', state)
 
-  const [pages, setPages] = useState({
-    userListPage: {
-        id: 1,
-        rendered: true,
-        name: 'userlist',
-        ruName: 'Список сотрудников',
-    },
-    personalPage: {
-        id: 2,
-        rendered: false,
-        name: 'personal',
-        ruName: 'Личный кабинет',
-    },
-    statisticPage: {
-        id: 3,
-        rendered: false,
-        name: 'statistic',
-        ruName: 'Статистика',
-    },
-    claimPage: {
-        id: 4,
-        rendered: false,
-        name: 'claims',
-        ruName: 'Менеджер раявок',
-    },
-    scheduleManagerPage: {
-        id: 5,
-        rendered: false,
-        name: 'schedules',
-        ruName: 'Графики работы',
-    },
-    userManagerPage: {
-        id: 6,
-        rendered: false,
-        name: 'usermanager',
-        ruName: 'Настройки учёта РВ пользователей',
-    },
-    calendarManagerPage: {
-        id: 7,
-        rendered: false,
-        name: 'prodcalendars',
-        ruName: 'Производственные календари',
-    },
-    eventMonitorPage: {
-        id: 8,
-        rendered: false,
-        name: 'eventmonitor',
-        ruName: 'Монитор событий',
-    },
-    notificatorPage: {
-        id: 8,
-        rendered: false,
-        name: 'notificator',
-        ruName: 'Нотификатор',
-    },
-    groupManagerPage: {
-        id: 9,
-        rendered: false,
-        name: 'groupmanager',
-        ruName: 'Группы для группировки пользователей',
-    },
-    ruleManagetPage: {
-        id: 10,
-        rendered: false,
-        name: 'rules',
-        ruName: 'Правила учёта рабочего времени',
-    }
-  });
+  
 
   const [alertNotShowDate, setAlertNotShowDate] = useCookieState('skud_alert_notshow_date', "");
 
@@ -160,69 +82,6 @@ function App() {
   });
 
   const [actionUpdateEvents, setActionUpdateEvents] = useState(null);
-
-
-
-
-  /**
-   * Текущий адрес страницы
-   */
-
-  
-
-  // useEffect(() => {
-  //   const handleLocationChange = () => {
-  //     const searchParams = new URLSearchParams(window.location.search);
-  //     const locationParam = searchParams.get('location');
-      
-  //     if (locationParam) {
-  //       const path = decodeURIComponent(searchParams);
-  //       const newState = ParseRoute(path);
-
-  //       console.log('newState:', newState);
-  //       setState(newState);
-  //     }
-  //   };
-
-  //   // Обрабатываем начальный URL
-  //   handleLocationChange();
-
-  //   // Подписываемся на изменения истории
-  //   window.addEventListener('popstate', handleLocationChange);
-    
-  //   return () => {
-  //     window.removeEventListener('popstate', handleLocationChange);
-  //   };
-  // }, []);
-
-
-
-
-
-// // 1. При монтировании: синхронизировать state.location с URL
-// useEffect(() => {
-//   const searchParams = new URLSearchParams(window.location.search);
-//   const currentLocation = searchParams.get('location') || 'userlist';
-//   setLocation(currentLocation);
-
-//   const handlePopState = () => {
-//     const searchParams = new URLSearchParams(window.location.search);
-//     const currentLocation = searchParams.get('location') || 'userlist';
-//     setLocation(currentLocation);
-//   };
-//   window.addEventListener('popstate', handlePopState);
-//   return () => window.removeEventListener('popstate', handlePopState);
-// }, []);
-
-// // 2. При смене страницы (только по клику/действию)
-// const changePage = (pageId) => {
-//   const activePage = Object.values(pages).find(page => page.id === pageId);
-//   if (activePage) {
-//     const newUrl = `${window.location.pathname}?location=${encodeURIComponent(activePage.name)}`;
-//     window.history.pushState({}, '', newUrl);
-//     setLocation(activePage.name);
-//   }
-// };
 
 
 
@@ -303,7 +162,7 @@ function App() {
        />
    
 
-      {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && (
+      {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
           message=<div className='sk-flex-space'>
           <span>"Возможно Вы забыли приложить карту при входе в офис"</span>
@@ -326,37 +185,14 @@ function App() {
         
         
           { pageLoaded || !PRODMODE ? (
-        <div>
-            {/* {location === '' && <HomePage />} */}
-            {/* {location === 'home' && <HomePage />} */}
-            {/* {state.location === '' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
-            {state.location === 'personal' && <AccountPage userdata={userAct} />}
-            {state.location === 'statistic' && <UserStatisticsPage userdata={userAct} />}
-            {state.location === 'rules' && <RuleManagerPage userdata={userAct} />}
-            {state.location === 'schedules' && <SchedManagerPage userdata={userAct} />}
-            {state.location === 'usermanager' && <UserManagerPage userdata={userAct} setRoute={()=>{console.log('999')}} />}
-            {state.location === 'calendars' && <ProdCalManagerPage userdata={userAct} />}
-            {state.location === 'userlist' && <UserListPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>}
-            {state.location === 'groups' && <GroupManagerPage userdata={userAct} />}
-            {state.location === 'superadmin/randomixer' && <EventRandomixer userdata={userAct} />}
-            {state.location === 'notificator' && <NotifierPage userdata={userAct} />}
-
-            {state.location === 'claims' && <ClaimManagerPage userdata={userAct} />}
-
-            {state.location === 'aclskud' && <AclSkud userdata={userAct} />}
-            {state.location === 'aclskud2' && <AclSkudPage2 userdata={userAct} />}
-
-            {state.location === 'eventmonitor' && <EventMonitorPage userdata={userAct} refresh_trigger={actionUpdateEvents}/>} */}
-            {/* {!state.location && <NotFoundPage />} */}
-
+          <div>
+            
           </div>
           ) : (
             <div>
               <Skeleton />
             </div>
           )} 
-        
-          
           <Routes>
             <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
@@ -400,23 +236,7 @@ function App() {
 
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
           </Routes>
-          
-        
-        {/* <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/list" element={<UserList userdata={userAct}/>} />
-          <Route path="/page" element={<UserPage />} />
-          </Routes> */}
       </Content>
-      {/* <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer> */}
-
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-
-
       </div>
 
 

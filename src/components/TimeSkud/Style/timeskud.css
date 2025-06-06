@@ -538,3 +538,8 @@ font-size: smaller;
 .sk-page-body{
     min-height: 100vh;
 }
+
+.sk-hidden-text {
+    color: #a9a9a9;
+    text-align: center;
+}
