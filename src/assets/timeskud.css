@@ -197,10 +197,8 @@ td:first-child {
 
 .sk-main-menu {
     box-shadow: 0 5px 10px 4px #223c5033;
-    background-color:#1677ff;
     /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#00bcd4+0,53cbf1+63,87e0fd+100 */
-    /* background: linear-gradient(45deg,  #00bcd4 0%,#53cbf1 63%,#87e0fd 100%);  */
-    background: linear-gradient(45deg, #eeeeee 0%, #f2f2f2 63%, #baf2e8 100%);
+    background: #1677ff linear-gradient(45deg, #eeeeee 0%, #f2f2f2 25%, #9badc4d9 100%);
     height: 46px !important;
     padding: 0 30px;
     line-height: 46px !important;
