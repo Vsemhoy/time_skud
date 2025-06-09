@@ -182,7 +182,7 @@ function App() {
           closable
         />
       )}
-      <Content style={{ padding: '0 48px' }}>
+      <Content>
         
         
           { pageLoaded || !PRODMODE ? (
