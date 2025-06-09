@@ -165,7 +165,7 @@ function App() {
 
       {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
-          message=<div className='sk-flex-space'>
+          message={<div className='sk-flex-space'>
           <span>"Возможно Вы забыли приложить карту при входе в офис"</span>
           <Button
             style={{marginRight: '12px'}}
@@ -177,7 +177,7 @@ function App() {
           >
             Не показывать сегодня
           </Button>
-          </div>
+          </div>}
           banner  type="error"
           closable
         />

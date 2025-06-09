@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import dayjs from "dayjs";
 
-import '../../../components/TimeSkud/Style/timeskud.css'
+import '../../../assets/timeskud.css'
 import { BranchesOutlined, CrownOutlined, DoubleLeftOutlined, DoubleRightOutlined, RightOutlined, RightSquareOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../CONFIG/config";
