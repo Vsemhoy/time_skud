@@ -1,0 +1,7 @@
+.layout {
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    max-width: calc(50% - 8px);
+    padding: 0;
+}
