@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
+import {Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu} from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
 import React, { useContext, useState } from 'react';
 import { HTTP_ROOT } from '../../../CONFIG/config';
@@ -57,6 +57,7 @@ const AppMenu23 = (props) => {
 
 
   return (
+      <Affix>
     <div>
       <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         className={'sk-main-menu'}
@@ -262,6 +263,7 @@ const AppMenu23 = (props) => {
         <p>Новых уведомлений не найдено...</p>
       </Drawer>
     </div>
+      </Affix>
   );
 }
 
