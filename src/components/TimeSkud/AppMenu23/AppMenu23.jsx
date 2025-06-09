@@ -180,6 +180,15 @@ const AppMenu23 = (props) => {
             </MenuItem>
           </Menu.SubMenu>
 
+           <Menu.SubMenu key="menu228" title="Персонал_2">
+               <MenuItem
+                   key={'/hr/usermanager'}>
+                   <NavLink to="/hr/usermanager">
+                       Управление пользователями
+                   </NavLink>
+               </MenuItem>
+           </Menu.SubMenu>
+
 
           <Menu.SubMenu key="menu634" title="ACL">
             <MenuItem
