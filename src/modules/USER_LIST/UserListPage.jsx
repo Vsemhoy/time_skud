@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import UserListToolbar from "./components/UserlistToolbar";
 import { Affix, Badge, Drawer, Empty, message, Table, Tag } from "antd";
-import '../../components/TimeSkud/Style/timeskud.css';
+import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
