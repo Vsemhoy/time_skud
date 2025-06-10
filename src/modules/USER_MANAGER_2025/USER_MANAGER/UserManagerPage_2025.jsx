@@ -31,7 +31,7 @@ const UserManagerPage_2025 = (props) => {
         fetchUsers().then();
     }, []);
     const fetchDepartments = async () => {
-        if (PRODMODE) {
+        /*if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/departments`,
                     {
@@ -45,32 +45,32 @@ const UserManagerPage_2025 = (props) => {
             } catch (error) {
                 console.error('Error fetching departments info:', error);
             }
-        } else {
+        } else {*/
             setDepartments(DEPARTMENTS);
-        }
+        // }
     }
     const fetchUsers = async () => {
-        if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
-                    {
-
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    setUsers(serverResponse.data.content);
-                }
-            } catch (error) {
-                console.error('Error fetching users info:', error);
-            }
-        } else {
+        // if (PRODMODE) {
+        //     try {
+        //         const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
+        //             {
+        //
+        //                 _token: CSRF_TOKEN
+        //             }
+        //         );
+        //         if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+        //             setUsers(serverResponse.data.content);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error fetching users info:', error);
+        //     }
+        // } else {
             setUsers(USERS);
             setPageSize(50);
             setCurrentPage(1);
             setAllUsersCount(USERS.length);
             console.log(Math.ceil(allUsersCount / pageSize))
-        }
+        // }
     }
     const handleChangePageSize = (value) => {
         console.log(`selected ${value}`);
