@@ -45,7 +45,7 @@ const UserManagerPage_2025 = (props) => {
         <div className={'mega-layout'}>
             <Layout className={'layout'}>
                 <Header className={'header'}>
-                    <Affix offsetTop={44}>
+                    <Affix>
                     <div className={'sk-header-container'}>
                         <Button color={'default'}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
@@ -67,7 +67,7 @@ const UserManagerPage_2025 = (props) => {
                 </Header>
                 <Layout>
                     <Sider width={isOpenFilters ? "330px" : 0} className={'sider'}>
-                        <Affix offsetTop={98}>
+                        <Affix offsetTop={54}>
                             <div className="sk-usp-filter-col">
                                 <ClaimManagerSidebar
                                     user_list={[]}
@@ -93,7 +93,7 @@ const UserManagerPage_2025 = (props) => {
                         </div>
                     </Content>
                     <Sider width={isOpenTools ? "330px" : 0} className={'sider'}>
-                        <Affix offsetTop={98}>
+                        <Affix offsetTop={54}>
                             <UserManagerExtraTools
                                 companies={props.userdata?.companies}
                                 groups={baseGroupList}
