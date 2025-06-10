@@ -57,7 +57,6 @@ const AppMenu23 = (props) => {
 
 
   return (
-      <Affix>
     <div>
       <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         className={'sk-main-menu'}
@@ -263,7 +262,6 @@ const AppMenu23 = (props) => {
         <p>Новых уведомлений не найдено...</p>
       </Drawer>
     </div>
-      </Affix>
   );
 }
 
