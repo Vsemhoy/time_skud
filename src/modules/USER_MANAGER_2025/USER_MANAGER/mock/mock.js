@@ -161,7 +161,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Rondo",
         "company_color": "#229922",
         "groups": [
@@ -214,7 +265,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Rondo",
         "company_color": "#229922",
         "groups": [
@@ -267,7 +369,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Rondo",
         "company_color": "#229922",
         "groups": [
@@ -320,7 +473,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Rondo",
         "company_color": "#229922",
         "groups": [
@@ -373,7 +577,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Arstel",
         "company_color": "#ff7700",
         "groups": [
@@ -426,7 +681,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Arstel",
         "company_color": "#ff7700",
         "groups": [
@@ -479,7 +785,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Rondo",
         "company_color": "#229922",
         "groups": [
@@ -532,7 +889,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Arstel",
         "company_color": "#ff7700",
         "groups": [
@@ -623,7 +1031,58 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "linked_rules": [],
+        "linked_rules": [
+            {
+                "id": 5,
+                "type" : 1,
+                "name": "Fired by fire",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 9,
+                "type" : 2,
+                "name": "Second rule type",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 8,
+                "type" : 3,
+                "name": "Third rule type sat",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 6,
+                "type" : 4,
+                "name": "Broken leg worse than broken dreams",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+            {
+                "id": 4,
+                "type" : 5,
+                "name": "If you wanna buy a house, just stop being beggar",
+                "start": 452352345,
+                "end": 23452345, //nullable
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
+            },
+        ],
         "company_name": "Arstel",
         "company_color": "#ff7700",
         "groups": [
