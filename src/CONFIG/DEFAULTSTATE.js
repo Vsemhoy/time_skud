@@ -1640,7 +1640,9 @@ export const DS_SKUD_GROUPS = [
                 "name": "Fired by fire",
                 "start": 452352345,
                 "end": 23452345, //nullable
-                "next_count": 4
+                "duration_time": 3600,
+                "variable_a" : 0,
+                "variable_b" : 1,
             },
             {
                 "id": 9,
@@ -1648,7 +1650,6 @@ export const DS_SKUD_GROUPS = [
                 "name": "Second rule type",
                 "start": 452352345,
                 "end": 23452345, //nullable
-                "next_count": 0
             },
             {
                 "id": 8,
@@ -1656,7 +1657,6 @@ export const DS_SKUD_GROUPS = [
                 "name": "Third rule type sat",
                 "start": 452352345,
                 "end": 23452345, //nullable
-                "next_count": 4
             },
             {
                 "id": 6,
@@ -1664,7 +1664,6 @@ export const DS_SKUD_GROUPS = [
                 "name": "Broken leg worse than broken dreams",
                 "start": 452352345,
                 "end": 23452345, //nullable
-                "next_count": 2
             },
             {
                 "id": 4,
@@ -1672,7 +1671,6 @@ export const DS_SKUD_GROUPS = [
                 "name": "If you wanna buy a house, just stop being beggar",
                 "start": 452352345,
                 "end": 23452345, //nullable
-                "next_count": 43
             },
         ]
     },
