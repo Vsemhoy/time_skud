@@ -2,36 +2,58 @@ import React, {useEffect, useState} from 'react';
 import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import './style/user_manager_page.css'
-import {Affix, Button, Checkbox, Flex, Layout, Pagination, Select, Tag} from 'antd';
-import {EditOutlined, FilterOutlined, ToolOutlined} from "@ant-design/icons";
+import {Affix, Button, Checkbox, Flex, Layout, Pagination, Select, Spin, Tag} from 'antd';
+import {
+    CalendarOutlined,
+    ClockCircleOutlined,
+    EditOutlined,
+    FilterOutlined,
+    HistoryOutlined,
+    ToolOutlined
+} from "@ant-design/icons";
 import {DEPARTMENTS, USERS, USERS_BY_DEPARTMENTS} from "./mock/mock";
 import {CSRF_TOKEN, HTTP_ROOT, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
-const { Header, Footer, Sider, Content } = Layout;
+import dayjs from "dayjs";
+const { Header, Sider, Content } = Layout;
 
 const UserManagerPage_2025 = (props) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(50);
-    const [pageSizePicker, setPageSizePicker] = useState([
-        {value: 50, label: '50 на странице'},
-        {value: 100, label: '100 на странице'},
-    ]);
     const [allUsersCount, setAllUsersCount] = useState(0);
     const [departments, setDepartments] = useState([]);
     const [users, setUsers] = useState([]);
+
     const [closedDepartments, setClosedDepartments] = useState([]);
-    const [openSchedules, setOpenSchedules] = useState([]);
+    const [openRules, setOpenRules] = useState([]);
+    const [checkedUsers, setCheckedUsers] = useState([]);
 
     const [baseGroupList, setBaseGroupList] = useState([]);
-    const [isOpenFilters, setIsOpenFilters] = useState(false);
-    const [isOpenTools, setIsOpenTools] = useState(false);
+    const [isOpenFilters, setIsOpenFilters] = useState(true);
+    const [isOpenTools, setIsOpenTools] = useState(true);
 
+    /* useEffect */
     useEffect(() => {
-        fetchDepartments().then();
-        fetchUsers().then();
+        setIsLoading(true);
+        fetchDepartments().then(() => {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
+        });
     }, []);
+    useEffect(() => {
+        setIsLoading(true);
+        fetchDepartments().then(() => {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
+        });
+    }, [pageSize, currentPage]);
+
+    /* fetch + pagination */
     const fetchDepartments = async () => {
-        if (PRODMODE) {
+        /*if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/departments`,
                     {
@@ -41,56 +63,107 @@ const UserManagerPage_2025 = (props) => {
                 );
                 if (serverResponse.data.content && serverResponse.data.content.length > 0) {
                     setDepartments(serverResponse.data.content);
+                    await fetchUsers();
                 }
             } catch (error) {
                 console.error('Error fetching departments info:', error);
             }
-        } else {
+        } else {*/
+            await fetchUsers();
             setDepartments(DEPARTMENTS);
-        }
-    }
+        // }
+    };
     const fetchUsers = async () => {
-        if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
-                    {
-
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    setUsers(serverResponse.data.content);
-                }
-            } catch (error) {
-                console.error('Error fetching users info:', error);
-            }
-        } else {
+        // if (PRODMODE) {
+        //     try {
+        //         const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
+        //             {
+        //
+        //                 _token: CSRF_TOKEN
+        //             }
+        //         );
+        //         if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+        //             setUsers(serverResponse.data.content);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error fetching users info:', error);
+        //     }
+        // } else {
             setUsers(USERS);
-            setPageSize(50);
-            setCurrentPage(1);
             setAllUsersCount(USERS.length);
-            console.log(Math.ceil(allUsersCount / pageSize))
-        }
-    }
+            //setPageSize(50);
+            //setCurrentPage(2);
+        // }
+    };
     const handleChangePageSize = (value) => {
-        console.log(`selected ${value}`);
+        setPageSize(value);
+    };
+    const handlePageChange = (value) => {
+        setCurrentPage(value);
     };
 
+    /* open-close table rows */
     const openCloseDepartments = (departmentId) => {
         if (closedDepartments.includes(departmentId)) {
             setClosedDepartments(closedDepartments.filter(id => id !== departmentId));
         } else {
             setClosedDepartments([...closedDepartments, departmentId]);
         }
-    }
-    const openCloseUserSchedules = (userId) => {
-        if (openSchedules.includes(userId)) {
-            setOpenSchedules(openSchedules.filter(id => id !== userId));
+    };
+    const openCloseUserRules = (e, userId) => {
+        e.preventDefault();
+        if (openRules.includes(userId)) {
+            setOpenRules(openRules.filter(id => id !== userId));
         } else {
-            setOpenSchedules([...openSchedules, userId]);
+            setOpenRules([...openRules, userId]);
         }
-    }
+    };
 
+    /* checkboxes */
+    const checkUncheckUser = (userId) => {
+        if (checkedUsers.includes(userId)) {
+            setCheckedUsers(checkedUsers.filter(id => id !== userId));
+        } else {
+            setCheckedUsers([...checkedUsers, userId]);
+        }
+    };
+    const checkUncheckDepartment = (departmentId) => {
+        const currentUserIds = users
+            .filter(user => user.department === departmentId)
+            .map(user => user.id);
+
+        setCheckedUsers(prev => {
+            const currentIdsSet = new Set(currentUserIds);
+            const prevSet = new Set(prev);
+            if (currentUserIds.every(id => prevSet.has(id))) {
+                return prev.filter(id => !currentIdsSet.has(id));
+            }
+            return [...new Set([...prev, ...currentUserIds])];
+        });
+    };
+    const isIndeterminate = (departmentId) => {
+        const currentUserIds = users
+            .filter(user => user.department === departmentId)
+            .map(user => user.id);
+        const checkedUsersSet = new Set(checkedUsers);
+
+        // Получаем массив выбранных пользователей отдела
+        const checkedInDepartment = currentUserIds.filter(id => checkedUsersSet.has(id));
+
+        // Indeterminate: если часть пользователей выбрана, но не все
+        return checkedInDepartment.length > 0 && checkedInDepartment.length < currentUserIds.length;
+    };
+    const isChecked = (departmentId) => {
+        const currentUserIds = users
+            .filter(user => user.department === departmentId)
+            .map(user => user.id);
+        const checkedUsersSet = new Set(checkedUsers);
+
+        // Checked: если все пользователи отдела выбраны
+        return currentUserIds.length > 0 && currentUserIds.every(id => checkedUsersSet.has(id));
+    };
+
+    /* filters */
     const handleFilterChanged = () => {
 
     };
@@ -139,19 +212,22 @@ const UserManagerPage_2025 = (props) => {
                         </Affix>
                     </Sider>
                     <Content className="content">
-                        <div className={'sk-content-table'}>
-                            <Affix offsetTop={47}>
+                        <div>
+                            <Affix offsetTop={44}>
                                 <div className="sk-pagination-container">
-                                    <Pagination defaultCurrent={currentPage}
-                                                total={allUsersCount}
-                                                defaultPageSize={50}
-                                                showTotal={total => `Всего ${total} пользователей`}
-                                    />
-                                    <Select
-                                        defaultValue={pageSize}
-                                        style={{ width: 160 }}
-                                        onChange={handleChangePageSize}
-                                        options={pageSizePicker}
+                                    <Pagination
+                                        current={currentPage}
+                                        total={allUsersCount}
+                                        pageSize={pageSize}
+                                        pageSizeOptions={[50, 100]}
+                                        locale={{
+                                            items_per_page: 'на странице',
+                                            jump_to: 'Перейти',
+                                            jump_to_confirm: 'OK',
+                                            page: 'Страница'
+                                        }}
+                                        onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}
+                                        onChange={(page) => handlePageChange(page)}
                                     />
                                     <Tag
                                         style={{
@@ -167,84 +243,117 @@ const UserManagerPage_2025 = (props) => {
                                     >Всего найдено: {allUsersCount}</Tag>
                                 </div>
                             </Affix>
-                            {departments.map((department, index) => (
-                                <div key={`${department.id}-${index}`}
-                                     className="sk-department-block"
-                                >
-                                    <div className="sk-department-header"
-                                         onDoubleClick={() => openCloseDepartments(department.id)}
-                                    >
-                                        <Checkbox />
-                                        <p className="sk-department-header-p">{department.id}</p>
-                                        <p className="sk-department-header-p">{department.name}</p>
-                                    </div>
-                                    { !closedDepartments.find(item => item === department.id) && (
-                                        <div className="sk-person-rows">
-                                            {users.map((user, idx) => {
-                                                if (+user.department === +department.id) {
-                                                    return (
-                                                        <div key={`${user.id}-${idx}`}
-                                                             className="sk-person-row"
-                                                        >
-                                                            <div className="sk-person-row-basic"
-                                                                 onDoubleClick={() => openCloseUserSchedules(user.id)}
-                                                            >
-                                                                <Checkbox/>
-                                                                <p className="sk-person-row-p">{user.id}</p>
-                                                                <div className="sk-person-row-content">
-                                                                    <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
-                                                                    <p className="sk-person-row-p occupy">{user.occupy}</p>
-                                                                </div>
-                                                                <Button color={'default'}
-                                                                        variant={'outlined'}
-                                                                        icon={<EditOutlined/>}
-                                                                >Редактировать</Button>
-                                                            </div>
-                                                            { openSchedules.find(item => item === user.id) && (
-                                                                <div className="sk-person-schedules">
-                                                                    <div className="sk-person-schedule">
-                                                                        <div className="sk-schedule-cell">Стандартный график с
-                                                                            девяти до шести
+                            <Spin tip="Ожидайте" spinning={isLoading} style={{width:'100%', height:'100%'}}>
+                                <div className="sk-content-table">
+                                    {departments.map((department, index) => (
+                                            <div key={`${department.id}-${index}`}
+                                                 className="sk-department-block"
+                                            >
+                                                <div className="sk-department-header"
+                                                     onDoubleClick={() => openCloseDepartments(department.id)}
+                                                >
+                                                    <div className="sk-department-header-hover-container">
+                                                        <Checkbox
+                                                            indeterminate={isIndeterminate(department.id)}
+                                                            checked={isChecked(department.id)}
+                                                            onChange={() => checkUncheckDepartment(department.id)}
+                                                        />
+                                                        <p className="sk-department-header-p">{department.id}</p>
+                                                        <p className="sk-department-header-p">{department.name}</p>
+                                                    </div>
+                                                </div>
+                                                { !closedDepartments.find(item => item === department.id) && (
+                                                    <div className="sk-person-rows">
+                                                        {users.map((user, idx) => {
+                                                            if (+user.department === +department.id) {
+                                                                return (
+                                                                    <div key={`${user.id}-${idx}`}
+                                                                         className={`sk-person-row ${checkedUsers.find(item => item === user.id) ? "sk-row-selected" : ""}`}
+                                                                    >
+                                                                        <div className="sk-person-row-basic"
+                                                                             onDoubleClick={(e) => openCloseUserRules(e, user.id)}
+                                                                        >
+                                                                            <div className="sk-person-row-basic-hover-container">
+                                                                                <Checkbox checked={checkedUsers.find(item => item === user.id)}
+                                                                                          onChange={() => checkUncheckUser(user.id)}
+                                                                                />
+                                                                                <p className="sk-person-row-p">{user.id}</p>
+                                                                                <div className="sk-person-row-content">
+                                                                                    <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
+                                                                                    <p className="sk-person-row-p occupy">{user.occupy}</p>
+                                                                                </div>
+                                                                                <Button color={'default'}
+                                                                                        variant={'outlined'}
+                                                                                        icon={<EditOutlined/>}
+                                                                                >Редактировать</Button>
+                                                                            </div>
                                                                         </div>
-                                                                        <p className="sk-schedule-cell">9:15 - 18:00</p>
-                                                                        <p className="sk-schedule-cell">13:00 - 15:00</p>
-                                                                        <p className="sk-schedule-cell">8:00 / день</p>
+                                                                        { openRules.find(item => item === user.id) && user.linked_schedule && (
+                                                                            <div className="sk-person-rules">
+                                                                                <div className="sk-person-schedule">
+                                                                                    <div className="sk-person-schedule-hover-container">
+                                                                                        <div className="sk-schedule-cell">
+                                                                                            <CalendarOutlined />
+                                                                                            <p>{user.linked_schedule.skud_schedule.name}</p>
+                                                                                        </div>
+                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.start_time, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                            -
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.end_time, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                        </p>
+                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.lunch_start, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                            -
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.lunch_end, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                        </p>
+                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.target_time, 'seconds')
+                                                                                                .format('HH:mm')} / день</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                                {user.linked_rules.map((rule, idx) => (
+                                                                                    <div className="sk-person-rule" key={`${user.id}-${rule.id}`}>
+                                                                                        <div className="sk-person-rule-hover-container">
+                                                                                            <div className="sk-schedule-cell">
+                                                                                                <HistoryOutlined />
+                                                                                                <p>{rule.name}</p>
+                                                                                            </div>
+                                                                                            <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                                {dayjs()
+                                                                                                    .startOf('day')
+                                                                                                    .add(rule.duration_time, 'seconds')
+                                                                                                    .format('HH:mm')}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        )}
                                                                     </div>
-                                                                    <div className="sk-person-schedule">
-                                                                        <div className="sk-schedule-cell">Стандартный график с
-                                                                            девяти до шести
-                                                                        </div>
-                                                                        <p className="sk-schedule-cell">9:15 - 18:00</p>
-                                                                        <p className="sk-schedule-cell">13:00 - 15:00</p>
-                                                                        <p className="sk-schedule-cell">8:00 / день</p>
-                                                                    </div>
-                                                                    <div className="sk-person-schedule">
-                                                                        <div className="sk-schedule-cell">Стандартный график с
-                                                                            девяти до шести
-                                                                        </div>
-                                                                        <p className="sk-schedule-cell">9:15 - 18:00</p>
-                                                                        <p className="sk-schedule-cell">13:00 - 15:00</p>
-                                                                        <p className="sk-schedule-cell">8:00 / день</p>
-                                                                    </div>
-                                                                    <div className="sk-person-schedule">
-                                                                        <div className="sk-schedule-cell">Стандартный график с
-                                                                            девяти до шести
-                                                                        </div>
-                                                                        <p className="sk-schedule-cell">9:15 - 18:00</p>
-                                                                        <p className="sk-schedule-cell">13:00 - 15:00</p>
-                                                                        <p className="sk-schedule-cell">8:00 / день</p>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    );
-                                                }
-                                                return '';
-                                            })}
-                                        </div>
-                                    )}
+                                                                );
+                                                            }
+                                                            return '';
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </Spin>
                         </div>
                     </Content>
                     <Sider width={isOpenTools ? "330px" : 0}
