@@ -24,6 +24,14 @@ const UserManagerPage_2025 = (props) => {
     const [allUsersCount, setAllUsersCount] = useState(0);
     const [departments, setDepartments] = useState([]);
     const [users, setUsers] = useState([]);
+    const [bosses, setBosses] = useState([]);
+    const [enters, setEnters] = useState([]);
+    const [userStatuses, setUserStatuses] = useState([]);
+    const [groups, setGroups] = useState([]);
+    const [currentChartTypes, setCurrentChartTypes] = useState([]);
+    const [currentCharts, setCurrentCharts] = useState([]);
+    const [currentRuleTypes, setCurrentRuleTypes] = useState([]);
+    const [currentRules, setCurrentRules] = useState([]);
 
     const [closedDepartments, setClosedDepartments] = useState([]);
     const [openRules, setOpenRules] = useState([]);
@@ -41,6 +49,7 @@ const UserManagerPage_2025 = (props) => {
                 setIsLoading(false);
             }, 300);
         });
+        fetchFilters().then();
     }, []);
     useEffect(() => {
         setIsLoading(true);
@@ -94,6 +103,16 @@ const UserManagerPage_2025 = (props) => {
             //setPageSize(50);
             //setCurrentPage(2);
         // }
+    };
+    const fetchFilters = async () => {
+        setBosses(USERS);
+        setEnters(USERS);
+        setUserStatuses(USERS);
+        setGroups(USERS);
+        setCurrentChartTypes(USERS);
+        setCurrentCharts(USERS);
+        setCurrentRuleTypes(USERS);
+        setCurrentRules(USERS);
     };
     const handleChangePageSize = (value) => {
         setPageSize(value);
@@ -202,9 +221,17 @@ const UserManagerPage_2025 = (props) => {
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
                                     <ClaimManagerSidebar
-                                        user_list={[]}
-                                        depart_list={[]}
+                                        user_list={users}
+                                        boss_list={bosses}
                                         company_list={props.userData?.companies}
+                                        depart_list={departments}
+                                        enters_list={enters}
+                                        user_statuses_list={userStatuses}
+                                        groups_list={groups}
+                                        current_chart_types_list={currentChartTypes}
+                                        current_charts_list={currentCharts}
+                                        current_rule_types_list={currentRuleTypes}
+                                        current_rules_list={currentRules}
                                         on_change_filter={handleFilterChanged}
                                     />
                                 </div>
