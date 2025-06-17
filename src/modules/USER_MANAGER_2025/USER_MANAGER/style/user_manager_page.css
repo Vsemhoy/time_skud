@@ -145,11 +145,11 @@ aside .ant-layout .ant-layout-sider {
 
 .sk-person-row-basic {
     width: 100%;
-    height: 72px;
+    min-height: 72px;
     background-color: #F6F6F6;
-    display: flex;
-    align-items: flex-start;
-    grid-gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    /*grid-gap: 10px;*/
     cursor: pointer;
     transition: .3s;
 }
@@ -163,8 +163,23 @@ aside .ant-layout .ant-layout-sider {
     cursor: pointer;
     transition: .3s;
 }
-.sk-person-row-basic-hover-container:hover {
-    background-color: var(--row-hovered-bg-color);
+.sk-person-row-basic-groups {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    grid-gap: 5px;
+    padding: 5px;
+    transition: .3s;
+}
+.sk-person-row-basic:hover {
+    .sk-person-row-basic-hover-container {
+        background-color: var(--row-hovered-bg-color);
+    }
+    .sk-person-row-basic-groups {
+        background-color: var(--row-hovered-bg-color);
+    }
 }
 
 .sk-person-row-content {

@@ -11,7 +11,15 @@ import {
     HistoryOutlined,
     ToolOutlined
 } from "@ant-design/icons";
-import {DEPARTMENTS, USERS, USERS_BY_DEPARTMENTS} from "./mock/mock";
+import {
+    DEPARTMENTS,
+    GROUPS,
+    GROUPS_LIST, RULE_LIST, RULE_TYPE_LIST,
+    SCHEDULE_LIST,
+    SCHEDULE_TYPE_LIST,
+    USERS,
+    USERS_BY_DEPARTMENTS
+} from "./mock/mock";
 import {CSRF_TOKEN, HTTP_ROOT, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
@@ -28,8 +36,8 @@ const UserManagerPage_2025 = (props) => {
     const [enters, setEnters] = useState([]);
     const [userStatuses, setUserStatuses] = useState([]);
     const [groups, setGroups] = useState([]);
-    const [currentChartTypes, setCurrentChartTypes] = useState([]);
-    const [currentCharts, setCurrentCharts] = useState([]);
+    const [currentScheduleTypes, setCurrentScheduleTypes] = useState([]);
+    const [currentSchedules, setCurrentSchedules] = useState([]);
     const [currentRuleTypes, setCurrentRuleTypes] = useState([]);
     const [currentRules, setCurrentRules] = useState([]);
 
@@ -37,31 +45,28 @@ const UserManagerPage_2025 = (props) => {
     const [openRules, setOpenRules] = useState([]);
     const [checkedUsers, setCheckedUsers] = useState([]);
 
-    const [baseGroupList, setBaseGroupList] = useState([]);
-    const [isOpenFilters, setIsOpenFilters] = useState(true);
-    const [isOpenTools, setIsOpenTools] = useState(true);
+    const [isOpenFilters, setIsOpenFilters] = useState(false);
+    const [isOpenTools, setIsOpenTools] = useState(false);
 
     /* useEffect */
     useEffect(() => {
+        fetchInfo();
+    }, []);
+    useEffect(() => {
+        fetchInfo();
+    }, [pageSize, currentPage]);
+
+    /* fetch + pagination */
+    const fetchInfo = (filterParams) => {
         setIsLoading(true);
-        fetchDepartments().then(() => {
+        fetchDepartments(filterParams).then(() => {
             setTimeout(() => {
                 setIsLoading(false);
             }, 300);
         });
         fetchFilters().then();
-    }, []);
-    useEffect(() => {
-        setIsLoading(true);
-        fetchDepartments().then(() => {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 300);
-        });
-    }, [pageSize, currentPage]);
-
-    /* fetch + pagination */
-    const fetchDepartments = async () => {
+    };
+    const fetchDepartments = async (filterParams) => {
         /*if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/departments`,
@@ -72,7 +77,7 @@ const UserManagerPage_2025 = (props) => {
                 );
                 if (serverResponse.data.content && serverResponse.data.content.length > 0) {
                     setDepartments(serverResponse.data.content);
-                    await fetchUsers();
+                    await fetchUsers(filterParams);
                 }
             } catch (error) {
                 console.error('Error fetching departments info:', error);
@@ -82,12 +87,12 @@ const UserManagerPage_2025 = (props) => {
             setDepartments(DEPARTMENTS);
         // }
     };
-    const fetchUsers = async () => {
+    const fetchUsers = async (filterParams) => {
         // if (PRODMODE) {
         //     try {
         //         const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
         //             {
-        //
+        //                  data: {filterParams},
         //                 _token: CSRF_TOKEN
         //             }
         //         );
@@ -108,11 +113,11 @@ const UserManagerPage_2025 = (props) => {
         setBosses(USERS);
         setEnters(USERS);
         setUserStatuses(USERS);
-        setGroups(USERS);
-        setCurrentChartTypes(USERS);
-        setCurrentCharts(USERS);
-        setCurrentRuleTypes(USERS);
-        setCurrentRules(USERS);
+        setGroups(GROUPS_LIST);
+        setCurrentScheduleTypes(SCHEDULE_TYPE_LIST);
+        setCurrentSchedules(SCHEDULE_LIST);
+        setCurrentRuleTypes(RULE_TYPE_LIST);
+        setCurrentRules(RULE_LIST);
     };
     const handleChangePageSize = (value) => {
         setPageSize(value);
@@ -183,13 +188,35 @@ const UserManagerPage_2025 = (props) => {
     };
 
     /* filters */
-    const handleFilterChanged = () => {
-
+    const prepareSelectOptions = (name, options) => {
+        if (options && options.length > 0) {
+            return options.map((option) => {
+                return ({
+                    key: `option-${name}-${option.id}`,
+                    value: option.id,
+                    label: option.name
+                })
+            });
+        } else {
+            return [];
+        }
+    }
+    const handleFilterChanged = async (filterParams) => {
+        //console.log(filterParams);
+        await fetchInfo(filterParams);
     };
-    const setFilters = (ev) => {
+
+    /* multi tool */
+    const setFilters = (e) => {
 
     };
     const setSelectedGroups = (val) => {
+
+    };
+    const removeGroup = (e, userId, groupId) => {
+        e.preventDefault();
+        console.log('userId:', userId);
+        console.log('groupId:', groupId);
 
     };
 
@@ -221,17 +248,18 @@ const UserManagerPage_2025 = (props) => {
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
                                     <ClaimManagerSidebar
-                                        user_list={users}
-                                        boss_list={bosses}
-                                        company_list={props.userData?.companies}
-                                        depart_list={departments}
-                                        enters_list={enters}
-                                        user_statuses_list={userStatuses}
-                                        groups_list={groups}
-                                        current_chart_types_list={currentChartTypes}
-                                        current_charts_list={currentCharts}
-                                        current_rule_types_list={currentRuleTypes}
-                                        current_rules_list={currentRules}
+                                        user_list={prepareSelectOptions('user', users)}
+                                        boss_list={prepareSelectOptions('boss', bosses)}
+                                        company_list={prepareSelectOptions('company', props.userData?.companies)}
+                                        depart_list={prepareSelectOptions('dep', departments)}
+                                        enters_list={prepareSelectOptions('enter', enters)}
+                                        user_statuses_list={prepareSelectOptions('user_status', userStatuses)}
+                                        groups_list={prepareSelectOptions('group', groups)}
+                                        current_chart_types_list={prepareSelectOptions('current_chart_type', currentScheduleTypes)}
+                                        current_charts_list={prepareSelectOptions('current_chart', currentSchedules)}
+                                        current_rule_types_list={prepareSelectOptions('current_rule_typ', currentRuleTypes)}
+                                        current_rules_list={prepareSelectOptions('current_rules_list', currentRules)}
+
                                         on_change_filter={handleFilterChanged}
                                     />
                                 </div>
@@ -314,12 +342,35 @@ const UserManagerPage_2025 = (props) => {
                                                                                         icon={<EditOutlined/>}
                                                                                 >Редактировать</Button>
                                                                             </div>
+                                                                            {user.groups && user.groups.length > 0 && (
+                                                                                <div
+                                                                                    className="sk-person-row-basic-groups">
+                                                                                    {user.groups.map((groupId, idx) => {
+                                                                                        if (groups.find(item => item.id === groupId)) {
+                                                                                            return (
+                                                                                                <Tag
+                                                                                                    key={`group-tag-${user.id}-${groupId}`}
+                                                                                                    style={{
+                                                                                                        color: '#757575',
+                                                                                                        borderBottom: '1px solid #FF6200',
+                                                                                                        margin: '0'
+                                                                                                    }}
+                                                                                                    closeIcon
+                                                                                                    onClose={(e) => removeGroup(e, groupId, user.id)}>
+                                                                                                    {groups.find(item => item.id === groupId)?.name}
+                                                                                                </Tag>
+                                                                                            );
+                                                                                        } else return '';
+                                                                                    })}
+                                                                                </div>
+                                                                            )}
                                                                         </div>
-                                                                        { openRules.find(item => item === user.id) && user.linked_schedule && (
+                                                                        {openRules.find(item => item === user.id) && user.linked_schedule && (
                                                                             <div className="sk-person-rules">
                                                                                 <div className="sk-person-schedule">
-                                                                                    <div className="sk-person-schedule-hover-container">
-                                                                                        <div className="sk-schedule-cell">
+                                                                                    <div
+                                                                                        className="sk-person-schedule-hover-container">
+                                                                                    <div className="sk-schedule-cell">
                                                                                             <CalendarOutlined />
                                                                                             <p>{user.linked_schedule.skud_schedule.name}</p>
                                                                                         </div>
@@ -389,26 +440,24 @@ const UserManagerPage_2025 = (props) => {
                         <Affix offsetTop={54}>
                             <div className="sk-width-container">
                                 <UserManagerExtraTools
-                                    companies={props.userdata?.companies}
-                                    groups={baseGroupList}
-                                    onChangeFilter={(ev) => {
-                                        setFilters(ev)
-                                    }}
-                                    onSelectAllUsers={null}
-                                    onSelectGroups={(val) => {
-                                        setSelectedGroups(val)
-                                    }}
+                                    onChangeFilter={(ev) => {setFilters(ev)}}
+                                    onSelectGroups={(val) => {setSelectedGroups(val)}}
                                     onCallToSelectGroups={null}
                                     onCallToClearGroups={null}
-                                    selected_users={[]}
-                                    rules={[]}
-                                    schedules={[]}
+                                    selected_users={checkedUsers}
+                                    onSelectAllUsers={null}
+
+                                    companies={props.userdata?.companies}
+                                    groups={groups}
                                     selectedCompany={null}
 
-                                    schedTypes={[]}
-                                    ruleTypes={[]}
-                                    onBidnRules={null}
+                                    schedules={currentSchedules}
+                                    schedTypes={currentScheduleTypes}
                                     onBidnSchedules={null}
+
+                                    rules={currentRules}
+                                    ruleTypes={currentRuleTypes}
+                                    onBidnRules={null}
                                 />
                             </div>
                         </Affix>

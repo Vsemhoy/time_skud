@@ -9,33 +9,39 @@ const ClaimManagerSidebar = (props) => {
         filterCompany: null,
         filterDepartment: null,
         filterBoss: null,
-        filterStatus: null,
-        filterShowDeleted: false,
-        filterDurationStart: 0,
-        filterDurationEnd: 0, 
-        filterShowEvaluated: 0
+        filterEnter: null,
+        filterUserStatus: null,
+        filterGroup: null,
+        currentScheduleType: null,
+        currentSchedule: null,
+        currentRuleType: null,
+        currentRule: null,
     }
     
     const [filterUserNameOrDepartment, setFilterUserNameOrDepartment] = useState('');
     const [filterCompany, setFilterCompany] = useState(null);
     const [filterDepartment, setFilterDepartment] = useState(null);
     const [filterBoss, setFilterBoss] = useState(null);
-    const [filterStatus, setFilterStatus] = useState(null);
-    const [filterShowDeleted, setFilterShowDeleted] = useState(false);
-    const [filterShowEvaluated, setFilterShowEvaluated] = useState(0);
-    const [filterDurationStart, setFilterDurationStart] = useState(0);
-    const [filterDurationEnd, setFilterDurationEnd] = useState(0);
+    const [filterEnter, setFilterEnter] = useState(null);
+    const [filterUserStatus, setFilterUserStatus] = useState(null);
+    const [filterGroup, setFilterGroup] = useState(null);
+    const [currentScheduleType, setCurrentScheduleType] = useState(null);
+    const [currentSchedule, setCurrentSchedule] = useState(null);
+    const [currentRuleType, setCurrentRuleType] = useState(null);
+    const [currentRule, setCurrentRule] = useState(null);
 
     const setInitialState = () => {
         setFilterUserNameOrDepartment(initialstate.filterUserNameOrDepartment);
         setFilterCompany(initialstate.filterCompany);
         setFilterDepartment(initialstate.filterDepartment);
         setFilterBoss(initialstate.filterBoss);
-        setFilterStatus(initialstate.filterStatus);
-        setFilterShowDeleted(initialstate.filterShowDeleted);
-        setFilterDurationStart(initialstate.filterDurationStart);
-        setFilterDurationEnd(initialstate.filterDurationEnd);
-        setFilterShowEvaluated(initialstate.filterShowEvaluated);
+        setFilterEnter(initialstate.filterEnter);
+        setFilterUserStatus(initialstate.filterUserStatus);
+        setFilterGroup(initialstate.filterGroup);
+        setCurrentScheduleType(initialstate.currentScheduleType);
+        setCurrentSchedule(initialstate.currentSchedule);
+        setCurrentRuleType(initialstate.currentRuleType);
+        setCurrentRule(initialstate.currentRule);
     };
 
     const [bossList, setBossList] = useState([]);
@@ -75,7 +81,7 @@ const ClaimManagerSidebar = (props) => {
 
 
       useEffect(()=>{
-        console.log('props.company_list', props.company_list);
+        //console.log('props.company_list', props.company_list);
         if (props.company_list){
             setCompanyList([{ key: 0, value: 0, label: 'Все компании' },
                     ...props.company_list.filter(com => com.id != 1)
@@ -101,26 +107,22 @@ const ClaimManagerSidebar = (props) => {
         if (filterCompany) params.company = filterCompany;
         if (filterDepartment) params.department = filterDepartment;
         if (filterBoss) params.boss_id = filterBoss;
-        if (filterStatus !== null) params.state = filterStatus;
+        if (filterEnter) params.enter_id = filterEnter;
+        if (filterUserStatus) params.user_status_id = filterUserStatus;
+        if (filterGroup) params.group_id = filterGroup;
+        if (currentScheduleType) params.current_chart_type_id = currentScheduleType;
+        if (currentSchedule) params.current_chart_id = currentSchedule;
+        if (currentRuleType) params.current_rule_type_id = currentRuleType;
+        if (currentRule) params.current_rule_id = currentRule;
 
-        if (filterShowDeleted) params.deleted = true;
-        if (filterShowEvaluated !== null) params.evaluated = filterShowEvaluated;
-        
-        // Фильтр по продолжительности
-        if (filterDurationStart > 0) params.durationStart = parseInt(filterDurationStart);
-        if (filterDurationEnd > 0) params.durationEnd = parseInt(filterDurationEnd);
-
-        if (parseInt(filterDurationEnd) < parseInt(filterDurationStart)){
-            setFilterDurationEnd(parseInt(filterDurationStart));
-            params.durationEnd = parseInt(filterDurationStart);
-        }
         if (props.on_change_filter){
             props.on_change_filter(params);
         }
     }, [filterUserNameOrDepartment, filterCompany,
               filterDepartment, filterBoss,
-              filterStatus, filterShowDeleted,
-              filterDurationStart, filterDurationEnd, filterShowEvaluated]);
+              filterEnter, filterUserStatus, filterGroup,
+              currentScheduleType, currentSchedule,
+              currentRuleType, currentRule]);
 
 
 
@@ -144,13 +146,7 @@ const ClaimManagerSidebar = (props) => {
                 <Select style={{width: '100%'}}
                         placeholder={'Выберите руководителя'}
                         value={filterBoss}
-                        options={props.boss_list.map((boss) => {
-                            return ({
-                                key: `boss${boss.id}`,
-                                value: boss.id,
-                                label: boss.name
-                            })
-                        })}
+                        options={props.boss_list}
                         onChange={(ev) => {
                             setFilterBoss(ev)
                         }}
@@ -163,13 +159,7 @@ const ClaimManagerSidebar = (props) => {
                 <Select style={{width: '100%'}}
                         placeholder={'Все компании'}
                         value={filterCompany}
-                        options={props.company_list.map((company) => {
-                            return ({
-                                key: `company${company.id}`,
-                                value: company.id,
-                                label: company.name
-                            })
-                        })}
+                        options={props.company_list}
                         onChange={(ev) => {
                             setFilterCompany(ev)
                         }}
@@ -181,13 +171,8 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Отдел</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Все отделы'}
-                        options={props.depart_list.map((dep) => {
-                            return ({
-                                key: `depid_${dep.id}`,
-                                value: dep.id,
-                                label: dep.name
-                            })
-                        })}
+                        value={filterDepartment}
+                        options={props.depart_list}
                         onChange={(ev) => {
                             setFilterDepartment(ev)
                         }}
@@ -199,15 +184,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Вход</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Разрешен'}
-                        options={props.enters_list.map((enter) => {
-                            return ({
-                                key: `enter${enter.id}`,
-                                value: enter.id,
-                                label: enter.name
-                            })
-                        })}
+                        value={filterEnter}
+                        options={props.enters_list}
                         onChange={(ev) => {
-                            setFilterStatus(ev)
+                            setFilterEnter(ev)
                         }}
                         allowClear
                 />
@@ -217,15 +197,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Статус пользователя</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Работающие / уволенные'}
-                        options={props.user_statuses_list.map((user_status) => {
-                            return ({
-                                key: `user_status${user_status.id}`,
-                                value: user_status.id,
-                                label: user_status.name
-                            })
-                        })}
+                        value={filterUserStatus}
+                        options={props.user_statuses_list}
                         onChange={(ev) => {
-                            setFilterStatus(ev)
+                            setFilterUserStatus(ev)
                         }}
                         allowClear
                 />
@@ -235,15 +210,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Группа пользователя</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Любая'}
-                        options={props.groups_list.map((group) => {
-                            return ({
-                                key: `group${group.id}`,
-                                value: group.id,
-                                label: group.name
-                            })
-                        })}
+                        value={filterGroup}
+                        options={props.groups_list}
                         onChange={(ev) => {
-                            setFilterShowEvaluated(ev)
+                            setFilterGroup(ev)
                         }}
                         allowClear
                 />
@@ -253,15 +223,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Текущий тип графика</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Все типы'}
-                        options={props.current_chart_types_list.map((current_chart_type) => {
-                            return ({
-                                key: `current_chart_type${current_chart_type.id}`,
-                                value: current_chart_type.id,
-                                label: current_chart_type.name
-                            })
-                        })}
+                        value={currentScheduleType}
+                        options={props.current_chart_types_list}
                         onChange={(ev) => {
-                            setFilterShowEvaluated(ev)
+                            setCurrentScheduleType(ev)
                         }}
                         allowClear
                 />
@@ -271,15 +236,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Текущий график</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Любые графики'}
-                        options={props.current_charts_list.map((current_chart) => {
-                            return ({
-                                key: `current_chart${current_chart.id}`,
-                                value: current_chart.id,
-                                label: current_chart.name
-                            })
-                        })}
+                        value={currentSchedule}
+                        options={props.current_charts_list}
                         onChange={(ev) => {
-                            setFilterShowEvaluated(ev)
+                            setCurrentSchedule(ev)
                         }}
                         allowClear
                 />
@@ -289,15 +249,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Текущие типы правил</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Все типы'}
-                        options={props.current_rule_types_list.map((current_rule_typ) => {
-                            return ({
-                                key: `current_rule_typ${current_rule_typ.id}`,
-                                value: current_rule_typ.id,
-                                label: current_rule_typ.name
-                            })
-                        })}
+                        value={currentRuleType}
+                        options={props.current_rule_types_list}
                         onChange={(ev) => {
-                            setFilterShowEvaluated(ev)
+                            setCurrentRuleType(ev)
                         }}
                         allowClear
                 />
@@ -307,15 +262,10 @@ const ClaimManagerSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Текущие правила</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Любые правила'}
-                        options={props.current_rules_list.map((current_rules_list) => {
-                            return ({
-                                key: `current_rules_list${current_rules_list.id}`,
-                                value: current_rules_list.id,
-                                label: current_rules_list.name
-                            })
-                        })}
+                        value={currentRule}
+                        options={props.current_rules_list}
                         onChange={(ev) => {
-                            setFilterShowEvaluated(ev)
+                            setCurrentRule(ev)
                         }}
                         allowClear
                 />
