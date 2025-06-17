@@ -64,7 +64,7 @@ function App() {
 
   const { state, setState } = useContext(StateContext);
 
-  console.log('state', state)
+  //console.log('state', state)
 
   
 
