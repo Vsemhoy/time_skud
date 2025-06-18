@@ -29,8 +29,8 @@ const UserManagerExtraTools = (props)=>{
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [filterText, setFilterText] = useState('');
 
-    const [selectedSchedule, setSelectedSchedule] = useState(null);
-    const [selectedRule, setSelectedRule] = useState(null);
+    const [selectedSchedule, setSelectedSchedule] = useState('');
+    const [selectedRule, setSelectedRule] = useState('');
 
     const [selectedUsers, setSelectedUsers] = useState(props.selected_users);
 
@@ -42,8 +42,8 @@ const UserManagerExtraTools = (props)=>{
 
 
 
-    const [selectedSchedType, setSelectedSchedType] = useState(null);
-    const [selectedRuleType, setSelectedRuleType] = useState(null);
+    const [selectedSchedType, setSelectedSchedType] = useState('');
+    const [selectedRuleType, setSelectedRuleType] = useState('');
 
 
 
@@ -69,7 +69,7 @@ const UserManagerExtraTools = (props)=>{
         let arr = [
             ({
                 key: ``,
-                value: null,
+                value: '',
                 label: 'Все типы',
             })
         ];
@@ -93,7 +93,7 @@ const UserManagerExtraTools = (props)=>{
         let arr = [
             ({
                 key: ``,
-                value: null,
+                value: '',
                 label: 'Все типы',
             })
         ];

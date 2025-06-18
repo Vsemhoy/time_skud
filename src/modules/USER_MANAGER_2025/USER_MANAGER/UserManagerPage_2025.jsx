@@ -8,7 +8,7 @@ import {
     ClockCircleOutlined,
     EditOutlined,
     FilterOutlined,
-    HistoryOutlined,
+    HistoryOutlined, PlusOutlined,
     ToolOutlined
 } from "@ant-design/icons";
 import {
@@ -23,9 +23,25 @@ import {
 import {CSRF_TOKEN, HTTP_ROOT, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
+import {Link, NavLink} from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 const UserManagerPage_2025 = (props) => {
+
+    const useCookieState = (key, defaultValue) => {
+        const [state, setState] = useState(() => {
+            const saved = Cookies.get(key);
+            return saved ? JSON.parse(saved) : defaultValue;
+        });
+
+        useEffect(() => {
+            Cookies.set(key, JSON.stringify(state), { expires: 365 });
+        }, [key, state]);
+
+        return [state, setState];
+    };
+
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(50);
@@ -45,16 +61,12 @@ const UserManagerPage_2025 = (props) => {
     const [openRules, setOpenRules] = useState([]);
     const [checkedUsers, setCheckedUsers] = useState([]);
 
-    const [isOpenFilters, setIsOpenFilters] = useState(false);
-    const [isOpenTools, setIsOpenTools] = useState(false);
+    const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', false);
+    const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', false);
 
     /* useEffect */
-    useEffect(() => {
-        fetchInfo();
-    }, []);
-    useEffect(() => {
-        fetchInfo();
-    }, [pageSize, currentPage]);
+    useEffect(() => fetchInfo(), []);
+    useEffect(() => fetchInfo(), [pageSize, currentPage]);
 
     /* fetch + pagination */
     const fetchInfo = (filterParams) => {
@@ -229,12 +241,14 @@ const UserManagerPage_2025 = (props) => {
                             <Button color={'default'}
                                     variant={isOpenFilters ? 'solid' : 'outlined'}
                                     icon={<FilterOutlined />}
+                                    style={{ width: '125px' }}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
                             >Фильтры</Button>
                             <h1 className={'page-header'}>Список сотрудников</h1>
                             <Button color="default"
                                     variant={isOpenTools ? 'solid' : 'outlined'}
                                     icon={<ToolOutlined />}
+                                    style={{ width: '125px' }}
                                     onClick={() => setIsOpenTools(!isOpenTools)}
                             >Мультитул</Button>
                         </div>
@@ -269,58 +283,67 @@ const UserManagerPage_2025 = (props) => {
                     <Content className="content">
                         <div>
                             <Affix offsetTop={44}>
-                                <div className="sk-pagination-container">
-                                    <Pagination
-                                        current={currentPage}
-                                        total={allUsersCount}
-                                        pageSize={pageSize}
-                                        pageSizeOptions={[50, 100]}
-                                        locale={{
-                                            items_per_page: 'на странице',
-                                            jump_to: 'Перейти',
-                                            jump_to_confirm: 'OK',
-                                            page: 'Страница'
-                                        }}
-                                        onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}
-                                        onChange={(page) => handlePageChange(page)}
-                                    />
-                                    <Tag
-                                        style={{
-                                            width: '160px',
-                                            height: '30px',
-                                            lineHeight: '27px',
-                                            textAlign: 'center',
-                                            color: '#868686',
-                                            fontSize: '14px',
-                                            backgroundColor: '#ededed',
-                                            borderColor: '#ededed',
-                                        }}
-                                    >Всего найдено: {allUsersCount}</Tag>
+                                <div className="sk-pagination-wrapper">
+                                    <div className="sk-pagination-container">
+                                        <Pagination
+                                            current={currentPage}
+                                            total={allUsersCount}
+                                            pageSize={pageSize}
+                                            pageSizeOptions={[50, 100]}
+                                            locale={{
+                                                items_per_page: 'на странице',
+                                                jump_to: 'Перейти',
+                                                jump_to_confirm: 'OK',
+                                                page: 'Страница'
+                                            }}
+                                            onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}
+                                            onChange={(page) => handlePageChange(page)}
+                                        />
+                                        <Tag
+                                            style={{
+                                                width: '160px',
+                                                height: '30px',
+                                                lineHeight: '27px',
+                                                textAlign: 'center',
+                                                color: '#868686',
+                                                fontSize: '14px',
+                                                backgroundColor: '#ededed',
+                                                borderColor: '#ededed',
+                                            }}
+                                        >Всего найдено: {allUsersCount}</Tag>
+                                    </div>
+                                    <NavLink to={'/hr/users/new'}>
+                                        <Button color={'primary'}
+                                                variant={'outlined'}
+                                                icon={<PlusOutlined/>}
+                                                style={{ width: '125px' }}
+                                        >Создать</Button>
+                                    </NavLink>
                                 </div>
                             </Affix>
-                            <Spin tip="Ожидайте" spinning={isLoading} style={{width:'100%', height:'100%'}}>
+                            <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
                                 <div className="sk-content-table">
                                     {departments.map((department, index) => (
-                                            <div key={`${department.id}-${index}`}
-                                                 className="sk-department-block"
+                                        <div key={`${department.id}-${index}`}
+                                             className="sk-department-block"
+                                        >
+                                            <div className="sk-department-header"
+                                                 onDoubleClick={() => openCloseDepartments(department.id)}
                                             >
-                                                <div className="sk-department-header"
-                                                     onDoubleClick={() => openCloseDepartments(department.id)}
-                                                >
-                                                    <div className="sk-department-header-hover-container">
-                                                        <Checkbox
-                                                            indeterminate={isIndeterminate(department.id)}
-                                                            checked={isChecked(department.id)}
-                                                            onChange={() => checkUncheckDepartment(department.id)}
-                                                        />
-                                                        <p className="sk-department-header-p">{department.id}</p>
-                                                        <p className="sk-department-header-p">{department.name}</p>
-                                                    </div>
+                                                <div className="sk-department-header-hover-container">
+                                                    <Checkbox
+                                                        indeterminate={isIndeterminate(department.id)}
+                                                        checked={isChecked(department.id)}
+                                                        onChange={() => checkUncheckDepartment(department.id)}
+                                                    />
+                                                    <p className="sk-department-header-p">{department.id}</p>
+                                                    <p className="sk-department-header-p">{department.name}</p>
                                                 </div>
-                                                { !closedDepartments.find(item => item === department.id) && (
-                                                    <div className="sk-person-rows">
-                                                        {users.map((user, idx) => {
-                                                            if (+user.department === +department.id) {
+                                            </div>
+                                            {!closedDepartments.find(item => item === department.id) && (
+                                                <div className="sk-person-rows">
+                                                    {users.map((user, idx) => {
+                                                        if (+user.department === +department.id) {
                                                                 return (
                                                                     <div key={`${user.id}-${idx}`}
                                                                          className={`sk-person-row ${checkedUsers.find(item => item === user.id) ? "sk-row-selected" : ""}`}
@@ -337,10 +360,12 @@ const UserManagerPage_2025 = (props) => {
                                                                                     <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
                                                                                     <p className="sk-person-row-p occupy">{user.occupy}</p>
                                                                                 </div>
-                                                                                <Button color={'default'}
-                                                                                        variant={'outlined'}
-                                                                                        icon={<EditOutlined/>}
-                                                                                >Редактировать</Button>
+                                                                                <NavLink to={'/hr/users/' + user.id}>
+                                                                                    <Button color={'default'}
+                                                                                            variant={'outlined'}
+                                                                                            icon={<EditOutlined/>}
+                                                                                    >Редактировать</Button>
+                                                                                </NavLink>
                                                                             </div>
                                                                             {user.groups && user.groups.length > 0 && (
                                                                                 <div

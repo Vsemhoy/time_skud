@@ -33,6 +33,7 @@ import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
 
 import AclSkudPage2 from './modules/ADMIN/ACLSKUD/AclSkudPage2';
 import UserManagerPage_2025 from "./modules/USER_MANAGER_2025/USER_MANAGER/UserManagerPage_2025";
+import UserPage from "./modules/USER_PAGE/UserPage";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -212,6 +213,9 @@ function App() {
 
             <Route path={'/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
+
+              <Route path={'/hr/users/:userId'} element={<UserPage userdata={userAct}/>} />
+              <Route path={BASE_ROUTE + '/hr/users/:userId'} element={<UserPage userdata={userAct}/>} />
             
 
             <Route path={BASE_ROUTE + '/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
