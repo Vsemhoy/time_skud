@@ -515,7 +515,7 @@ const ClaimEditorDrawer = (props) => {
                   />
                   {editMode !== 'read' && (
                   <Button
-                    onClick={()=>{setFormDateRange([formDateRange[0], formDateRange[0]])}}
+                    onClick={()=>{setFormDateRange([formDateRange[0], formDateRange[0].clone().endOf('day')])}}
                   >Сравнять</Button>
                   )}
                 </>
@@ -539,7 +539,7 @@ const ClaimEditorDrawer = (props) => {
                   readOnly={editMode === 'read'}
                   style={{ width: '100%' }}
                   value={formDateRange[0]}
-                  onChange={(date)=>{setFormDateRange([date, date])}}
+                  onChange={(date)=>{setFormDateRange([date, date.clone().endOf('day')])}}
                 />
                 </>
               )}
