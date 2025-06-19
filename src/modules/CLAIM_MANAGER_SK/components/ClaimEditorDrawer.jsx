@@ -27,7 +27,7 @@ const ClaimEditorDrawer = (props) => {
   const [formType, setFormType] = useState(0);
 
   const [formUsers, setFormUsers] = useState([]); // all 
-  const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs()]); // All
+  const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs().endOf('day')]); // All
 
   const [formTargetPoint, setFormTargetPoint] = useState('');     // 7, 8,
   const [formTargetAddress, setFormTargetAddress] = useState(''); // 7, 8,
@@ -70,6 +70,8 @@ const ClaimEditorDrawer = (props) => {
     }
     setOpen(false);
   };
+
+
 
   useEffect(() => {
     if (props.opened){
@@ -511,7 +513,7 @@ const ClaimEditorDrawer = (props) => {
                   <DatePicker.RangePicker
                     style={{ width: '100%' }}
                     value={formDateRange}
-                    onChange={setFormDateRange}
+                    onChange={(dates)=>{setFormDateRange([dates[0], dates[1].clone().endOf('day')])}}
                   />
                   {editMode !== 'read' && (
                   <Button
