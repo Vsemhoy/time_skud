@@ -194,7 +194,7 @@ const ClaimEditorDrawer = (props) => {
   const masterSetReadOptions = () => {
     if  (userCard.evaluated === 0 && userCard.user_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_CREATE')){
         // Заявку можно отозвать вчера и если она не согласована
-        if (!userCard.is_approved === 0){
+        if (!userCard.state !== 1){
           setAllowBack(true);
         }
         let start = dayjs(userCard.start).startOf('day').unix();
@@ -220,7 +220,7 @@ const ClaimEditorDrawer = (props) => {
         // Согласовываем только те, что требуют согласования
         if (props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_APPROVE')){
             // фильтр, если есть привилегия согласовывать кому угодно
-            if (userCard.is_approved === 0){
+            if (userCard.state !== 1){
               setAllowApprove(true);
               setAllowDecline(true);
             } else {
@@ -232,24 +232,24 @@ const ClaimEditorDrawer = (props) => {
             }
         } else if (userCard.boss_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_APPROVE')){
             // Если челик мой подчиненный и у меня есть право ему согласовывать
-            if (userCard.is_approved === 0){
+            if (userCard.state !== 1){
               setAllowApprove(true);
               setAllowDecline(true);
             } else {
                 let start = dayjs(userCard.start).startOf('day').unix();
                 let today = dayjs().startOf('day').unix();
-                if (start > today && userCard.is_approved === 1){
+                if (start > today && userCard.state === 1){
                   setAllowDecline(true);
                 }
             }
         } else if (userCard.user_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')){
-            if (userCard.is_approved === 0){
+            if (userCard.state !== 1){
               setAllowApprove(true);
               setAllowDecline(true);
             } else {
                 let start = dayjs(userCard.start).startOf('day').unix();
                 let today = dayjs().startOf('day').unix();
-                if (start > today && userCard.is_approved === 1){
+                if (start > today && userCard.state === 1){
                   setAllowDecline(true);
                 }
             }
@@ -283,6 +283,7 @@ const ClaimEditorDrawer = (props) => {
           'key': `userkey_${item.id}`,
           'value': item.id,
           'label': <div className={'sk-flex-space'}><div>{item.surname + " " + item.name + " " + item.patronymic}</div> <div>{item.id}</div></div>,
+          'searchLabel': `${item.surname + " " + item.name + " " + item.patronymic + " " + item.id}`,
         }
       }));
     
@@ -334,7 +335,12 @@ const ClaimEditorDrawer = (props) => {
     let res2 = {};
     let result = {};
     result.start = formDateRange[0].format('YYYY-MM-DD HH:mm:ss');
-    result.end = formDateRange[1].format('YYYY-MM-DD HH:mm:ss');
+    if (formType === 11 || formType === 13){
+      result.end = formDateRange[1].clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      result.end = formDateRange[1].format('YYYY-MM-DD HH:mm:ss');
+
+    }
     result.users = formUsers;
     result.skud_current_state_id = formType;
     result.state = 0;
@@ -459,6 +465,8 @@ const ClaimEditorDrawer = (props) => {
                     placeholder={'Имя пользователя'}
                     options={userList}
                       onChange={setFormUsers}
+                      optionFilterProp="searchLabel" // ищет по этому полю!
+                      showSearch
                     />
                 ) : (
 
