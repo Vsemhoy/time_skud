@@ -34,6 +34,10 @@ import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
 import AclSkudPage2 from './modules/ADMIN/ACLSKUD/AclSkudPage2';
 import UserManagerPage_2025 from "./modules/USER_MANAGER_2025/USER_MANAGER/UserManagerPage_2025";
 import UserPage from "./modules/USER_PAGE/UserPage";
+import BaseInfoWorkspace from "./modules/USER_PAGE/components/BaseInfoWorkspace";
+import SchedulesWorkspace from "./modules/USER_PAGE/components/SchedulesWorkspace";
+import RulesWorkspace from "./modules/USER_PAGE/components/RulesWorkspace";
+import GroupsWorkspace from "./modules/USER_PAGE/components/GroupsWorkspace";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -214,9 +218,19 @@ function App() {
             <Route path={'/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
 
-              <Route path={'/hr/users/:userId'} element={<UserPage userdata={userAct}/>} />
-              <Route path={BASE_ROUTE + '/hr/users/:userId'} element={<UserPage userdata={userAct}/>} />
-            
+            <Route path={'/hr/users/:userId'} element={<UserPage userdata={userAct}/>}>
+                <Route index element={<BaseInfoWorkspace />} />
+                <Route path={'schedules'} element={<SchedulesWorkspace />} />
+                <Route path={'rules'} element={<RulesWorkspace />} />
+                <Route path={'groups'} element={<GroupsWorkspace />} />
+            </Route>
+            <Route path={BASE_ROUTE + '/hr/users/:userId'} element={<UserPage userdata={userAct}/>}>
+                <Route index element={<BaseInfoWorkspace />} />
+                <Route path={'schedules'} element={<SchedulesWorkspace />} />
+                <Route path={'rules'} element={<RulesWorkspace />} />
+                <Route path={'groups'} element={<GroupsWorkspace />} />
+            </Route>
+
 
             <Route path={BASE_ROUTE + '/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
