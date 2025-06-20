@@ -192,7 +192,41 @@ const UserListSidebar = (props) => {
               <div>
               {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
                 <UserlistEventDumpCard data={targetUserInfo.event_dump} />
-              ) : (<div style={{padding: '18px'}}>...</div>)}
+              ) : (
+                <>{ targetUserInfo.state_data != null ? (
+                  <div className={'sk-w-padding-18 sk-umsmi-card'}>
+                  <table className="sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
+                      <tbody>
+                        <tr>
+                          <td style={{textAlign: 'left'}}>Дата и время начала</td>
+                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.start).format("DD-MM-YYYY")}   {
+                            dayjs(targetUserInfo.state_data.start).format('HH:mm') != '00:00' && (
+                              <span>{dayjs(targetUserInfo.state_data.start).format('HH:mm')}</span>
+                            )
+                          }</td>
+                        </tr>
+                        <tr>
+                          <td style={{textAlign: 'left'}}>Дата и время завершения</td>
+                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).format("DD-MM-YYYY")}   {
+                            dayjs(targetUserInfo.state_data.end).format('HH:mm') != '23:59' && (
+                              <span>{dayjs(targetUserInfo.state_data.end).format('HH:mm')}</span>
+                            )
+                          }</td>
+                        </tr>
+                        <tr>
+                          <td style={{textAlign: 'left'}}>Количество дней всего</td>
+                          <td style={{textAlign: 'left'}}>{targetUserInfo.state_data.days_count}</td>
+                        </tr>
+                        <tr>
+                          <td style={{textAlign: 'left'}}>Количество дней осталось</td>
+                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') > 0 ? dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') : ""}</td>
+                        </tr>
+                          </tbody>
+                      </table>
+                      </div>
+              ) : (
+                <div style={{padding: '18px'}}>...</div>
+                )}</>)}
               </div>
             ) : ("")}
             <br />
