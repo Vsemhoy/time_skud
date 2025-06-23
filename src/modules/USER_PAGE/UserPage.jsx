@@ -93,7 +93,8 @@ const UserPage = () => {
                         fontSize: '14px',
                         backgroundColor: '#f2914a',
                         borderColor: '#f2914a',
-                    }}>{'Arstel'}</Tag>
+                        marginRight: 0,
+                    }}>#{'Arstel'}</Tag>
                 )}
             </div>
             </Affix>
