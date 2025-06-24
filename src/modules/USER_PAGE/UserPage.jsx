@@ -29,7 +29,9 @@ const UserPage = () => {
     }, [userId]);
 
     useEffect(() => {
-        navigate(`../${userIdState}`, { relative: 'path' });
+        if (userIdState !== 'new' && activeTab === 'base') {
+            navigate(`../${userIdState}`, { relative: 'path' });
+        }
     }, [userIdState]);
 
     const fetchUserInfo = () => {

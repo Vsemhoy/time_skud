@@ -166,6 +166,9 @@ h1 {
     align-items: center;
     border-left: 1px solid #BFBFBF;
 }
+.sk_schedule_table_cell_header {
+    border-left: 1px solid #EBEBEB;
+}
 .sk_schedule_table_cell:first-child {
     border: none;
 }
@@ -194,6 +197,14 @@ h1 {
     display: flex;
     flex-direction: column;
 }
+.sk_schedule_container_center {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .sk_schedule_name {
     font-size: 14px;
 }
@@ -201,11 +212,16 @@ h1 {
     font-size: 12px;
     color: #757575;
 }
+.sk_schedule_table_header_p {
+    width: 100%;
+    color: #4C4C4C;
+    text-align: center;
+}
 .sk_schedule_p {
     text-align: center;
 }
 .sk_schedule_icon {
-    width: 30px;
+    width: 100%;
     height: 30px;
     background-position: center;
     background-repeat: no-repeat;
@@ -228,4 +244,118 @@ h1 {
 }
 .schedule_sum {
     background-image: url("../../../../public/media/schedule-sum.svg");
+}
+/* RULES-INFO-----------------------------------------------------------------------------------*/
+.sk_rules_workspace {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-gap: 15px;
+    padding-top: 10px;
+}
+.sk_rules_linker {
+    width: 100%;
+    height: calc(100vh - 46px - 10px - 10px - 52px - 52px);
+    background-color: #e1e1e1;
+    border-radius: 6px;
+    padding: 12px;
+}
+.sk_rules_table_container {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+}
+.sk_rules_table_label {
+    width: 100%;
+    height: 44px;
+    background-color: #EFEFEF;
+    border-radius: 6px;
+    padding: 10px;
+    font-weight: 600;
+}
+.sk_rules_table {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 1px;
+}
+.sk_rules_table_row_wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    outline: 1px solid #BFBFBF;
+    padding: 5px 0;
+}
+.sk_rules_table_row {
+    height: 72px;
+    display: grid;
+    grid-template-columns: 50px 50px 1fr 100px 100px 100px 100px;
+}
+.sk_rules_table_cell {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid #BFBFBF;
+}
+.sk_rules_table_cell_header {
+    border-left: 1px solid #EBEBEB;
+}
+.sk_rules_table_cell:first-child {
+    border: none;
+}
+.sk_rules_container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.sk_rules_p {
+    text-align: center;
+}
+.sk_rules_name {
+    font-size: 14px;
+}
+.sk_rules_description {
+    font-size: 12px;
+    color: #757575;
+}
+.sk_rules_container_center {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.sk_rules_icon {
+    width: 100%;
+    height: 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.rule_empty {
+    background-image: url("../../../../public/media/ruletypes/auto-focus-svgrepo-com.svg");
+}
+.rule_flex {
+    background-image: url("../../../../public/media/ruletypes/bed-svgrepo-com.svg");
+}
+.rule_free {
+    background-image: url("../../../../public/media/ruletypes/eraser-svgrepo-com.svg");
+}
+.rule_shift {
+    background-image: url("../../../../public/media/ruletypes/eraser-svgrepo-com-evening.svg");
+}
+.rule_std {
+    background-image: url("../../../../public/media/ruletypes/lock-rotation-open-svgrepo-com.svg");
+}
+.rule_sum {
+    background-image: url("../../../../public/media/ruletypes/magic-svgrepo-com.svg");
+}
+.rule_sum {
+    background-image: url("../../../../public/media/ruletypes/piggy-bank-coin-svgrepo-com.svg");
+}
+.rule_sum {
+    background-image: url("../../../../public/media/ruletypes/recycle-svgrepo-com.svg");
 }
