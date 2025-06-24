@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import styles from "../style/user_page.module.css";
 import {Link, useOutletContext} from "react-router-dom";
-import {Button, Pagination, Select, Spin, Tag} from "antd";
-import {ClearOutlined} from "@ant-design/icons";
+import {Affix, Button, Pagination, Select, Spin, Tag} from "antd";
+import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {BASE_ROUTE} from "../../../CONFIG/config";
 import {SCHEDULES} from "../mock/mock";
+import dayjs from "dayjs";
 
 function SchedulesWorkspace(props) {
     const { userIdState, userFIO } = useOutletContext();
@@ -15,13 +16,11 @@ function SchedulesWorkspace(props) {
     useEffect(() => {
         fetchSchedulesInfo();
     }, []);
-
     const fetchSchedulesInfo = () => {
         setIsLoading(true);
         setSchedules(SCHEDULES);
         setTimeout(() => setIsLoading(false), 500);
     };
-
     const [groupList, setGroupList] = useState([]);
     const tagRender = (props) => {
         const { label, value, closable, onClose } = props;
@@ -47,23 +46,20 @@ function SchedulesWorkspace(props) {
             </Tag>
         );
     };
-
-    const scheduleIcon = () => {
-      switch (schedules.length) {
+    const scheduleIcon = (schedule) => {
+      switch (+schedule.schedule_type) {
           case 1:
               return styles.schedule_std;
           case 2:
-              return styles.schedule_std;
+              return styles.schedule_flex;
           case 3:
-              return styles.schedule_std;
+              return styles.schedule_free;
           case 4:
-              return styles.schedule_std;
+              return styles.schedule_shift;
           case 5:
-              return styles.schedule_std;
-          case 6:
-              return styles.schedule_std;
+              return styles.schedule_sum;
           default:
-              return '';
+              return styles.schedule_empty;
       }
     };
 
@@ -116,33 +112,35 @@ function SchedulesWorkspace(props) {
                     <div className={styles.sk_schedule_table}>
                         <div className={`${styles.sk_schedule_table_row_wrapper} ${styles.sk_table_row_header}`}>
                             <div className={styles.sk_schedule_table_row}>
-                            <div className={styles.sk_schedule_table_cell}>
-                                <p>Тип</p>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
+                                    <p className={styles.sk_schedule_table_header_p}>Тип</p>
+                                </div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}></div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
+                                    <p className={styles.sk_schedule_table_header_p} style={{textAlign: 'left'}}>Название, описание</p>
+                                </div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
+                                    <p className={styles.sk_schedule_table_header_p}>Работа</p>
+                                </div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
+                                    <p className={styles.sk_schedule_table_header_p}>Обед</p>
+                                </div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
+                                    <p className={styles.sk_schedule_table_header_p}>Начало действия</p>
+                                </div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
+                                    <p className={styles.sk_schedule_table_header_p}>Действует до</p>
+                                </div>
+                                <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}></div>
                             </div>
-                            <div className={styles.sk_schedule_table_cell}></div>
-                            <div className={styles.sk_schedule_table_cell}>
-                                <p style={{width: '100%'}}>Название, описание</p>
-                            </div>
-                            <div className={styles.sk_schedule_table_cell}>
-                                <p>Работа</p>
-                            </div>
-                            <div className={styles.sk_schedule_table_cell}>
-                                <p>Обед</p>
-                            </div>
-                            <div className={styles.sk_schedule_table_cell}>
-                                <p>Начало действия</p>
-                            </div>
-                            <div className={styles.sk_schedule_table_cell}>
-                                <p>Действует до</p>
-                            </div>
-                            <div className={styles.sk_schedule_table_cell}></div>
-                        </div>
                         </div>
                         {schedules.map(schedule => (
-                            <div className={styles.sk_schedule_table_row_wrapper}>
+                            <div key={schedule.id} className={styles.sk_schedule_table_row_wrapper}>
                                 <div className={`${styles.sk_schedule_table_row}`}>
                                     <div className={styles.sk_schedule_table_cell}>
-                                        <p className={`${styles.sk_schedule_icon} ${scheduleIcon()}`}></p>
+                                        <div className={styles.sk_schedule_container}>
+                                            <p className={`${styles.sk_schedule_icon} ${scheduleIcon(schedule)}`}></p>
+                                        </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container}>
@@ -155,11 +153,40 @@ function SchedulesWorkspace(props) {
                                             <p className={styles.sk_schedule_description}>{schedule.schedule_type_name}</p>
                                         </div>
                                     </div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
+                                    <div className={styles.sk_schedule_table_cell}>
+                                        <div className={styles.sk_schedule_container_center}>
+                                            <p className={styles.sk_schedule_description}>с {schedule.enter}</p>
+                                            <p className={styles.sk_schedule_description}>до {schedule.leave}</p>
+                                        </div>
+                                    </div>
+                                    <div className={styles.sk_schedule_table_cell}>
+                                        <div className={styles.sk_schedule_container_center}>
+                                            <p className={styles.sk_schedule_description}>с {schedule.lunch_start}</p>
+                                            <p className={styles.sk_schedule_description}>до {schedule.lunch_end}</p>
+                                        </div>
+                                    </div>
+                                    <div className={styles.sk_schedule_table_cell}>
+                                        <div className={styles.sk_schedule_container_center}>
+                                            <p className={styles.sk_schedule_name}>{dayjs(schedule.start).format('DD.MM.YYYY')}</p>
+                                        </div>
+                                    </div>
+                                    <div className={styles.sk_schedule_table_cell}>
+                                        <div className={styles.sk_schedule_container_center}>
+                                            <p className={styles.sk_schedule_name}>{dayjs(schedule.end).format('DD.MM.YYYY')}</p>
+                                        </div>
+                                    </div>
+                                    <div className={styles.sk_schedule_table_cell} style={{padding: '15px', justifyContent: 'space-between'}}>
+                                        <Button color={'default'}
+                                                variant={'outlined'}
+                                                shape="circle"
+                                                icon={<EditOutlined/>}
+                                        ></Button>
+                                        <Button color={'default'}
+                                                variant={'outlined'}
+                                                shape="circle"
+                                                icon={<DeleteOutlined/>}
+                                        ></Button>
+                                    </div>
                                 </div>
                                 {/*<div className={`${styles.sk_schedule_table_break_row}`}>
                                     <div className={styles.sk_schedule_table_cell}><p></p></div>
@@ -175,69 +202,71 @@ function SchedulesWorkspace(props) {
                         ))}
                     </div>
                 </div>
-                <div className={styles.sk_schedule_linker}>
-                    <div style={{width: '100%'}}>
-                        <div className={styles.sk_flex_space}>
-                            <span className={'sk-totoro'}>Группы </span>
-                            <span
-                                onClick={() => {
+                <Affix offsetTop={10 + 10 + 52 + 52}>
+                    <div className={styles.sk_schedule_linker}>
+                        <div style={{width: '100%'}}>
+                            <div className={styles.sk_flex_space}>
+                                <span className={'sk-totoro'}>Группы </span>
+                                <span
+                                    onClick={() => {
+                                    }}
+                                >
+                                    <ClearOutlined/>
+                                </span>
+                            </div>
+                            <br/>
+                            <div className={styles.sk_label_select}>Тип привязываемого графика</div>
+                            <Select
+                                placeholder={'Группы'}
+                                mode={'multiple'}
+                                options={[]}
+                                style={{width: '100%'}}
+                                onChange={(ev) => {
                                 }}
-                            >
-                                <ClearOutlined/>
-                            </span>
+                                tagRender={tagRender}
+                            />
+                            <br/>
+                            <br/>
+                            <div className={styles.sk_label_select}>Название графика (селект с поиском)</div>
+                            <Select
+                                placeholder={'Группы'}
+                                mode={'multiple'}
+                                options={[]}
+                                style={{width: '100%'}}
+                                onChange={(ev) => {
+                                }}
+                                tagRender={tagRender}
+                            />
+                            <br/>
+                            <br/>
+                            <div className={styles.sk_label_select}>Дата начала действия графика</div>
+                            <Select
+                                placeholder={'Группы'}
+                                mode={'multiple'}
+                                options={[]}
+                                style={{width: '100%'}}
+                                onChange={(ev) => {
+                                }}
+                                tagRender={tagRender}
+                            />
+                            <br/>
+                            <br/>
+                            <div className={styles.sk_label_select}>Дата окончания графика</div>
+                            <Select
+                                placeholder={'Группы'}
+                                mode={'multiple'}
+                                options={[]}
+                                style={{width: '100%'}}
+                                onChange={(ev) => {
+                                }}
+                                tagRender={tagRender}
+                            />
+                            <br/>
+                            <br/>
+                            <Button block>Привязать графики</Button>
                         </div>
-                        <br/>
-                        <div className={styles.sk_label_select}>Тип привязываемого графика</div>
-                        <Select
-                            placeholder={'Группы'}
-                            mode={'multiple'}
-                            options={[]}
-                            style={{width: '100%'}}
-                            onChange={(ev) => {
-                            }}
-                            tagRender={tagRender}
-                        />
-                        <br/>
-                        <br/>
-                        <div className={styles.sk_label_select}>Название графика (селект с поиском)</div>
-                        <Select
-                            placeholder={'Группы'}
-                            mode={'multiple'}
-                            options={[]}
-                            style={{width: '100%'}}
-                            onChange={(ev) => {
-                            }}
-                            tagRender={tagRender}
-                        />
-                        <br/>
-                        <br/>
-                        <div className={styles.sk_label_select}>Дата начала действия графика</div>
-                        <Select
-                            placeholder={'Группы'}
-                            mode={'multiple'}
-                            options={[]}
-                            style={{width: '100%'}}
-                            onChange={(ev) => {
-                            }}
-                            tagRender={tagRender}
-                        />
-                        <br/>
-                        <br/>
-                        <div className={styles.sk_label_select}>Дата окончания графика</div>
-                        <Select
-                            placeholder={'Группы'}
-                            mode={'multiple'}
-                            options={[]}
-                            style={{width: '100%'}}
-                            onChange={(ev) => {
-                            }}
-                            tagRender={tagRender}
-                        />
-                        <br/>
-                        <br/>
-                        <Button block>Привязать графики</Button>
                     </div>
-                </div>
+                </Affix>
             </div>
         </Spin>
     );
