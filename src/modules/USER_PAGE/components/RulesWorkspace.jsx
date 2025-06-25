@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useOutletContext} from "react-router-dom";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, Pagination, Select, Spin, Tag} from "antd";
 import styles from "../style/user_page.module.css";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
@@ -7,6 +7,7 @@ import {RULES} from "../mock/mock";
 import dayjs from "dayjs";
 
 function RulesWorkspace(props) {
+    const navigate = useNavigate();
     const { userIdState, userFIO } = useOutletContext();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +16,12 @@ function RulesWorkspace(props) {
     useEffect(() => {
         fetchRulesInfo();
     }, []);
+
+    useEffect(() => {
+        if (userIdState === 'new') {
+            navigate(`/hr/users/${userIdState}`);
+        }
+    }, [userIdState]);
 
     const fetchRulesInfo = () => {
         setIsLoading(true);
@@ -250,8 +257,8 @@ function RulesWorkspace(props) {
                                 <br/>
                                 <br/>
                                 <Button block>Привязать графики</Button>
-                            </div>
                         </div>
+                    </div>
                 </Affix>
             </div>
         </Spin>

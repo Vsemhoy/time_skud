@@ -86,6 +86,10 @@ const AppMenu23 = (props) => {
             ],
         },
         {
+            key: '/hr/usermanager',
+            label: <NavLink to="/hr/usermanager">Персонал_2</NavLink>,
+        },
+        /*{
             key: 'menu228',
             label: 'Персонал_2',
             children: [
@@ -94,7 +98,7 @@ const AppMenu23 = (props) => {
                     label: <NavLink to="/hr/usermanager">Управление пользователями</NavLink>,
                 },
             ],
-        },
+        },*/
         {
             key: 'menu634',
             label: 'ACL',
