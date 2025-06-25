@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styles from "../style/user_page.module.css";
-import {Link, useOutletContext} from "react-router-dom";
+import {Link, useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, Pagination, Select, Spin, Tag} from "antd";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {BASE_ROUTE} from "../../../CONFIG/config";
@@ -8,6 +8,7 @@ import {SCHEDULES} from "../mock/mock";
 import dayjs from "dayjs";
 
 function SchedulesWorkspace(props) {
+    const navigate = useNavigate();
     const { userIdState, userFIO } = useOutletContext();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +17,12 @@ function SchedulesWorkspace(props) {
     useEffect(() => {
         fetchSchedulesInfo();
     }, []);
+
+    useEffect(() => {
+        if (userIdState === 'new') {
+            navigate(`/hr/users/${userIdState}`);
+        }
+    }, [userIdState]);
     const fetchSchedulesInfo = () => {
         setIsLoading(true);
         setSchedules(SCHEDULES);

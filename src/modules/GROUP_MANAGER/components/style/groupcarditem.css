@@ -101,7 +101,7 @@
     user-select: none;
 }
 .ant-transfer-list-header {
-    border-radius: 0px !important;
+    /*border-radius: 0px !important;*/
     background-color: rgba(255, 255, 255, 0.733) !important;
 }
 
@@ -111,7 +111,7 @@
     background-color: #f6f8f8;
 }
 .ant-transfer-list-body  {
-    background-color: #dfe3e6;
+    /*background-color: #dfe3e6;*/
 }
     .ant-transfer-list-content-item{
        margin-inline: 0px 0 !important;
