@@ -3,9 +3,10 @@ import styles from "../style/user_page.module.css";
 import {Link, useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, Pagination, Select, Spin, Tag} from "antd";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import {BASE_ROUTE} from "../../../CONFIG/config";
+import {BASE_ROUTE, HOST_COMPONENT_ROOT} from "../../../CONFIG/config";
 import {SCHEDULES} from "../mock/mock";
 import dayjs from "dayjs";
+import SchedIcons from "../../SCHED_MANAGER/components/SchedIcons";
 
 function SchedulesWorkspace(props) {
     const navigate = useNavigate();
@@ -52,22 +53,6 @@ function SchedulesWorkspace(props) {
                 {label}
             </Tag>
         );
-    };
-    const scheduleIcon = (schedule) => {
-      switch (+schedule.schedule_type) {
-          case 1:
-              return styles.schedule_std;
-          case 2:
-              return styles.schedule_flex;
-          case 3:
-              return styles.schedule_free;
-          case 4:
-              return styles.schedule_shift;
-          case 5:
-              return styles.schedule_sum;
-          default:
-              return styles.schedule_empty;
-      }
     };
 
     return (
@@ -146,7 +131,7 @@ function SchedulesWorkspace(props) {
                                 <div className={`${styles.sk_schedule_table_row}`}>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container}>
-                                            <p className={`${styles.sk_schedule_icon} ${scheduleIcon(schedule)}`}></p>
+                                            <p className={styles.sk_schedule_icon}><SchedIcons type={schedule.schedule_type} /></p>
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
