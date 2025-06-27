@@ -5,6 +5,8 @@ import styles from "../style/user_page.module.css";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {RULES} from "../mock/mock";
 import dayjs from "dayjs";
+import {HOST_COMPONENT_ROOT} from "../../../CONFIG/config";
+import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
 
 function RulesWorkspace(props) {
     const navigate = useNavigate();
@@ -52,26 +54,6 @@ function RulesWorkspace(props) {
                 {label}
             </Tag>
         );
-    };
-    const ruleIcon = (rule) => {
-        switch (+rule.rule_type_id) {
-            case 1:
-                return styles.rule_std;
-            case 2:
-                return styles.rule_flex;
-            case 3:
-                return styles.rule_free;
-            case 4:
-                return styles.rule_shift;
-            case 5:
-                return styles.rule_sum;
-            case 6:
-                return styles.rule_sum;
-            case 7:
-                return styles.rule_sum;
-            default:
-                return styles.rule_empty;
-        }
     };
 
     return (
@@ -148,7 +130,7 @@ function RulesWorkspace(props) {
                                 <div className={styles.sk_rules_table_row}>
                                     <div className={`${styles.sk_rules_table_cell}`}>
                                         <div className={styles.sk_rules_container}>
-                                            <p className={`${styles.sk_rules_icon} ${ruleIcon(rule)}`}></p>
+                                            <p className={styles.sk_rules_icon}><RuleIcons type={rule.rule_type_id}/></p>
                                         </div>
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}>

@@ -227,23 +227,8 @@ h1 {
     background-repeat: no-repeat;
     background-size: contain;
 }
-.schedule_empty {
-    background-image: url("../../../../public/media/schedule-empty.svg");
-}
-.schedule_flex {
-    background-image: url("../../../../public/media/schedule-flex.svg");
-}
-.schedule_free {
-    background-image: url("../../../../public/media/schedule-free.svg");
-}
-.schedule_shift {
-    background-image: url("../../../../public/media/schedule-shift.svg");
-}
-.schedule_std {
-    background-image: url("../../../../public/media/schedule-std.svg");
-}
-.schedule_sum {
-    background-image: url("../../../../public/media/schedule-sum.svg");
+.sk_schedule_icon > img {
+    width: 100%;
 }
 /* RULES-INFO-----------------------------------------------------------------------------------*/
 .sk_rules_workspace {
@@ -335,29 +320,8 @@ h1 {
     background-repeat: no-repeat;
     background-size: contain;
 }
-.rule_empty {
-    background-image: url("../../../../public/media/ruletypes/auto-focus-svgrepo-com.svg");
-}
-.rule_flex {
-    background-image: url("../../../../public/media/ruletypes/bed-svgrepo-com.svg");
-}
-.rule_free {
-    background-image: url("../../../../public/media/ruletypes/eraser-svgrepo-com.svg");
-}
-.rule_shift {
-    background-image: url("../../../../public/media/ruletypes/eraser-svgrepo-com-evening.svg");
-}
-.rule_std {
-    background-image: url("../../../../public/media/ruletypes/lock-rotation-open-svgrepo-com.svg");
-}
-.rule_sum {
-    background-image: url("../../../../public/media/ruletypes/magic-svgrepo-com.svg");
-}
-.rule_sum {
-    background-image: url("../../../../public/media/ruletypes/piggy-bank-coin-svgrepo-com.svg");
-}
-.rule_sum {
-    background-image: url("../../../../public/media/ruletypes/recycle-svgrepo-com.svg");
+.sk_rules_icon > img {
+    width: 100%;
 }
 /* GROUPS-INFO-----------------------------------------------------------------------------------*/
 .sk_groups_workspace {
