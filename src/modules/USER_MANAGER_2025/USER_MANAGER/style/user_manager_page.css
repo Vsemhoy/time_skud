@@ -54,6 +54,7 @@ aside .ant-layout .ant-layout-sider {
 }
 
 .sk-pagination-wrapper {
+    /*max-width: 1215px;*/
     display: grid;
     grid-template-columns: 1fr 125px;
     align-items: center;
@@ -100,7 +101,15 @@ aside .ant-layout .ant-layout-sider {
     min-height: calc(100vh - 17px - 64px - 46px);
 }
 
+.sk-content-table-wrapper {
+    /*width: 100%;*/
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-items: center;*/
+}
+
 .sk-content-table {
+    /*max-width: 1215px;*/
     display: flex;
     flex-direction: column;
     grid-gap: 3px;
