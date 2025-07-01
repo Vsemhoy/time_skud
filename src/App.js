@@ -38,6 +38,7 @@ import BaseInfoWorkspace from "./modules/USER_PAGE/components/BaseInfoWorkspace"
 import SchedulesWorkspace from "./modules/USER_PAGE/components/SchedulesWorkspace";
 import RulesWorkspace from "./modules/USER_PAGE/components/RulesWorkspace";
 import GroupsWorkspace from "./modules/USER_PAGE/components/GroupsWorkspace";
+import GrotpuckovPage from './modules/GROTPUCKOV/GrotpuckovPage';
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -249,7 +250,8 @@ function App() {
             <Route path={'/hr/notify'} element={<NotifierPage userdata={userAct}/>} />
             <Route path={'/hr/usersettings'} element={<UserManagerPage userdata={userAct}/>} />
 
-            
+            <Route path={'/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
 
             <Route path={'/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
