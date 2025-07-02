@@ -31,7 +31,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     PlusOutlined,
     PlusCircleOutlined
  } from "@ant-design/icons";
-import { USER_STATE_PLACES } from "../../CONFIG/DEFFORMS";
+import {BASE_CLAIM_TYPES, USER_STATE_PLACES} from "../../CONFIG/DEFFORMS";
 
 
 const iconMap = {
@@ -145,7 +145,7 @@ const ClaimManagerPage = (props) => {
             setBaseUserList(CLAIM_USERS);
             setStateList(CLAIM_STATES);
             setBaseClaimList(CLAIMS_MOCKS);
-            setBaseClaimTypes(USER_STATE_PLACES);
+            setBaseClaimTypes(BASE_CLAIM_TYPES);
         }
     },[]);
 
