@@ -36,6 +36,7 @@ const [cellWidth, setCellWidth] = useState(5);
 
   const [targetYear, setTargetYear] = useState(dayjs());
   const [targetMonth, setTargetMonth] = useState([dayjs().startOf('month'), dayjs().endOf('month')])
+  const [rangeValues, setrangeValues] = useState([dayjs().month(),dayjs().month()]);
   const [countOfMonths, setCountOfMonths] = useState(-1);
   const [monthNames, setMonthNames] = useState([]);
 
@@ -75,15 +76,21 @@ const [cellWidth, setCellWidth] = useState(5);
     // console.log('baseUserList', baseUserList);
   }, [baseUserList]);
 
+
 useEffect(() => {
-  // console.log('targetMonth', targetMonth)
+  setTargetMonth([
+    targetYear.clone().month(rangeValues[0] - 1).startOf('month'), // -1 так как месяцы в dayjs 0-11
+    targetYear.clone().month(rangeValues[1] - 1).endOf('month')    // -1 аналогично
+  ])
+}, [rangeValues, targetYear]);
+
+useEffect(() => {
+  console.log('targetMonth', targetMonth)
   // console.log('baseUserList', baseUserList);
   let ds = [];
   let mn = [];
-  let first = targetYear.clone().month(
-    targetMonth[0].month()
-  ).startOf('month');
-  let last = targetYear.clone().month(targetMonth[1].month()).endOf('month');
+  let first = targetYear.clone().month( rangeValues[0] ).startOf('month');
+  let last = targetYear.clone().month(rangeValues[1]).endOf('month');
 
   let current = first.clone();
   let counter = 0;
@@ -142,17 +149,10 @@ useEffect(() => {
             <Slider 
               style={{width: '100%'}} 
               range marks={marks} step={null} defaultValue={[3,5]}
+              value={rangeValues}
               min={1}
               max={12}
-              onChange={(ev)=>{setTargetMonth([
-                targetYear.clone().month(ev[0]
-                ),
-                targetYear.clone().month(
-                  ev[1] - 1
-                )
-              ])
-                
-              }}
+              onChange={setrangeValues}
             />
           </div>
         </div>
@@ -174,12 +174,11 @@ useEffect(() => {
               onClick={()=>{countOfMonths > 1 && setTargetMonth(mon.dates)}}
              className={`${hoveredMonth == mon.key ? "sk-grot-month-hovered" : ""}`}>
             <div className="month-navigation" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              {countOfMonths === 1 && targetMonth[0].month() != 1 && (
+              {countOfMonths === 1 && rangeValues[0] != 1 && (
                 <div 
                   className="nav-button"
                   onClick={() => {
-                    const newMonth = targetMonth[0].clone().add(-1, 'month');
-                    setTargetMonth([newMonth, newMonth]);
+                    setrangeValues([rangeValues[0] -1, rangeValues[0] -1]);
                   }}
                  
                 >
@@ -191,12 +190,10 @@ useEffect(() => {
                 {mon.name}
               </div>
               
-              {countOfMonths === 1 && targetMonth[0].month() != 0 && (
+              {countOfMonths === 1 && rangeValues[1] != 12 && (
                 <div 
                   className="nav-button"
-                  onClick={() => {
-                    const newMonth = targetMonth[0].clone().add(1,'month');
-                    setTargetMonth([newMonth, newMonth]);
+                  onClick={() => {setrangeValues([rangeValues[0] +1, rangeValues[0] +1]);
                   }}
                
                 >
@@ -212,35 +209,7 @@ useEffect(() => {
       </Affix>
 
       <div>
-        {/* <div className="sk-grot-line">
-          <div className={'sk-p-6 sk-grot-name'}>
-            
-          </div>
 
-
-          <div className={`sk-grot-line-days skgrot-line-header ${countOfMonths < 2 ? "sk-grot-striped" : ""}`}>
-            {days.map((d, index) => {
-            const currentMonth = d.month();
-            const nextmonth = index > 0 && currentMonth !== d.clone().add(1,'day').month();
-            return (
-              <div
-                
-                title={d.day()}
-                key={d.toString()} // Важно: добавь ключ!
-                className={`sk-grot-cell ${nextmonth ? "sk-grot-nextmonth" : ""}`}
-                // style={{ width: `${cellWidth}px` }}
-              >
-              <div className={` ${d.day() === 0 || d.day() === 6 ? "sk-grot-wd" : ""}`}>
-              <div className={'sk-grot-item'}>
-              {countOfMonths == 1 ? d.date() : ""} {countOfMonths == 2 && d.date() % 2 ? d.date() : ""}
-              </div>
-              </div>
-              </div>
-            );
-          })}
-        </div>
-            
-      </div> */}
 
       
       {baseUserList.map((user)=>(
