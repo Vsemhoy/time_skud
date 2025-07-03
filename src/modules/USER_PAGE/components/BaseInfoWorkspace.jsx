@@ -16,6 +16,7 @@ import {USERS} from "../../USER_MANAGER_2025/USER_MANAGER/mock/mock";
 
 const BaseInfoWorkspace = (props) => {
     const { userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
+    const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const [company, setCompany] = useState({
@@ -65,19 +66,16 @@ const BaseInfoWorkspace = (props) => {
     const [allowEntries, setAllowEntries] = useState([]);
 
     useEffect(() => {
-        setIsLoading(true);
-        fetchBaseInfo().then();
-        fetchSelects().then();
-        isCanSave();
-        setTimeout(() => setIsLoading(false), 500);
+        if (!isMounted) {
+            baseFetchs().then();
+            setIsMounted(true);
+        }
     }, []);
 
     useEffect(() => {
-        setIsLoading(true);
-        fetchBaseInfo().then();
-        fetchSelects().then();
-        isCanSave();
-        setTimeout(() => setIsLoading(false), 500);
+        if (isMounted) {
+            baseFetchs().then();
+        }
     }, [userIdState]);
 
     useEffect(() => {
@@ -94,6 +92,13 @@ const BaseInfoWorkspace = (props) => {
         }
     }, [savingInfo]);
 
+    const baseFetchs = async () => {
+        setIsLoading(true);
+        await fetchBaseInfo();
+        await fetchSelects();
+        isCanSave();
+        setTimeout(() => setIsLoading(false), 500);
+    };
     const isCanSave = () => {
         if (userIdState === 'new') {
             if (company.id && surname && name && patronymic && occupy && rating && status.id) {
