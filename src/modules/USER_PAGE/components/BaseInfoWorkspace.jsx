@@ -2,8 +2,17 @@ import React, {useEffect, useState} from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styles from "../style/user_page.module.css";
 import {ConfigProvider, Input, Select, Spin} from "antd";
-import {CSRF_TOKEN} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
+import {
+    MOCK_USER,
+    ALLOW_ENTRIES,
+    COMPANIES,
+    CONDITIONAL_CARDS,
+    DEPARTMENTS,
+    STATUSES
+} from "../mock/mock";
+import {USERS} from "../../USER_MANAGER_2025/USER_MANAGER/mock/mock";
 
 const BaseInfoWorkspace = (props) => {
     const { userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
@@ -56,13 +65,19 @@ const BaseInfoWorkspace = (props) => {
     const [allowEntries, setAllowEntries] = useState([]);
 
     useEffect(() => {
-        fetchBaseInfo();
+        setIsLoading(true);
+        fetchBaseInfo().then();
+        fetchSelects().then();
         isCanSave();
+        setTimeout(() => setIsLoading(false), 500);
     }, []);
 
     useEffect(() => {
-        fetchBaseInfo();
+        setIsLoading(true);
+        fetchBaseInfo().then();
+        fetchSelects().then();
         isCanSave();
+        setTimeout(() => setIsLoading(false), 500);
     }, [userIdState]);
 
     useEffect(() => {
@@ -75,13 +90,13 @@ const BaseInfoWorkspace = (props) => {
 
     useEffect(() => {
         if (savingInfo) {
-            sendUpdatedInfo();
+            sendUpdatedInfo().then();
         }
     }, [savingInfo]);
 
     const isCanSave = () => {
         if (userIdState === 'new') {
-            if (company && surname && name && patronymic && occupy && status && rating) {
+            if (company.id && surname && name && patronymic && occupy && rating && status.id) {
                 onUpdateBaseInfo(true);
             } else {
                 onUpdateBaseInfo(false);
@@ -90,7 +105,88 @@ const BaseInfoWorkspace = (props) => {
             onUpdateBaseInfo(true);
         }
     };
-
+    const fetchBaseInfo = async () => {
+        if (PRODMODE && userIdState !== 'new') {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo`,
+                    {
+                        data: {id: userIdState},
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    const content = serverResponse.data.content
+                    setCompany(content?.company);
+                    setSurname(content?.surname);
+                    setName(content?.name);
+                    setPatronymic(content?.patronymic);
+                    setDepartment(content?.department);
+                    setOccupy(content?.occupy);
+                    setInnerPhone(content?.innerPhone);
+                    setTelegramID(content?.telegramID);
+                    setEmail(content?.email);
+                    setDateLeave(content?.dateLeave);
+                    setDateEnter(content?.dateEnter);
+                    setRating(content?.rating);
+                    setStatus(content?.status);
+                    setLogin(content?.login);
+                    setPassword(content?.password);
+                    setCardNumber(content?.cardNumber);
+                    setConditionalCard(content?.conditionalCard);
+                    setAllowEntry(content?.allowEntry);
+                }
+            } catch (error) {
+                console.error('Error fetching user base info:', error);
+            }
+        } else {
+            setCompany(MOCK_USER.company);
+            setSurname(MOCK_USER.surname);
+            setName(MOCK_USER.name);
+            setPatronymic(MOCK_USER.patronymic);
+            setDepartment(MOCK_USER.department);
+            setOccupy(MOCK_USER.occupy);
+            setInnerPhone(MOCK_USER.innerPhone);
+            setTelegramID(MOCK_USER.telegramID);
+            setEmail(MOCK_USER.email);
+            setDateLeave(MOCK_USER.dateLeave);
+            setDateEnter(MOCK_USER.dateEnter);
+            setRating(MOCK_USER.rating);
+            setStatus(MOCK_USER.status);
+            setLogin(MOCK_USER.login);
+            setPassword(MOCK_USER.password);
+            setCardNumber(MOCK_USER.cardNumber);
+            setConditionalCard(MOCK_USER.conditionalCard);
+            setAllowEntry(MOCK_USER.allowEntry);
+        }
+    };
+    const fetchSelects = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfoselects`,
+                    {
+                        data: {id: userIdState},
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    const content = serverResponse.data.content
+                    setCompanies(content?.companies);
+                    setDepartments(content?.departments);
+                    setStatuses(content?.statuses);
+                    setConditionalCards(content?.conditional_cards);
+                    setAllowEntries(content?.allow_entries);
+                }
+            } catch (error) {
+                console.error('Error fetching users base info selects:', error);
+            }
+        } else {
+            setCompanies(COMPANIES);
+            setDepartments(DEPARTMENTS);
+            setStatuses(STATUSES);
+            setConditionalCards(CONDITIONAL_CARDS);
+            setAllowEntries(ALLOW_ENTRIES);
+        }
+    };
     const sendUpdatedInfo = async () => {
         let content = {};
         try {
@@ -99,7 +195,7 @@ const BaseInfoWorkspace = (props) => {
                 innerPhone,telegramID,email,dateLeave,dateEnter,
                 rating,status,login,password,cardNumber,conditionalCard,allowEntry
             }
-            const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserinfo`,
+            const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo`,
                 {
                     data,
                     _token: CSRF_TOKEN
@@ -111,111 +207,6 @@ const BaseInfoWorkspace = (props) => {
         }
         setTimeout(() => onUpdateSavingInfo(false, /*content?.id)*/568), 500);
     };
-
-    const fetchBaseInfo = () => {
-        setIsLoading(true);
-        if (userIdState !== 'new') {
-            setCompany({
-                id: 2,
-                value: 2,
-                label: 'Arstel',
-                color: '#f2914a'
-            });
-            setSurname('Арчи');
-            setName('Гавриил');
-            setPatronymic('Дессус');
-            setDepartment({
-                id: 2,
-                value: 2,
-                label: 'Монтажный отдел',
-            });
-            setOccupy('Руководитель');
-            setInnerPhone('228');
-            setTelegramID('22834525453');
-            setEmail('test@test.com');
-            setDateLeave('12.09.2025');
-            setDateEnter('12.09.2029');
-            setRating('40');
-            setStatus({
-                id: 1,
-                value: 1,
-                label: 'Работает',
-            });
-            setLogin('agd');
-            setPassword('');
-            setCardNumber('55GKEK24MM');
-            setConditionalCard({
-                id: 2,
-                value: 2,
-                label: 'Нормальная',
-            });
-            setAllowEntry({
-                id: 1,
-                value: 1,
-                label: 'Да',
-            });
-        }
-        setCompanies([
-            {
-                value: 1,
-                label: 'FreeCompany'
-            },
-            {
-                value: 2,
-                label: 'Arstel'
-            },
-            {
-                value: 3,
-                label: 'Rondo'
-            },
-        ]);
-        setDepartments([
-            {
-                value: 1,
-                label: 'Администрация'
-            },
-            {
-                value: 2,
-                label: 'Монтажный отдел'
-            },
-            {
-                value: 3,
-                label: 'IT отдел'
-            },
-        ]);
-        setStatuses([
-            {
-                value: 1,
-                label: 'Работает'
-            },
-            {
-                value: 2,
-                label: 'Уволен'
-            },
-        ]);
-        setConditionalCards([
-            {
-                value: 1,
-                label: 'Стелс'
-            },
-            {
-                value: 2,
-                label: 'Нормальная'
-            },
-        ]);
-        setAllowEntries([
-            {
-                value: 1,
-                label: 'Да'
-            },
-            {
-                value: 2,
-                label: 'Нет'
-            },
-        ]);
-        setTimeout(() => setIsLoading(false), 500);
-    };
-
     return (
         <Spin spinning={isLoading}>
             <div className={styles.sk_base_workspace}>
