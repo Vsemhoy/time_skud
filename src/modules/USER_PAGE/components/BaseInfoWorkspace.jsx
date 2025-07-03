@@ -242,6 +242,7 @@ const BaseInfoWorkspace = (props) => {
                                     disabled={userIdState !== 'new'}
                                     onChange={(value) => setCompany(companies.find(c => c.value === value))}
                                     style={{width: 360}}
+                                    status="warning"
                             />
                         </ConfigProvider>
                     </div>
@@ -252,6 +253,7 @@ const BaseInfoWorkspace = (props) => {
                                value={surname}
                                onChange={(e) => setSurname(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -260,6 +262,7 @@ const BaseInfoWorkspace = (props) => {
                                value={name}
                                onChange={(e) => setName(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -268,6 +271,7 @@ const BaseInfoWorkspace = (props) => {
                                value={patronymic}
                                onChange={(e) => setPatronymic(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -285,6 +289,7 @@ const BaseInfoWorkspace = (props) => {
                                value={occupy}
                                onChange={(e) => setOccupy(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -333,6 +338,7 @@ const BaseInfoWorkspace = (props) => {
                                value={rating}
                                onChange={(e) => setRating(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -342,6 +348,7 @@ const BaseInfoWorkspace = (props) => {
                                 options={statuses}
                                 onChange={(value) => setStatus(statuses.find(c => c.value === value))}
                                 style={{width: 360}}
+                                status="warning"
                         />
                     </div>
                 </div>
