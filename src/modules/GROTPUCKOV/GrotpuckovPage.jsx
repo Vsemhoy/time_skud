@@ -291,7 +291,7 @@ useEffect(() => {
     let weekStart = current.clone();
     let currentMonth = current.month();
   
-    // last = last.clone().add(-1, 'month').endOf('month');
+    last = last.clone().add(-1, 'month').endOf('month');
     
   
     while (current.isBefore(last) || current.isSame(last, 'day')) {
