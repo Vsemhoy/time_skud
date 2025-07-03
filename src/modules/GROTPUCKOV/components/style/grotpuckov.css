@@ -1,14 +1,14 @@
 .sk-grot-line {
     display: grid;
-    grid-template-columns: 190px auto;
+    grid-template-columns: 190px auto 18px;
 }
 .sk-grot-line:nth-child(odd) {
     
-    background-color: var(--row-hovered-bg-color);
+    background-color: var(--row-second-bg-color);
 }
 .sk-grot-line:nth-child(even) {
+    background-color: var(--row-hovered-bg-color);
     
-    background-color: var(--row-second-bg-color);
 }
 
 .sk-grot-cell {
@@ -23,11 +23,15 @@
 }
 
 .sk-grot-nextmonth {
-    border-right: 1px dashed rgb(0 0 0 / 60%);
+    border-left: 1px solid rgb(0 0 0 / 60%);
 }
-.sk-grot-name {
-    border-right: 1px dashed rgb(0 0 0 / 60%);
+.sk-grot-cell:last-child {
+    border-right: 1px solid rgb(0 0 0 / 60%);
+    
 }
+/* .sk-grot-name {
+    border-right: 1px dashed rgb(0 0 0 / 60%);
+} */
 
 .sk-grot-line-days{
     display: flex;
@@ -86,7 +90,7 @@
     justify-content: space-around;
     align-items: center;
     font-weight: 400;
-    border-right: 1px dashed rgb(0 0 0 / 60%);
+    border-left: 1px solid rgb(0 0 0 / 60%);
 }
 .sk-grot-monthrow > div {
     padding: 6px;
@@ -125,6 +129,13 @@
     background-color: rgb(255, 115, 0);
 }
 
-.sk-grot-vacc-cell:first-child {
-    /* border-left: 5px solid red; */
+
+
+
+.ant-affix .sk-grot-line {
+ backdrop-filter: blur(53px);
+ 
+}
+.sk-g-affix {
+    background-color: var(--row-hovered-bg-color) !important;
 }
