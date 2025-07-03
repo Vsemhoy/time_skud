@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Link, Outlet, useLocation, useNavigate, useParams} from "react-router-dom";
 import {Affix, Button, Tag} from "antd";
 import styles from './style/user_page.module.css'
+import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
+import {PROD_AXIOS_INSTANCE} from "../../API/API";
 const UserPage = () => {
     const location = useLocation();
     const {userId} = useParams();
@@ -21,11 +23,11 @@ const UserPage = () => {
     const activeTab = getActiveTab();
 
     useEffect(() => {
-        fetchUserInfo();
+        fetchUserInfo().then();
     }, []);
 
     useEffect(() => {
-        fetchUserInfo();
+        fetchUserInfo().then();
     }, [userId]);
 
     useEffect(() => {
@@ -34,11 +36,27 @@ const UserPage = () => {
         }
     }, [userIdState]);
 
-    const fetchUserInfo = () => {
+    const fetchUserInfo = async () => {
         if (userIdState === 'new') {
             setUserFIO('Новый сотрудник');
         } else {
-            setUserFIO('Арчи Гавриил Дессус');
+            if (PRODMODE) {
+                try {
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userfio`,
+                        {
+                            data: {id: userIdState},
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    if (serverResponse.data.content) {
+                        setUserFIO(serverResponse.data.content);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user fio:', error);
+                }
+            } else {
+                setUserFIO('Арчи Гавриил Дессус');
+            }
         }
     };
     const btnHeader = () => {
