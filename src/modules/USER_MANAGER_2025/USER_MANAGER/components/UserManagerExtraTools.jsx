@@ -138,60 +138,65 @@ const UserManagerExtraTools = (props)=>{
     },[props.selectedCompany])
 
     useEffect(() => {
-        setSelectedGroups([]);
-        let groups = [...props.groups || []];
-        if (selectedCompany) {
-            groups = groups.filter(item => item.id_company === selectedCompany);
+        if (props.groups && props.groups.length > 0) {
+            setSelectedGroups([]);
+            let groups = [...props.groups || []];
+            if (selectedCompany) {
+                groups = groups.filter(item => item.id_company === selectedCompany);
+            }
+            setGroupList(
+                groups.map(item => ({
+                    key: item.id,
+                    label: item.name,
+                    value: item.id,
+                    color: item.company_color
+                }))
+            );
         }
-        setGroupList(
-            groups.map(item => ({
-                key: item.id,
-                label: item.name,
-                value: item.id,
-                color: item.company_color
-            }))
-        );
     }, [props.groups, selectedCompany]);
 
     useEffect(()=>{
-        let sched = props.schedules;
-        //console.log(sched);
-        if (selectedCompany)
-        {
-            sched = sched.filter((item)=>{return item.id_company === selectedCompany});
-        };
-        if (selectedSchedType !== null && selectedSchedType !== 0)
+        if (props.schedules && props.schedules.length > 0) {
+            let sched = props.schedules;
+            //console.log(sched);
+            if (selectedCompany)
+            {
+                sched = sched.filter((item)=>{return item.id_company === selectedCompany});
+            };
+            if (selectedSchedType !== null && selectedSchedType !== 0)
             {
                 sched = sched.filter((item)=>{return item.skud_schedule_type_id === selectedSchedType});
             };
 
-        setScheduleList(
-            sched.map(item => ({
-                key: item.id,
-                label: item.name,
-                value: item.id,
-            }))
-        );
+            setScheduleList(
+                sched.map(item => ({
+                    key: item.id,
+                    label: item.name,
+                    value: item.id,
+                }))
+            );
+        }
     },[props.schedules, selectedCompany, selectedSchedType]);
     useEffect(()=>{
-        let ruls = props.rules;
+        if (props.rules && props.rules.length > 0) {
+            let ruls = props.rules;
 
-        if (selectedCompany)
-        {
-            ruls = ruls.filter((item)=>{return item.id_company === selectedCompany});
-        }
-        if (selectedRuleType !== 0 && selectedRuleType !== null)
+            if (selectedCompany)
+            {
+                ruls = ruls.filter((item)=>{return item.id_company === selectedCompany});
+            }
+            if (selectedRuleType !== 0 && selectedRuleType !== null)
             {
                 ruls = ruls.filter((item)=>{return item.skud_rule_type_id === selectedRuleType});
             }
-        setRuleList(
-            ruls.map(item => ({
-                key: item.id,
-                label: item.name,
-                value: item.id,
-            }))
-        );
-
+            setRuleList(
+                ruls.map(item => ({
+                    key: item.id,
+                    label: item.name,
+                    value: item.id,
+                }))
+            );
+        }
     },[props.rules, selectedCompany, selectedRuleType]);
 
     const handleSelectAll = (ev) => {

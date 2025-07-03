@@ -96,12 +96,18 @@ const UserManagerPage_2025 = (props) => {
              try {
                  const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
                      {
-                          data: {filterParams},
+                          data: {filterParams, currentPage, pageSize},
                          _token: CSRF_TOKEN
                      }
                  );
-                 if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                     filterAndSetUsers(serverResponse.data.content);
+                 if (serverResponse.data.content) {
+                     const content = serverResponse.data.content
+                     if (content.users && content.users.length > 0) {
+                         filterAndSetUsers(content.users);
+                     }
+                     if (content.count) {
+                         setAllUsersCount(content.count);
+                     }
                  }
              } catch (error) {
                  console.error('Error fetching users info:', error);
@@ -118,10 +124,12 @@ const UserManagerPage_2025 = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+                console.log(serverResponse.data.content)
+                if (serverResponse.data.content) {
                     const content = serverResponse.data.content;
-                    setBosses(content.bosses);
-                    setCompanies(content.companies);
+                    console.log(content)
+                    setBosses(content?.bosses);
+                    setCompanies(content?.companies);
                     setEnters([
                         {
                             id: 1,
@@ -142,11 +150,11 @@ const UserManagerPage_2025 = (props) => {
                             name: 'Уволенные',
                         },
                     ]);
-                    setGroups(content.groups);
-                    setCurrentScheduleTypes(content.graphics);
-                    setCurrentSchedules(content.now_graphics);
-                    setCurrentRuleTypes(content.rule_types);
-                    setCurrentRules(content.now_types);
+                    setGroups(content?.groups);
+                    setCurrentScheduleTypes(content?.graphics);
+                    setCurrentSchedules(content?.now_graphics);
+                    setCurrentRuleTypes(content?.rule_types);
+                    setCurrentRules(content?.now_types);
                 }
             } catch (error) {
                 console.error('Error fetching users info:', error);
@@ -164,7 +172,6 @@ const UserManagerPage_2025 = (props) => {
     };
     const filterAndSetUsers = (newUsers) => {
         setUsers(newUsers.sort((a, b) => a.department - b.department));
-        setAllUsersCount(newUsers.length);
         setDepartments([...new Set(newUsers.map(user => JSON.stringify({
             id: user.departament,
             name: user.departament_name
@@ -204,7 +211,7 @@ const UserManagerPage_2025 = (props) => {
     };
     const checkUncheckDepartment = (departmentId) => {
         const currentUserIds = users
-            .filter(user => user.department === departmentId)
+            .filter(user => user.departament === departmentId)
             .map(user => user.id);
 
         setCheckedUsers(prev => {
@@ -218,7 +225,7 @@ const UserManagerPage_2025 = (props) => {
     };
     const isIndeterminate = (departmentId) => {
         const currentUserIds = users
-            .filter(user => user.department === departmentId)
+            .filter(user => user.departament === departmentId)
             .map(user => user.id);
         const checkedUsersSet = new Set(checkedUsers);
 
@@ -230,7 +237,7 @@ const UserManagerPage_2025 = (props) => {
     };
     const isChecked = (departmentId) => {
         const currentUserIds = users
-            .filter(user => user.department === departmentId)
+            .filter(user => user.departament === departmentId)
             .map(user => user.id);
         const checkedUsersSet = new Set(checkedUsers);
 
@@ -384,7 +391,7 @@ const UserManagerPage_2025 = (props) => {
                                             {!closedDepartments.find(item => item === department.id) && (
                                                 <div className="sk-person-rows">
                                                     {users.map((user, idx) => {
-                                                        if (+user.department === +department.id) {
+                                                        if (+user.departament === +department.id) {
                                                             return (
                                                                 <div key={`${user.id}-${idx}`}
                                                                      className={`sk-person-row ${checkedUsers.find(item => item === user.id) ? "sk-row-selected" : ""}`}
