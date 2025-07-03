@@ -106,57 +106,59 @@ const BaseInfoWorkspace = (props) => {
         }
     };
     const fetchBaseInfo = async () => {
-        if (PRODMODE && userIdState !== 'new') {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo`,
-                    {
-                        data: {id: userIdState},
-                        _token: CSRF_TOKEN
+        if (userIdState !== 'new') {
+            if (PRODMODE) {
+                try {
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo`,
+                        {
+                            data: {id: userIdState},
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    if (serverResponse.data.content) {
+                        const content = serverResponse.data.content
+                        setCompany(content?.company);
+                        setSurname(content?.surname);
+                        setName(content?.name);
+                        setPatronymic(content?.patronymic);
+                        setDepartment(content?.department);
+                        setOccupy(content?.occupy);
+                        setInnerPhone(content?.innerPhone);
+                        setTelegramID(content?.telegramID);
+                        setEmail(content?.email);
+                        setDateLeave(content?.dateLeave);
+                        setDateEnter(content?.dateEnter);
+                        setRating(content?.rating);
+                        setStatus(content?.status);
+                        setLogin(content?.login);
+                        setPassword(content?.password);
+                        setCardNumber(content?.cardNumber);
+                        setConditionalCard(content?.conditionalCard);
+                        setAllowEntry(content?.allowEntry);
                     }
-                );
-                if (serverResponse.data.content) {
-                    const content = serverResponse.data.content
-                    setCompany(content?.company);
-                    setSurname(content?.surname);
-                    setName(content?.name);
-                    setPatronymic(content?.patronymic);
-                    setDepartment(content?.department);
-                    setOccupy(content?.occupy);
-                    setInnerPhone(content?.innerPhone);
-                    setTelegramID(content?.telegramID);
-                    setEmail(content?.email);
-                    setDateLeave(content?.dateLeave);
-                    setDateEnter(content?.dateEnter);
-                    setRating(content?.rating);
-                    setStatus(content?.status);
-                    setLogin(content?.login);
-                    setPassword(content?.password);
-                    setCardNumber(content?.cardNumber);
-                    setConditionalCard(content?.conditionalCard);
-                    setAllowEntry(content?.allowEntry);
+                } catch (error) {
+                    console.error('Error fetching user base info:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching user base info:', error);
+            } else {
+                setCompany(MOCK_USER.company);
+                setSurname(MOCK_USER.surname);
+                setName(MOCK_USER.name);
+                setPatronymic(MOCK_USER.patronymic);
+                setDepartment(MOCK_USER.department);
+                setOccupy(MOCK_USER.occupy);
+                setInnerPhone(MOCK_USER.innerPhone);
+                setTelegramID(MOCK_USER.telegramID);
+                setEmail(MOCK_USER.email);
+                setDateLeave(MOCK_USER.dateLeave);
+                setDateEnter(MOCK_USER.dateEnter);
+                setRating(MOCK_USER.rating);
+                setStatus(MOCK_USER.status);
+                setLogin(MOCK_USER.login);
+                setPassword(MOCK_USER.password);
+                setCardNumber(MOCK_USER.cardNumber);
+                setConditionalCard(MOCK_USER.conditionalCard);
+                setAllowEntry(MOCK_USER.allowEntry);
             }
-        } else {
-            setCompany(MOCK_USER.company);
-            setSurname(MOCK_USER.surname);
-            setName(MOCK_USER.name);
-            setPatronymic(MOCK_USER.patronymic);
-            setDepartment(MOCK_USER.department);
-            setOccupy(MOCK_USER.occupy);
-            setInnerPhone(MOCK_USER.innerPhone);
-            setTelegramID(MOCK_USER.telegramID);
-            setEmail(MOCK_USER.email);
-            setDateLeave(MOCK_USER.dateLeave);
-            setDateEnter(MOCK_USER.dateEnter);
-            setRating(MOCK_USER.rating);
-            setStatus(MOCK_USER.status);
-            setLogin(MOCK_USER.login);
-            setPassword(MOCK_USER.password);
-            setCardNumber(MOCK_USER.cardNumber);
-            setConditionalCard(MOCK_USER.conditionalCard);
-            setAllowEntry(MOCK_USER.allowEntry);
         }
     };
     const fetchSelects = async () => {
