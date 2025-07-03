@@ -197,3 +197,106 @@ export const RULES = [
         "type_color": "#ff000069"
     }
 ];
+
+
+
+
+export const MOCK_USER = {
+    company: {
+        id: 2,
+        value: 2,
+        label: 'Arstel',
+        color: '#f2914a'
+    },
+    surname: 'Арчи',
+    name: 'Гавриил',
+    patronymic: 'Дессус',
+    department: {
+        id: 2,
+        value: 2,
+        label: 'Монтажный отдел',
+    },
+    occupy: 'Руководитель',
+    innerPhone: '228',
+    telegramID: '22834525453',
+    email: 'arstel@arstel.com',
+    dateLeave: '12.09.2025',
+    dateEnter: '12.09.2029',
+    rating: '40',
+    status: {
+        id: 1,
+        value: 1,
+        label: 'Работает',
+    },
+    login: 'agd',
+    password: '',
+    cardNumber: '55GKEK24MM',
+    conditionalCard: {
+        id: 2,
+        value: 2,
+        label: 'Нормальная',
+    },
+    allowEntry: {
+        id: 1,
+        value: 1,
+        label: 'Да',
+    }
+};
+export const COMPANIES = [
+    {
+        value: 1,
+        label: 'FreeCompany'
+    },
+    {
+        value: 2,
+        label: 'Arstel'
+    },
+    {
+        value: 3,
+        label: 'Rondo'
+    },
+];
+export const DEPARTMENTS = [
+    {
+        value: 1,
+        label: 'Администрация'
+    },
+    {
+        value: 2,
+        label: 'Монтажный отдел'
+    },
+    {
+        value: 3,
+        label: 'IT отдел'
+    },
+];
+export const STATUSES = [
+    {
+        value: 1,
+        label: 'Работает'
+    },
+    {
+        value: 2,
+        label: 'Уволен'
+    },
+];
+export const CONDITIONAL_CARDS = [
+    {
+        value: 1,
+        label: 'Стелс'
+    },
+    {
+        value: 2,
+        label: 'Нормальная'
+    },
+];
+export const ALLOW_ENTRIES = [
+    {
+        value: 1,
+        label: 'Да'
+    },
+    {
+        value: 2,
+        label: 'Нет'
+    },
+];
