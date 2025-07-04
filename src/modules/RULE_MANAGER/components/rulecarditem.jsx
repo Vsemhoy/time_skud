@@ -1,7 +1,15 @@
 import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import "./style/rulecard.css";
-import { DownOutlined, EditOutlined, InboxOutlined, UpOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import {
+    DownOutlined,
+    EditOutlined,
+    InboxOutlined,
+    UpOutlined,
+    UsergroupAddOutlined,
+    UserOutlined,
+    UserSwitchOutlined
+} from "@ant-design/icons";
 import { ShortName } from "../../../components/Helpers/TextHelpers";
 import RuleIcons from "./RuleIcons";
 const { Text, Link } = Typography;

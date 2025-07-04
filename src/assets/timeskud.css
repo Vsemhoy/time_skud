@@ -541,3 +541,12 @@ font-size: smaller;
     color: #a9a9a9;
     text-align: center;
 }
+
+/* Перемещает понедельник на первое место в календаре */
+.ant-picker-calendar .ant-picker-cell .ant-picker-cell-inner {
+    order: var(--week-start, 0);
+}
+
+.ant-picker-calendar .ant-picker-cell:nth-child(1) .ant-picker-cell-inner {
+    --week-start: 1;
+}

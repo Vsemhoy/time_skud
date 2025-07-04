@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styles from "../style/user_page.module.css";
-import {ConfigProvider, Input, Select, Spin} from "antd";
+import {ConfigProvider, DatePicker, Input, Select, Spin} from "antd";
 import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {
@@ -12,7 +12,7 @@ import {
     DEPARTMENTS,
     STATUSES
 } from "../mock/mock";
-import {USERS} from "../../USER_MANAGER_2025/USER_MANAGER/mock/mock";
+import dayjs from "dayjs";
 
 const BaseInfoWorkspace = (props) => {
     const { userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
@@ -131,8 +131,8 @@ const BaseInfoWorkspace = (props) => {
                         setInnerPhone(content?.innerPhone);
                         setTelegramID(content?.telegramID);
                         setEmail(content?.email);
-                        setDateLeave(content?.dateLeave);
-                        setDateEnter(content?.dateEnter);
+                        setDateLeave(dayjs(content?.dateLeave));
+                        setDateEnter(dayjs(content?.dateEnter));
                         setRating(content?.rating);
                         setStatus(content?.status);
                         setLogin(content?.login);
@@ -154,8 +154,8 @@ const BaseInfoWorkspace = (props) => {
                 setInnerPhone(MOCK_USER.innerPhone);
                 setTelegramID(MOCK_USER.telegramID);
                 setEmail(MOCK_USER.email);
-                setDateLeave(MOCK_USER.dateLeave);
-                setDateEnter(MOCK_USER.dateEnter);
+                setDateLeave(dayjs(MOCK_USER.dateLeave));
+                setDateEnter(dayjs(MOCK_USER.dateEnter));
                 setRating(MOCK_USER.rating);
                 setStatus(MOCK_USER.status);
                 setLogin(MOCK_USER.login);
@@ -318,18 +318,20 @@ const BaseInfoWorkspace = (props) => {
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Дата ухода</p>
-                        <Input placeholder="Дата ухода"
-                               value={dateLeave}
-                               onChange={(e) => setDateLeave(e.target.value)}
-                               style={{width: 360}}
+                        <DatePicker placeholder="Дата ухода"
+                                    value={dateLeave}
+                                    onChange={(e) => setDateLeave(e)}
+                                    format={"DD.MM.YYYY"}
+                                    style={{width: 360}}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Дата приёма</p>
-                        <Input placeholder="Дата приёма"
-                               value={dateEnter}
-                               onChange={(e) => setDateEnter(e.target.value)}
-                               style={{width: 360}}
+                        <DatePicker placeholder="Дата приёма"
+                                    value={dateEnter}
+                                    onChange={(e) => setDateEnter(e)}
+                                    format={"DD.MM.YYYY"}
+                                    style={{width: 360}}
                         />
                     </div>
                     <div className={styles.sk_info_line}>

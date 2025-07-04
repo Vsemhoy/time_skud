@@ -114,6 +114,7 @@ const UserManagerPage_2025 = (props) => {
              }
          } else {
              filterAndSetUsers(USERS);
+             setAllUsersCount(USERS.length);
          }
     };
     const fetchFilters = async () => {
