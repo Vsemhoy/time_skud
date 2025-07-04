@@ -10,6 +10,11 @@ const UserPage = (props) => {
     const navigate = useNavigate();
     const [userIdState, setUserIdState] = useState(userId);
     const [userFIO, setUserFIO] = useState("");
+    const [userCompanyState, setUserCompanyState] = useState({
+        id: 0,
+        name: '',
+        color: ''
+    });
 
     const [disableSaveInfo, setdDisableSavingInfo] = useState(false);
     const [savingInfo, setSavingInfo] = useState(false);
@@ -49,13 +54,14 @@ const UserPage = (props) => {
         } else {
             if (PRODMODE) {
                 try {
-                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userfio/${userIdState}`,
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/selecteduserinfosmall/${userIdState}`,
                         {
                             _token: CSRF_TOKEN
                         }
                     );
                     if (serverResponse.data.content) {
-                        setUserFIO(serverResponse.data.content);
+                        setUserFIO(serverResponse.data.content.fio);
+                        setUserCompanyState(serverResponse.data.content.company);
                     }
                 } catch (error) {
                     console.error('Error fetching user fio:', error);
@@ -117,10 +123,10 @@ const UserPage = (props) => {
                         textAlign: 'center',
                         color: '#ffffff',
                         fontSize: '14px',
-                        backgroundColor: '#f2914a',
-                        borderColor: '#f2914a',
+                        backgroundColor: userCompanyState.color,
+                        borderColor: userCompanyState.color,
                         marginRight: 0,
-                    }}>#{'Arstel'}</Tag>
+                    }}>#{userCompanyState.name}</Tag>
                 )}
             </div>
             </Affix>
@@ -128,6 +134,7 @@ const UserPage = (props) => {
                 <Outlet context={{
                     currentUser: props.userdata,
                     userIdState,
+                    userCompanyState,
                     userFIO,
                     savingInfo,
                     onUpdateBaseInfo: (isCanSave) => setdDisableSavingInfo(!isCanSave),
