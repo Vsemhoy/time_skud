@@ -204,17 +204,15 @@ export const RULES = [
 export const MOCK_USER = {
     company: {
         id: 2,
-        value: 2,
-        label: 'Arstel',
+        name: 'Arstel',
         color: '#f2914a'
     },
     surname: 'Арчи',
     name: 'Гавриил',
     patronymic: 'Дессус',
     department: {
-        id: 2,
-        value: 2,
-        label: 'Монтажный отдел',
+        id: 1,
+        name: 'Монтажный отдел',
     },
     occupy: 'Руководитель',
     innerPhone: '228',
@@ -224,22 +222,19 @@ export const MOCK_USER = {
     dateEnter: '12.09.2029',
     rating: '40',
     status: {
-        id: 1,
-        value: 1,
-        label: 'Работает',
+        id: 0,
+        name: 'Работает',
     },
     login: 'agd',
     password: '',
     cardNumber: '55GKEK24MM',
     conditionalCard: {
-        id: 2,
-        value: 2,
-        label: 'Нормальная',
+        id: 1,
+        name: 'Нормальная',
     },
     allowEntry: {
-        id: 1,
-        value: 1,
-        label: 'Да',
+        id: 0,
+        name: 'Да',
     }
 };
 export const COMPANIES = [

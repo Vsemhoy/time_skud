@@ -6,32 +6,60 @@ import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {
     MOCK_USER,
-    ALLOW_ENTRIES,
     COMPANIES,
-    CONDITIONAL_CARDS,
     DEPARTMENTS,
-    STATUSES
 } from "../mock/mock";
 import dayjs from "dayjs";
 
 const BaseInfoWorkspace = (props) => {
-    const { userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
+    const { currentUser, userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [companies, setCompanies] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [statuses, setStatuses] = useState([
+        {
+            id: 0,
+            name: 'Работает'
+        },
+        {
+            id: 1,
+            name: 'Уволен'
+        },
+    ]);
+    const [conditionalCards, setConditionalCards] = useState([
+        {
+            id: 0,
+            name: 'Стелс'
+        },
+        {
+            id: 1,
+            name: 'Нормальная'
+        },
+    ]);
+    const [allowEntries, setAllowEntries] = useState([
+        {
+            id: 0,
+            name: 'Нет'
+        },
+        {
+            id: 1,
+            name: 'Да'
+        },
+    ]);
+
     const [company, setCompany] = useState({
-        id: 2,
-        value: 2,
-        label: 'Arstel',
-        color: '#f2914a'
+        id: null,
+        name: '',
+        color: ''
     });
     const [surname, setSurname] = useState('');
     const [name, setName] = useState('');
     const [patronymic, setPatronymic] = useState('');
     const [department, setDepartment] = useState({
-        id: 0,
-        value: null,
-        label: '',
+        id: null,
+        name: '',
     });
     const [occupy, setOccupy] = useState('');
     const [innerPhone, setInnerPhone] = useState('');
@@ -41,29 +69,20 @@ const BaseInfoWorkspace = (props) => {
     const [dateEnter, setDateEnter] = useState('');
     const [rating, setRating] = useState('');
     const [status, setStatus] = useState({
-        id: 0,
-        value: null,
-        label: '',
+        id: null,
+        name: '',
     });
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [conditionalCard, setConditionalCard] = useState({
-        id: 0,
-        value: null,
-        label: '',
+        id: null,
+        name: '',
     });
     const [allowEntry, setAllowEntry] = useState({
-        id: 0,
-        value: null,
-        label: '',
+        id: null,
+        name: '',
     });
-
-    const [companies, setCompanies] = useState([]);
-    const [departments, setDepartments] = useState([]);
-    const [statuses, setStatuses] = useState([]);
-    const [conditionalCards, setConditionalCards] = useState([]);
-    const [allowEntries, setAllowEntries] = useState([]);
 
     useEffect(() => {
         if (!isMounted) {
@@ -92,6 +111,28 @@ const BaseInfoWorkspace = (props) => {
         }
     }, [savingInfo]);
 
+    useEffect(() => {
+        if (!currentUser || !currentUser.companies) return;
+        const newCurrentUser = currentUser.user;
+        const newCompanies = currentUser.companies;
+        console.log('newCompanies: ', newCompanies)
+        if (newCompanies) {
+            const newCompany = newCompanies.find(c => +c.id === +newCurrentUser.active_company);
+            console.log('newCompany: ', newCompany)
+            setCompanies(newCompanies.filter(item => item.id > 1));
+            setCompany(newCompany);
+        }
+        setTimeout(() => {
+            console.log(companies)
+            console.log(company)
+        }, 500)
+    }, [currentUser]);
+
+    useEffect(() => {
+        console.log(companies);
+        console.log(company);
+    }, [companies, company]);
+
     const baseFetchs = async () => {
         setIsLoading(true);
         await fetchBaseInfo();
@@ -114,9 +155,8 @@ const BaseInfoWorkspace = (props) => {
         if (userIdState !== 'new') {
             if (PRODMODE) {
                 try {
-                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo`,
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo/${userIdState}`,
                         {
-                            data: {id: userIdState},
                             _token: CSRF_TOKEN
                         }
                     );
@@ -126,7 +166,7 @@ const BaseInfoWorkspace = (props) => {
                         setSurname(content?.surname);
                         setName(content?.name);
                         setPatronymic(content?.patronymic);
-                        setDepartment(content?.department);
+                        setDepartment(content?.departament);
                         setOccupy(content?.occupy);
                         setInnerPhone(content?.innerPhone);
                         setTelegramID(content?.telegramID);
@@ -139,7 +179,9 @@ const BaseInfoWorkspace = (props) => {
                         setPassword(content?.password);
                         setCardNumber(content?.cardNumber);
                         setConditionalCard(content?.conditionalCard);
-                        setAllowEntry(content?.allowEntry);
+                        if (content?.allowEntry) {
+                            setAllowEntry(content?.allowEntry);
+                        }
                     }
                 } catch (error) {
                     console.error('Error fetching user base info:', error);
@@ -154,8 +196,8 @@ const BaseInfoWorkspace = (props) => {
                 setInnerPhone(MOCK_USER.innerPhone);
                 setTelegramID(MOCK_USER.telegramID);
                 setEmail(MOCK_USER.email);
-                setDateLeave(dayjs(MOCK_USER.dateLeave));
-                setDateEnter(dayjs(MOCK_USER.dateEnter));
+                setDateLeave(dayjs(MOCK_USER.dateLeave, 'YYYY-MM-DD'));
+                setDateEnter(dayjs(MOCK_USER.dateEnter, 'YYYY-MM-DD'));
                 setRating(MOCK_USER.rating);
                 setStatus(MOCK_USER.status);
                 setLogin(MOCK_USER.login);
@@ -171,17 +213,12 @@ const BaseInfoWorkspace = (props) => {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfoselects`,
                     {
-                        data: {id: userIdState},
                         _token: CSRF_TOKEN
                     }
                 );
                 if (serverResponse.data.content) {
                     const content = serverResponse.data.content
-                    setCompanies(content?.companies);
-                    setDepartments(content?.departments);
-                    setStatuses(content?.statuses);
-                    setConditionalCards(content?.conditional_cards);
-                    setAllowEntries(content?.allow_entries);
+                    setDepartments(content?.departaments);
                 }
             } catch (error) {
                 console.error('Error fetching users base info selects:', error);
@@ -189,9 +226,6 @@ const BaseInfoWorkspace = (props) => {
         } else {
             setCompanies(COMPANIES);
             setDepartments(DEPARTMENTS);
-            setStatuses(STATUSES);
-            setConditionalCards(CONDITIONAL_CARDS);
-            setAllowEntries(ALLOW_ENTRIES);
         }
     };
     const sendUpdatedInfo = async () => {
@@ -213,6 +247,12 @@ const BaseInfoWorkspace = (props) => {
             console.log(e)
         }
         setTimeout(() => onUpdateSavingInfo(false, /*content?.id)*/568), 500);
+    };
+    const IsDisableAllowEntry = () => {
+        console.log(userIdState === 'new')
+        if (userIdState === 'new') return true;
+        if (!cardNumber) return true;
+        return false;
     };
     return (
         <Spin spinning={isLoading}>
@@ -237,12 +277,16 @@ const BaseInfoWorkspace = (props) => {
                             }}
                         >
                             <Select placeholder="Компания"
-                                    value={company.value}
+                                    value={company.id ? company.id : null}
                                     options={companies}
                                     disabled={userIdState !== 'new'}
-                                    onChange={(value) => setCompany(companies.find(c => c.value === value))}
+                                    onChange={(id) => setCompany(companies.find(c => c.id === id))}
                                     style={{width: 360}}
                                     status="warning"
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
                             />
                         </ConfigProvider>
                     </div>
@@ -277,10 +321,14 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Отдел</p>
                         <Select placeholder="Отдел"
-                                value={department.value}
+                                value={department.id ? department.id : null}
                                 options={departments}
-                                onChange={(value) => setDepartment(departments.find(c => c.value === value))}
+                                onChange={(id) => setDepartment(departments.find(c => c.id === id))}
                                 style={{width: 360}}
+                                fieldNames={{
+                                    value: 'id',
+                                    label: 'name',
+                                }}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -346,11 +394,15 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Статус</p>
                         <Select placeholder="Статус"
-                                value={status.value}
+                                value={status.id ? status.id : null}
                                 options={statuses}
-                                onChange={(value) => setStatus(statuses.find(c => c.value === value))}
+                                onChange={(id) => setStatus(statuses.find(c => c.id === id))}
                                 style={{width: 360}}
                                 status="warning"
+                                fieldNames={{
+                                    value: 'id',
+                                    label: 'name',
+                                }}
                         />
                     </div>
                 </div>
@@ -383,19 +435,28 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Условная карточка</p>
                         <Select placeholder="Стелс / Нормальная"
-                                value={conditionalCard.value}
+                                value={conditionalCard.id ? conditionalCard.id : null}
                                 options={conditionalCards}
-                                onChange={(value) => setConditionalCard(conditionalCards.find(c => c.value === value))}
+                                onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
                                 style={{width: 360}}
+                                fieldNames={{
+                                    value: 'id',
+                                    label: 'name',
+                                }}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Разрешить вход</p>
                         <Select placeholder="Да / Нет"
-                                value={allowEntry.value}
+                                value={allowEntry.id ? allowEntry.id : null}
                                 options={allowEntries}
-                                onChange={(value) => setAllowEntry(allowEntries.find(c => c.value === value))}
+                                onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
                                 style={{width: 360}}
+                                fieldNames={{
+                                    value: 'id',
+                                    label: 'name',
+                                }}
+                                disabled={IsDisableAllowEntry()}
                         />
                     </div>
                 </div>

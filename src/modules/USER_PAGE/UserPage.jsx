@@ -4,7 +4,7 @@ import {Affix, Button, Tag} from "antd";
 import styles from './style/user_page.module.css'
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
-const UserPage = () => {
+const UserPage = (props) => {
     const location = useLocation();
     const {userId} = useParams();
     const navigate = useNavigate();
@@ -13,6 +13,8 @@ const UserPage = () => {
 
     const [disableSaveInfo, setdDisableSavingInfo] = useState(false);
     const [savingInfo, setSavingInfo] = useState(false);
+
+    const [isMounted, setIsMounted] = useState(false);
 
     const getActiveTab = () => {
         if (location.pathname.includes('schedules')) return 'schedules';
@@ -23,11 +25,16 @@ const UserPage = () => {
     const activeTab = getActiveTab();
 
     useEffect(() => {
-        fetchUserInfo().then();
+        if (!isMounted) {
+            fetchUserInfo().then();
+            setIsMounted(true);
+        }
     }, []);
 
     useEffect(() => {
-        fetchUserInfo().then();
+        if (isMounted) {
+            fetchUserInfo().then();
+        }
     }, [userId]);
 
     useEffect(() => {
@@ -42,9 +49,8 @@ const UserPage = () => {
         } else {
             if (PRODMODE) {
                 try {
-                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userfio`,
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userfio/${userIdState}`,
                         {
-                            data: {id: userIdState},
                             _token: CSRF_TOKEN
                         }
                     );
@@ -120,6 +126,7 @@ const UserPage = () => {
             </Affix>
             <div className={styles.sk_workspace}>
                 <Outlet context={{
+                    currentUser: props.userdata,
                     userIdState,
                     userFIO,
                     savingInfo,
