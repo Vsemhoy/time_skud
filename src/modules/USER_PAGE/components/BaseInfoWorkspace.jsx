@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styles from "../style/user_page.module.css";
+import {ConfigProvider, DatePicker, Input, Select, Spin} from "antd";
+import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {
     MOCK_USER,
@@ -83,9 +85,16 @@ const BaseInfoWorkspace = (props) => {
     });
 
     useEffect(() => {
+        if (!isMounted) {
+            baseFetchs().then();
+            setIsMounted(true);
+        }
     }, []);
 
     useEffect(() => {
+        if (isMounted) {
+            baseFetchs().then();
+        }
     }, [userIdState]);
 
     useEffect(() => {
@@ -98,6 +107,7 @@ const BaseInfoWorkspace = (props) => {
 
     useEffect(() => {
         if (savingInfo) {
+            sendUpdatedInfo().then();
         }
     }, [savingInfo]);
 
@@ -132,6 +142,7 @@ const BaseInfoWorkspace = (props) => {
     };
     const isCanSave = () => {
         if (userIdState === 'new') {
+            if (company.id && surname && name && patronymic && occupy && rating && status.id) {
                 onUpdateBaseInfo(true);
             } else {
                 onUpdateBaseInfo(false);
@@ -160,8 +171,8 @@ const BaseInfoWorkspace = (props) => {
                         setInnerPhone(content?.innerPhone);
                         setTelegramID(content?.telegramID);
                         setEmail(content?.email);
-                        setDateLeave(dayjs(content?.dateLeave));
-                        setDateEnter(dayjs(content?.dateEnter));
+                        setDateLeave(dayjs(content?.dateLeave, 'YYYY-MM-DD'));
+                        setDateEnter(dayjs(content?.dateEnter, 'YYYY-MM-DD'));
                         setRating(content?.rating);
                         setStatus(content?.status);
                         setLogin(content?.login);
@@ -225,6 +236,7 @@ const BaseInfoWorkspace = (props) => {
                 innerPhone,telegramID,email,dateLeave,dateEnter,
                 rating,status,login,password,cardNumber,conditionalCard,allowEntry
             }
+            const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo`,
                 {
                     data,
                     _token: CSRF_TOKEN
@@ -286,6 +298,7 @@ const BaseInfoWorkspace = (props) => {
                                value={surname}
                                onChange={(e) => setSurname(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -294,6 +307,7 @@ const BaseInfoWorkspace = (props) => {
                                value={name}
                                onChange={(e) => setName(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -302,6 +316,7 @@ const BaseInfoWorkspace = (props) => {
                                value={patronymic}
                                onChange={(e) => setPatronymic(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -323,6 +338,7 @@ const BaseInfoWorkspace = (props) => {
                                value={occupy}
                                onChange={(e) => setOccupy(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -351,14 +367,20 @@ const BaseInfoWorkspace = (props) => {
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Дата ухода</p>
-                               value={dateLeave}
-                               style={{width: 360}}
+                        <DatePicker placeholder="Дата ухода"
+                                    value={dateLeave}
+                                    onChange={(e) => setDateLeave(e)}
+                                    format={"DD.MM.YYYY"}
+                                    style={{width: 360}}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Дата приёма</p>
-                               value={dateEnter}
-                               style={{width: 360}}
+                        <DatePicker placeholder="Дата приёма"
+                                    value={dateEnter}
+                                    onChange={(e) => setDateEnter(e)}
+                                    format={"DD.MM.YYYY"}
+                                    style={{width: 360}}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -367,6 +389,7 @@ const BaseInfoWorkspace = (props) => {
                                value={rating}
                                onChange={(e) => setRating(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>

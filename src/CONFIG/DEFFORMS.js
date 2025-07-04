@@ -31,6 +31,8 @@ export const DEF_SCHEDULE = {
     "creator_id": null
 }
 
+export const BASE_CLAIM_TYPES = '';
+
 // текущее состояние юзера - 0 - нет и не был, 4 - вышел на обед, 10 - на работе, 5 - вышел на перерыв, 20 - ушел с работы, 30 - больняки
 export   const USER_STATE_PLACES = {
     0: { title: "Не приходил в офис", text: "", color: "#fefefe", icon: <MinusCircleOutlined />},
