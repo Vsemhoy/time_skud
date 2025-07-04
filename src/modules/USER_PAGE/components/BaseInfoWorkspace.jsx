@@ -107,7 +107,11 @@ const BaseInfoWorkspace = (props) => {
 
     useEffect(() => {
         if (savingInfo) {
-            sendUpdatedInfo().then();
+            if (userIdState === 'new') {
+                createUser().then();
+            } else {
+                sendUpdatedInfo().then();
+            }
         }
     }, [savingInfo]);
 
@@ -171,8 +175,8 @@ const BaseInfoWorkspace = (props) => {
                         setInnerPhone(content?.innerPhone);
                         setTelegramID(content?.telegramID);
                         setEmail(content?.email);
-                        setDateLeave(dayjs(content?.dateLeave, 'YYYY-MM-DD'));
-                        setDateEnter(dayjs(content?.dateEnter, 'YYYY-MM-DD'));
+                        setDateLeave(content.dateLeave ? dayjs(content.dateLeave, 'DD.MM.YYYY') : null);
+                        setDateEnter(content.dateEnter ? dayjs(content.dateEnter, 'DD.MM.YYYY') : null);
                         setRating(content?.rating);
                         setStatus(content?.status);
                         setLogin(content?.login);
@@ -196,8 +200,8 @@ const BaseInfoWorkspace = (props) => {
                 setInnerPhone(MOCK_USER.innerPhone);
                 setTelegramID(MOCK_USER.telegramID);
                 setEmail(MOCK_USER.email);
-                setDateLeave(dayjs(MOCK_USER.dateLeave, 'YYYY-MM-DD'));
-                setDateEnter(dayjs(MOCK_USER.dateEnter, 'YYYY-MM-DD'));
+                setDateLeave(MOCK_USER.dateLeave ? dayjs(MOCK_USER.dateLeave, 'DD.MM.YYYY') : null);
+                setDateEnter(MOCK_USER.dateEnter ? dayjs(MOCK_USER.dateEnter, 'DD.MM.YYYY') : null);
                 setRating(MOCK_USER.rating);
                 setStatus(MOCK_USER.status);
                 setLogin(MOCK_USER.login);
@@ -228,25 +232,57 @@ const BaseInfoWorkspace = (props) => {
             setDepartments(DEPARTMENTS);
         }
     };
+    const createUser = async () => {
+        let content = {};
+        if (PRODMODE) {
+            try {
+                const info = {
+                    company, surname, name, patronymic, department, occupy,
+                    innerPhone, telegramID, email, dateLeave, dateEnter,
+                    rating, status, login, password, cardNumber, conditionalCard, allowEntry
+                }
+                const data = {
+                    id: userIdState,
+                    info
+                }
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/createuser`,
+                    {
+                        data,
+                        _token: CSRF_TOKEN
+                    }
+                );
+                content = serverResponse.data.content;
+                onUpdateSavingInfo(false, content);
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            setTimeout(() => onUpdateSavingInfo(false, 568), 500);
+        }
+    };
     const sendUpdatedInfo = async () => {
         let content = {};
-        try {
-            const data = {
-                company,surname,name,patronymic,department,occupy,
-                innerPhone,telegramID,email,dateLeave,dateEnter,
-                rating,status,login,password,cardNumber,conditionalCard,allowEntry
-            }
-            const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo`,
-                {
-                    data,
-                    _token: CSRF_TOKEN
+        if (PRODMODE) {
+            try {
+                const data = {
+                    company, surname, name, patronymic, department, occupy,
+                    innerPhone, telegramID, email, dateLeave, dateEnter,
+                    rating, status, login, password, cardNumber, conditionalCard, allowEntry
                 }
-            );
-            content = serverResponse.data.content;
-        } catch (e) {
-            console.log(e)
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo/${userIdState}`,
+                    {
+                        data,
+                        _token: CSRF_TOKEN
+                    }
+                );
+                content = serverResponse.data.content;
+                onUpdateSavingInfo(false, content);
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            setTimeout(() => onUpdateSavingInfo(false, 568), 500);
         }
-        setTimeout(() => onUpdateSavingInfo(false, /*content?.id)*/568), 500);
     };
     const IsDisableAllowEntry = () => {
         console.log(userIdState === 'new')
@@ -277,7 +313,7 @@ const BaseInfoWorkspace = (props) => {
                             }}
                         >
                             <Select placeholder="Компания"
-                                    value={company.id ? company.id : null}
+                                    value={company.id ? +company.id : null}
                                     options={companies}
                                     disabled={userIdState !== 'new'}
                                     onChange={(id) => setCompany(companies.find(c => c.id === id))}
@@ -322,7 +358,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Отдел</p>
                         <Select placeholder="Отдел"
-                                value={department.id ? department.id : null}
+                                value={department.id ? +department.id : null}
                                 options={departments}
                                 onChange={(id) => setDepartment(departments.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -395,7 +431,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Статус</p>
                         <Select placeholder="Статус"
-                                value={status.id ? status.id : null}
+                                value={status.id ? +status.id : null}
                                 options={statuses}
                                 onChange={(id) => setStatus(statuses.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -436,7 +472,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Условная карточка</p>
                         <Select placeholder="Стелс / Нормальная"
-                                value={conditionalCard.id ? conditionalCard.id : null}
+                                value={conditionalCard.id ? +conditionalCard.id : null}
                                 options={conditionalCards}
                                 onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -449,7 +485,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Разрешить вход</p>
                         <Select placeholder="Да / Нет"
-                                value={allowEntry.id ? allowEntry.id : null}
+                                value={allowEntry.id ? +allowEntry.id : null}
                                 options={allowEntries}
                                 onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
                                 style={{width: 360}}
