@@ -62,53 +62,53 @@ const UserManagerExtraTools = (props)=>{
 
     /* useEffects */
     useEffect(()=>{
-        if (props.schedTypes === undefined){
-            return;
-        };
+            if (props.schedTypes === undefined){
+                return;
+            };
 
-        let arr = [
-            ({
-                key: ``,
-                value: '',
-                label: 'Все типы',
-            })
-        ];
-        for (let i = 0; i < props.schedTypes.length; i++) {
-            const element = props.schedTypes[i];
-            arr.push(
-                {
-                    key: `ajk_${element.id}`,
-                    value: element.id,
-                    label: element.name,
-                });
-        }
-        setSchedTypes(arr);
-    },
-    [props.schedTypes]);
+            let arr = [
+                ({
+                    key: ``,
+                    value: '',
+                    label: 'Все типы',
+                })
+            ];
+            for (let i = 0; i < props.schedTypes.length; i++) {
+                const element = props.schedTypes[i];
+                arr.push(
+                    {
+                        key: `ajk_${element.id}`,
+                        value: element.id,
+                        label: element.name,
+                    });
+            }
+            setSchedTypes(arr);
+        },
+        [props.schedTypes]);
     useEffect(()=>{
-        if (props.ruleTypes === undefined){
-            return;
-        };
+            if (props.ruleTypes === undefined){
+                return;
+            };
 
-        let arr = [
-            ({
-                key: ``,
-                value: '',
-                label: 'Все типы',
-            })
-        ];
-        for (let i = 0; i < props.ruleTypes.length; i++) {
-            const element = props.ruleTypes[i];
-            arr.push(
-                {
-                    key: `ajk_${element.id}`,
-                    value: element.id,
-                    label: element.name,
-                });
-        }
-        setRuleTypes(arr);
-    },
-    [props.ruleTypes]);
+            let arr = [
+                ({
+                    key: ``,
+                    value: '',
+                    label: 'Все типы',
+                })
+            ];
+            for (let i = 0; i < props.ruleTypes.length; i++) {
+                const element = props.ruleTypes[i];
+                arr.push(
+                    {
+                        key: `ajk_${element.id}`,
+                        value: element.id,
+                        label: element.name,
+                    });
+            }
+            setRuleTypes(arr);
+        },
+        [props.ruleTypes]);
     useEffect(()=>{
         setSelectedUsers(props.selected_users);
     },[props.selected_users]);
@@ -128,7 +128,7 @@ const UserManagerExtraTools = (props)=>{
                     label: item.name,
                     value: item.id,
 
-                  })));
+                })));
             }
         }
     },[props.companies]);
@@ -234,53 +234,53 @@ const UserManagerExtraTools = (props)=>{
 
     const handleSetEndRule = (value)=>{
         if (value !== null && value.endOf('day').unix() <= dayjs().endOf('day').unix())
-            {
-                value = dayjs().add(1, 'day');
-            }
-            if (value !== null){
-                value = value.endOf('day');
-            }
+        {
+            value = dayjs().add(1, 'day');
+        }
+        if (value !== null){
+            value = value.endOf('day');
+        }
         setFormEnd(value);
     }
 
     const handleKeyDown = (e, callback) => {
-      // If formStart is null, set it to today's date
-      let currentDate = e.target.value;
-      if (currentDate === ""){
-        currentDate = dayjs();
-      } else {
-        currentDate = dayjs(currentDate);
-      }
-      console.log(currentDate);
+        // If formStart is null, set it to today's date
+        let currentDate = e.target.value;
+        if (currentDate === ""){
+            currentDate = dayjs();
+        } else {
+            currentDate = dayjs(currentDate);
+        }
+        console.log(currentDate);
 
-      switch (e.key) {
-        case "ArrowLeft":
-          // Subtract 1 day
-          currentDate = currentDate.subtract(1, "day");
-          break;
-        case "ArrowRight":
-          // Add 1 day
-          currentDate = currentDate.add(1, "day");
-          break;
-        case "ArrowUp":
-          // Add 1 month
-          currentDate = currentDate.add(1, "month");
-          break;
-        case "ArrowDown":
-          // Subtract 1 month
-          currentDate = currentDate.subtract(1, "month");
-          break;
-        default:
-          return; // Do nothing for other keys
-      }
+        switch (e.key) {
+            case "ArrowLeft":
+                // Subtract 1 day
+                currentDate = currentDate.subtract(1, "day");
+                break;
+            case "ArrowRight":
+                // Add 1 day
+                currentDate = currentDate.add(1, "day");
+                break;
+            case "ArrowUp":
+                // Add 1 month
+                currentDate = currentDate.add(1, "month");
+                break;
+            case "ArrowDown":
+                // Subtract 1 month
+                currentDate = currentDate.subtract(1, "month");
+                break;
+            default:
+                return; // Do nothing for other keys
+        }
 
-      // Prevent default browser behavior for arrow keys
-      e.preventDefault();
+        // Prevent default browser behavior for arrow keys
+        e.preventDefault();
 
-      // Update the date picker value
-      if (callback){
-        callback(currentDate);
-      }
+        // Update the date picker value
+        if (callback){
+            callback(currentDate);
+        }
     };
 
     const tagRender = (props) => {
@@ -367,8 +367,8 @@ const UserManagerExtraTools = (props)=>{
                                     <div style={{width: '100%'}}>
                                         <div className={'sk-flex-space'}>
                                             <span  className={'sk-totoro'}>Группы </span> <span
-                                                onClick={()=>{setSelectedGroups([])}}
-                                            ><ClearOutlined /></span>
+                                            onClick={()=>{setSelectedGroups([])}}
+                                        ><ClearOutlined /></span>
                                         </div>
                                         <br />
                                         <label>Выберите группу для назначения/снятия</label>
@@ -390,7 +390,7 @@ const UserManagerExtraTools = (props)=>{
                                                 block
                                                 danger
                                                 disabled={selectedUsers.length === 0}
-                                                >Удалить группы</Button>
+                                            >Удалить группы</Button>
                                             <Button
                                                 size={'small'}
                                                 disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
@@ -420,54 +420,54 @@ const UserManagerExtraTools = (props)=>{
                                     </div>
                                 )}
                                 {selectedTab === 2 && (
-                                <div style={{width: '100%'}}>
-                                    <div className={'sk-flex-space'}>
-                                        <span className={'sk-totoro'}>Графики работы</span>
-                                    </div>
-                                    <br />
-                                    <label>Фильтр типа графика</label>
-                                    <div className={'sk-flex-space'}>
+                                    <div style={{width: '100%'}}>
+                                        <div className={'sk-flex-space'}>
+                                            <span className={'sk-totoro'}>Графики работы</span>
+                                        </div>
+                                        <br />
+                                        <label>Фильтр типа графика</label>
+                                        <div className={'sk-flex-space'}>
+                                            <Select
+                                                status="warning"
+                                                style={{width: '100%'}}
+                                                options={schedTypes}
+                                                onChange={(ev)=>{setSelectedSchedType(ev)}}
+                                                value={selectedSchedType}
+                                            />
+                                            <Button
+                                                onClick={()=>{setOpenModalSchedInfo(true)}}
+                                            ><QuestionCircleOutlined /></Button>
+                                        </div>
+                                        <br />
+                                        <label>Выберите график работы</label>
                                         <Select
-                                            status="warning"
+                                            status="error"
                                             style={{width: '100%'}}
-                                            options={schedTypes}
-                                            onChange={(ev)=>{setSelectedSchedType(ev)}}
-                                            value={selectedSchedType}
+                                            options={scheduleList}
+                                            value={selectedSchedule}
+                                            onChange={(ev)=>{setSelectedSchedule(ev)}}
                                         />
-                                        <Button
-                                        onClick={()=>{setOpenModalSchedInfo(true)}}
-                                        ><QuestionCircleOutlined /></Button>
-                                    </div>
-                                    <br />
-                                    <label>Выберите график работы</label>
-                                    <Select
-                                        status="error"
-                                        style={{width: '100%'}}
-                                        options={scheduleList}
-                                        value={selectedSchedule}
-                                        onChange={(ev)=>{setSelectedSchedule(ev)}}
-                                    />
-                                    <br />
-                                    <br />
-                                    <div className={"sk-flex"}>
-                                        <div>
-                                            <label>Начало действия</label>
-                                            <DatePicker
-                                                value={formStart}
-                                                onChange={handleSetStartSched}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
-                                            />
+                                        <br />
+                                        <br />
+                                        <div className={"sk-flex"}>
+                                            <div>
+                                                <label>Начало действия</label>
+                                                <DatePicker
+                                                    value={formStart}
+                                                    onChange={handleSetStartSched}
+                                                    onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>Завершение</label>
+                                                <DatePicker
+                                                    value={formEnd}
+                                                    allowClear={true}
+                                                    onChange={handleSetEndSched}
+                                                    onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
+                                                />
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label>Завершение</label>
-                                            <DatePicker
-                                                value={formEnd}
-                                                allowClear={true}
-                                                onChange={handleSetEndSched}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
-                                            />
-                                        </div>
-                                    </div>
                                         <br />
                                         <div className={"sk-flex"}>
                                             <Button
@@ -497,99 +497,99 @@ const UserManagerExtraTools = (props)=>{
                                             <br />
                                             - Если существуют группы, дата начала которых равна или больше даты начала устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
                                         </div>
-                                </div>
+                                    </div>
                                 )}
 
                                 {selectedTab === 3 && (
-                                <div style={{width: '100%'}}>
+                                    <div style={{width: '100%'}}>
 
-                                    <div className={'sk-flex-space'}>
-                                    <span className={'sk-totoro'}>Правила учёта РВ</span>
-                                    <br />
-                                    <br />
+                                        <div className={'sk-flex-space'}>
+                                            <span className={'sk-totoro'}>Правила учёта РВ</span>
+                                            <br />
+                                            <br />
 
-                                    </div>
-                                    <label>Фильтр типа правила</label>
-                                    <div className={'sk-flex-space'}>
-                                        <Select
-                                            status="warning"
-                                            style={{width: '100%'}}
-                                            options={ruleTypes}
-                                            onChange={(ev)=>{setSelectedRuleType(ev)}}
-                                            value={selectedRuleType}
-                                        />
-                                        <Button
-                                            onClick={()=>{setOpenModalRuleTypeInfo(true)}}
+                                        </div>
+                                        <label>Фильтр типа правила</label>
+                                        <div className={'sk-flex-space'}>
+                                            <Select
+                                                status="warning"
+                                                style={{width: '100%'}}
+                                                options={ruleTypes}
+                                                onChange={(ev)=>{setSelectedRuleType(ev)}}
+                                                value={selectedRuleType}
+                                            />
+                                            <Button
+                                                onClick={()=>{setOpenModalRuleTypeInfo(true)}}
                                             ><QuestionCircleOutlined /></Button>
-                                    </div>
-                                    <br />
-                                    <br />
-                                    <label>Выберите правило учёта РВ</label>
-                                    <Select
-                                        status="error"
-                                        style={{width: '100%'}}
-                                        options={ruleList}
-                                        value={selectedRule}
-                                        onChange={(ev)=>{setSelectedRule(ev)}}
-                                    />
-                                    <br />
-                                    <br />
-                                    <div className={"sk-flex"}>
-                                        <div>
-                                            <label>Начало действия</label>
-                                            <DatePicker
-                                                value={formStart}
-                                                onChange={handleSetStartRule}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
-                                            />
                                         </div>
+                                        <br />
+                                        <br />
+                                        <label>Выберите правило учёта РВ</label>
+                                        <Select
+                                            status="error"
+                                            style={{width: '100%'}}
+                                            options={ruleList}
+                                            value={selectedRule}
+                                            onChange={(ev)=>{setSelectedRule(ev)}}
+                                        />
+                                        <br />
+                                        <br />
+                                        <div className={"sk-flex"}>
+                                            <div>
+                                                <label>Начало действия</label>
+                                                <DatePicker
+                                                    value={formStart}
+                                                    onChange={handleSetStartRule}
+                                                    onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>Завершение</label>
+                                                <DatePicker
+                                                    allowClear={true}
+                                                    onChange={handleSetEndRule}
+                                                    value={formEnd}
+                                                    onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
+                                                />
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div className={"sk-flex"}>
+                                            <Button
+                                                disabled={selectedUsers.length === 0 || selectedRule == null ? true : false}
+                                                size={'small'}
+                                                block
+                                                onClick={callToBindRules}
+                                            >Привязать правила</Button>
+                                        </div>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Link to={BASE_ROUTE + "/hr/rules"}>Менеджер  правил учёта РВ</Link>
+                                        <br />
+                                        <br />
                                         <div>
-                                            <label>Завершение</label>
-                                            <DatePicker
-                                                allowClear={true}
-                                                onChange={handleSetEndRule}
-                                                value={formEnd}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
-                                            />
+                                            Начало действия нового правила может быть не раньше завтрашнего дня.
+                                            <br />
+                                            <br />
+                                            Чтобы задать правило бессрочно, оставьте второе поле даты пустым.
+                                            <br />
+                                            <br />
+                                            При привязки группы:
+                                            <br />
+                                            - Если существуют правила с таким же типом, окончания которых пересекается с началом действия устанавливаемого правила, то дата окончания существующих
+                                            пересекаемых правил устанавливаются датой на день меньше, относительно начала устанавливаемого правила.
+                                            <br />
+                                            - Если существуют правила, дата начала которых равна или больше даты начала устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
                                         </div>
                                     </div>
-                                    <br />
-                                    <div className={"sk-flex"}>
-                                        <Button
-                                        disabled={selectedUsers.length === 0 || selectedRule == null ? true : false}
-                                        size={'small'}
-                                            block
-                                            onClick={callToBindRules}
-                                        >Привязать правила</Button>
-                                    </div>
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <Link to={BASE_ROUTE + "/hr/rules"}>Менеджер  правил учёта РВ</Link>
-                                    <br />
-                                    <br />
-                                    <div>
-                                        Начало действия нового правила может быть не раньше завтрашнего дня.
-                                        <br />
-                                        <br />
-                                        Чтобы задать правило бессрочно, оставьте второе поле даты пустым.
-                                        <br />
-                                        <br />
-                                        При привязки группы:
-                                        <br />
-                                        - Если существуют правила с таким же типом, окончания которых пересекается с началом действия устанавливаемого правила, то дата окончания существующих
-                                        пересекаемых правил устанавливаются датой на день меньше, относительно начала устанавливаемого правила.
-                                        <br />
-                                        - Если существуют правила, дата начала которых равна или больше даты начала устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
-                                    </div>
-                                </div>
                                 )}
                             </div>
                         </div>
                     </Affix>
                 </div>
             ):(
-                <div 
+                <div
                     onClick={()=>{setOpenedConsole(true)}}
                     className={`sk-toolbox-trigger ${openedConsole ? 'opened' : 'closed'}`}
                 >
@@ -598,14 +598,14 @@ const UserManagerExtraTools = (props)=>{
             )}
             <Modal
                 title={
-                  <div
-                    style={{ width: '100%', cursor: 'move' }}
-                    onFocus={() => {}}
-                    onBlur={() => {}}
-                    // end
-                  >
-                    Типы графиков
-                  </div>
+                    <div
+                        style={{ width: '100%', cursor: 'move' }}
+                        onFocus={() => {}}
+                        onBlur={() => {}}
+                        // end
+                    >
+                        Типы графиков
+                    </div>
                 }
                 open={openModalSchedInfo}
                 onCancel={()=>{setOpenModalSchedInfo(false)}}
@@ -623,28 +623,28 @@ const UserManagerExtraTools = (props)=>{
 
 
             <Modal
-                  title={
+                title={
                     <div
-                      style={{ width: '100%', cursor: 'move' }}
-                      onFocus={() => {}}
-                      onBlur={() => {}}
-                      // end
+                        style={{ width: '100%', cursor: 'move' }}
+                        onFocus={() => {}}
+                        onBlur={() => {}}
+                        // end
                     >
-                      Типы правил учёта рабочего времени
+                        Типы правил учёта рабочего времени
                     </div>
-                  }
-                  open={openModalRuleTypeInfo}
-                  onCancel={()=>{setOpenModalRuleTypeInfo(false)}}
-                  onOk={()=>{setOpenModalRuleTypeInfo(false)}}
+                }
+                open={openModalRuleTypeInfo}
+                onCancel={()=>{setOpenModalRuleTypeInfo(false)}}
+                onOk={()=>{setOpenModalRuleTypeInfo(false)}}
             >
-                  {props.ruleTypes.map((item)=>(
-                      <div key={`rule-type-modal-${item.id}`}
-                           style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}
-                      >
-                          <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
-                          <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
-                      </div>
-                  ))}
+                {props.ruleTypes.map((item)=>(
+                    <div key={`rule-type-modal-${item.id}`}
+                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}
+                    >
+                        <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
+                        <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
+                    </div>
+                ))}
             </Modal>
         </div>
     );
