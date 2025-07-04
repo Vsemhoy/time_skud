@@ -1,22 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styles from "../style/user_page.module.css";
-import {ConfigProvider, DatePicker, Input, Select, Spin} from "antd";
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
-import {
-    MOCK_USER,
-    ALLOW_ENTRIES,
-    COMPANIES,
-    CONDITIONAL_CARDS,
-    DEPARTMENTS,
-    STATUSES
-} from "../mock/mock";
-import dayjs from "dayjs";
 
 const BaseInfoWorkspace = (props) => {
     const { userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
-    const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const [company, setCompany] = useState({
@@ -66,16 +54,9 @@ const BaseInfoWorkspace = (props) => {
     const [allowEntries, setAllowEntries] = useState([]);
 
     useEffect(() => {
-        if (!isMounted) {
-            baseFetchs().then();
-            setIsMounted(true);
-        }
     }, []);
 
     useEffect(() => {
-        if (isMounted) {
-            baseFetchs().then();
-        }
     }, [userIdState]);
 
     useEffect(() => {
@@ -88,110 +69,17 @@ const BaseInfoWorkspace = (props) => {
 
     useEffect(() => {
         if (savingInfo) {
-            sendUpdatedInfo().then();
         }
     }, [savingInfo]);
 
-    const baseFetchs = async () => {
-        setIsLoading(true);
-        await fetchBaseInfo();
-        await fetchSelects();
-        isCanSave();
-        setTimeout(() => setIsLoading(false), 500);
-    };
     const isCanSave = () => {
         if (userIdState === 'new') {
-            if (company.id && surname && name && patronymic && occupy && rating && status.id) {
                 onUpdateBaseInfo(true);
             } else {
                 onUpdateBaseInfo(false);
             }
         } else {
             onUpdateBaseInfo(true);
-        }
-    };
-    const fetchBaseInfo = async () => {
-        if (userIdState !== 'new') {
-            if (PRODMODE) {
-                try {
-                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo`,
-                        {
-                            data: {id: userIdState},
-                            _token: CSRF_TOKEN
-                        }
-                    );
-                    if (serverResponse.data.content) {
-                        const content = serverResponse.data.content
-                        setCompany(content?.company);
-                        setSurname(content?.surname);
-                        setName(content?.name);
-                        setPatronymic(content?.patronymic);
-                        setDepartment(content?.department);
-                        setOccupy(content?.occupy);
-                        setInnerPhone(content?.innerPhone);
-                        setTelegramID(content?.telegramID);
-                        setEmail(content?.email);
-                        setDateLeave(dayjs(content?.dateLeave));
-                        setDateEnter(dayjs(content?.dateEnter));
-                        setRating(content?.rating);
-                        setStatus(content?.status);
-                        setLogin(content?.login);
-                        setPassword(content?.password);
-                        setCardNumber(content?.cardNumber);
-                        setConditionalCard(content?.conditionalCard);
-                        setAllowEntry(content?.allowEntry);
-                    }
-                } catch (error) {
-                    console.error('Error fetching user base info:', error);
-                }
-            } else {
-                setCompany(MOCK_USER.company);
-                setSurname(MOCK_USER.surname);
-                setName(MOCK_USER.name);
-                setPatronymic(MOCK_USER.patronymic);
-                setDepartment(MOCK_USER.department);
-                setOccupy(MOCK_USER.occupy);
-                setInnerPhone(MOCK_USER.innerPhone);
-                setTelegramID(MOCK_USER.telegramID);
-                setEmail(MOCK_USER.email);
-                setDateLeave(dayjs(MOCK_USER.dateLeave));
-                setDateEnter(dayjs(MOCK_USER.dateEnter));
-                setRating(MOCK_USER.rating);
-                setStatus(MOCK_USER.status);
-                setLogin(MOCK_USER.login);
-                setPassword(MOCK_USER.password);
-                setCardNumber(MOCK_USER.cardNumber);
-                setConditionalCard(MOCK_USER.conditionalCard);
-                setAllowEntry(MOCK_USER.allowEntry);
-            }
-        }
-    };
-    const fetchSelects = async () => {
-        if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfoselects`,
-                    {
-                        data: {id: userIdState},
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (serverResponse.data.content) {
-                    const content = serverResponse.data.content
-                    setCompanies(content?.companies);
-                    setDepartments(content?.departments);
-                    setStatuses(content?.statuses);
-                    setConditionalCards(content?.conditional_cards);
-                    setAllowEntries(content?.allow_entries);
-                }
-            } catch (error) {
-                console.error('Error fetching users base info selects:', error);
-            }
-        } else {
-            setCompanies(COMPANIES);
-            setDepartments(DEPARTMENTS);
-            setStatuses(STATUSES);
-            setConditionalCards(CONDITIONAL_CARDS);
-            setAllowEntries(ALLOW_ENTRIES);
         }
     };
     const sendUpdatedInfo = async () => {
@@ -202,7 +90,6 @@ const BaseInfoWorkspace = (props) => {
                 innerPhone,telegramID,email,dateLeave,dateEnter,
                 rating,status,login,password,cardNumber,conditionalCard,allowEntry
             }
-            const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo`,
                 {
                     data,
                     _token: CSRF_TOKEN
@@ -242,7 +129,6 @@ const BaseInfoWorkspace = (props) => {
                                     disabled={userIdState !== 'new'}
                                     onChange={(value) => setCompany(companies.find(c => c.value === value))}
                                     style={{width: 360}}
-                                    status="warning"
                             />
                         </ConfigProvider>
                     </div>
@@ -253,7 +139,6 @@ const BaseInfoWorkspace = (props) => {
                                value={surname}
                                onChange={(e) => setSurname(e.target.value)}
                                style={{width: 360}}
-                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -262,7 +147,6 @@ const BaseInfoWorkspace = (props) => {
                                value={name}
                                onChange={(e) => setName(e.target.value)}
                                style={{width: 360}}
-                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -271,7 +155,6 @@ const BaseInfoWorkspace = (props) => {
                                value={patronymic}
                                onChange={(e) => setPatronymic(e.target.value)}
                                style={{width: 360}}
-                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -289,7 +172,6 @@ const BaseInfoWorkspace = (props) => {
                                value={occupy}
                                onChange={(e) => setOccupy(e.target.value)}
                                style={{width: 360}}
-                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -318,20 +200,14 @@ const BaseInfoWorkspace = (props) => {
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Дата ухода</p>
-                        <DatePicker placeholder="Дата ухода"
-                                    value={dateLeave}
-                                    onChange={(e) => setDateLeave(e)}
-                                    format={"DD.MM.YYYY"}
-                                    style={{width: 360}}
+                               value={dateLeave}
+                               style={{width: 360}}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Дата приёма</p>
-                        <DatePicker placeholder="Дата приёма"
-                                    value={dateEnter}
-                                    onChange={(e) => setDateEnter(e)}
-                                    format={"DD.MM.YYYY"}
-                                    style={{width: 360}}
+                               value={dateEnter}
+                               style={{width: 360}}
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -340,7 +216,6 @@ const BaseInfoWorkspace = (props) => {
                                value={rating}
                                onChange={(e) => setRating(e.target.value)}
                                style={{width: 360}}
-                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
@@ -350,7 +225,6 @@ const BaseInfoWorkspace = (props) => {
                                 options={statuses}
                                 onChange={(value) => setStatus(statuses.find(c => c.value === value))}
                                 style={{width: 360}}
-                                status="warning"
                         />
                     </div>
                 </div>
