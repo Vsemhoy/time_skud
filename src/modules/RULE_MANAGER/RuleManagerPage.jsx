@@ -18,7 +18,7 @@ import {
 import {
     COMPANIES,
     RULE_TYPE_LIST,
-    RULE_LIST,
+    RULE_LIST, USER_RULES,
 } from "./mock/mock"
 import {
     CalendarOutlined,
@@ -481,7 +481,7 @@ const RuleManagerPage = (props) => {
     const [currentRules, setCurrentRules] = useState([]);
     const [closedRules, setClosedRules] = useState([]);
     const [users, setUsers] = useState([]);
-
+    const [userRules , setUserRules] = useState([]);
 
     const handleChangePageSize = (value) => {
         setPageSize(value);
@@ -561,6 +561,9 @@ const RuleManagerPage = (props) => {
             }
         } else {
             setUsers(USERS);
+            setUserRules(USER_RULES);
+
+            console.log(USER_RULES);
         }
     };
     const fetchFilters = async () => {
@@ -728,7 +731,8 @@ const RuleManagerPage = (props) => {
                                         {closedRules.find(item => item === rule.id) && (
                                             <div className="sk-person-rows">
                                                         {users.map((user, idx) => {
-                                                            if (+user["linked_rules"][0].id === +rule.id) {
+
+                                                            if (userRules[user.id]?.includes(+rule.id)) {
                                                                 return (
                                                                         <div key={`${user.id}-${idx}`} className={`sk-person-row`}>
                                                                             <div className="sk-person-row-basic">
@@ -738,7 +742,7 @@ const RuleManagerPage = (props) => {
                                                                                         <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
                                                                                         <p className="sk-person-row-p occupy">{user.occupy}</p>
                                                                                     </div>
-                                                                                    <NavLink to={'/hr/users/' + user.id}>
+                                                                                    <NavLink to={'/hr/users/' + user.id + "/rules"}>
                                                                                         <Button color={'default'}
                                                                                                 variant={'outlined'}
                                                                                                 icon={<EditOutlined/>}
@@ -759,8 +763,6 @@ const RuleManagerPage = (props) => {
                         </Spin>
                     </div>
                 </Content>
-
-
             </Layout>
 
             <RuleEditorModal

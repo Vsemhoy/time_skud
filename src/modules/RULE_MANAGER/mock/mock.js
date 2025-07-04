@@ -176,3 +176,8 @@ export const RULE_LIST = [
         "type_color": "#ff000069",
     }
 ];
+
+export const USER_RULES  = {
+        46: [1, 2, 3, 4],
+        45: [1, 2, 3, 4],
+};
