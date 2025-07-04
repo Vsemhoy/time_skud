@@ -4,8 +4,38 @@ import RuleToolbar from "./components/RuleToolbar";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
 import RuleCardItem from "./components/rulecarditem";
 import RuleEditorModal from "./components/ruleeditormodal";
-import './components/style/rulemanager.css';
+// import './components/style/rulemanager.css';
+import "./style/rule_manager_page.css";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
+import {Affix, Button, Pagination, Tag, Layout, Spin, Checkbox} from "antd";
+import {
+    GROUPS_LIST,
+    SCHEDULE_LIST,
+    SCHEDULE_TYPE_LIST,
+    USERS
+} from "../USER_MANAGER_2025/USER_MANAGER/mock/mock";
+
+import {
+    COMPANIES,
+    RULE_TYPE_LIST,
+    RULE_LIST, USER_RULES,
+} from "./mock/mock"
+import {
+    CalendarOutlined,
+    EditOutlined,
+    FilterOutlined,
+    HistoryOutlined, InboxOutlined,
+    PlusOutlined,
+    ToolOutlined, UserOutlined
+} from "@ant-design/icons";
+import Cookies from "js-cookie";
+import ClaimManagerSidebar from "../RULE_MANAGER/components/ClaimManagerSidebar";
+import {NavLink} from "react-router-dom";
+import dayjs from "dayjs";
+import UserManagerExtraTools from "../USER_MANAGER_2025/USER_MANAGER/components/UserManagerExtraTools";
+import RuleIcons from "./components/RuleIcons";
+import {Text} from "recharts";
+const { Header, Sider, Content } = Layout;
 
 
 const RuleManagerPage = (props) => {
@@ -404,57 +434,472 @@ const RuleManagerPage = (props) => {
             console.log("BLM", baseEntityList);
         },[baseEntityList]);
 
-    return (
-        <div className={'sk-mw-1000'}>
-            <br/>
-            <h2>Правила учёта рабочего времени</h2>
-                <RuleToolbar
-                    companies={companies}
-                    userData={userdata}
-                    ruleTypes={ruleTypes}
-                    onChangeFilter={onSetFilters}
-                    onAddNewClick={openModal}
-                />
-            {/* <ProdCalToolbar 
-                onChangeCompany={changeCompany}
-            /> */}
-            <br/> 
 
-            <div className={'sk-calendar-list'}>
-            <div>
-            </div>
-                {
-                    ruleList.map((group)=>(
-                        <RuleCardItem
-                        key={`grocard_${group.id}`}
-                        data={group}
-                        opened={openedCooxer === group.id}
-                        on_open_cooxer={(value)=>{setOpenedCooxer(value)}}
-                        base_entities={baseEntityList}
-                        on_link_update={updateEntityLinks}
-                        on_open_editor={openModalEditor}
-                        on_manage_entities={updateEntityLinks}
-                        user_data={userdata}
-                        />
-                    ))
+    /**
+     * Богдан
+     */
+
+    /** Потом достать из коммита!!!
+    const [baseRuleList, setBaseRuleList] = useState([]);
+    */
+
+
+    const prepareSelectOptions = (name, options) => {
+        if (options && options.length > 0) {
+            return options.map((option) => {
+                return ({
+                    key: `option-${name}-${option.id}`,
+                    value: option.id,
+                    label: option.name
+                })
+            });
+        } else {
+            return [];
+        }
+    }
+
+    const useCookieState = (key, defaultValue) => {
+        const [state, setState] = useState(() => {
+            const saved = Cookies.get(key);
+            return saved ? JSON.parse(saved) : defaultValue;
+        });
+
+        useEffect(() => {
+            Cookies.set(key, JSON.stringify(state), { expires: 365 });
+        }, [key, state]);
+
+        return [state, setState];
+    };
+
+    const [isOpenFilters, setIsOpenFilters] = useCookieState('rule_manager_filters', true);
+
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+    const [currentRules, setCurrentRules] = useState([]);
+    const [closedRules, setClosedRules] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [userRules , setUserRules] = useState([]);
+
+    const handleChangePageSize = (value) => {
+        setPageSize(value);
+    };
+    const handlePageChange = (value) => {
+        setCurrentPage(value);
+    };
+
+
+
+    useEffect(() => {
+        fetchInfo().then(() => {
+            setIsMounted(true);
+        });
+    }, []);
+    useEffect(() => {
+        if (isMounted) {
+            fetchInfo().then();
+        }
+    }, [pageSize, currentPage]);
+    const handleFilterChanged = async (filterParams) => {
+        //console.log(filterParams);
+        if (isMounted) {
+            await fetchInfo(filterParams);
+        }
+    };
+
+
+    /* fetch + pagination */
+    const fetchInfo = async (filterParams) => {
+        setIsLoading(true);
+        await fetchRules(filterParams);
+        await fetchFilters();
+        await fetchUsers()
+        if (PRODMODE) {
+            setIsLoading(false);
+        } else {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
+        }
+    };
+    const fetchRules = async (filterParams) => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/groups`,
+                    {
+                        data: {filterParams, pageSize, currentPage},
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+                    setBaseRuleList(serverResponse.data.content.now_rules);
+                    // setUsersAndGroupsInRules(serverResponse.data.content);
                 }
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setBaseRuleList(RULE_LIST);
+        }
+    };
+    const fetchUsers = async (filterParams) => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
+                    {
+                        data: {filterParams},
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+                    setUsers(serverResponse.data.content);
+                }
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setUsers(USERS);
+            setUserRules(USER_RULES);
+
+            console.log(USER_RULES);
+        }
+    };
+    const fetchFilters = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/filterselects`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+                    const content = serverResponse.data.content;
+                    setCompanies(content.companies);
+                    setCurrentRules(content.rule_types);
+                }
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setCompanies(COMPANIES);
+            setCurrentRules(RULE_TYPE_LIST);
+        }
+    };
+
+    const openCloseRules = (ruleId) => {
+        if (closedRules.includes(ruleId)) {
+            setClosedRules(closedRules.filter(id => id !== ruleId));
+        } else {
+            setClosedRules([...closedRules, ruleId]);
+        }
+    };
+
+    const onOpenModalEditor = (event) => {
+    //     console.log('open modal')
+    //     event.preventDefault();
+    //     if (props.on_open_editor){
+    //         props.on_open_editor(rule_id, event);
+    //     }
+    }
 
 
-            </div>
-                <RuleEditorModal
-                    open={editorOpened}
-                    item_list={baseRuleList}
-                    target_id={editedRuleId}
-                    on_cancel={cancelModalEditor}
-                    ctrl_key={ctrlKey}
-                    on_delete={deleteRule}
-                    user_data={userdata}
-                    on_save={saveRule}
-                    type_list={ruleTypes}
+    /**
+     * Богдан - конец
+     */
+
+    return (
+        <Layout className={'layout'}>
+            <Header className={'header'}>
+                <Affix>
+                    <div className={'sk-header-container'}>
+                        <Button color={'default'}
+                                variant={isOpenFilters ? 'solid' : 'outlined'}
+                                icon={<FilterOutlined />}
+                                style={{ width: '125px' }}
+                                onClick={() => setIsOpenFilters(!isOpenFilters)}
+                        >Фильтры</Button>
+                        <h1 className={'page-header'}>Правила учёта рабочего времени</h1>
+                        <div></div>
+                    </div>
+                </Affix>
+            </Header>
+            <Layout className="sk-layout-center">
+                <Sider width={isOpenFilters ? "330px" : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
+                    <Affix offsetTop={54}>
+                        <div className="sk-width-container">
+                            <div className="sk-usp-filter-col">
+                                <ClaimManagerSidebar
+                                    company_list={prepareSelectOptions('company', companies)}
+                                    current_rules_list={prepareSelectOptions('current_rules_list', currentRules)}
+                                    on_change_filter={handleFilterChanged}
+                                />
+                            </div>
+                        </div>
+                    </Affix>
+                </Sider>
+                <Content className="content">
+                    <div className="sk-content-table-wrapper">
+                        <Affix offsetTop={44}>
+                            <div className="sk-pagination-wrapper">
+                                <div className="sk-pagination-container">
+                                    <Pagination
+                                        current={currentPage}
+                                        total={baseRuleList.length}
+                                        pageSize={pageSize}
+                                        pageSizeOptions={[50, 100]}
+                                        locale={{
+                                            items_per_page: 'на странице',
+                                            jump_to: 'Перейти',
+                                            jump_to_confirm: 'OK',
+                                            page: 'Страница'
+                                        }}
+                                        onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}
+                                        onChange={(page) => handlePageChange(page)}
+                                    />
+
+                                    <Tag
+                                        style={{
+                                            width: '160px',
+                                            height: '30px',
+                                            lineHeight: '27px',
+                                            textAlign: 'center',
+                                            color: '#868686',
+                                            fontSize: '14px',
+                                            backgroundColor: '#ededed',
+                                            borderColor: '#ededed',
+                                        }}
+                                    >Всего найдено: {baseRuleList.length}</Tag>
+                                </div>
+                                <Button color={'primary'}
+                                        variant={'outlined'}
+                                        icon={<PlusOutlined/>}
+                                        style={{ width: '125px' }}
+                                        onClick={openModal}
+                                >Создать</Button>
+                            </div>
+                        </Affix>
+                        <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
+                            <div className="sk-content-table">
+                                {/*{*/}
+                                {/*    baseRuleList.map((rule, index) => (*/}
+                                {/*        <RuleCardItem*/}
+                                {/*            key={`grocard_${rule.id}`}*/}
+                                {/*            data={rule}*/}
+                                {/*            opened={openedCooxer === rule.id}*/}
+                                {/*            on_open_cooxer={(value)=>{setOpenedCooxer(value)}}*/}
+                                {/*            base_entities={baseEntityList}*/}
+                                {/*            on_link_update={updateEntityLinks}*/}
+                                {/*            on_open_editor={openModalEditor}*/}
+                                {/*            on_manage_entities={updateEntityLinks}*/}
+                                {/*            user_data={userdata}*/}
+                                {/*        />*/}
+                                {/*    ))*/}
+                                {/*}*/}
+
+
+                                {baseRuleList.map((rule, index) => (
+                                    <div key={`${rule.id}-${index}`}
+                                         className="sk-department-block"
+                                    >
+                                        <div className="sk-department-header"
+                                             onDoubleClick={() => openCloseRules(rule.id)}
+                                        >
+                                            <div className="sk-department-header-hover-container">
+                                                {/*<span className={'sk-card-small-icon'}><RuleIcons type={rule.rule_type_id}/></span>*/}
+                                                <p className="sk-department-header-p">{rule.id}</p>
+                                                <p className="sk-department-header-p">{rule.name}</p>
+
+                                                <Tag title={rule.id}
+                                                     color={rule.company_color}>{rule.company_name.toUpperCase()}</Tag>
+                                                <div>
+                                                    <div style={{display: 'inline-block', marginRight: '10px'}}
+                                                         title="пользователей">{1} <UserOutlined/></div>
+                                                    <div style={{display: 'inline-block'}} title="групп">{2}
+                                                        <InboxOutlined/></div>
+                                                </div>
+                                                <div>
+                                                    <div className={'sk-card-call-to-modal'}
+                                                         onClick={onOpenModalEditor}
+                                                    >
+                                                        <EditOutlined/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {closedRules.find(item => item === rule.id) && (
+                                            <div className="sk-person-rows">
+                                                        {users.map((user, idx) => {
+
+                                                            if (userRules[user.id]?.includes(+rule.id)) {
+                                                                return (
+                                                                        <div key={`${user.id}-${idx}`} className={`sk-person-row`}>
+                                                                            <div className="sk-person-row-basic">
+                                                                                <div className="sk-person-row-basic-hover-container">
+                                                                                    <p className="sk-person-row-p">{user.id}</p>
+                                                                                    <div className="sk-person-row-content">
+                                                                                        <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
+                                                                                        <p className="sk-person-row-p occupy">{user.occupy}</p>
+                                                                                    </div>
+                                                                                    <NavLink to={'/hr/users/' + user.id + "/rules"}>
+                                                                                        <Button color={'default'}
+                                                                                                variant={'outlined'}
+                                                                                                icon={<EditOutlined/>}
+                                                                                        >Редактировать</Button>
+                                                                                    </NavLink>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                );
+                                                            }
+                                                    return '';
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </Spin>
+                    </div>
+                </Content>
+            </Layout>
+
+            <RuleEditorModal
+                open={editorOpened}
+                item_list={baseRuleList}
+                target_id={editedRuleId}
+                on_cancel={cancelModalEditor}
+                ctrl_key={ctrlKey}
+                on_delete={deleteRule}
+                user_data={userdata}
+                on_save={saveRule}
+                type_list={ruleTypes}
             />
-        </div>
+        </Layout>
     )
 };
 
 export default RuleManagerPage;
+
+{/*<div className={'sk-mw-1000'}>*/}
+{/*    <br/>*/}
+{/*    <h2>Правила учёта рабочего времени</h2>*/}
+// <RuleToolbar
+{/*            companies={companies}*/}
+{/*            userData={userdata}*/}
+{/*            ruleTypes={ruleTypes}*/}
+{/*            onChangeFilter={onSetFilters}*/}
+{/*            onAddNewClick={openModal}*/}
+{/*        />*/}
+{/*    /!* <ProdCalToolbar*/}
+{/*        onChangeCompany={changeCompany}*/}
+{/*    /> *!/*/}
+{/*    <br/>*/}
+
+{/*    <div className={'sk-calendar-list'}>*/}
+{/*    <div>*/}
+
+
+{/*        <div className="sk-pagination-container">*/}
+{/*            <Pagination*/}
+{/*                current={currentPage}*/}
+{/*                total={baseRuleList.length}*/}
+{/*                pageSize={pageSize}*/}
+{/*                pageSizeOptions={[10, 20, 30, 100]}*/}
+{/*                locale={{*/}
+{/*                    items_per_page: 'на странице',*/}
+{/*                    jump_to: 'Перейти',*/}
+{/*                    jump_to_confirm: 'OK',*/}
+{/*                    page: 'Страница'*/}
+{/*                }}*/}
+{/*                onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}*/}
+{/*                onChange={(page) => handlePageChange(page)}*/}
+{/*            />*/}
+
+{/*        <Tag*/}
+{/*            style={{*/}
+{/*                width: '160px',*/}
+{/*                height: '30px',*/}
+{/*                lineHeight: '27px',*/}
+{/*                textAlign: 'center',*/}
+{/*                color: '#868686',*/}
+{/*                fontSize: '14px',*/}
+{/*                backgroundColor: '#ededed',*/}
+{/*                borderColor: '#ededed',*/}
+{/*            }}*/}
+{/*        >Всего найдено: {baseRuleList.length}</Tag>*/}
+{/*    </div>*/}
+
+{/*    </div>*/}
+
+
+{/*        {*/}
+
+{/*        }*/}
+
+
+{/*    </div>*/}
+
+
+{/*</div>*/}
+
+// {
+//     openRules.find(item => item === user.id) && user.linked_schedule && (
+//         <div className="sk-person-rules">
+//             <div className="sk-person-schedule">
+//                 <div
+//                     className="sk-person-schedule-hover-container">
+//                     <div className="sk-schedule-cell">
+//                         <CalendarOutlined />
+//                         <p>{user.linked_schedule.skud_schedule.name}</p>
+//                     </div>
+//                     <p className="sk-schedule-cell sk-schedule-cell-center">
+//                         {dayjs()
+//                             .startOf('day')
+//                             .add(user.linked_schedule.skud_schedule.start_time, 'seconds')
+//                             .format('HH:mm')}
+//                         -
+//                         {dayjs()
+//                             .startOf('day')
+//                             .add(user.linked_schedule.skud_schedule.end_time, 'seconds')
+//                             .format('HH:mm')}
+//                     </p>
+//                     <p className="sk-schedule-cell sk-schedule-cell-center">
+//                         {dayjs()
+//                             .startOf('day')
+//                             .add(user.linked_schedule.skud_schedule.lunch_start, 'seconds')
+//                             .format('HH:mm')}
+//                         -
+//                         {dayjs()
+//                             .startOf('day')
+//                             .add(user.linked_schedule.skud_schedule.lunch_end, 'seconds')
+//                             .format('HH:mm')}
+//                     </p>
+//                     <p className="sk-schedule-cell sk-schedule-cell-center">
+//                         {dayjs()
+//                             .startOf('day')
+//                             .add(user.linked_schedule.skud_schedule.target_time, 'seconds')
+//                             .format('HH:mm')} / день</p>
+//                 </div>
+//             </div>
+//             {user.linked_rules.map((rule, idx) => (
+//                 <div className="sk-person-rule" key={`${user.id}-${rule.id}`}>
+//                     <div className="sk-person-rule-hover-container">
+//                         <div className="sk-schedule-cell">
+//                             <HistoryOutlined />
+//                             <p>{rule.name}</p>
+//                         </div>
+//                         <p className="sk-schedule-cell sk-schedule-cell-center">
+//                             {dayjs()
+//                                 .startOf('day')
+//                                 .add(rule.duration_time, 'seconds')
+//                                 .format('HH:mm')}
+//                         </p>
+//                     </div>
+//                 </div>
+//             ))}
+//         </div>)
+// }
+
 

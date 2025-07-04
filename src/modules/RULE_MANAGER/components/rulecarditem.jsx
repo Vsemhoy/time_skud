@@ -179,10 +179,13 @@ const RuleCardItem = (props)=>{
   };
 
     return (
-        <Card className={`ant-card-small sk-rule-type-${ruleType}`} 
-        onDoubleClick={onDoubleClick}
-        style={{borderLeft: '6px solid '+ ruleColor}}
-        > 
+        <Card className={`ant-card-small sk-rule-type-${ruleType}`}
+              onDoubleClick={onDoubleClick}
+              style={{
+                  border: '2px solid #ccc',
+                  borderTop: `4px solid ${ruleColor}`,
+              }}
+        >
         <div className={`sk-rule-card ${opened ? "opened" : "cooxed"}`}
         >
             <div className={'sk-rule-card-head'}>

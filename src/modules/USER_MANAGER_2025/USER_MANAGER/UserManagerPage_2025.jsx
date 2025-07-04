@@ -348,6 +348,7 @@ const UserManagerPage_2025 = (props) => {
                                             onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}
                                             onChange={(page) => handlePageChange(page)}
                                         />
+
                                         <Tag
                                             style={{
                                                 width: '160px',
