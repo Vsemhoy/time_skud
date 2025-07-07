@@ -68,6 +68,11 @@ const UserPage = (props) => {
                 }
             } else {
                 setUserFIO('Арчи Гавриил Дессус');
+                setUserCompanyState({
+                    id: 2,
+                    name: 'Arstel',
+                    color: 'rgb(255, 119, 0)'
+                })
             }
         }
     };
