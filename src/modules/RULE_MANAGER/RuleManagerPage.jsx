@@ -429,9 +429,8 @@ const RuleManagerPage = (props) => {
                     }
                 );
 
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    setBaseRuleList(serverResponse.data.content);
-                }
+                setBaseRuleList(serverResponse.data.content);
+
                 console.log('Response data as JSON:', JSON.stringify(serverResponse.data.content, null, 2));
             } catch (error) {
                 console.error('Error fetching users info:', error);
@@ -474,7 +473,7 @@ const RuleManagerPage = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+                if (serverResponse.data.content) {
                     setCompanies(serverResponse.data.content.companies);
                     setCurrentRules(serverResponse.data.content.rule_types_list);
                 }
@@ -526,6 +525,9 @@ const RuleManagerPage = (props) => {
      * @param ruleId
      */
 
+    useEffect(() => {
+        console.log(companies);
+    }, [companies]);
 
     const openCloseRules = (ruleId) => {
         if (closedRules.includes(ruleId)) {
