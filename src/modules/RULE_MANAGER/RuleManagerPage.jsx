@@ -439,8 +439,8 @@ const RuleManagerPage = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    setBaseRuleList(serverResponse.data.content.now_rules);
+                if (serverResponse.data && serverResponse.data.length > 0) {
+                    setBaseRuleList(serverResponse.data);
                 }
             } catch (error) {
                 console.error('Error fetching users info:', error);
