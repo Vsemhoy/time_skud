@@ -235,10 +235,10 @@ const RuleEditorModal = (props) => {
                 value={1}
                 onChange={changeRuleType}
                 options={props.type_list.map((com) => ({
-                key: com.id,
-                value: Number(com.id),
-                label: com.name,
-            }))
+                    key: com.id,
+                    value: Number(com.id),
+                    label: com.name,
+                }))
             }
                 />
         </Form.Item>

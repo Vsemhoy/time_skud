@@ -9,7 +9,8 @@ const ClaimManagerSidebar = (props) => {
         filterCompany: null,
         currentRule: null,
     }
-    
+
+    const [companies, setCompanies] = useState([]);
     const [filterName, setFilterName] = useState('');
     const [filterCompany, setFilterCompany] = useState(null);
     const [currentRule, setCurrentRule] = useState(null);
@@ -31,7 +32,10 @@ const ClaimManagerSidebar = (props) => {
         }
     }, [setFilterName, filterCompany, currentRule]);
 
-
+    useEffect(() => {
+        setCompanies(props.company_list);
+        console.log(props.company_list)
+    }, [props.company_list]);
 
     return (
         <div style={{maxHeight: '100vh', overflow: 'auto'}}>
@@ -45,6 +49,7 @@ const ClaimManagerSidebar = (props) => {
                         onChange={(ev) => {
                             setFilterName(ev.target.value)
                         }}
+
                 />
             </div>
 
@@ -53,7 +58,7 @@ const ClaimManagerSidebar = (props) => {
                 <Select style={{width: '100%'}}
                         placeholder={'Все компании'}
                         value={filterCompany}
-                        options={props.company_list}
+                        options={companies}
                         onChange={(ev) => {
                             setFilterCompany(ev)
                         }}

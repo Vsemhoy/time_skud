@@ -41,13 +41,6 @@ const { Header, Sider, Content } = Layout;
 
 const RuleManagerPage = (props) => {
     const { userdata } = props;
-        const [companies, setCompanies] = useState([
-            ...DS_USER.companies.map((com) => ({
-                key: com.id,
-                value: Number(com.id),
-                label: com.name,
-            })),
-        ]);
 
     const [baseEntityList, setBaseEntityList] = useState([]);
     const [entityList, setEntityList] = useState([]);
@@ -349,17 +342,13 @@ const RuleManagerPage = (props) => {
 
 
     const prepareSelectOptions = (name, options) => {
-        if (options && options.length > 0) {
-            return options.map((option) => {
-                return ({
-                    key: `option-${name}-${option.id}`,
-                    value: option.id,
-                    label: option.name
-                })
-            });
-        } else {
-            return [];
-        }
+        return options.map((option) => {
+            return ({
+                key: `option-${name}-${option.id}`,
+                value: option.id,
+                label: option.name
+            })
+        });
     }
 
     const useCookieState = (key, defaultValue) => {
@@ -377,7 +366,7 @@ const RuleManagerPage = (props) => {
 
     const [isOpenFilters, setIsOpenFilters] = useCookieState('rule_manager_filters', true);
 
-
+    const [companies, setCompanies] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [isLoading, setIsLoading] = useState(false);
@@ -439,11 +428,11 @@ const RuleManagerPage = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                if (serverResponse.data && serverResponse.data.length > 0) {
-                    setBaseRuleList(serverResponse.data);
-                    // setBaseRuleList(RULE_LIST);
+
+                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
+                    setBaseRuleList(serverResponse.data.content);
                 }
-                console.log("rule/RULES" + serverResponse.data);
+                console.log('Response data as JSON:', JSON.stringify(serverResponse.data.content, null, 2));
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
@@ -486,10 +475,12 @@ const RuleManagerPage = (props) => {
                     }
                 );
                 if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    const content = serverResponse.data.content;
-                    setCompanies(content.companies);
-                    setCurrentRules(content.rule_types);
+                    setCompanies(serverResponse.data.content.companies);
+                    setCurrentRules(serverResponse.data.content.rule_types_list);
                 }
+
+                console.log('Response data as JSON:', JSON.stringify(serverResponse.data.content, null, 2));
+
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
@@ -508,7 +499,7 @@ const RuleManagerPage = (props) => {
                         _token: CSRF_TOKEN
                     });
                 console.log('rules', response);
-                fetchUsers(filtersState);
+                await fetchUsers(filtersState);
                 // setBaseRuleList([...baseRuleList, response.data.data]);
             } catch (e) {
                 console.log(e)
