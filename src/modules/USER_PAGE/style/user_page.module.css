@@ -153,6 +153,7 @@ h1 {
     flex-direction: column;
     outline: 1px solid #BFBFBF;
     padding: 5px 0;
+    transition: .3s;
 }
 .sk_schedule_table_row {
     height: 72px;
@@ -180,6 +181,9 @@ h1 {
 }
 .sk_table_row_danger {
     background-color: rgba(255, 0, 0, 0.39);
+}
+.sk_table_row_edit {
+    outline: 2px solid #1E88E5;
 }
 .sk_schedule_table_break_row {
     width: 100%;

@@ -1,59 +1,309 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styles from "../style/user_page.module.css";
 import {Link, useNavigate, useOutletContext} from "react-router-dom";
-import {Affix, Button, Pagination, Select, Spin, Tag} from "antd";
+import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import {BASE_ROUTE, HOST_COMPONENT_ROOT} from "../../../CONFIG/config";
-import {SCHEDULES} from "../mock/mock";
+import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
+import {SCHEDULES, SCHEDULES_NAMES_SELECTS, SCHEDULES_TYPES_SELECT} from "../mock/mock";
 import dayjs from "dayjs";
 import SchedIcons from "../../SCHED_MANAGER/components/SchedIcons";
+import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 function SchedulesWorkspace(props) {
     const navigate = useNavigate();
-    const { userIdState, userFIO } = useOutletContext();
+    const { userIdState } = useOutletContext();
 
+    const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [allSchedulesCount, setAllSchedulesCount] = useState(0);
+
     const [schedules, setSchedules] = useState([]);
 
+    const [scheduleTypes, setScheduleTypes] = useState([
+        {
+            id: 0,
+            name: 'Все типы графиков'
+        }
+    ]);
+    const [scheduleNames, setScheduleNames] = useState([]);
+
+    const [scheduleTypeFilter, setScheduleTypeFilter] = useState(0);
+
+    const [activeSchedule, setActiveSchedule] = useState({});
+    const [nextSchedule, setNextSchedule] = useState({});
+    const [editedSchedule, setEditedSchedule] = useState({
+        id: 0,
+    });
+
+    const [toolbarTypeScheduleId, setToolbarTypeScheduleId] = useState(null);
+    const [toolbarNameScheduleId, setToolbarNameScheduleId] = useState(null);
+    const [toolbarDateStartSchedule, setToolbarDateStartSchedule] = useState(null);
+    const [toolbarDateEndSchedule, setToolbarDateEndSchedule] = useState(null);
+
+    const [intersections, setIntersections] = useState([]);
+
     useEffect(() => {
-        fetchSchedulesInfo();
+        if (!isMounted) {
+            fetchInfo().then();
+            setIsMounted(true);
+        }
     }, []);
+
+    useEffect(() => {
+        if (isMounted) {
+            findActiveSchedule();
+        }
+    }, [schedules]);
+
+    useEffect(() => {
+        if (isMounted) {
+            findNextSchedule();
+        }
+    }, [activeSchedule]);
+
+    useEffect(() => {
+        if (isMounted) {
+            fetchInfo().then();
+        }
+    }, [scheduleTypeFilter, pageSize, currentPage]);
+
+    useEffect(() => {
+        if (isMounted) {
+            if (editedSchedule.id) {
+                setToolbarTypeScheduleId(editedSchedule.schedule_type);
+                setToolbarNameScheduleId(editedSchedule.schedule_id);
+                setToolbarDateStartSchedule(dayjs(editedSchedule.start));
+                setToolbarDateEndSchedule(dayjs(editedSchedule.end));
+            } else {
+                setToolbarTypeScheduleId(null);
+                setToolbarNameScheduleId(null);
+                setToolbarDateStartSchedule(null);
+                setToolbarDateEndSchedule(null);
+            }
+        }
+    }, [editedSchedule]);
+
+    useEffect(() => {
+        const arr = [];
+        schedules.forEach(schedule => {
+            if (+schedule.id !== +editedSchedule.id) {
+                if (dayjs(toolbarDateStartSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateStartSchedule) <= dayjs(schedule.end)) {
+                    arr.push(schedule.id);
+                }
+                if (dayjs(toolbarDateEndSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateEndSchedule) <= dayjs(schedule.end)) {
+                    arr.push(schedule.id);
+                }
+            }
+        });
+        setIntersections(arr);
+    }, [toolbarDateStartSchedule, toolbarDateEndSchedule]);
+
+    useEffect(() => {
+        const now = dayjs().startOf('day'); // Обрезаем время, оставляем только дату
+        const startDate = dayjs(toolbarDateStartSchedule).startOf('day'); // Аналогично для начальной даты
+
+        if (startDate.isBefore(now)) {
+            const newStart = dayjs().startOf('day'); // Устанавливаем начало текущего дня
+            if (!newStart.isSame(startDate, 'day')) { // Проверяем, отличается ли дата
+                setToolbarDateStartSchedule(newStart);
+            }
+        }
+    }, [toolbarDateStartSchedule]);
+
+    useEffect(() => {
+        const tomorrow = dayjs().add(1, 'day').startOf('day'); // Завтрашняя дата без времени
+        const endDate = dayjs(toolbarDateEndSchedule).startOf('day'); // Конечная дата без времени
+
+        if (endDate.isBefore(tomorrow)) {
+            const newEnd = dayjs().add(1, 'day').startOf('day'); // Завтрашний день (00:00:00)
+            if (!newEnd.isSame(endDate, 'day')) { // Проверяем, отличается ли дата
+                setToolbarDateEndSchedule(newEnd);
+            }
+        }
+    }, [toolbarDateEndSchedule]);
 
     useEffect(() => {
         if (userIdState === 'new') {
             navigate(`/hr/users/${userIdState}`);
         }
     }, [userIdState]);
-    const fetchSchedulesInfo = () => {
+    const fetchInfo = async () => {
         setIsLoading(true);
-        setSchedules(SCHEDULES);
+        await fetchSchedulesInfo();
+        await fetchScheduleTypesSelect();
         setTimeout(() => setIsLoading(false), 500);
     };
-    const [groupList, setGroupList] = useState([]);
-    const tagRender = (props) => {
-        const { label, value, closable, onClose } = props;
-
-        // Находим соответствующий group в groupList по value
-        const group = groupList.find(item => item.value === value);
-        const color = group?.color; // Получаем цвет из найденного group
-
-        const onPreventMouseDown = event => {
-            event.preventDefault();
-            event.stopPropagation();
-        };
-
-        return (
-            <Tag
-                color={color}
-                onMouseDown={onPreventMouseDown}
-                closable={closable}
-                onClose={onClose}
-                style={{ marginInlineEnd: 4 }}
-            >
-                {label}
-            </Tag>
-        );
+    const fetchSchedulesInfo = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userschedules/${userIdState}`,
+                    {
+                        data: {
+                            scheduleTypeFilter,
+                            currentPage,
+                            pageSize
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    const content = serverResponse.data.content;
+                    setSchedules(content.schedules);
+                    setCurrentPage(content.currentPage);
+                    setPageSize(content.pageSize);
+                    setAllSchedulesCount(content.allSchedulesCount);
+                }
+            } catch (error) {
+                console.error('Error fetching users schedules:', error);
+            }
+        } else {
+            setSchedules(SCHEDULES);
+            setCurrentPage(1);
+            setPageSize(10);
+            setAllSchedulesCount(228);
+        }
     };
+    const fetchScheduleTypesSelect = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduletypesselect}`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    const content = serverResponse.data.content;
+                    setScheduleTypes([ scheduleTypes[0], ...content.types]);
+                    setScheduleNames(content.names);
+                }
+            } catch (error) {
+                console.error('Error fetching schedule types select:', error);
+            }
+        } else {
+            setScheduleTypes(SCHEDULES_TYPES_SELECT);
+            setScheduleNames(SCHEDULES_NAMES_SELECTS);
+        }
+    };
+    const findActiveSchedule = () => {
+        const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
+        const activeSched = schedules.find(schedule => {
+            const start = dayjs(schedule.start, 'YYYY-MM-DD HH:mm:ss');
+            const end = dayjs(schedule.end, 'YYYY-MM-DD HH:mm:ss');
+            return start.isBefore(now) && end.isAfter(now);
+        });
+        if (activeSched) setActiveSchedule(activeSched);
+    };
+    const findNextSchedule = () => {
+        const nextSched = schedules.find(schedule => schedule.id > activeSchedule.id);
+        if (nextSched) setNextSchedule(nextSched);
+    };
+
+
+    const removeSchedule = async (id) => {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Вы уверены, что хотите удалить этот график?')) {
+            await fetchRemoveSchedule(id);
+        }
+    };
+    const fetchRemoveSchedule = async (id) => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userschedules/${userIdState}`,
+                    {
+                        data: {
+                            scheduleId: id
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+            } catch (error) {
+                console.error('Error fetching remove user schedule:', error);
+            }
+        } else {
+            await fetchInfo();
+        }
+    };
+
+    const toEditSchedule = (id) => {
+        setEditedSchedule(schedules.find(schedule => +schedule.id === +id));
+    };
+    const isCanAddSchedule = () => {
+        if (editedSchedule.id === activeSchedule.id) {
+            return !toolbarTypeScheduleId || !toolbarNameScheduleId || !toolbarDateStartSchedule || intersections.length;
+        } else if (editedSchedule.id === nextSchedule.id) {
+            return !toolbarTypeScheduleId || !toolbarNameScheduleId || !toolbarDateStartSchedule || intersections.length;
+        } else {
+            return !toolbarTypeScheduleId || !toolbarNameScheduleId || !toolbarDateStartSchedule || nextSchedule.id || intersections.length;
+        }
+    };
+    const isDisableField = () => {
+        return editedSchedule.id === activeSchedule.id;
+    };
+    const clearEdit = () => {
+        setEditedSchedule({id: 0});
+    };
+
+    const fetchAddOrUpdateSchedule = async () => {
+        if (editedSchedule.id) {
+            await fetchUpdateSchedule();
+        } else {
+            await fetchAddSchedule();
+        }
+        clearEdit();
+    };
+
+    const fetchUpdateSchedule = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userupdateschedules/${editedSchedule.id}`,
+                    {
+                        data: {
+                            userId: userIdState,
+                            editedSchedule,
+                            toolbarTypeScheduleId,
+                            toolbarNameScheduleId,
+                            toolbarDateStartSchedule,
+                            toolbarDateEndSchedule,
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+            } catch (error) {
+                console.error('Error fetching update user schedule:', error);
+            }
+        } else {
+            await fetchInfo();
+        }
+    }
+
+    const fetchAddSchedule = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/useraddschedules`,
+                    {
+                        data: {
+                            userId: userIdState,
+                            toolbarTypeScheduleId,
+                            toolbarNameScheduleId,
+                            toolbarDateStartSchedule,
+                            toolbarDateEndSchedule,
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+            } catch (error) {
+                console.error('Error fetching add to user schedule:', error);
+            }
+        } else {
+            await fetchInfo();
+        }
+    }
 
     return (
         <Spin spinning={isLoading}>
@@ -63,9 +313,9 @@ function SchedulesWorkspace(props) {
                     <div className={styles.sk_pagination_wrapper}>
                         <div className={styles.sk_pagination_container}>
                             <Pagination
-                                current={1}
-                                total={228}
-                                pageSize={10}
+                                current={currentPage}
+                                total={allSchedulesCount}
+                                pageSize={pageSize}
                                 pageSizeOptions={[10, 50, 100]}
                                 locale={{
                                     items_per_page: 'на странице',
@@ -73,10 +323,8 @@ function SchedulesWorkspace(props) {
                                     jump_to_confirm: 'OK',
                                     page: 'Страница'
                                 }}
-                                onShowSizeChange={(current, newSize) => {
-                                }}
-                                onChange={() => {
-                                }}
+                                onShowSizeChange={(current, newSize) => setPageSize(newSize)}
+                                onChange={(page) => setCurrentPage(page)}
                             />
                             <Tag
                                 style={{
@@ -89,16 +337,17 @@ function SchedulesWorkspace(props) {
                                     backgroundColor: '#ededed',
                                     borderColor: '#ededed',
                                 }}
-                            >Всего найдено: {228}</Tag>
+                            >Всего найдено: {allSchedulesCount}</Tag>
                         </div>
                         <Select
-                            placeholder={'Все типы графиков'}
-                            mode={'multiple'}
-                            options={[]}
+                            value={scheduleTypeFilter}
+                            options={scheduleTypes}
                             style={{width: '200px'}}
-                            onChange={(ev) => {
+                            onChange={(id) => setScheduleTypeFilter(id)}
+                            fieldNames={{
+                                value: 'id',
+                                label: 'name',
                             }}
-                            tagRender={tagRender}
                         />
                     </div>
                     <div className={styles.sk_schedule_table}>
@@ -127,7 +376,11 @@ function SchedulesWorkspace(props) {
                             </div>
                         </div>
                         {schedules.map(schedule => (
-                            <div key={schedule.id} className={styles.sk_schedule_table_row_wrapper}>
+                            <div key={schedule.id} className={`${styles.sk_schedule_table_row_wrapper} 
+                                                               ${+schedule.id === +activeSchedule.id ? styles.sk_table_row_active : ''}
+                                                               ${schedule.id === +editedSchedule.id ? styles.sk_table_row_edit : ''}
+                                                               ${intersections.find(scheduleId => +scheduleId === +schedule.id) ? styles.sk_table_row_danger : ''}`
+                            }>
                                 <div className={`${styles.sk_schedule_table_row}`}>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container}>
@@ -168,16 +421,22 @@ function SchedulesWorkspace(props) {
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell} style={{padding: '15px', justifyContent: 'space-between'}}>
-                                        <Button color={'default'}
-                                                variant={'outlined'}
-                                                shape="circle"
-                                                icon={<EditOutlined/>}
-                                        ></Button>
-                                        <Button color={'default'}
-                                                variant={'outlined'}
-                                                shape="circle"
-                                                icon={<DeleteOutlined/>}
-                                        ></Button>
+                                        {schedule.id >= activeSchedule.id && (
+                                            <Button color={'default'}
+                                                    variant={'outlined'}
+                                                    shape="circle"
+                                                    icon={<EditOutlined/>}
+                                                    onClick={() => toEditSchedule(schedule.id)}
+                                            ></Button>
+                                        )}
+                                        {schedule.id !== activeSchedule.id && schedule.id > activeSchedule.id && (
+                                            <Button color={'default'}
+                                                    variant={'outlined'}
+                                                    shape="circle"
+                                                    icon={<DeleteOutlined/>}
+                                                    onClick={() => removeSchedule(schedule.id)}
+                                            ></Button>
+                                        )}
                                     </div>
                                 </div>
                                 {/*<div className={`${styles.sk_schedule_table_break_row}`}>
@@ -198,64 +457,65 @@ function SchedulesWorkspace(props) {
                     <div className={styles.sk_schedule_linker}>
                         <div style={{width: '100%'}}>
                             <div className={styles.sk_flex_space}>
-                                <span className={'sk-totoro'}>Группы </span>
-                                <span
-                                    onClick={() => {
-                                    }}
+                                <span className={'sk-totoro'}>Привязка нового графика</span>
+                                <span style={{cursor: 'pointer'}}
+                                      onClick={() => clearEdit()}
                                 >
                                     <ClearOutlined/>
                                 </span>
                             </div>
                             <br/>
                             <div className={styles.sk_label_select}>Тип привязываемого графика</div>
-                            <Select
-                                placeholder={'Группы'}
-                                mode={'multiple'}
-                                options={[]}
-                                style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
-                                tagRender={tagRender}
+                            <Select placeholder={'Тип привязываемого графика'}
+                                    value={toolbarTypeScheduleId}
+                                    options={scheduleTypes.filter(schedule => +schedule.id !== 0)}
+                                    style={{width: '100%'}}
+                                    onChange={(id) => setToolbarTypeScheduleId(id)}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                                    disabled={isDisableField()}
                             />
                             <br/>
                             <br/>
-                            <div className={styles.sk_label_select}>Название графика (селект с поиском)</div>
-                            <Select
-                                placeholder={'Группы'}
-                                mode={'multiple'}
-                                options={[]}
-                                style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
-                                tagRender={tagRender}
+                            <div className={styles.sk_label_select}>Название графика</div>
+                            <Select placeholder={'Название графика'}
+                                    value={toolbarNameScheduleId}
+                                    options={scheduleNames}
+                                    style={{width: '100%'}}
+                                    onChange={(id) => setToolbarNameScheduleId(id)}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                                    disabled={isDisableField()}
                             />
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Дата начала действия графика</div>
-                            <Select
-                                placeholder={'Группы'}
-                                mode={'multiple'}
-                                options={[]}
-                                style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
-                                tagRender={tagRender}
+                            <DatePicker placeholder="Дата начала действия графика"
+                                        value={toolbarDateStartSchedule}
+                                        onChange={(e) => setToolbarDateStartSchedule(e)}
+                                        format={"DD.MM.YYYY"}
+                                        style={{width: '100%'}}
+                                        disabled={isDisableField()}
                             />
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Дата окончания графика</div>
-                            <Select
-                                placeholder={'Группы'}
-                                mode={'multiple'}
-                                options={[]}
-                                style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
-                                tagRender={tagRender}
+                            <DatePicker placeholder="Дата окончания графика"
+                                        value={toolbarDateEndSchedule}
+                                        onChange={(e) => setToolbarDateEndSchedule(e)}
+                                        format={"DD.MM.YYYY"}
+                                        style={{width: '100%'}}
                             />
                             <br/>
                             <br/>
-                            <Button block>Привязать графики</Button>
+                            <Button block
+                                    disabled={isCanAddSchedule()}
+                                    onClick={() => fetchAddOrUpdateSchedule()}
+                            >Привязать график</Button>
                         </div>
                     </div>
                 </Affix>
