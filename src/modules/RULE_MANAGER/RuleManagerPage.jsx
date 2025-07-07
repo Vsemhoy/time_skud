@@ -154,8 +154,8 @@ const RuleManagerPage = (props) => {
         console.log('body',body);
         try {
             let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/rules/' + body.id,
-                {   
-                    data: body, 
+                {
+                    data: body,
                     _token: CSRF_TOKEN
                 }
             );
@@ -164,8 +164,8 @@ const RuleManagerPage = (props) => {
         } catch (e) {
             console.log(e)
         } finally {
-            setBaseRuleList(prevList => 
-                prevList.map(item => 
+            setBaseRuleList(prevList =>
+                prevList.map(item =>
                     item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
                 )
             );
@@ -183,8 +183,8 @@ const RuleManagerPage = (props) => {
             console.log('body',body);
             try {
                 let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/links/' + body.rule_id,
-                    {   
-                        data: body, 
+                    {
+                        data: body,
                         _token: CSRF_TOKEN
                     }
                 );
@@ -206,8 +206,8 @@ const RuleManagerPage = (props) => {
 
         try {
             let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/rules/' + rule_id,
-                {   
-                    data: { "id" : rule_id}, 
+                {
+                    data: { "id" : rule_id},
                     _token: CSRF_TOKEN
                 }
             );
@@ -441,7 +441,9 @@ const RuleManagerPage = (props) => {
                 );
                 if (serverResponse.data && serverResponse.data.length > 0) {
                     setBaseRuleList(serverResponse.data);
+                    // setBaseRuleList(RULE_LIST);
                 }
+                console.log("rule/RULES" + serverResponse.data);
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
