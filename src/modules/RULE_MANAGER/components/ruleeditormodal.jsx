@@ -256,25 +256,25 @@ const RuleEditorModal = (props) => {
            />
         </Form.Item>
 
-        <Form.Item
-          className={'sk-rule-mark'}
-          label={varText1}
-          name="variable_a"
-          type="boolean"
-          rules={[]}
-        >
-            <Switch defaultChecked ></Switch>
-        </Form.Item>
+        {/*<Form.Item*/}
+        {/*  className={'sk-rule-mark'}*/}
+        {/*  label={varText1}*/}
+        {/*  name="variable_a"*/}
+        {/*  type="boolean"*/}
+        {/*  rules={[]}*/}
+        {/*>*/}
+        {/*    <Switch defaultChecked ></Switch>*/}
+        {/*</Form.Item>*/}
 
-        <Form.Item
-          className={'sk-rule-mark'}
-          label={varText2}
-          name="variable_b"
-          type="boolean"
-          rules={[]}
-        >
-            <Switch defaultChecked ></Switch>
-        </Form.Item>
+        {/*<Form.Item*/}
+        {/*  className={'sk-rule-mark'}*/}
+        {/*  label={varText2}*/}
+        {/*  name="variable_b"*/}
+        {/*  type="boolean"*/}
+        {/*  rules={[]}*/}
+        {/*>*/}
+        {/*    <Switch defaultChecked ></Switch>*/}
+        {/*</Form.Item>*/}
 
 
 

@@ -19,6 +19,7 @@ import {
     COMPANIES,
     RULE_TYPE_LIST,
     RULE_LIST, USER_RULES,
+    RULE_TYPES
 } from "./mock/mock"
 import {
     CalendarOutlined,
@@ -48,7 +49,6 @@ const RuleManagerPage = (props) => {
             })),
         ]);
 
-    const [ruleTypes, setRuleTypes] = useState([]);
     const [baseEntityList, setBaseEntityList] = useState([]);
     const [entityList, setEntityList] = useState([]);
 
@@ -62,18 +62,6 @@ const RuleManagerPage = (props) => {
         const [editedRuleId, setEditedRuleId] = useState(0);
     
         const [filters, setFilters] = useState([]);
-
-    useEffect(()=>{
-        if (!PRODMODE){
-            setBaseEntityList(DS_SCHEDULE_ENTITIES);
-            setRuleTypes(DS_RULE_TYPES);
-            setBaseRuleList(DS_RULES);
-        } else {
-            get_ruleTypes();
-            get_entityList();
-            get_ruleList();
-        } 
-    },[]);
 
 
     useEffect(()=>{
@@ -135,79 +123,7 @@ const RuleManagerPage = (props) => {
         // console.log(baseScheduleList);
     }, [baseRuleList, filters]);
 
-
-
   /** ------------------ FETCHES ---------------- */
-    /**
-     * Получение сущностей
-     * @param {*} req 
-     * @param {*} res 
-     */
-    const get_entityList = async (req, res) => {
-      try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/entities_get', 
-            {
-                data: {
-                    status: 0,
-                    deleted: 0,
-                },
-                _token: CSRF_TOKEN
-            });
-            setBaseEntityList(response.data.data);
-            console.log('get_calendarList => ', response.data);
-      } catch (e) {
-          console.log(e)
-      } finally {
-          
-      }
-    }
-
-    /**
-     * Получение списка правил
-     * @param {*} req 
-     * @param {*} res 
-     */
-    const get_ruleTypes = async (req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/types_get', 
-              {
-                  data: {
-                    deleted: 0
-                  },
-                  _token: CSRF_TOKEN
-              });
-              setRuleTypes(response.data.data);
-              console.log('get_calendarList => ', response.data);
-        } catch (e) {
-            console.log(e)
-        } finally {
-            
-        }
-    }
-
-    /**
-     * Получение списка правил
-     * @param {*} req 
-     * @param {*} res 
-     */
-        const get_ruleList = async (req, res) => {
-            try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get', 
-                  {
-                      data: {
-                        id_company: null
-                      },
-                      _token: CSRF_TOKEN
-                  });
-                  setBaseRuleList(response.data.data);
-                  console.log('get_calendarList => ', response.data);
-            } catch (e) {
-                console.log(e)
-            } finally {
-                
-            }
-        }
-
 
     /**
          * создание правила
@@ -218,15 +134,13 @@ const RuleManagerPage = (props) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules',
                 {
-                    data: body, 
+                    data: body,
                     _token: CSRF_TOKEN
                 });
             console.log('users', response);
-            setBaseRuleList([...baseRuleList, response.data.data]);
+            // setBaseRuleList([...baseRuleList, response.data.data]);
         } catch (e) {
             console.log(e)
-        } finally {
-            get_ruleList();
         }
     }
     
@@ -299,7 +213,7 @@ const RuleManagerPage = (props) => {
             );
             console.log('response.data', response.data);
             if (response.data.status === 0){
-                get_ruleList();
+                // get_ruleList();
             }
         } catch (e) {
             console.log(e)
@@ -345,23 +259,13 @@ const RuleManagerPage = (props) => {
         }
         if (data.id === null || data.id === 0){
             // create
-            create_rule(data);
+            fetchCreateRule(data);
         } else {
             // update
             update_rule(data);
         }
         setEditedRuleId(0);
         setEditorOpened(false);
-    }
-
-    const openBlankEditor = () => {
-        setEditedRuleId(null);
-        setEditorOpened(true);
-    }
-
-
-    const onSetFilters = (filters) => {
-        setFilters(filters);
     }
 
     const updateEntityLinks = (data) => {
@@ -482,6 +386,7 @@ const RuleManagerPage = (props) => {
     const [closedRules, setClosedRules] = useState([]);
     const [users, setUsers] = useState([]);
     const [userRules , setUserRules] = useState([]);
+    const [filtersState, setFiltersState] = useState([]);
 
     const handleChangePageSize = (value) => {
         setPageSize(value);
@@ -502,8 +407,8 @@ const RuleManagerPage = (props) => {
             fetchInfo().then();
         }
     }, [pageSize, currentPage]);
+
     const handleFilterChanged = async (filterParams) => {
-        //console.log(filterParams);
         if (isMounted) {
             await fetchInfo(filterParams);
         }
@@ -515,7 +420,7 @@ const RuleManagerPage = (props) => {
         setIsLoading(true);
         await fetchRules(filterParams);
         await fetchFilters();
-        await fetchUsers()
+        await fetchUsers();
         if (PRODMODE) {
             setIsLoading(false);
         } else {
@@ -527,7 +432,8 @@ const RuleManagerPage = (props) => {
     const fetchRules = async (filterParams) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/groups`,
+                setFiltersState(filterParams);
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/rules`,
                     {
                         data: {filterParams, pageSize, currentPage},
                         _token: CSRF_TOKEN
@@ -535,7 +441,6 @@ const RuleManagerPage = (props) => {
                 );
                 if (serverResponse.data.content && serverResponse.data.content.length > 0) {
                     setBaseRuleList(serverResponse.data.content.now_rules);
-                    // setUsersAndGroupsInRules(serverResponse.data.content);
                 }
             } catch (error) {
                 console.error('Error fetching users info:', error);
@@ -544,17 +449,20 @@ const RuleManagerPage = (props) => {
             setBaseRuleList(RULE_LIST);
         }
     };
+
     const fetchUsers = async (filterParams) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
+                setFiltersState(filterParams);
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/users`,
                     {
                         data: {filterParams},
                         _token: CSRF_TOKEN
                     }
                 );
                 if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    setUsers(serverResponse.data.content);
+                    setUsers(serverResponse.data.content.users);
+                    setUserRules(serverResponse.data.content.user_rules);
                 }
             } catch (error) {
                 console.error('Error fetching users info:', error);
@@ -566,6 +474,7 @@ const RuleManagerPage = (props) => {
             console.log(USER_RULES);
         }
     };
+
     const fetchFilters = async () => {
         if (PRODMODE) {
             try {
@@ -588,6 +497,43 @@ const RuleManagerPage = (props) => {
         }
     };
 
+    const fetchCreateRule = async (body) => {
+        if (PRODMODE){
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules',
+                    {
+                        data: body,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('rules', response);
+                fetchUsers(filtersState);
+                // setBaseRuleList([...baseRuleList, response.data.data]);
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+
+        }
+    }
+
+    /**
+     * const create_rule = async (body, req, res) => {
+     *         try {
+     *             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules',
+     *                 {
+     *                     data: body,
+     *                     _token: CSRF_TOKEN
+     *                 });
+     *             console.log('users', response);
+     *             // setBaseRuleList([...baseRuleList, response.data.data]);
+     *         } catch (e) {
+     *             console.log(e)
+     *         }
+     *     }
+     * @param ruleId
+     */
+
+
     const openCloseRules = (ruleId) => {
         if (closedRules.includes(ruleId)) {
             setClosedRules(closedRules.filter(id => id !== ruleId));
@@ -596,12 +542,9 @@ const RuleManagerPage = (props) => {
         }
     };
 
-    const onOpenModalEditor = (event) => {
-    //     console.log('open modal')
-    //     event.preventDefault();
-    //     if (props.on_open_editor){
-    //         props.on_open_editor(rule_id, event);
-    //     }
+    const onOpenModalEditor = (ruleId) => {
+        setEditedRuleId(ruleId);
+        setEditorOpened(true);
     }
 
 
@@ -682,23 +625,6 @@ const RuleManagerPage = (props) => {
                         </Affix>
                         <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
                             <div className="sk-content-table">
-                                {/*{*/}
-                                {/*    baseRuleList.map((rule, index) => (*/}
-                                {/*        <RuleCardItem*/}
-                                {/*            key={`grocard_${rule.id}`}*/}
-                                {/*            data={rule}*/}
-                                {/*            opened={openedCooxer === rule.id}*/}
-                                {/*            on_open_cooxer={(value)=>{setOpenedCooxer(value)}}*/}
-                                {/*            base_entities={baseEntityList}*/}
-                                {/*            on_link_update={updateEntityLinks}*/}
-                                {/*            on_open_editor={openModalEditor}*/}
-                                {/*            on_manage_entities={updateEntityLinks}*/}
-                                {/*            user_data={userdata}*/}
-                                {/*        />*/}
-                                {/*    ))*/}
-                                {/*}*/}
-
-
                                 {baseRuleList.map((rule, index) => (
                                     <div key={`${rule.id}-${index}`}
                                          className="sk-department-block"
@@ -707,30 +633,23 @@ const RuleManagerPage = (props) => {
                                              onDoubleClick={() => openCloseRules(rule.id)}
                                         >
                                             <div className="sk-department-header-hover-container">
-                                                {/*<span className={'sk-card-small-icon'}><RuleIcons type={rule.rule_type_id}/></span>*/}
                                                 <p className="sk-department-header-p">{rule.id}</p>
                                                 <p className="sk-department-header-p">{rule.name}</p>
 
                                                 <Tag title={rule.id}
                                                      color={rule.company_color}>{rule.company_name.toUpperCase()}</Tag>
-                                                <div>
-                                                    <div style={{display: 'inline-block', marginRight: '10px'}}
-                                                         title="пользователей">{1} <UserOutlined/></div>
-                                                    <div style={{display: 'inline-block'}} title="групп">{2}
-                                                        <InboxOutlined/></div>
-                                                </div>
-                                                <div>
-                                                    <div className={'sk-card-call-to-modal'}
-                                                         onClick={onOpenModalEditor}
-                                                    >
-                                                        <EditOutlined/>
-                                                    </div>
+                                                <div style={{display: 'inline-block', marginRight: '10px'}}
+                                                     title="пользователей">{rule.users_count ?? 0} <UserOutlined/></div>
+                                                <div className={'sk-card-call-to-modal'}
+                                                     onClick={() => onOpenModalEditor(rule.id)}
+                                                >
+                                                    <EditOutlined/>
                                                 </div>
                                             </div>
                                         </div>
                                         {closedRules.find(item => item === rule.id) && (
                                             <div className="sk-person-rows">
-                                                        {users.map((user, idx) => {
+                                                {users.map((user, idx) => {
 
                                                             if (userRules[user.id]?.includes(+rule.id)) {
                                                                 return (
@@ -774,7 +693,7 @@ const RuleManagerPage = (props) => {
                 on_delete={deleteRule}
                 user_data={userdata}
                 on_save={saveRule}
-                type_list={ruleTypes}
+                type_list={currentRules}
             />
         </Layout>
     )

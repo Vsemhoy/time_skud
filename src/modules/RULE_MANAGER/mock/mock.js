@@ -102,6 +102,7 @@ export const RULE_LIST = [
         "type_name": "Сдвиг графика",
         "type_description": "Можно приходить раньше или позже начала смены на заданное количество минут",
         "type_color": "#00a2ff69",
+        "users_count": 65,
     },
     {
         "id": 5,
