@@ -450,10 +450,9 @@ const RuleManagerPage = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                if (serverResponse.data.content && serverResponse.data.content.length > 0) {
-                    setUsers(serverResponse.data.content.users);
-                    setUserRules(serverResponse.data.content.user_rules);
-                }
+
+                setUsers(serverResponse.data.content.users);
+                setUserRules(serverResponse.data.content.user_rules);
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
@@ -507,23 +506,6 @@ const RuleManagerPage = (props) => {
 
         }
     }
-
-    /**
-     * const create_rule = async (body, req, res) => {
-     *         try {
-     *             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules',
-     *                 {
-     *                     data: body,
-     *                     _token: CSRF_TOKEN
-     *                 });
-     *             console.log('users', response);
-     *             // setBaseRuleList([...baseRuleList, response.data.data]);
-     *         } catch (e) {
-     *             console.log(e)
-     *         }
-     *     }
-     * @param ruleId
-     */
 
     useEffect(() => {
         console.log(companies);
@@ -645,7 +627,6 @@ const RuleManagerPage = (props) => {
                                         {closedRules.find(item => item === rule.id) && (
                                             <div className="sk-person-rows">
                                                 {users.map((user, idx) => {
-
                                                             if (userRules[user.id]?.includes(+rule.id)) {
                                                                 return (
                                                                         <div key={`${user.id}-${idx}`} className={`sk-person-row`}>

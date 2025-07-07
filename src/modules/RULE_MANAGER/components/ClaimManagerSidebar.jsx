@@ -23,7 +23,7 @@ const ClaimManagerSidebar = (props) => {
 
     useEffect(() => {
       const params = {};
-        if (filterName?.trim()) params.username = setFilterName.trim();
+        if (filterName?.trim()) params.username = filterName.trim();
         if (filterCompany) params.company = filterCompany;
         if (currentRule) params.current_rule_id = currentRule;
 
@@ -58,7 +58,7 @@ const ClaimManagerSidebar = (props) => {
                 <Select style={{width: '100%'}}
                         placeholder={'Все компании'}
                         value={filterCompany}
-                        options={companies}
+                        options={props.company_list}
                         onChange={(ev) => {
                             setFilterCompany(ev)
                         }}
