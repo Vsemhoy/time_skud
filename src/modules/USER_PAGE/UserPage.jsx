@@ -143,6 +143,7 @@ const UserPage = (props) => {
                     userCompanyState,
                     userFIO,
                     savingInfo,
+                    onSavedInfo: () => setSavingInfo(false),
                     onUpdateBaseInfo: (isCanSave) => setdDisableSavingInfo(!isCanSave),
                     onUpdateSavingInfo: (isLoading, newUserId) => {
                         setSavingInfo(isLoading);
