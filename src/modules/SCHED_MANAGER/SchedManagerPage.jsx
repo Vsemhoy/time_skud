@@ -13,26 +13,26 @@ import SchedModalEditor from "./components/SchedModalEditor";
 import SchedModalUsers from "./components/SchedModalUsers";
 import dayjs from "dayjs";
 
+import {
+    COMPANIES, SCHED_TYPES, SCHEDULE_LIST
+} from "./mock/mock";
 
 
 
 
 import {Affix, Button, Pagination, Tag, Layout, Spin} from "antd";
-import {FilterOutlined} from "@ant-design/icons";
-import {Header} from "antd/es/layout/layout";
+import {EditOutlined, FilterOutlined, PlusOutlined, UserOutlined} from "@ant-design/icons";
+// import {Header} from "antd/es/layout/layout";
 import Cookies from "js-cookie";
+import ClaimManagerSidebar from "../RULE_MANAGER/components/ClaimManagerSidebar";
+import {NavLink} from "react-router-dom";
+import {RULE_LIST} from "../RULE_MANAGER/mock/mock";
+// import {COMPANIES, RULE_TYPE_LIST} from "../RULE_MANAGER/mock/mock";
+const { Header, Sider, Content } = Layout;
 
 
 const SchedManagerPage = (props) => {
     const { userdata } = props;
-    const [companies, setCompanies] = useState([
-        { key: 0, value: 0, label: 'Все компании' },
-        ...DS_USER.companies.map((com) => ({
-            key: com.id,
-            value: Number(com.id),
-            label: com.name,
-        })),
-    ]);
     const [baseScheduleList, setBaseScheduleList] = useState(!PRODMODE ? DS_SCHEDULE_LIST : []);
     const [baseProdCalendars, setBaseProdCalendars] = useState(!PRODMODE ? DS_PROD_CALENDARS : []);
     const [baseEntityList, setBaseEntityList] = useState([]);
@@ -65,22 +65,22 @@ const SchedManagerPage = (props) => {
 
 
     // Эффект для загрузки данных при монтировании компонента
-    useEffect(() => {
-        if (PRODMODE) {
-            // getScheduleList(); // Загружаем данные только если не в режиме продакшн
-            get_entityList();
-            get_schedule_types();
-            get_schedules();
-            get_calendarList();
-            
-        } else {
-            setBaseEntityList(DS_SCHEDULE_ENTITIES);
-            setScheduleTypes(DS_SCHED_TYPES);
-            setBaseScheduleList(DS_SCHEDULE_LIST);
-
-        }
-        console.log(baseScheduleList);
-    }, []);
+    // useEffect(() => {
+    //     if (PRODMODE) {
+    //         // getScheduleList(); // Загружаем данные только если не в режиме продакшн
+    //         get_entityList();
+    //         get_schedule_types();
+    //         get_schedules();
+    //         get_calendarList();
+    //
+    //     } else {
+    //         setBaseEntityList(DS_SCHEDULE_ENTITIES);
+    //         setScheduleTypes(DS_SCHED_TYPES);
+    //         setBaseScheduleList(DS_SCHEDULE_LIST);
+    //
+    //     }
+    //     console.log(baseScheduleList);
+    // }, []);
 
 
     // Эффект для обновления scheduleList при изменении baseScheduleList
@@ -431,7 +431,6 @@ const SchedManagerPage = (props) => {
         setUserManagerModalOpen(false);
     }
 
-    
     const openEditorModal = (id, event)=>{
         if (event && event.ctrlKey){
             setCtrlKey(true);
@@ -447,39 +446,9 @@ const SchedManagerPage = (props) => {
         setCtrlKey(false);
     }
 
-
     const onSetFilters = (filters) => {
         setFilters(filters);
     }
-
-
-    const openBlankEditor = () =>{
-        setEditedId(null);
-        setEditedItem(
-            {
-                created_at: dayjs().unix(),
-                id_company: userdata.user.id_company,
-                // company_name: "Arstel",
-                // company_color: "#229900",
-                skud_schedule_type_id: 1,
-                name: "Новый график",
-                description: "...",
-                start_time: dayjs().unix(),
-                end_time: dayjs().unix(),
-                target_time: (60*60*8),
-                target_unit: 1,
-                lunch_start: (60*60*13),
-                lunch_end: (60*60*15),
-                lunch_time: (60*45),
-                schedule: [],
-                next_id: null,
-                deleted: 0,
-                skud_prod_calendar_id: 0,
-            }
-        );
-        setEditorModalOpen(true);
-    }
-
 
     const saveScheduleForm = (item)=>{
         console.log(item);
@@ -560,7 +529,6 @@ const SchedManagerPage = (props) => {
         setUserManagerModalOpen(false);
     }
 
-
     const deleteSchedule = (group_id) => {
         console.log('delete sch', group_id);
         delete_schedule(group_id);
@@ -571,6 +539,16 @@ const SchedManagerPage = (props) => {
     /**
      * БОГДАН начало
      */
+
+    const prepareSelectOptions = (name, options) => {
+        return options.map((option) => {
+            return ({
+                key: `option-${name}-${option.id}`,
+                value: option.id,
+                label: option.name
+            })
+        });
+    }
 
     const useCookieState = (key, defaultValue) => {
         const [state, setState] = useState(() => {
@@ -586,11 +564,130 @@ const SchedManagerPage = (props) => {
     };
 
     const [isOpenFilters, setIsOpenFilters] = useCookieState('rule_manager_filters', true);
+    const [companies, setCompanies] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [filtersState, setFiltersState] = useState([]);
 
+    useEffect(() => {
+        fetchInfo().then(() => {
+            setIsMounted(true);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (isMounted) {
+            fetchInfo().then();
+        }
+    }, [pageSize, currentPage]);
+
+    const fetchInfo = async (filterParams) => {
+        setIsLoading(true);
+        await fetchSchedules(filterParams);
+        await fetchFilters();
+        // await fetchScheduleTypes();
+        // await fetchUsers();
+        if (PRODMODE) {
+            setIsLoading(false);
+        } else {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
+        }
+    };
+
+    const fetchFilters = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/filterselects`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+
+                if (serverResponse.data.content) {
+                    setCompanies(serverResponse.data.content.companies);
+                    setScheduleTypes(serverResponse.data.content.schedule_types);
+                }
+
+                // console.log('Response data as JSON:', JSON.stringify(serverResponse.data.content, null, 2));
+
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setCompanies(COMPANIES);
+            setScheduleTypes(SCHED_TYPES);
+        }
+    };
+
+    const fetchSchedules = async (filterParams) => {
+        if (PRODMODE) {
+            try {
+                setFiltersState(filterParams);
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get',
+                    {
+                        data: {filterParams, pageSize, currentPage},
+                        _token: CSRF_TOKEN
+                    }
+                );
+
+                setScheduleList(response.data);
+                console.log('Response data as JSON:', JSON.stringify(response.data.content, null, 2));
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setScheduleList(SCHEDULE_LIST);
+        }
+    }
+
+    const handleFilterChanged = async (filterParams) => {
+        if (isMounted) {
+            await fetchInfo(filterParams);
+        }
+    };
+
+    const handleChangePageSize = (value) => {
+        setPageSize(value);
+    };
+
+    const handlePageChange = (value) => {
+        setCurrentPage(value);
+    };
+
+    const openBlankEditor = () =>{
+        setEditedId(null);
+        setEditedItem(
+            {
+                created_at: dayjs().unix(),
+                id_company: userdata.user.id_company,
+                // company_name: "Arstel",
+                // company_color: "#229900",
+                skud_schedule_type_id: 1,
+                name: "Новый график",
+                description: "...",
+                start_time: dayjs().unix(),
+                end_time: dayjs().unix(),
+                target_time: (60*60*8),
+                target_unit: 1,
+                lunch_start: (60*60*13),
+                lunch_end: (60*60*15),
+                lunch_time: (60*45),
+                schedule: [],
+                next_id: null,
+                deleted: 0,
+                skud_prod_calendar_id: 0,
+            }
+        );
+        setEditorModalOpen(true);
+    }
 
 
     /**
-     * Богдан еонец
+     * Богдан конец
      */
 
     return (
@@ -609,65 +706,136 @@ const SchedManagerPage = (props) => {
                     </div>
                 </Affix>
             </Header>
+            <Layout className="sk-layout-center">
+                <Sider width={isOpenFilters ? "330px" : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
+                    <Affix offsetTop={54}>
+                        <div className="sk-width-container">
+                            <div className="sk-usp-filter-col">
+                                <ClaimManagerSidebar
+                                    company_list={prepareSelectOptions('company', companies)}
+                                    schedules_types_list={scheduleTypes}
+                                    on_change_filter={handleFilterChanged}
+                                />
+                            </div>
+                        </div>
+                    </Affix>
+                </Sider>
+                <Content className="content">
+                    <div className="sk-content-table-wrapper">
+                        <Affix offsetTop={44}>
+                            <div className="sk-pagination-wrapper">
+                                <div className="sk-pagination-container">
+                                    <Pagination
+                                        current={currentPage}
+                                        // total={count}
+                                        pageSize={pageSize}
+                                        pageSizeOptions={[10, 50, 100]}
+                                        locale={{
+                                            items_per_page: 'на странице',
+                                            jump_to: 'Перейти',
+                                            jump_to_confirm: 'OK',
+                                            page: 'Страница'
+                                        }}
+                                        onShowSizeChange={(current, newSize) => handleChangePageSize(newSize)}
+                                        onChange={(page) => handlePageChange(page)}
+                                    />
+
+                                    <Tag
+                                        style={{
+                                            width: '160px',
+                                            height: '30px',
+                                            lineHeight: '27px',
+                                            textAlign: 'center',
+                                            color: '#868686',
+                                            fontSize: '14px',
+                                            backgroundColor: '#ededed',
+                                            borderColor: '#ededed',
+                                        }}
+                                    >Всего найдено: {0}</Tag>
+                                </div>
+                                <Button color={'primary'}
+                                        variant={'outlined'}
+                                        icon={<PlusOutlined/>}
+                                        style={{ width: '125px' }}
+                                        onClick={openBlankEditor}
+                                >Создать</Button>
+                            </div>
+                        </Affix>
+                        <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
+                            <div className="sk-content-table">
+                                {scheduleList.map((item, index) => (
+                                    <SchedListRow key={index} data={item}
+                                        onOpenEditorModal={openEditorModal}
+                                        onOpenUserManager={openUserModal}
+                                        users_count={item.users_count}
+                                    />
+                                ))}
+                            </div>
+                        </Spin>
+                    </div>
+                </Content>
+            </Layout>
+
+            <SchedModalEditor
+                open={editorModalOpen}
+                on_cancel={cancelEditorModal}
+                on_save={saveScheduleForm}
+                target_id={editedId}
+                data={editedIdtem}
+                userData={userdata}
+                prodCalendars={baseProdCalendars}
+                schedTypes={scheduleTypes}
+                on_delete={deleteSchedule}
+                ctrl_key={ctrlKey}
+            />
+
+            <SchedModalUsers
+                open={userManagerModalOpen}
+                on_save={saveLinks}
+                on_cancel={cancelUsersModal}
+                target_id={editedId}
+                group_data={editedIdtem}
+                data={baseEntityList}
+                userData={userdata}
+                schedTypes={scheduleTypes}
+            />
 
         </Layout>
-
-
     )
 };
 
 export default SchedManagerPage;
 
 
-{/*<div className={'sk-mw-1400'}>*/}
-{/*    <br />*/}
-{/*    <h2>Графики работ</h2>*/}
-{/*    <SchedToolbar*/}
-{/*        companies={companies}*/}
-{/*        userData={userdata}*/}
-{/*        onChangeFilter={onSetFilters}*/}
-{/*        schedTypes={scheduleTypes}*/}
-{/*        onAddNewClick={openBlankEditor}*/}
-{/*    />*/}
-{/*    <br />*/}
-
-{/*    <div className={'sk-sched-1col-body'}>*/}
-{/*        <div className={'sk-sched-main-col'}>*/}
-{/*            <SchedList*/}
-{/*                dataSchedules={scheduleList}*/}
-{/*                onOpenEditorModal={openEditorModal}*/}
-{/*                onOpenUserManager={openUserModal}*/}
-{/*                entityList={baseEntityList}*/}
-{/*            />*/}
-{/*        </div>*/}
-{/*        {scheduleList.length === 0 ? (*/}
-{/*            <Empty description={"Ничего не найдено"}/>*/}
-{/*        ): ""}*/}
-
-{/*    </div>*/}
-
-
-{/*    <SchedModalEditor*/}
-{/*        open={editorModalOpen}*/}
-{/*        on_cancel={cancelEditorModal}*/}
-{/*        on_save={saveScheduleForm}*/}
-{/*        target_id={editedId}*/}
-{/*        data={editedIdtem}*/}
-{/*        userData={userdata}*/}
-{/*        prodCalendars={baseProdCalendars}*/}
-{/*        schedTypes={scheduleTypes}*/}
-{/*        on_delete={deleteSchedule}*/}
-{/*        ctrl_key={ctrlKey}*/}
-{/*        />*/}
-
-{/*    <SchedModalUsers*/}
-{/*        open={userManagerModalOpen}*/}
-{/*        on_save={saveLinks}*/}
-{/*        on_cancel={cancelUsersModal}*/}
-{/*        target_id={editedId}*/}
-{/*        group_data={editedIdtem}*/}
-{/*        data={baseEntityList}*/}
-{/*        userData={userdata}*/}
-{/*        schedTypes={scheduleTypes}*/}
-{/*        />*/}
-{/*</div>*/}
+/**
+ * <div className={'sk-mw-1400'}>
+ *                 <br />
+ *                 <h2>Графики работ</h2>
+ *                 <SchedToolbar
+ *                     companies={companies}
+ *                     userData={userdata}
+ *                     onChangeFilter={onSetFilters}
+ *                     schedTypes={scheduleTypes}
+ *                     onAddNewClick={openBlankEditor}
+ *                 />
+ *                 <br />
+ *
+ *                 <div className={'sk-sched-1col-body'}>
+ *                     <div className={'sk-sched-main-col'}>
+ *                         <SchedList
+ *                             dataSchedules={scheduleList}
+ *                             onOpenEditorModal={openEditorModal}
+ *                             onOpenUserManager={openUserModal}
+ *                             entityList={baseEntityList}
+ *                         />
+ *                     </div>
+ *                     {scheduleList.length === 0 ? (
+ *                         <Empty description={"Ничего не найдено"}/>
+ *                     ) : ""}
+ *
+ *                 </div>
+ *
+ *
+ *
+ *             </div>
+ */
