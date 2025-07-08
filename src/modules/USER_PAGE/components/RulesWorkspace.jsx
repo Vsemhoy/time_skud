@@ -77,8 +77,8 @@ function RulesWorkspace(props) {
     useEffect(() => {
         if (isMounted) {
             if (editedRule.id) {
-                setToolbarTypeRuleId(editedRule.schedule_type);
-                setToolbarNameRuleId(editedRule.schedule_id);
+                setToolbarTypeRuleId(editedRule.rule_type_id);
+                setToolbarNameRuleId(editedRule.id);
                 setToolbarDateStartRule(dayjs(editedRule.start));
                 setToolbarDateEndRule(dayjs(editedRule.end));
             } else {
@@ -89,6 +89,49 @@ function RulesWorkspace(props) {
             }
         }
     }, [editedRule]);
+
+    useEffect(() => {
+        const arr = [];
+        rules.forEach(rule => {
+            if (+rule.id !== +editedRule.id && +rule.rule_type_id === +editedRule.rule_type_id) {
+                if (dayjs(toolbarDateStartRule) >= dayjs(rule.start) && dayjs(toolbarDateStartRule) <= dayjs(rule.end)) {
+                    arr.push(rule.id);
+                }
+                if (dayjs(toolbarDateEndRule) >= dayjs(rule.start) && dayjs(toolbarDateEndRule) <= dayjs(rule.end)) {
+                    arr.push(rule.id);
+                }
+            }
+        });
+        setIntersections(arr);
+    }, [toolbarDateStartRule, toolbarDateEndRule]);
+
+    useEffect(() => {
+        const now = dayjs().startOf('day'); // Обрезаем время, оставляем только дату
+        const startDate = dayjs(toolbarDateStartRule).startOf('day'); // Аналогично для начальной даты
+
+        if (startDate.isBefore(now)) {
+            const newStart = dayjs().startOf('day'); // Устанавливаем начало текущего дня
+            if (!newStart.isSame(startDate, 'day')) { // Проверяем, отличается ли дата
+                setToolbarDateStartRule(newStart);
+            }
+        }
+    }, [toolbarDateStartRule]);
+
+    useEffect(() => {
+        const tomorrow = dayjs().add(1, 'day').startOf('day'); // Завтрашняя дата без времени
+        const endDate = dayjs(toolbarDateEndRule).startOf('day'); // Конечная дата без времени
+
+        if (endDate.isBefore(tomorrow)) {
+            const newEnd = dayjs().add(1, 'day').startOf('day'); // Завтрашний день (00:00:00)
+            if (!newEnd.isSame(endDate, 'day')) { // Проверяем, отличается ли дата
+                setToolbarDateEndRule(newEnd);
+            }
+        }
+    }, [toolbarDateEndRule]);
+
+    useEffect(() => {
+        console.log(intersections);
+    }, [intersections]);
 
     useEffect(() => {
         if (userIdState === 'new') {
@@ -217,19 +260,104 @@ function RulesWorkspace(props) {
     const toEditRule = (id) => {
         setEditedRule(rules.find(schedule => +schedule.id === +id));
     };
+    const isCanAddRule = () => {
+        if (activeRules.find(rule => rule.id === editedRule.id)) {
+            if (nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id)) {
+                const next = nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id);
+                return (
+                    (dayjs(toolbarDateEndRule) >= dayjs(next.start)) ||
+                    !toolbarTypeRuleId ||
+                    !toolbarNameRuleId ||
+                    !toolbarDateStartRule ||
+                    !toolbarDateEndRule ||
+                    intersections.length
+                );
+            }
+            return (
+                !toolbarTypeRuleId ||
+                !toolbarNameRuleId ||
+                !toolbarDateStartRule ||
+                intersections.length
+            );
+        } else if (nextRules.find(rule => rule.id === editedRule.id)) {
+            return (
+                !toolbarTypeRuleId ||
+                !toolbarNameRuleId ||
+                !toolbarDateStartRule ||
+                intersections.length
+            );
+        } else {
+            return (
+                !toolbarTypeRuleId ||
+                !toolbarNameRuleId ||
+                !toolbarDateStartRule ||
+                intersections.length ||
+                !nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id)
+            );
+        }
+    };
     const isDisableField = () => {
-        return false;
+        return activeRules.find(rule => rule.id === editedRule.id);
     };
     const clearEdit = () => {
         setEditedRule({id: 0});
     };
-    const isCanAddSchedule = () => {
-        return true;
-    };
 
     const fetchAddOrUpdateRule = async () => {
-
+        if (editedRule.id) {
+            await fetchUpdateRule();
+        } else {
+            await fetchAddRule();
+        }
+        clearEdit();
     };
+    const fetchUpdateRule = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userupdaterules/${editedRule.id}`,
+                    {
+                        data: {
+                            userId: userIdState,
+                            editedRule,
+                            toolbarTypeRuleId,
+                            toolbarNameRuleId,
+                            toolbarDateStartRule,
+                            toolbarDateEndRule,
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+            } catch (error) {
+                console.error('Error fetching update user rule:', error);
+            }
+        } else {
+            await fetchInfo();
+        }
+    }
+    const fetchAddRule = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/useraddrule`,
+                    {
+                        data: {
+                            userId: userIdState,
+                            toolbarTypeRuleId,
+                            toolbarNameRuleId,
+                            toolbarDateStartRule,
+                            toolbarDateEndRule,
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+            } catch (error) {
+                console.error('Error fetching add to user rule:', error);
+            }
+        } else {
+            await fetchInfo();
+        }
+    }
 
     return (
         <Spin spinning={isLoading}>
@@ -301,7 +429,9 @@ function RulesWorkspace(props) {
                         </div>
                         {rules.map(rule => (
                             <div key={rule.id} className={`${styles.sk_rules_table_row_wrapper}
-                                                           ${activeRules.find(r => r.id === rule.id) ? styles.sk_table_row_active : ''}`
+                                                           ${activeRules.find(r => r.id === rule.id) ? styles.sk_table_row_active : ''}
+                                                           ${intersections.find(ruleId => +ruleId === +rule.id) ? styles.sk_table_row_danger : ''}
+                                                           ${+rule.id === +editedRule.id ? styles.sk_table_row_edit : ''}`
                             }>
                                 <div className={styles.sk_rules_table_row}>
                                     <div className={`${styles.sk_rules_table_cell}`}>
@@ -430,15 +560,15 @@ function RulesWorkspace(props) {
                             <br/>
                             <div className={styles.sk_label_select}>Дата окончания действия правила</div>
                             <DatePicker placeholder="Дата окончания действия правила"
-                                        value={toolbarDateStartRule}
-                                        onChange={(e) => setToolbarDateStartRule(e)}
+                                        value={toolbarDateEndRule}
+                                        onChange={(e) => setToolbarDateEndRule(e)}
                                         format={"DD.MM.YYYY"}
                                         style={{width: '100%'}}
                             />
                             <br/>
                             <br/>
                             <Button block
-                                    disabled={isCanAddSchedule()}
+                                    disabled={isCanAddRule()}
                                     onClick={() => fetchAddOrUpdateRule()}
                             >Привязать правило</Button>
                         </div>
