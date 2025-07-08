@@ -235,7 +235,6 @@ const BaseInfoWorkspace = (props) => {
         }
     };
     const createUser = async () => {
-        let content = {};
         if (PRODMODE) {
             try {
                 const info = {
@@ -253,8 +252,9 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                content = serverResponse.data.content;
-                onUpdateSavingInfo(false, content);
+                if (serverResponse.data.content) {
+                    onUpdateSavingInfo(false, serverResponse.data.content);
+                }
             } catch (e) {
                 console.log(e)
             }
@@ -263,7 +263,6 @@ const BaseInfoWorkspace = (props) => {
         }
     };
     const sendUpdatedInfo = async () => {
-        let content = {};
         if (PRODMODE) {
             try {
                 const data = {
@@ -277,8 +276,9 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                content = serverResponse.data.content;
-                onUpdateSavingInfo(false, content);
+                if (serverResponse.data.content) {
+                    setContent(serverResponse.data.content);
+                }
             } catch (e) {
                 console.log(e)
             }
