@@ -20,31 +20,31 @@ const BaseInfoWorkspace = (props) => {
     const [departments, setDepartments] = useState([]);
     const [statuses, setStatuses] = useState([
         {
-            id: 0,
+            id: 1,
             name: 'Работает'
         },
         {
-            id: 1,
+            id: 2,
             name: 'Уволен'
         },
     ]);
     const [conditionalCards, setConditionalCards] = useState([
         {
-            id: 0,
+            id: 1,
             name: 'Стелс'
         },
         {
-            id: 1,
+            id: 2,
             name: 'Нормальная'
         },
     ]);
     const [allowEntries, setAllowEntries] = useState([
         {
-            id: 0,
+            id: 1,
             name: 'Нет'
         },
         {
-            id: 1,
+            id: 2,
             name: 'Да'
         },
     ]);
@@ -252,7 +252,7 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                onSavedInfo();
+                setTimeout(() => onSavedInfo(), 500);
                 if (serverResponse.data.content) {
                     onUpdateSavingInfo(false, serverResponse.data.content);
                 }
@@ -280,7 +280,7 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
-                onSavedInfo();
+                setTimeout(() => onSavedInfo(), 500);
                 if (serverResponse.data.content) {
                     setContent(serverResponse.data.content);
                 }
