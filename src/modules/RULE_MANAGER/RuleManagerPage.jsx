@@ -208,7 +208,7 @@ const RuleManagerPage = (props) => {
                     });
                 console.log('rules', response);
                 await fetchUsers(filtersState);
-                // setBaseRuleList([...baseRuleList, response.data.data]);
+                await fetchRules(filtersState);
             } catch (e) {
                 console.log(e)
             }
@@ -226,6 +226,7 @@ const RuleManagerPage = (props) => {
                         _token: CSRF_TOKEN
                     });
                 await fetchUsers(filtersState);
+                await fetchRules(filtersState);
             } catch (e) {
                 console.log(e)
             }
@@ -288,7 +289,7 @@ const RuleManagerPage = (props) => {
                                         current={currentPage}
                                         total={baseRuleList.length}
                                         pageSize={pageSize}
-                                        pageSizeOptions={[50, 100]}
+                                        pageSizeOptions={[10, 50, 100]}
                                         locale={{
                                             items_per_page: 'на странице',
                                             jump_to: 'Перейти',
