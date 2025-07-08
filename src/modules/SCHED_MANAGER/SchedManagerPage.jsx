@@ -13,6 +13,16 @@ import SchedModalEditor from "./components/SchedModalEditor";
 import SchedModalUsers from "./components/SchedModalUsers";
 import dayjs from "dayjs";
 
+
+
+
+
+import {Affix, Button, Pagination, Tag, Layout, Spin} from "antd";
+import {FilterOutlined} from "@ant-design/icons";
+import {Header} from "antd/es/layout/layout";
+import Cookies from "js-cookie";
+
+
 const SchedManagerPage = (props) => {
     const { userdata } = props;
     const [companies, setCompanies] = useState([
@@ -557,60 +567,107 @@ const SchedManagerPage = (props) => {
         setCtrlKey(false);
     }
 
+
+    /**
+     * БОГДАН начало
+     */
+
+    const useCookieState = (key, defaultValue) => {
+        const [state, setState] = useState(() => {
+            const saved = Cookies.get(key);
+            return saved ? JSON.parse(saved) : defaultValue;
+        });
+
+        useEffect(() => {
+            Cookies.set(key, JSON.stringify(state), { expires: 365 });
+        }, [key, state]);
+
+        return [state, setState];
+    };
+
+    const [isOpenFilters, setIsOpenFilters] = useCookieState('rule_manager_filters', true);
+
+
+
+    /**
+     * Богдан еонец
+     */
+
     return (
-        <div className={'sk-mw-1400'}>
-            <br />
-            <h2>Графики работ</h2>
-            <SchedToolbar
-                companies={companies}
-                userData={userdata}
-                onChangeFilter={onSetFilters}
-                schedTypes={scheduleTypes}
-                onAddNewClick={openBlankEditor}
-            />
-            <br />
+        <Layout className={'layout'}>
+            <Header className={'header'}>
+                <Affix>
+                    <div className={'sk-header-container'}>
+                        <Button color={'default'}
+                                variant={isOpenFilters ? 'solid' : 'outlined'}
+                                icon={<FilterOutlined />}
+                                style={{ width: '125px' }}
+                                onClick={() => setIsOpenFilters(!isOpenFilters)}
+                        >Фильтры</Button>
+                        <h1 className={'page-header'}>Графики работ</h1>
+                        <div></div>
+                    </div>
+                </Affix>
+            </Header>
 
-            <div className={'sk-sched-1col-body'}>
-                <div className={'sk-sched-main-col'}>
-                    <SchedList
-                        dataSchedules={scheduleList}
-                        onOpenEditorModal={openEditorModal}
-                        onOpenUserManager={openUserModal}
-                        entityList={baseEntityList}
-                    />
-                </div>
-                {scheduleList.length === 0 ? (
-                    <Empty description={"Ничего не найдено"}/>
-                ): ""}
-
-            </div>
+        </Layout>
 
 
-            <SchedModalEditor
-                open={editorModalOpen}
-                on_cancel={cancelEditorModal}
-                on_save={saveScheduleForm}
-                target_id={editedId}
-                data={editedIdtem}
-                userData={userdata}
-                prodCalendars={baseProdCalendars}
-                schedTypes={scheduleTypes}
-                on_delete={deleteSchedule}
-                ctrl_key={ctrlKey}
-                />
-
-            <SchedModalUsers
-                open={userManagerModalOpen}
-                on_save={saveLinks}
-                on_cancel={cancelUsersModal}
-                target_id={editedId}
-                group_data={editedIdtem}
-                data={baseEntityList}
-                userData={userdata}
-                schedTypes={scheduleTypes}
-                />
-        </div>
     )
 };
 
 export default SchedManagerPage;
+
+
+{/*<div className={'sk-mw-1400'}>*/}
+{/*    <br />*/}
+{/*    <h2>Графики работ</h2>*/}
+{/*    <SchedToolbar*/}
+{/*        companies={companies}*/}
+{/*        userData={userdata}*/}
+{/*        onChangeFilter={onSetFilters}*/}
+{/*        schedTypes={scheduleTypes}*/}
+{/*        onAddNewClick={openBlankEditor}*/}
+{/*    />*/}
+{/*    <br />*/}
+
+{/*    <div className={'sk-sched-1col-body'}>*/}
+{/*        <div className={'sk-sched-main-col'}>*/}
+{/*            <SchedList*/}
+{/*                dataSchedules={scheduleList}*/}
+{/*                onOpenEditorModal={openEditorModal}*/}
+{/*                onOpenUserManager={openUserModal}*/}
+{/*                entityList={baseEntityList}*/}
+{/*            />*/}
+{/*        </div>*/}
+{/*        {scheduleList.length === 0 ? (*/}
+{/*            <Empty description={"Ничего не найдено"}/>*/}
+{/*        ): ""}*/}
+
+{/*    </div>*/}
+
+
+{/*    <SchedModalEditor*/}
+{/*        open={editorModalOpen}*/}
+{/*        on_cancel={cancelEditorModal}*/}
+{/*        on_save={saveScheduleForm}*/}
+{/*        target_id={editedId}*/}
+{/*        data={editedIdtem}*/}
+{/*        userData={userdata}*/}
+{/*        prodCalendars={baseProdCalendars}*/}
+{/*        schedTypes={scheduleTypes}*/}
+{/*        on_delete={deleteSchedule}*/}
+{/*        ctrl_key={ctrlKey}*/}
+{/*        />*/}
+
+{/*    <SchedModalUsers*/}
+{/*        open={userManagerModalOpen}*/}
+{/*        on_save={saveLinks}*/}
+{/*        on_cancel={cancelUsersModal}*/}
+{/*        target_id={editedId}*/}
+{/*        group_data={editedIdtem}*/}
+{/*        data={baseEntityList}*/}
+{/*        userData={userdata}*/}
+{/*        schedTypes={scheduleTypes}*/}
+{/*        />*/}
+{/*</div>*/}
