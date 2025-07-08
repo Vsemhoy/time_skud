@@ -20,31 +20,31 @@ const BaseInfoWorkspace = (props) => {
     const [departments, setDepartments] = useState([]);
     const [statuses, setStatuses] = useState([
         {
-            id: 1,
+            id: 0,
             name: 'Работает'
         },
         {
-            id: 2,
+            id: 1,
             name: 'Уволен'
         },
     ]);
     const [conditionalCards, setConditionalCards] = useState([
         {
-            id: 1,
+            id: 0,
             name: 'Стелс'
         },
         {
-            id: 2,
+            id: 1,
             name: 'Нормальная'
         },
     ]);
     const [allowEntries, setAllowEntries] = useState([
         {
-            id: 1,
+            id: 0,
             name: 'Нет'
         },
         {
-            id: 2,
+            id: 1,
             name: 'Да'
         },
     ]);
@@ -323,7 +323,7 @@ const BaseInfoWorkspace = (props) => {
                             }}
                         >
                             <Select placeholder="Компания"
-                                    value={company.id ? +company.id : null}
+                                    value={(status.id !== undefined || false) ? +company.id : null}
                                     options={companies}
                                     disabled={userIdState !== 'new'}
                                     onChange={(id) => setCompany(companies.find(c => c.id === id))}
@@ -368,7 +368,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Отдел</p>
                         <Select placeholder="Отдел"
-                                value={department.id ? +department.id : null}
+                                value={(status.id !== undefined || false) ? +department.id : null}
                                 options={departments}
                                 onChange={(id) => setDepartment(departments.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -441,7 +441,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Статус</p>
                         <Select placeholder="Статус"
-                                value={status.id ? +status.id : null}
+                                value={(status.id !== undefined || false) ? +status.id : null}
                                 options={statuses}
                                 onChange={(id) => setStatus(statuses.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -482,7 +482,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Условная карточка</p>
                         <Select placeholder="Стелс / Нормальная"
-                                value={conditionalCard.id ? +conditionalCard.id : null}
+                                value={(status.id !== undefined || false) ? +conditionalCard.id : null}
                                 options={conditionalCards}
                                 onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -495,7 +495,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Разрешить вход</p>
                         <Select placeholder="Да / Нет"
-                                value={allowEntry.id ? +allowEntry.id : null}
+                                value={(status.id !== undefined || false) ? +allowEntry.id : null}
                                 options={allowEntries}
                                 onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
                                 style={{width: 360}}
