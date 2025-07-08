@@ -1,3 +1,364 @@
+export const MOCK_USER = {
+    company: {
+        id: 2,
+        name: 'Arstel',
+        color: '#f2914a'
+    },
+    surname: 'Арчи',
+    name: 'Гавриил',
+    patronymic: 'Дессус',
+    department: {
+        id: 1,
+        name: 'Монтажный отдел',
+    },
+    occupy: 'Руководитель',
+    innerPhone: '228',
+    telegramID: '22834525453',
+    email: 'arstel@arstel.com',
+    dateLeave: '12.09.2025',
+    dateEnter: '12.09.2029',
+    rating: '40',
+    status: {
+        id: 0,
+        name: 'Работает',
+    },
+    login: 'agd',
+    password: '',
+    cardNumber: '55GKEK24MM',
+    conditionalCard: {
+        id: 1,
+        name: 'Нормальная',
+    },
+    allowEntry: {
+        id: 0,
+        name: 'Да',
+    }
+};
+export const COMPANIES = [
+    {
+        value: 1,
+        label: 'FreeCompany'
+    },
+    {
+        value: 2,
+        label: 'Arstel'
+    },
+    {
+        value: 3,
+        label: 'Rondo'
+    },
+];
+export const DEPARTMENTS = [
+    {
+        value: 1,
+        label: 'Администрация'
+    },
+    {
+        value: 2,
+        label: 'Монтажный отдел'
+    },
+    {
+        value: 3,
+        label: 'IT отдел'
+    },
+];
+
+export const USDA = {
+    "companies": [
+        {
+            "id": 1,
+            "name": "FreeCompany",
+            "description": "Свободная компания",
+            "is_active": 1,
+            "template_prefix": "free",
+            "folder": "free",
+            "color": "#ff7700",
+            "ext_address_offers": null,
+            "path_logo": "",
+            "created_at": null,
+            "updated_at": null,
+            "phone": null,
+            "places": [
+                {
+                    "id": 89,
+                    "name": "bidmanager",
+                    "label": "Роль менеджер",
+                    "accessgroup": 4,
+                    "accessname": "Менеджер",
+                    "position": 210,
+                    "place": 1
+                },
+                {
+                    "id": 91,
+                    "name": "bidadministrator",
+                    "label": "Роль администратора",
+                    "accessgroup": 4,
+                    "accessname": "Администратор",
+                    "position": 220,
+                    "place": 2
+                },
+                {
+                    "id": 90,
+                    "name": "bidbuch",
+                    "label": "Роль бухгалтера",
+                    "accessgroup": 4,
+                    "accessname": "Бухгалтер",
+                    "position": 230,
+                    "place": 3
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Arstel",
+            "description": "OOO Арстел",
+            "is_active": 1,
+            "template_prefix": "ars",
+            "folder": "arstel",
+            "color": "#ff7700",
+            "ext_address_offers": null,
+            "path_logo": "/images/identics/adw32jk2jl/Arstel_logo.svg",
+            "created_at": null,
+            "updated_at": null,
+            "phone": null,
+            "places": [
+                {
+                    "id": 89,
+                    "name": "bidmanager",
+                    "label": "Роль менеджер",
+                    "accessgroup": 4,
+                    "accessname": "Менеджер",
+                    "position": 210,
+                    "place": 1
+                },
+                {
+                    "id": 91,
+                    "name": "bidadministrator",
+                    "label": "Роль администратора",
+                    "accessgroup": 4,
+                    "accessname": "Администратор",
+                    "position": 220,
+                    "place": 2
+                },
+                {
+                    "id": 90,
+                    "name": "bidbuch",
+                    "label": "Роль бухгалтера",
+                    "accessgroup": 4,
+                    "accessname": "Бухгалтер",
+                    "position": 230,
+                    "place": 3
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Rondo",
+            "description": "ООО Рондо",
+            "is_active": 1,
+            "template_prefix": "rond",
+            "folder": "rondo",
+            "color": "#229922",
+            "ext_address_offers": null,
+            "path_logo": "/images/identics/iwtRd02l2h/logo_LDA.svg",
+            "created_at": null,
+            "updated_at": null,
+            "phone": null,
+            "places": [
+                {
+                    "id": 89,
+                    "name": "bidmanager",
+                    "label": "Роль менеджер",
+                    "accessgroup": 4,
+                    "accessname": "Менеджер",
+                    "position": 210,
+                    "place": 1
+                },
+                {
+                    "id": 91,
+                    "name": "bidadministrator",
+                    "label": "Роль администратора",
+                    "accessgroup": 4,
+                    "accessname": "Администратор",
+                    "position": 220,
+                    "place": 2
+                },
+                {
+                    "id": 90,
+                    "name": "bidbuch",
+                    "label": "Роль бухгалтера",
+                    "accessgroup": 4,
+                    "accessname": "Бухгалтер",
+                    "position": 230,
+                    "place": 3
+                }
+            ]
+        }
+    ],
+    "user": {
+        "id": 46,
+        "surname": "Кошелев",
+        "name": "Александр",
+        "secondname": "Станиславович",
+        "occupy": "коммерческий директор",
+        "id_departament": 1,
+        "id_role": 2,
+        "email": "",
+        "phone": "100",
+        "id_company": 2,
+        "sales_role": 1,
+        "active_company": 2,
+        "telegram_id": null,
+        "skud_filial_id": 2,
+        "super": 1,
+        "active_company_name": "Arstel"
+    },
+    "duration": 0.005259037017822266,
+    "message": "OK",
+    "status": 200,
+    "notifications": [],
+    "acls": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        27,
+        28,
+        33,
+        34,
+        36,
+        37,
+        39,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149
+    ]
+};
+
 export const SCHEDULES = [
     {
         "id": 201,
@@ -408,10 +769,12 @@ export const SCHEDULES_NAMES_SELECTS = [
 
 export const RULES = [
     {
-        "id": 6,
+        "id": 7,
         "rule_type_id": 2,
         "name": "Сдвиг графика",
         "name_2": "Сдвиг графика",
+        "start": "2025-07-14 00:00:00",
+        "end": "2025-07-20 23:59:59",
         "duration_time": 3600,
         "variable_a": 0,
         "variable_b": 0,
@@ -428,10 +791,34 @@ export const RULES = [
         "type_color": "#ff91004b"
     },
     {
-        "id": 5,
-        "rule_type_id": 6,
+        "id": 6,
+        "rule_type_id": 2,
         "name": "Автозакрытие смены для Склада - завершение рабочего дня автоматом",
         "name_2": "Автозакрытие смены для Склада - завершение рабочего дня автоматом",
+        "start": "2025-07-07 00:00:00",
+        "end": "2025-07-13 23:59:59",
+        "duration_time": 3600,
+        "variable_a": 0,
+        "variable_b": 1,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "group_count": null,
+        "type_color": "#00f5ab69"
+    },
+    {
+        "id": 5,
+        "rule_type_id": 2,
+        "name": "Автозакрытие смены для Склада - завершение рабочего дня автоматом",
+        "name_2": "Автозакрытие смены для Склада - завершение рабочего дня автоматом",
+        "start": "2025-06-30 00:00:00",
+        "end": "2025-07-06 23:59:59",
         "duration_time": 3600,
         "variable_a": 0,
         "variable_b": 1,
@@ -452,6 +839,8 @@ export const RULES = [
         "rule_type_id": 3,
         "name": "Правило хорошего тона для Арстел",
         "name_2": "Правило хорошего тона для Арстел",
+        "start": "2025-07-14 00:00:00",
+        "end": "2025-07-20 23:59:59",
         "duration_time": 3600,
         "variable_a": 1,
         "variable_b": 1,
@@ -468,10 +857,12 @@ export const RULES = [
         "type_color": "#7c550069"
     },
     {
-        "id": 2,
-        "rule_type_id": 2,
+        "id": 3,
+        "rule_type_id": 3,
         "name": "Правило хорошего тона 2 - переработка",
         "name_2": "Правило хорошего тона 2 - переработка",
+        "start": "2025-07-07 00:00:00",
+        "end": "2025-07-13 23:59:59",
         "duration_time": 3600,
         "variable_a": 1,
         "variable_b": 1,
@@ -488,10 +879,34 @@ export const RULES = [
         "type_color": "#ff91004b"
     },
     {
+        "id": 2,
+        "rule_type_id": 1,
+        "name": "Правило_1741014647",
+        "name_2": "Правило_1741014647",
+        "start": "2025-07-14 00:00:00",
+        "end": "2025-07-20 23:59:59",
+        "duration_time": 3600,
+        "variable_a": 1,
+        "variable_b": 0,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "group_count": null,
+        "type_color": "#ff000069"
+    },
+    {
         "id": 1,
         "rule_type_id": 1,
         "name": "Правило_1741014647",
         "name_2": "Правило_1741014647",
+        "start": "2025-07-07 00:00:00",
+        "end": "2025-07-13 23:59:59",
         "duration_time": 3600,
         "variable_a": 1,
         "variable_b": 0,
@@ -508,397 +923,209 @@ export const RULES = [
         "type_color": "#ff000069"
     }
 ];
-
-
-
-
-export const MOCK_USER = {
-    company: {
-        id: 2,
-        name: 'Arstel',
-        color: '#f2914a'
+export const RULES_TYPES_SELECT = [
+    {
+        "id": 0,
+        "name": "Все типы правил"
     },
-    surname: 'Арчи',
-    name: 'Гавриил',
-    patronymic: 'Дессус',
-    department: {
-        id: 1,
-        name: 'Монтажный отдел',
+    {
+        "id": 1,
+        "name": "Опоздания"
     },
-    occupy: 'Руководитель',
-    innerPhone: '228',
-    telegramID: '22834525453',
-    email: 'arstel@arstel.com',
-    dateLeave: '12.09.2025',
-    dateEnter: '12.09.2029',
-    rating: '40',
-    status: {
-        id: 0,
-        name: 'Работает',
+    {
+        "id": 2,
+        "name": "Ранний приход"
     },
-    login: 'agd',
-    password: '',
-    cardNumber: '55GKEK24MM',
-    conditionalCard: {
-        id: 1,
-        name: 'Нормальная',
+    {
+        "id": 3,
+        "name": "Кратковременные выходы"
     },
-    allowEntry: {
-        id: 0,
-        name: 'Да',
+    {
+        "id": 4,
+        "name": "Отработка общего ПВ утром"
+    },
+    {
+        "id": 5,
+        "name": "Отработка общего ПВ вечером"
+    },
+    {
+        "id": 6,
+        "name": "Накопительная система"
+    },
+    {
+        "id": 7,
+        "name": "Автозакрытие смены"
     }
-};
-export const COMPANIES = [
-    {
-        value: 1,
-        label: 'FreeCompany'
-    },
-    {
-        value: 2,
-        label: 'Arstel'
-    },
-    {
-        value: 3,
-        label: 'Rondo'
-    },
 ];
-export const DEPARTMENTS = [
+export const RULES_NAMES_SELECT = [
     {
-        value: 1,
-        label: 'Администрация'
+        "id": 12,
+        "rule_type_id": 7,
+        "name": "dfghdfghgfdhdfghdgfhdfghdfgnbvcncbvnpenis",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 0,
+        "type_color": "#9c27b059"
     },
     {
-        value: 2,
-        label: 'Монтажный отдел'
+        "id": 11,
+        "rule_type_id": 3,
+        "name": "sdgfghjdffghjhdfghdgf",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 0,
+        "type_color": "#7c550069"
     },
     {
-        value: 3,
-        label: 'IT отдел'
-    },
-];
-export const STATUSES = [
-    {
-        value: 1,
-        label: 'Работает'
-    },
-    {
-        value: 2,
-        label: 'Уволен'
-    },
-];
-export const CONDITIONAL_CARDS = [
-    {
-        value: 1,
-        label: 'Стелс'
+        "id": 10,
+        "rule_type_id": 3,
+        "name": "sdfsdfsdfsdfsd",
+        "duration_time": 36120,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 0,
+        "type_color": "#7c550069"
     },
     {
-        value: 2,
-        label: 'Нормальная'
+        "id": 9,
+        "rule_type_id": 3,
+        "name": "Правило_1751958365",
+        "duration_time": 36060,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 0,
+        "type_color": "#7c550069"
     },
-];
-export const ALLOW_ENTRIES = [
     {
-        value: 1,
-        label: 'Да'
-    },
-    {
-        value: 2,
-        label: 'Нет'
-    },
-];
-
-export const USDA = {
-    "companies": [
-        {
-            "id": 1,
-            "name": "FreeCompany",
-            "description": "Свободная компания",
-            "is_active": 1,
-            "template_prefix": "free",
-            "folder": "free",
-            "color": "#ff7700",
-            "ext_address_offers": null,
-            "path_logo": "",
-            "created_at": null,
-            "updated_at": null,
-            "phone": null,
-            "places": [
-                {
-                    "id": 89,
-                    "name": "bidmanager",
-                    "label": "Роль менеджер",
-                    "accessgroup": 4,
-                    "accessname": "Менеджер",
-                    "position": 210,
-                    "place": 1
-                },
-                {
-                    "id": 91,
-                    "name": "bidadministrator",
-                    "label": "Роль администратора",
-                    "accessgroup": 4,
-                    "accessname": "Администратор",
-                    "position": 220,
-                    "place": 2
-                },
-                {
-                    "id": 90,
-                    "name": "bidbuch",
-                    "label": "Роль бухгалтера",
-                    "accessgroup": 4,
-                    "accessname": "Бухгалтер",
-                    "position": 230,
-                    "place": 3
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "Arstel",
-            "description": "OOO Арстел",
-            "is_active": 1,
-            "template_prefix": "ars",
-            "folder": "arstel",
-            "color": "#ff7700",
-            "ext_address_offers": null,
-            "path_logo": "/images/identics/adw32jk2jl/Arstel_logo.svg",
-            "created_at": null,
-            "updated_at": null,
-            "phone": null,
-            "places": [
-                {
-                    "id": 89,
-                    "name": "bidmanager",
-                    "label": "Роль менеджер",
-                    "accessgroup": 4,
-                    "accessname": "Менеджер",
-                    "position": 210,
-                    "place": 1
-                },
-                {
-                    "id": 91,
-                    "name": "bidadministrator",
-                    "label": "Роль администратора",
-                    "accessgroup": 4,
-                    "accessname": "Администратор",
-                    "position": 220,
-                    "place": 2
-                },
-                {
-                    "id": 90,
-                    "name": "bidbuch",
-                    "label": "Роль бухгалтера",
-                    "accessgroup": 4,
-                    "accessname": "Бухгалтер",
-                    "position": 230,
-                    "place": 3
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "name": "Rondo",
-            "description": "ООО Рондо",
-            "is_active": 1,
-            "template_prefix": "rond",
-            "folder": "rondo",
-            "color": "#229922",
-            "ext_address_offers": null,
-            "path_logo": "/images/identics/iwtRd02l2h/logo_LDA.svg",
-            "created_at": null,
-            "updated_at": null,
-            "phone": null,
-            "places": [
-                {
-                    "id": 89,
-                    "name": "bidmanager",
-                    "label": "Роль менеджер",
-                    "accessgroup": 4,
-                    "accessname": "Менеджер",
-                    "position": 210,
-                    "place": 1
-                },
-                {
-                    "id": 91,
-                    "name": "bidadministrator",
-                    "label": "Роль администратора",
-                    "accessgroup": 4,
-                    "accessname": "Администратор",
-                    "position": 220,
-                    "place": 2
-                },
-                {
-                    "id": 90,
-                    "name": "bidbuch",
-                    "label": "Роль бухгалтера",
-                    "accessgroup": 4,
-                    "accessname": "Бухгалтер",
-                    "position": 230,
-                    "place": 3
-                }
-            ]
-        }
-    ],
-    "user": {
-        "id": 46,
-        "surname": "Кошелев",
-        "name": "Александр",
-        "secondname": "Станиславович",
-        "occupy": "коммерческий директор",
-        "id_departament": 1,
-        "id_role": 2,
-        "email": "",
-        "phone": "100",
+        "id": 8,
+        "rule_type_id": 1,
+        "name": "Правило_1751957921",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
         "id_company": 2,
-        "sales_role": 1,
-        "active_company": 2,
-        "telegram_id": null,
-        "skud_filial_id": 2,
-        "super": 1,
-        "active_company_name": "Arstel"
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 0,
+        "type_color": "#ff000069"
     },
-    "duration": 0.005259037017822266,
-    "message": "OK",
-    "status": 200,
-    "notifications": [],
-    "acls": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        27,
-        28,
-        33,
-        34,
-        36,
-        37,
-        39,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
-        57,
-        58,
-        59,
-        60,
-        61,
-        62,
-        63,
-        64,
-        65,
-        66,
-        67,
-        68,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        75,
-        77,
-        78,
-        79,
-        80,
-        81,
-        82,
-        83,
-        84,
-        85,
-        86,
-        87,
-        88,
-        89,
-        90,
-        91,
-        92,
-        93,
-        94,
-        95,
-        96,
-        98,
-        99,
-        100,
-        101,
-        102,
-        103,
-        104,
-        105,
-        106,
-        107,
-        108,
-        109,
-        110,
-        111,
-        112,
-        113,
-        114,
-        115,
-        116,
-        117,
-        118,
-        119,
-        120,
-        121,
-        122,
-        123,
-        124,
-        125,
-        126,
-        127,
-        128,
-        129,
-        130,
-        131,
-        132,
-        133,
-        134,
-        135,
-        136,
-        137,
-        138,
-        139,
-        140,
-        141,
-        142,
-        143,
-        144,
-        145,
-        146,
-        147,
-        148,
-        149
-    ]
-};
+    {
+        "id": 7,
+        "rule_type_id": 2,
+        "name": "Тестовое вот так\"",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 0,
+        "type_color": "#ff91004b"
+    },
+    {
+        "id": 6,
+        "rule_type_id": 2,
+        "name": "Сдвиг графика\"",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 0,
+        "type_color": "#ff91004b"
+    },
+    {
+        "id": 5,
+        "rule_type_id": 6,
+        "name": "Автозакрытие смены для Склада - завершение рабочего дня автоматом",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 0,
+        "type_color": "#00f5ab69"
+    },
+    {
+        "id": 4,
+        "rule_type_id": 3,
+        "name": "Правило хорошего тона для Арстел",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 1,
+        "type_color": "#7c550069"
+    },
+    {
+        "id": 2,
+        "rule_type_id": 2,
+        "name": "Правило хорошего тона 2 - переработка",
+        "duration_time": 3600,
+        "deleted": false,
+        "deleted_at": null,
+        "creator_id": 46,
+        "creator_name": "Александр",
+        "creator_surname": "Кошелев",
+        "creator_patronymic": "Станиславович",
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 2,
+        "type_color": "#ff91004b"
+    }
+];
