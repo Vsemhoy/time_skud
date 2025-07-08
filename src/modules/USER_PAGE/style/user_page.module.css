@@ -145,7 +145,7 @@ h1 {
 .sk_schedule_table {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 1px;
+    grid-gap: 4px;
 }
 .sk_schedule_table_row_wrapper {
     width: 100%;
@@ -172,18 +172,6 @@ h1 {
 }
 .sk_schedule_table_cell:first-child {
     border: none;
-}
-.sk_table_row_header {
-    background-color: #C1CAD6;
-}
-.sk_table_row_active {
-    background-color: #CBE8F3;
-}
-.sk_table_row_danger {
-    background-color: rgba(255, 0, 0, 0.39);
-}
-.sk_table_row_edit {
-    outline: 2px solid #1E88E5;
 }
 .sk_schedule_table_break_row {
     width: 100%;
@@ -266,7 +254,7 @@ h1 {
 .sk_rules_table {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 1px;
+    grid-gap: 4px;
 }
 .sk_rules_table_row_wrapper {
     width: 100%;
@@ -383,4 +371,18 @@ h1 {
 }
 .custom-transfer .ant-transfer-list {
     overflow: hidden !important;
+}
+
+
+.sk_table_row_header {
+    background-color: #C1CAD6;
+}
+.sk_table_row_active {
+    background-color: #CBE8F3;
+}
+.sk_table_row_danger {
+    background-color: rgba(255, 0, 0, 0.39);
+}
+.sk_table_row_edit {
+    outline: 2px solid #1E88E5;
 }

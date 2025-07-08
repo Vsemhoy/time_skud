@@ -233,11 +233,37 @@ function SchedulesWorkspace(props) {
     };
     const isCanAddSchedule = () => {
         if (editedSchedule.id === activeSchedule.id) {
-            return !toolbarTypeScheduleId || !toolbarNameScheduleId || !toolbarDateStartSchedule || intersections.length;
+            if (nextSchedule.id) {
+                return (
+                    (dayjs(toolbarDateEndSchedule) >= dayjs(nextSchedule.start)) ||
+                    !toolbarTypeScheduleId ||
+                    !toolbarNameScheduleId ||
+                    !toolbarDateStartSchedule ||
+                    !toolbarDateEndSchedule ||
+                    intersections.length
+                );
+            }
+            return (
+                !toolbarTypeScheduleId ||
+                !toolbarNameScheduleId ||
+                !toolbarDateStartSchedule ||
+                intersections.length
+            );
         } else if (editedSchedule.id === nextSchedule.id) {
-            return !toolbarTypeScheduleId || !toolbarNameScheduleId || !toolbarDateStartSchedule || intersections.length;
+            return (
+                !toolbarTypeScheduleId ||
+                !toolbarNameScheduleId ||
+                !toolbarDateStartSchedule ||
+                intersections.length
+            );
         } else {
-            return !toolbarTypeScheduleId || !toolbarNameScheduleId || !toolbarDateStartSchedule || nextSchedule.id || intersections.length;
+            return (
+                !toolbarTypeScheduleId ||
+                !toolbarNameScheduleId ||
+                !toolbarDateStartSchedule ||
+                nextSchedule.id ||
+                intersections.length
+            );
         }
     };
     const isDisableField = () => {
@@ -255,7 +281,6 @@ function SchedulesWorkspace(props) {
         }
         clearEdit();
     };
-
     const fetchUpdateSchedule = async () => {
         if (PRODMODE) {
             try {
@@ -280,7 +305,6 @@ function SchedulesWorkspace(props) {
             await fetchInfo();
         }
     }
-
     const fetchAddSchedule = async () => {
         if (PRODMODE) {
             try {
