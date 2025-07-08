@@ -12,7 +12,7 @@ import {
 import dayjs from "dayjs";
 
 const BaseInfoWorkspace = (props) => {
-    const { currentUser, userIdState, savingInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
+    const { currentUser, userIdState, savingInfo, onSavedInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -252,6 +252,7 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
+                onSavedInfo();
                 if (serverResponse.data.content) {
                     onUpdateSavingInfo(false, serverResponse.data.content);
                 }
@@ -259,7 +260,10 @@ const BaseInfoWorkspace = (props) => {
                 console.log(e)
             }
         } else {
-            setTimeout(() => onUpdateSavingInfo(false, 568), 500);
+            setTimeout(() => {
+                onSavedInfo();
+                onUpdateSavingInfo(false, 568);
+            }, 500);
         }
     };
     const sendUpdatedInfo = async () => {
@@ -276,6 +280,7 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
+                onSavedInfo();
                 if (serverResponse.data.content) {
                     setContent(serverResponse.data.content);
                 }
@@ -283,7 +288,10 @@ const BaseInfoWorkspace = (props) => {
                 console.log(e)
             }
         } else {
-            setTimeout(() => onUpdateSavingInfo(false, 568), 500);
+            setTimeout(() => {
+                onSavedInfo();
+                onUpdateSavingInfo(false, 568);
+            }, 500);
         }
     };
     const IsDisableAllowEntry = () => {
