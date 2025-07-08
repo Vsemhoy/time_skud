@@ -62,6 +62,7 @@ const RuleManagerPage = (props) => {
     const [users, setUsers] = useState([]);
     const [userRules , setUserRules] = useState([]);
     const [filtersState, setFiltersState] = useState([]);
+    const [count, setCount] = useState(0);
 
     const handleChangePageSize = (value) => {
         setPageSize(value);
@@ -140,8 +141,9 @@ const RuleManagerPage = (props) => {
                 );
 
                 setBaseRuleList(serverResponse.data.content);
-
+                setCount(serverResponse.data.count);
                 console.log('Response data as JSON:', JSON.stringify(serverResponse.data.content, null, 2));
+                console.log(serverResponse.data.count);
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
@@ -287,7 +289,7 @@ const RuleManagerPage = (props) => {
                                 <div className="sk-pagination-container">
                                     <Pagination
                                         current={currentPage}
-                                        total={baseRuleList.length}
+                                        total={count}
                                         pageSize={pageSize}
                                         pageSizeOptions={[10, 50, 100]}
                                         locale={{
@@ -311,7 +313,7 @@ const RuleManagerPage = (props) => {
                                             backgroundColor: '#ededed',
                                             borderColor: '#ededed',
                                         }}
-                                    >Всего найдено: {baseRuleList.length}</Tag>
+                                    >Всего найдено: {count}</Tag>
                                 </div>
                                 <Button color={'primary'}
                                         variant={'outlined'}
@@ -332,7 +334,7 @@ const RuleManagerPage = (props) => {
                                         >
                                             <div className="sk-department-header-hover-container">
                                                 <p className="sk-department-header-p">{rule.id}</p>
-                                                <p className="sk-department-header-p">{rule.name}</p>
+                                                <p className="sk-department-header-p" style={{flexGrow: 1}}>{rule.name}</p>
 
                                                 <Tag title={rule.id}
                                                      color={rule.company_color}>{rule.company_name.toUpperCase()}</Tag>
