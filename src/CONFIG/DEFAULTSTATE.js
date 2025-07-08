@@ -846,11 +846,10 @@ export const DS_SKUD_SCHEDULE_TYPES = [
 
 
 const DS_OFFICIAL_SCHED = {
-    "year": 2025,
+    year: 2025,
     total: 365,
     wtotal:247,
-    "htotal": 118,
-    year: 2025,
+    htotal: 118,
     "months": [
         {
             "month": 1,

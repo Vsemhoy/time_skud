@@ -148,21 +148,20 @@ const SchedListRow = (props)=>{
                 <div className={"sk-flex"} style={{paddingLeft: 12}}>
                     
                     <span><Tag color={itemData.company_color} >{itemData.company_name.toUpperCase()}</Tag></span>
-                    <span><Tag color="blue">{ dayjs.unix(itemData.start_time).format('YYYY') }</Tag></span>
+                    <span><Tag color="blue">{ dayjs.unix(itemData.start_time).format('YYYY') ?? ""}</Tag></span>
                 </div>
                 <div>
                     <Text type="secondary" className={'sk-flex'}>
-                        <div title={'пользователей'}>{props.group_count} <UserOutlined /></div>
-                        <div title={'групп'}>{props.user_count} <InboxOutlined /></div>
+                        <div title={'пользователей'}>{props.users_count ?? 0} <UserOutlined /></div>
                     </Text>
                 </div>
                 <div>
                 <Flex gap="small" wrap>
-                    <Button color="default" variant="link"
-                        onClick={openUserManager}
-                    title="Назначить пользователей">
-                        <UserSwitchOutlined />
-                    </Button>
+                    {/*<Button color="default" variant="link"*/}
+                    {/*    onClick={openUserManager}*/}
+                    {/*title="Назначить пользователей">*/}
+                    {/*    <UserSwitchOutlined />*/}
+                    {/*</Button>*/}
                     {/* <Button color="default" variant="link"
                     title="Скопировать">
                         <CopyOutlined />

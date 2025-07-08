@@ -590,14 +590,19 @@ const SchedModalEditor = (props)=>{
 
                 <div className="sk-w-60" >
                 { openMode === OPENMODE.CREATE || openMode === OPENMODE.EDIT ? (
-                                      <InputNumber
-                      defaultValue="1"
-                      min="0.1"
-                      max="160"
-                      step="0.1"
-                      onChange={onChangeTargetTime}
-                      disabled={deleted}
-                      value={targetTime / 60 / 60}
+                                      <TimePicker
+                      // defaultValue="1"
+                      // min="0.1"
+                      // max="160"
+                      // step="0.1"
+                      // onChange={onChangeTargetTime}
+                      // disabled={deleted}
+                      // value={targetTime / 60 / 60}
+                                          type={'time'}
+                                          showSecond={false}
+                                          onChange={ChangeLunchEnd}
+                                          disabled={deleted}
+                                          value={secondsValueToGlobalTime(lunchEnd)}
                     />
                 ) : (
             <span>{targetTime / 60 / 60}</span>
