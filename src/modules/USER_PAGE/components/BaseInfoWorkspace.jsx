@@ -69,8 +69,8 @@ const BaseInfoWorkspace = (props) => {
     const [dateEnter, setDateEnter] = useState('');
     const [rating, setRating] = useState('');
     const [status, setStatus] = useState({
-        id: null,
-        name: '',
+        id: 0,
+        name: 'Работает',
     });
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -323,7 +323,7 @@ const BaseInfoWorkspace = (props) => {
                             }}
                         >
                             <Select placeholder="Компания"
-                                    value={(status.id !== undefined || false) ? +company.id : null}
+                                    value={(company.id !== undefined && company.id !== null) ? +company.id : null}
                                     options={companies}
                                     disabled={userIdState !== 'new'}
                                     onChange={(id) => setCompany(companies.find(c => c.id === id))}
@@ -368,7 +368,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Отдел</p>
                         <Select placeholder="Отдел"
-                                value={(status.id !== undefined || false) ? +department.id : null}
+                                value={(department.id !== undefined && department.id !== null) ? +department.id : null}
                                 options={departments}
                                 onChange={(id) => setDepartment(departments.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -441,7 +441,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Статус</p>
                         <Select placeholder="Статус"
-                                value={(status.id !== undefined || false) ? +status.id : null}
+                                value={(status.id !== undefined && status.id !== null) ? +status.id : null}
                                 options={statuses}
                                 onChange={(id) => setStatus(statuses.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -482,7 +482,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Условная карточка</p>
                         <Select placeholder="Стелс / Нормальная"
-                                value={(status.id !== undefined || false) ? +conditionalCard.id : null}
+                                value={(conditionalCard.id !== undefined && conditionalCard.id !== null) ? +conditionalCard.id : null}
                                 options={conditionalCards}
                                 onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
                                 style={{width: 360}}
@@ -495,7 +495,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Разрешить вход</p>
                         <Select placeholder="Да / Нет"
-                                value={(status.id !== undefined || false) ? +allowEntry.id : null}
+                                value={(allowEntry.id !== undefined && allowEntry.id !== null) ? +allowEntry.id : null}
                                 options={allowEntries}
                                 onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
                                 style={{width: 360}}
