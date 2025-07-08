@@ -50,21 +50,11 @@ const RuleEditorModal = (props) => {
           rule_type_id: 1,
           id_company: props.user_data?.user?.id_company,
           duration_time: 60,
-          // variable_a: 0,
-          // variable_b: 0,
         });
         setEditedItem(null);
         _setDurationTime(60);
       }
     }
-    // for (let i = 0; i < props.type_list.length; i++) {
-    //   const el = props.type_list[i];
-    //   if (el.id === ruleType){
-    //       setVarText1(el.variable_a.replace('{###}', _durationTime).replace('{###}', _durationTime));
-    //       setVarText2(el.variable_b.replace('{###}', _durationTime).replace('{###}', _durationTime));
-    //       break;
-    //   }
-    // }
   }, [props, form]);
 
 
@@ -84,18 +74,6 @@ const RuleEditorModal = (props) => {
       console.log(props.user_data);
 
   }, [props.user_data, open]);
-  
-
-  // useEffect(()=>{
-  //   for (let i = 0; i < props.type_list.length; i++) {
-  //       const el = props.type_list[i];
-  //       if (el.id === ruleType){
-  //         setVarText1(el.variable_a.replace('{###}', _durationTime));
-  //         setVarText2(el.variable_b.replace('{###}', _durationTime));
-  //           break;
-  //       }
-  //   }
-  // },[ruleType, _durationTime]);
 
   useEffect(()=>{
     console.log(form);
