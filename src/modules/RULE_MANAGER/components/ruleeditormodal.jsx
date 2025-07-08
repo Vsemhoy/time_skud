@@ -37,8 +37,8 @@ const RuleEditorModal = (props) => {
           rule_type_id: targetItem.rule_type_id,
           id_company: targetItem.id_company,
           duration_time: targetItem.duration_time !== 0 ? (targetItem.duration_time / 60).toFixed() : 0,
-          variable_a: targetItem.variable_a,
-          variable_b: targetItem.variable_b,
+          // variable_a: targetItem.variable_a,
+          // variable_b: targetItem.variable_b,
         });
         _setDurationTime(targetItem.duration_time !== 0 ? (targetItem.duration_time / 60).toFixed() : 0);
         get_ruleItem();
@@ -50,19 +50,9 @@ const RuleEditorModal = (props) => {
           rule_type_id: 1,
           id_company: props.user_data?.user?.id_company,
           duration_time: 60,
-          variable_a: 0,
-          variable_b: 0,
         });
         setEditedItem(null);
         _setDurationTime(60);
-      }
-    }
-    for (let i = 0; i < props.type_list.length; i++) {
-      const el = props.type_list[i];
-      if (el.id === ruleType){
-          setVarText1(el.variable_a.replace('{###}', _durationTime).replace('{###}', _durationTime));
-          setVarText2(el.variable_b.replace('{###}', _durationTime).replace('{###}', _durationTime));
-          break;
       }
     }
   }, [props, form]);
@@ -84,18 +74,6 @@ const RuleEditorModal = (props) => {
       console.log(props.user_data);
 
   }, [props.user_data, open]);
-  
-
-  useEffect(()=>{
-    for (let i = 0; i < props.type_list.length; i++) {
-        const el = props.type_list[i];
-        if (el.id === ruleType){
-          setVarText1(el.variable_a.replace('{###}', _durationTime));
-          setVarText2(el.variable_b.replace('{###}', _durationTime));
-            break;
-        }
-    }
-  },[ruleType, _durationTime]);
 
   useEffect(()=>{
     console.log(form);
@@ -235,12 +213,14 @@ const RuleEditorModal = (props) => {
                 value={1}
                 onChange={changeRuleType}
                 options={props.type_list.map((com) => ({
-                key: com.id,
-                value: Number(com.id),
-                label: com.name,
-            }))
+                    key: com.id,
+                    value: Number(com.id),
+                    label: com.name,
+                }))
             }
-                />
+                disabled={!(targetId === null || targetId === 0)}
+
+        />
         </Form.Item>
 
         <Form.Item
@@ -253,31 +233,10 @@ const RuleEditorModal = (props) => {
         >
           <Input placeholder="Длетельность"
             onChange={(e) => handleTextChange(e, 120)} type='number'
-           />
+                 disabled={!(targetId === null || targetId === 0)}
+
+          />
         </Form.Item>
-
-        <Form.Item
-          className={'sk-rule-mark'}
-          label={varText1}
-          name="variable_a"
-          type="boolean"
-          rules={[]}
-        >
-            <Switch defaultChecked ></Switch>
-        </Form.Item>
-
-        <Form.Item
-          className={'sk-rule-mark'}
-          label={varText2}
-          name="variable_b"
-          type="boolean"
-          rules={[]}
-        >
-            <Switch defaultChecked ></Switch>
-        </Form.Item>
-
-
-
         
       </Form>
       {editedItem ? (
