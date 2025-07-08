@@ -75,6 +75,22 @@ function RulesWorkspace(props) {
     }, [ruleTypeFilter, pageSize, currentPage]);
 
     useEffect(() => {
+        if (isMounted) {
+            if (editedRule.id) {
+                setToolbarTypeRuleId(editedRule.schedule_type);
+                setToolbarNameRuleId(editedRule.schedule_id);
+                setToolbarDateStartRule(dayjs(editedRule.start));
+                setToolbarDateEndRule(dayjs(editedRule.end));
+            } else {
+                setToolbarTypeRuleId(null);
+                setToolbarNameRuleId(null);
+                setToolbarDateStartRule(null);
+                setToolbarDateEndRule(null);
+            }
+        }
+    }, [editedRule]);
+
+    useEffect(() => {
         if (userIdState === 'new') {
             navigate(`/hr/users/${userIdState}`);
         }
@@ -198,6 +214,9 @@ function RulesWorkspace(props) {
         }
     };
 
+    const toEditRule = (id) => {
+        setEditedRule(rules.find(schedule => +schedule.id === +id));
+    };
     const isDisableField = () => {
         return false;
     };
@@ -320,9 +339,10 @@ function RulesWorkspace(props) {
                                          style={{padding: '15px', justifyContent: 'space-between'}}>
                                         {(activeRules.find(r => r.id === rule.id) || nextRules.find(r => r.id === rule.id)) && (
                                             <Button color={'default'}
-                                                 variant={'outlined'}
-                                                 shape="circle"
-                                                 icon={<EditOutlined/>}
+                                                     variant={'outlined'}
+                                                     shape="circle"
+                                                     icon={<EditOutlined/>}
+                                                    onClick={() => toEditRule(rule.id)}
                                             ></Button>
                                         )}
                                         {nextRules.find(r => r.id === rule.id) && (

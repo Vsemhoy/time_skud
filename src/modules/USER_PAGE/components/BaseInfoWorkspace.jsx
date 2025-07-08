@@ -165,27 +165,7 @@ const BaseInfoWorkspace = (props) => {
                         }
                     );
                     if (serverResponse.data.content) {
-                        const content = serverResponse.data.content
-                        setCompany(content?.company);
-                        setSurname(content?.surname);
-                        setName(content?.name);
-                        setPatronymic(content?.patronymic);
-                        setDepartment(content?.departament);
-                        setOccupy(content?.occupy);
-                        setInnerPhone(content?.innerPhone);
-                        setTelegramID(content?.telegramID);
-                        setEmail(content?.email);
-                        setDateLeave(content.dateLeave ? dayjs(content.dateLeave, 'DD.MM.YYYY') : null);
-                        setDateEnter(content.dateEnter ? dayjs(content.dateEnter, 'DD.MM.YYYY') : null);
-                        setRating(content?.rating);
-                        setStatus(content?.status);
-                        setLogin(content?.login);
-                        setPassword(content?.password);
-                        setCardNumber(content?.cardNumber);
-                        setConditionalCard(content?.conditionalCard);
-                        if (content?.allowEntry) {
-                            setAllowEntry(content?.allowEntry);
-                        }
+                        setContent(serverResponse.data.content);
                     }
                 } catch (error) {
                     console.error('Error fetching user base info:', error);
@@ -210,6 +190,28 @@ const BaseInfoWorkspace = (props) => {
                 setConditionalCard(MOCK_USER.conditionalCard);
                 setAllowEntry(MOCK_USER.allowEntry);
             }
+        }
+    };
+    const setContent = (content) => {
+        setCompany(content?.company);
+        setSurname(content?.surname);
+        setName(content?.name);
+        setPatronymic(content?.patronymic);
+        setDepartment(content?.departament);
+        setOccupy(content?.occupy);
+        setInnerPhone(content?.innerPhone);
+        setTelegramID(content?.telegramID);
+        setEmail(content?.email);
+        setDateLeave(content.dateLeave ? dayjs(content.dateLeave, 'DD.MM.YYYY') : null);
+        setDateEnter(content.dateEnter ? dayjs(content.dateEnter, 'DD.MM.YYYY') : null);
+        setRating(content?.rating);
+        setStatus(content?.status);
+        setLogin(content?.login);
+        setPassword(content?.password);
+        setCardNumber(content?.cardNumber);
+        setConditionalCard(content?.conditionalCard);
+        if (content?.allowEntry) {
+            setAllowEntry(content?.allowEntry);
         }
     };
     const fetchSelects = async () => {
