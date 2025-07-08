@@ -169,7 +169,7 @@ function SchedulesWorkspace(props) {
     const fetchScheduleTypesSelect = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduletypesselect}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduletypesselect`,
                     {
                         _token: CSRF_TOKEN
                     }

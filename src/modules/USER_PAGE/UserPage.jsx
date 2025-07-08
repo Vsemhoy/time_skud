@@ -4,6 +4,7 @@ import {Affix, Button, Tag} from "antd";
 import styles from './style/user_page.module.css'
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
+import {USDA} from "./mock/mock";
 const UserPage = (props) => {
     const location = useLocation();
     const {userId} = useParams();
@@ -137,7 +138,7 @@ const UserPage = (props) => {
             </Affix>
             <div className={styles.sk_workspace}>
                 <Outlet context={{
-                    currentUser: props.userdata,
+                    currentUser: PRODMODE ? props.userdata : USDA,
                     userIdState,
                     userCompanyState,
                     userFIO,
