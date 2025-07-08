@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styles from "../style/user_page.module.css";
-import {Link, useNavigate, useOutletContext} from "react-router-dom";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
@@ -17,7 +17,7 @@ function SchedulesWorkspace(props) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(20);
     const [allSchedulesCount, setAllSchedulesCount] = useState(0);
 
     const [schedules, setSchedules] = useState([]);
@@ -162,14 +162,14 @@ function SchedulesWorkspace(props) {
         } else {
             setSchedules(SCHEDULES);
             setCurrentPage(1);
-            setPageSize(10);
+            setPageSize(20);
             setAllSchedulesCount(228);
         }
     };
     const fetchScheduleTypesSelect = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduletypesselect`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduleselects`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -180,7 +180,7 @@ function SchedulesWorkspace(props) {
                     setScheduleNames(content.names);
                 }
             } catch (error) {
-                console.error('Error fetching schedule types select:', error);
+                console.error('Error fetching schedule selects:', error);
             }
         } else {
             setScheduleTypes(SCHEDULES_TYPES_SELECT);
@@ -211,7 +211,7 @@ function SchedulesWorkspace(props) {
     const fetchRemoveSchedule = async (id) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userschedules/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduleremove/${userIdState}`,
                     {
                         data: {
                             scheduleId: id
@@ -316,7 +316,7 @@ function SchedulesWorkspace(props) {
                                 current={currentPage}
                                 total={allSchedulesCount}
                                 pageSize={pageSize}
-                                pageSizeOptions={[10, 50, 100]}
+                                pageSizeOptions={[20, 50, 100]}
                                 locale={{
                                     items_per_page: 'на странице',
                                     jump_to: 'Перейти',
@@ -488,6 +488,25 @@ function SchedulesWorkspace(props) {
                                     fieldNames={{
                                         value: 'id',
                                         label: 'name',
+                                    }}
+                                    showSearch
+                                    optionFilterProp="name"
+                                    filterSort={(optionA, optionB) => {
+                                        var _a, _b;
+                                        return (
+                                            (_a = optionA === null || optionA === void 0 ? void 0 : optionA.label) !== null &&
+                                            _a !== void 0
+                                                ? _a
+                                                : ''
+                                        )
+                                            .toLowerCase()
+                                            .localeCompare(
+                                                ((_b = optionB === null || optionB === void 0 ? void 0 : optionB.label) !== null &&
+                                                    _b !== void 0
+                                                        ? _b
+                                                        : ''
+                                                ).toLowerCase(),
+                                            );
                                     }}
                                     disabled={isDisableField()}
                             />

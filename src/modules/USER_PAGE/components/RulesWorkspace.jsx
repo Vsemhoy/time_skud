@@ -1,23 +1,78 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useOutletContext} from "react-router-dom";
-import {Affix, Button, Pagination, Select, Spin, Tag} from "antd";
+import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
 import styles from "../style/user_page.module.css";
 import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import {RULES} from "../mock/mock";
+import {
+    RULES,
+    RULES_NAMES_SELECT,
+    RULES_TYPES_SELECT,
+} from "../mock/mock";
 import dayjs from "dayjs";
-import {HOST_COMPONENT_ROOT} from "../../../CONFIG/config";
+import {CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
 import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import {PROD_AXIOS_INSTANCE} from "../../../API/API";
+import {DEF_SCHEDULE as activeRule} from "../../../CONFIG/DEFFORMS";
 
 function RulesWorkspace(props) {
     const navigate = useNavigate();
-    const { userIdState, userFIO } = useOutletContext();
+    const { userIdState } = useOutletContext();
 
+    const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const [allRulesCount, setAllRulesCount] = useState(0);
+
     const [rules, setRules] = useState([]);
 
+    const [ruleNames, setRuleNames] = useState([]);
+    const [ruleTypes, setRuleTypes] = useState([
+        {
+            id: 0,
+            name: 'Все типы правил'
+        }
+    ]);
+    const [ruleTypeFilter, setRuleTypeFilter] = useState(0);
+
+    const [activeRules, setActiveRules] = useState([]);
+    const [nextRules, setNextRules] = useState([]);
+    const [editedRule, setEditedRule] = useState({
+        id: 0,
+    });
+
+    const [toolbarTypeRuleId, setToolbarTypeRuleId] = useState(null);
+    const [toolbarNameRuleId, setToolbarNameRuleId] = useState(null);
+    const [toolbarDateStartRule, setToolbarDateStartRule] = useState(null);
+    const [toolbarDateEndRule, setToolbarDateEndRule] = useState(null);
+
+    const [intersections, setIntersections] = useState([]);
+
     useEffect(() => {
-        fetchRulesInfo();
+        if (!isMounted) {
+            fetchInfo().then();
+            setIsMounted(true);
+        }
     }, []);
+
+    useEffect(() => {
+        if (isMounted) {
+            findActiveRules();
+        }
+    }, [rules]);
+
+    useEffect(() => {
+        if (isMounted) {
+            findNextRules();
+        }
+    }, [activeRules]);
+
+    useEffect(() => {
+        if (isMounted) {
+            fetchInfo().then();
+        }
+    }, [ruleTypeFilter, pageSize, currentPage]);
 
     useEffect(() => {
         if (userIdState === 'new') {
@@ -25,35 +80,136 @@ function RulesWorkspace(props) {
         }
     }, [userIdState]);
 
-    const fetchRulesInfo = () => {
+    const fetchInfo = async () => {
         setIsLoading(true);
-        setRules(RULES);
+        await fetchRulesInfo();
+        await fetchRulesTypesSelect();
         setTimeout(() => setIsLoading(false), 500);
     };
-    const [groupList, setGroupList] = useState([]);
-    const tagRender = (props) => {
-        const { label, value, closable, onClose } = props;
+    const fetchRulesInfo = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userrules/${userIdState}`,
+                    {
+                        data: {
+                            ruleTypeFilter,
+                            currentPage,
+                            pageSize
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    const content = serverResponse.data.content;
+                    setRules(content.schedules);
+                    setCurrentPage(content.currentPage);
+                    setPageSize(content.pageSize);
+                    setAllRulesCount(content.allRulesCount);
+                }
+            } catch (error) {
+                console.error('Error fetching users rules:', error);
+            }
+        } else {
+            setRules(RULES);
+            setCurrentPage(1);
+            setPageSize(20);
+            setAllRulesCount(228);
+        }
+    };
+    const fetchRulesTypesSelect = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userruleselects`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    const content = serverResponse.data.content;
+                    setRuleTypes([ ruleTypes[0], ...content.types]);
+                    setRuleNames(content.names);
+                }
+            } catch (error) {
+                console.error('Error fetching rules select:', error);
+            }
+        } else {
+            setRuleTypes(RULES_TYPES_SELECT);
+            setRuleNames(RULES_NAMES_SELECT);
+        }
+    };
+    const findActiveRules = () => {
+        const now = dayjs();
+        const activeRulesList = rules.filter(rule => {
+            const start = dayjs(rule.start, 'YYYY-MM-DD HH:mm:ss');
+            const end = dayjs(rule.end, 'YYYY-MM-DD HH:mm:ss');
+            return start.isBefore(now) && end.isAfter(now);
+        });
 
-        // Находим соответствующий group в groupList по value
-        const group = groupList.find(item => item.value === value);
-        const color = group?.color; // Получаем цвет из найденного group
+        if (activeRulesList.length > 0) {
+            setActiveRules(activeRulesList);
+        } else {
+            setActiveRules([]);
+        }
+    };
+    const findNextRules = () => {
+        const nextRulesList = rules.filter(rule => {
+            const activeRuleByType = activeRules.find(activeRule => rule.rule_type_id === activeRule.rule_type_id);
+            if (activeRuleByType) {
+                if (rule.id > activeRuleByType.id) {
+                    return true
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        });
 
-        const onPreventMouseDown = event => {
-            event.preventDefault();
-            event.stopPropagation();
-        };
+        if (nextRulesList.length > 0) {
+            setNextRules(nextRulesList);
+        } else {
+            setNextRules([]);
+        }
+    };
 
-        return (
-            <Tag
-                color={color}
-                onMouseDown={onPreventMouseDown}
-                closable={closable}
-                onClose={onClose}
-                style={{ marginInlineEnd: 4 }}
-            >
-                {label}
-            </Tag>
-        );
+    const removeRule = async (id) => {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Вы уверены, что хотите удалить это правило?')) {
+            await fetchRemoveRule(id);
+        }
+    };
+    const fetchRemoveRule = async (id) => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userruleremove/${userIdState}`,
+                    {
+                        data: {
+                            ruleId: id
+                        },
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+            } catch (error) {
+                console.error('Error fetching remove user rule:', error);
+            }
+        } else {
+            await fetchInfo();
+        }
+    };
+
+    const isDisableField = () => {
+        return false;
+    };
+    const clearEdit = () => {
+        setEditedRule({id: 0});
+    };
+    const isCanAddSchedule = () => {
+        return true;
+    };
+
+    const fetchAddOrUpdateRule = async () => {
+
     };
 
     return (
@@ -64,20 +220,18 @@ function RulesWorkspace(props) {
                     <div className={styles.sk_pagination_wrapper}>
                         <div className={styles.sk_pagination_container}>
                             <Pagination
-                                current={1}
-                                total={228}
-                                pageSize={10}
-                                pageSizeOptions={[10, 50, 100]}
+                                current={currentPage}
+                                total={allRulesCount}
+                                pageSize={pageSize}
+                                pageSizeOptions={[20, 50, 100]}
                                 locale={{
                                     items_per_page: 'на странице',
                                     jump_to: 'Перейти',
                                     jump_to_confirm: 'OK',
                                     page: 'Страница'
                                 }}
-                                onShowSizeChange={(current, newSize) => {
-                                }}
-                                onChange={() => {
-                                }}
+                                onShowSizeChange={(current, newSize) => setPageSize(newSize)}
+                                onChange={(page) => setCurrentPage(page)}
                             />
                             <Tag
                                 style={{
@@ -90,16 +244,17 @@ function RulesWorkspace(props) {
                                     backgroundColor: '#ededed',
                                     borderColor: '#ededed',
                                 }}
-                            >Всего найдено: {228}</Tag>
+                            >Всего найдено: {allRulesCount}</Tag>
                         </div>
                         <Select
-                            placeholder={'Все типы правил'}
-                            mode={'multiple'}
-                            options={[]}
+                            value={ruleTypeFilter}
+                            options={ruleTypes}
                             style={{width: '200px'}}
-                            onChange={(ev) => {
+                            onChange={(id) => setRuleTypeFilter(id)}
+                            fieldNames={{
+                                value: 'id',
+                                label: 'name',
                             }}
-                            tagRender={tagRender}
                         />
                     </div>
                     <div className={styles.sk_rules_table}>
@@ -126,7 +281,9 @@ function RulesWorkspace(props) {
                             </div>
                         </div>
                         {rules.map(rule => (
-                            <div key={rule.id} className={styles.sk_rules_table_row_wrapper}>
+                            <div key={rule.id} className={`${styles.sk_rules_table_row_wrapper}
+                                                           ${activeRules.find(r => r.id === rule.id) ? styles.sk_table_row_active : ''}`
+                            }>
                                 <div className={styles.sk_rules_table_row}>
                                     <div className={`${styles.sk_rules_table_cell}`}>
                                         <div className={styles.sk_rules_container}>
@@ -156,21 +313,26 @@ function RulesWorkspace(props) {
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}>
                                         <div className={styles.sk_rules_container_center}>
-                                            <p className={styles.sk_rules_name}>{dayjs(rule.start).format('DD.MM.YYYY')}</p>
+                                            <p className={styles.sk_rules_name}>{dayjs(rule.end).format('DD.MM.YYYY')}</p>
                                         </div>
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}
                                          style={{padding: '15px', justifyContent: 'space-between'}}>
-                                        <Button color={'default'}
-                                                variant={'outlined'}
-                                                shape="circle"
-                                                icon={<EditOutlined/>}
-                                        ></Button>
-                                        <Button color={'default'}
-                                                variant={'outlined'}
-                                                shape="circle"
-                                                icon={<DeleteOutlined/>}
-                                        ></Button>
+                                        {(activeRules.find(r => r.id === rule.id) || nextRules.find(r => r.id === rule.id)) && (
+                                            <Button color={'default'}
+                                                 variant={'outlined'}
+                                                 shape="circle"
+                                                 icon={<EditOutlined/>}
+                                            ></Button>
+                                        )}
+                                        {nextRules.find(r => r.id === rule.id) && (
+                                            <Button color={'default'}
+                                                    variant={'outlined'}
+                                                    shape="circle"
+                                                    icon={<DeleteOutlined/>}
+                                                    onClick={() => removeRule(rule.id)}
+                                            ></Button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -181,64 +343,84 @@ function RulesWorkspace(props) {
                     <div className={styles.sk_rules_linker}>
                         <div style={{width: '100%'}}>
                             <div className={styles.sk_flex_space}>
-                                <span className={'sk-totoro'}>Группы </span>
-                                <span
-                                    onClick={() => {
-                                    }}
+                                <span className={'sk-totoro'}>Привязка нового правила</span>
+                                <span style={{cursor: 'pointer'}}
+                                      onClick={() => clearEdit()}
                                 >
                                     <ClearOutlined/>
                                 </span>
                             </div>
                             <br/>
-                            <div className={styles.sk_label_select}>Тип привязываемого графика</div>
-                            <Select
-                                placeholder={'Группы'}
-                                mode={'multiple'}
-                                options={[]}
-                                style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
-                                tagRender={tagRender}
+                            <div className={styles.sk_label_select}>Тип привязываемого правила</div>
+                            <Select placeholder={'Тип привязываемого правила'}
+                                    value={toolbarTypeRuleId}
+                                    options={ruleTypes.filter(schedule => +schedule.id !== 0)}
+                                    style={{width: '100%'}}
+                                    onChange={(id) => setToolbarTypeRuleId(id)}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                                    disabled={isDisableField()}
                             />
                             <br/>
                             <br/>
-                            <div className={styles.sk_label_select}>Название графика (селект с поиском)</div>
-                            <Select
-                                placeholder={'Группы'}
-                                mode={'multiple'}
-                                options={[]}
-                                style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
-                                tagRender={tagRender}
+                            <div className={styles.sk_label_select}>Название привязываемого правила</div>
+                            <Select placeholder={'Название привязываемого правила'}
+                                    value={toolbarNameRuleId}
+                                    options={ruleNames}
+                                    style={{width: '100%'}}
+                                    onChange={(id) => setToolbarNameRuleId(id)}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                                    showSearch
+                                    optionFilterProp="name"
+                                    filterSort={(optionA, optionB) => {
+                                        var _a, _b;
+                                        return (
+                                            (_a = optionA === null || optionA === void 0 ? void 0 : optionA.label) !== null &&
+                                            _a !== void 0
+                                                ? _a
+                                                : ''
+                                        )
+                                            .toLowerCase()
+                                            .localeCompare(
+                                                ((_b = optionB === null || optionB === void 0 ? void 0 : optionB.label) !== null &&
+                                                    _b !== void 0
+                                                        ? _b
+                                                        : ''
+                                                ).toLowerCase(),
+                                            );
+                                    }}
+                                    disabled={isDisableField()}
                             />
                             <br/>
                             <br/>
-                            <div className={styles.sk_label_select}>Дата начала действия графика</div>
-                            <Select
-                                    placeholder={'Группы'}
-                                    mode={'multiple'}
-                                    options={[]}
-                                    style={{width: '100%'}}
-                                    onChange={(ev) => {
-                                    }}
-                                    tagRender={tagRender}
-                                />
-                                <br/>
-                                <br/>
-                                <div className={styles.sk_label_select}>Дата окончания графика</div>
-                                <Select
-                                    placeholder={'Группы'}
-                                    mode={'multiple'}
-                                    options={[]}
-                                    style={{width: '100%'}}
-                                    onChange={(ev) => {
-                                    }}
-                                    tagRender={tagRender}
-                                />
-                                <br/>
-                                <br/>
-                                <Button block>Привязать графики</Button>
+                            <div className={styles.sk_label_select}>Дата начала действия правила</div>
+                            <DatePicker placeholder="Дата начала действия правила"
+                                        value={toolbarDateStartRule}
+                                        onChange={(e) => setToolbarDateStartRule(e)}
+                                        format={"DD.MM.YYYY"}
+                                        style={{width: '100%'}}
+                                        disabled={isDisableField()}
+                            />
+                            <br/>
+                            <br/>
+                            <div className={styles.sk_label_select}>Дата окончания действия правила</div>
+                            <DatePicker placeholder="Дата окончания действия правила"
+                                        value={toolbarDateStartRule}
+                                        onChange={(e) => setToolbarDateStartRule(e)}
+                                        format={"DD.MM.YYYY"}
+                                        style={{width: '100%'}}
+                            />
+                            <br/>
+                            <br/>
+                            <Button block
+                                    disabled={isCanAddSchedule()}
+                                    onClick={() => fetchAddOrUpdateRule()}
+                            >Привязать правило</Button>
                         </div>
                     </div>
                 </Affix>
