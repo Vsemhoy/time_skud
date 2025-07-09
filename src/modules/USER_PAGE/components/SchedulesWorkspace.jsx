@@ -536,7 +536,7 @@ function SchedulesWorkspace(props) {
                             <div className={styles.sk_label_select}>Название графика</div>
                             <Select placeholder={'Название графика'}
                                     value={toolbarNameScheduleId}
-                                    options={scheduleNames}
+                                    options={toolbarTypeScheduleId ? scheduleNames.filter(name => name.skud_schedule_type_id === toolbarTypeScheduleId) : scheduleNames}
                                     style={{width: '100%'}}
                                     onChange={(id) => setToolbarNameScheduleId(id)}
                                     fieldNames={{
