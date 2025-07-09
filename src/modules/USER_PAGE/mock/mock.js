@@ -398,7 +398,7 @@ export const SCHEDULES = [
         "schedule_type_name": "Стандартный",
         "schedule_type_color": "#ffe000"
     },
-    {
+    /*{
         "id": 169,
         "start": "2025-01-01 00:00:00",
         "end": "2025-01-08 23:59:59",
@@ -473,7 +473,7 @@ export const SCHEDULES = [
         "schedule_id": 7,
         "schedule_type_name": "Стандартный",
         "schedule_type_color": "#ffe000"
-    },
+    },*/
 ];
 export const SCHEDULES_TYPES_SELECT = [
     {
