@@ -228,11 +228,8 @@ function SchedulesWorkspace(props) {
     const fetchRemoveSchedule = async (id) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduleremove/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduleremove/${id}`,
                     {
-                        data: {
-                            scheduleId: id
-                        },
                         _token: CSRF_TOKEN
                     }
                 );
