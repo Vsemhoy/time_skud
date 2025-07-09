@@ -245,7 +245,7 @@ function SchedulesWorkspace(props) {
     const toEditSchedule = (id) => {
         setEditedSchedule(schedules.find(schedule => +schedule.id === +id));
     };
-    const isCanAddSchedule = () => {
+    const isCantAddSchedule = () => {
         if (scheduleTypeFilter) return true;
         if (editedSchedule.id === activeSchedule.id) {
             if (nextSchedule.id) {
@@ -584,7 +584,7 @@ function SchedulesWorkspace(props) {
                             <br/>
                             <br/>
                             <Button block
-                                    disabled={isCanAddSchedule()}
+                                    disabled={isCantAddSchedule()}
                                     onClick={() => fetchAddOrUpdateSchedule()}
                             >Привязать график</Button>
                         </div>
