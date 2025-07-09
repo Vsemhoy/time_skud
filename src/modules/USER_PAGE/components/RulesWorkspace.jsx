@@ -73,7 +73,7 @@ function RulesWorkspace(props) {
         if (isMounted) {
             if (editedRule.id) {
                 setToolbarTypeRuleId(editedRule.rule_type_id);
-                setToolbarNameRuleId(editedRule.id);
+                setToolbarNameRuleId(editedRule.rule_id);
                 setToolbarDateStartRule(dayjs(editedRule.start));
                 setToolbarDateEndRule(editedRule.end ? dayjs(editedRule.end) : null);
             } else {
