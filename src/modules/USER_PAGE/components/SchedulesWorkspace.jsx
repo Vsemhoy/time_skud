@@ -249,6 +249,7 @@ function SchedulesWorkspace(props) {
         setEditedSchedule(schedules.find(schedule => +schedule.id === +id));
     };
     const isCanAddSchedule = () => {
+        if (scheduleTypeFilter) return true;
         if (editedSchedule.id === activeSchedule.id) {
             if (nextSchedule.id) {
                 return (
@@ -441,14 +442,14 @@ function SchedulesWorkspace(props) {
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_description}>с {schedule.enter}</p>
-                                            <p className={styles.sk_schedule_description}>до {schedule.leave}</p>
+                                            <p className={styles.sk_schedule_description}>с {dayjs(schedule.enter).format('HH:mm')}</p>
+                                            <p className={styles.sk_schedule_description}>до {dayjs(schedule.leave).format('HH:mm')}</p>
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_description}>с {schedule.lunch_start}</p>
-                                            <p className={styles.sk_schedule_description}>до {schedule.lunch_end}</p>
+                                            <p className={styles.sk_schedule_description}>с {dayjs(schedule.lunch_start).format('HH:mm')}</p>
+                                            <p className={styles.sk_schedule_description}>до {dayjs(schedule.lunch_end).format('HH:mm')}</p>
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
@@ -461,7 +462,7 @@ function SchedulesWorkspace(props) {
                                             <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : '—'}</p>
                                         </div>
                                     </div>
-                                    {schedule.id !== editedSchedule.id ? (
+                                    {+schedule.id !== +editedSchedule.id ? (
                                         <div className={styles.sk_schedule_table_cell}
                                               style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
                                             {(schedule.id === activeSchedule.id || schedule.id === nextSchedule.id) && (
@@ -521,7 +522,7 @@ function SchedulesWorkspace(props) {
                             <br/>
                             <div className={styles.sk_label_select}>Тип привязываемого графика</div>
                             <Select placeholder={'Тип привязываемого графика'}
-                                    value={toolbarTypeScheduleId}
+                                    value={scheduleTypeFilter ? scheduleTypeFilter : toolbarTypeScheduleId}
                                     options={scheduleTypes.filter(schedule => +schedule.id !== 0)}
                                     style={{width: '100%'}}
                                     onChange={(id) => setToolbarTypeScheduleId(id)}
@@ -529,7 +530,7 @@ function SchedulesWorkspace(props) {
                                         value: 'id',
                                         label: 'name',
                                     }}
-                                    disabled={isDisableField()}
+                                    disabled={(isDisableField() || scheduleTypeFilter)}
                             />
                             <br/>
                             <br/>

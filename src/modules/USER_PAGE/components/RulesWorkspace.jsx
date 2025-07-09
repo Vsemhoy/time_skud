@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
 import styles from "../style/user_page.module.css";
-import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {ClearOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {
     RULES,
     RULES_NAMES_SELECT,
@@ -59,14 +59,9 @@ function RulesWorkspace(props) {
     useEffect(() => {
         if (isMounted) {
             findActiveRules();
-        }
-    }, [rules]);
-
-    useEffect(() => {
-        if (isMounted) {
             findNextRules();
         }
-    }, [activeRules]);
+    }, [rules]);
 
     useEffect(() => {
         if (isMounted) {
@@ -80,7 +75,7 @@ function RulesWorkspace(props) {
                 setToolbarTypeRuleId(editedRule.rule_type_id);
                 setToolbarNameRuleId(editedRule.id);
                 setToolbarDateStartRule(dayjs(editedRule.start));
-                setToolbarDateEndRule(dayjs(editedRule.end));
+                setToolbarDateEndRule(editedRule.end ? dayjs(editedRule.end) : null);
             } else {
                 setToolbarTypeRuleId(null);
                 setToolbarNameRuleId(null);
@@ -93,12 +88,23 @@ function RulesWorkspace(props) {
     useEffect(() => {
         const arr = [];
         rules.forEach(rule => {
-            if (+rule.id !== +editedRule.id && +rule.rule_type_id === +editedRule.rule_type_id) {
-                if (dayjs(toolbarDateStartRule) >= dayjs(rule.start) && dayjs(toolbarDateStartRule) <= dayjs(rule.end)) {
-                    arr.push(rule.id);
-                }
-                if (dayjs(toolbarDateEndRule) >= dayjs(rule.start) && dayjs(toolbarDateEndRule) <= dayjs(rule.end)) {
-                    arr.push(rule.id);
+            if (+rule.id !== +editedRule.id && +rule.rule_type_id === +toolbarTypeRuleId) {
+                if (rule.end) {
+                    if (dayjs(toolbarDateStartRule) >= dayjs(rule.start) && dayjs(toolbarDateStartRule) <= dayjs(rule.end)) {
+                        arr.push(rule.id);
+                    }
+                    if (dayjs(toolbarDateEndRule) >= dayjs(rule.start) && dayjs(toolbarDateEndRule) <= dayjs(rule.end)) {
+                        arr.push(rule.id);
+                    }
+                } else {
+                    if (activeRules.find(rule => +rule.id === +editedRule.id)) {
+                        if (dayjs(toolbarDateEndRule) >= dayjs(rule.start)) {
+                            arr.push(rule.id);
+                        }
+                    }
+                    if (toolbarDateStartRule && !activeRules.find(rule => +rule.id === +editedRule.id)) {
+                        arr.push(rule.id);
+                    }
                 }
             }
         });
@@ -200,8 +206,11 @@ function RulesWorkspace(props) {
         const now = dayjs();
         const activeRulesList = rules.filter(rule => {
             const start = dayjs(rule.start, 'YYYY-MM-DD HH:mm:ss');
-            const end = dayjs(rule.end, 'YYYY-MM-DD HH:mm:ss');
-            return start.isBefore(now) && end.isAfter(now);
+            if (rule.end) {
+                const end = dayjs(rule.end, 'YYYY-MM-DD HH:mm:ss');
+                return start.isBefore(now) && end.isAfter(now);
+            }
+            return start.isBefore(now)
         });
 
         if (activeRulesList.length > 0) {
@@ -211,17 +220,10 @@ function RulesWorkspace(props) {
         }
     };
     const findNextRules = () => {
+        const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
         const nextRulesList = rules.filter(rule => {
-            const activeRuleByType = activeRules.find(activeRule => rule.rule_type_id === activeRule.rule_type_id);
-            if (activeRuleByType) {
-                if (rule.id > activeRuleByType.id) {
-                    return true
-                } else {
-                    return false;
-                }
-            } else {
-                return true;
-            }
+            const start = dayjs(rule.start, 'YYYY-MM-DD HH:mm:ss');
+            return start.isAfter(now);
         });
 
         if (nextRulesList.length > 0) {
@@ -462,28 +464,40 @@ function RulesWorkspace(props) {
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}>
                                         <div className={styles.sk_rules_container_center}>
-                                            <p className={styles.sk_rules_name}>{dayjs(rule.end).format('DD.MM.YYYY')}</p>
+                                            <p className={styles.sk_rules_name}>{rule.end ? dayjs(rule.end).format('DD.MM.YYYY') : '—'}</p>
                                         </div>
                                     </div>
-                                    <div className={`${styles.sk_rules_table_cell}`}
-                                         style={{padding: '15px', justifyContent: 'space-between'}}>
-                                        {(activeRules.find(r => r.id === rule.id) || nextRules.find(r => r.id === rule.id)) && (
-                                            <Button color={'default'}
-                                                     variant={'outlined'}
-                                                     shape="circle"
-                                                     icon={<EditOutlined/>}
-                                                    onClick={() => toEditRule(rule.id)}
-                                            ></Button>
-                                        )}
-                                        {nextRules.find(r => r.id === rule.id) && (
+                                    {+rule.id !== +editedRule.id ? (
+                                        <div className={`${styles.sk_rules_table_cell}`}
+                                              style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
+                                            {(activeRules.find(r => r.id === rule.id) || nextRules.find(r => r.id === rule.id)) && (
+                                                <Button color={'default'}
+                                                        variant={'outlined'}
+                                                        shape="circle"
+                                                        icon={<EditOutlined/>}
+                                                        onClick={() => toEditRule(rule.id)}
+                                                ></Button>
+                                            )}
+                                            {nextRules.find(r => r.id === rule.id) && (
+                                                <Button color={'default'}
+                                                        variant={'outlined'}
+                                                        shape="circle"
+                                                        icon={<DeleteOutlined/>}
+                                                        onClick={() => removeRule(rule.id)}
+                                                ></Button>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className={styles.sk_schedule_table_cell}
+                                             style={{padding: '15px', justifyContent: 'center'}}>
                                             <Button color={'default'}
                                                     variant={'outlined'}
                                                     shape="circle"
-                                                    icon={<DeleteOutlined/>}
-                                                    onClick={() => removeRule(rule.id)}
+                                                    icon={<CloseOutlined/>}
+                                                    onClick={() => clearEdit()}
                                             ></Button>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -503,7 +517,7 @@ function RulesWorkspace(props) {
                             <br/>
                             <div className={styles.sk_label_select}>Тип привязываемого правила</div>
                             <Select placeholder={'Тип привязываемого правила'}
-                                    value={toolbarTypeRuleId}
+                                    value={ruleTypeFilter ? ruleTypeFilter : toolbarTypeRuleId}
                                     options={ruleTypes.filter(schedule => +schedule.id !== 0)}
                                     style={{width: '100%'}}
                                     onChange={(id) => setToolbarTypeRuleId(id)}
@@ -511,14 +525,14 @@ function RulesWorkspace(props) {
                                         value: 'id',
                                         label: 'name',
                                     }}
-                                    disabled={isDisableField()}
+                                    disabled={(isDisableField() || ruleTypeFilter)}
                             />
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Название привязываемого правила</div>
                             <Select placeholder={'Название привязываемого правила'}
                                     value={toolbarNameRuleId}
-                                    options={ruleNames}
+                                    options={toolbarTypeRuleId ? ruleNames.filter(name => name.rule_type_id === toolbarTypeRuleId) : ruleNames}
                                     style={{width: '100%'}}
                                     onChange={(id) => setToolbarNameRuleId(id)}
                                     fieldNames={{
