@@ -878,7 +878,7 @@ export const RULES = [
         "group_count": null,
         "type_color": "#ff91004b"
     },
-    {
+    /*{
         "id": 2,
         "rule_type_id": 1,
         "name": "Правило_1741014647",
@@ -899,7 +899,7 @@ export const RULES = [
         "company_color": "#ff7700",
         "group_count": null,
         "type_color": "#ff000069"
-    },
+    },*/
     {
         "id": 1,
         "rule_type_id": 1,

@@ -259,7 +259,7 @@ function RulesWorkspace(props) {
     const toEditRule = (id) => {
         setEditedRule(rules.find(schedule => +schedule.id === +id));
     };
-    const isCanAddRule = () => {
+    const isCantAddRule = () => {
         if (activeRules.find(rule => rule.id === editedRule.id)) {
             if (nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id)) {
                 const next = nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id);
@@ -291,7 +291,7 @@ function RulesWorkspace(props) {
                 !toolbarNameRuleId ||
                 !toolbarDateStartRule ||
                 intersections.length ||
-                !nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id)
+                nextRules.find(rule => rule.rule_type_id === editedRule.rule_type_id)
             );
         }
     };
@@ -579,7 +579,7 @@ function RulesWorkspace(props) {
                             <br/>
                             <br/>
                             <Button block
-                                    disabled={isCanAddRule()}
+                                    disabled={isCantAddRule()}
                                     onClick={() => fetchAddOrUpdateRule()}
                             >Привязать правило</Button>
                         </div>
