@@ -29,7 +29,7 @@ const SchedModalEditor = (props)=>{
 
 
   const [createdAt, setCreatedAt]                   = useState(null);
-  const [idCompany, setIdCompany]                   = useState(props.userData.user.id_company);
+  const [idCompany, setIdCompany]                   = useState(null);
   const [companyName, setCompanyName]               = useState(null);
   const [idSkudScheduleType, setIdSkudScheduleType] = useState(1);
   const [name, setName]                             = useState(null);
@@ -48,6 +48,11 @@ const SchedModalEditor = (props)=>{
   const [creatorId, setCreatorId]                   = useState(null);
   const [prodCalendar, setProdCalendar]             = useState(null);
 
+  const [userData, setUserData]                     = useState({
+    user: null,
+    companies: null,
+  });
+
   const [ctrlKey, setCtrlKey] = useState(false);
 
   const [usedSchedType, setUsedSchedType]           = useState(1);
@@ -57,7 +62,12 @@ const SchedModalEditor = (props)=>{
   const [scheduleTypes, setScheduleTypes] = useState(props.schedTypes);
   // Пример использования геттеров и сеттеров
 
-
+  useEffect(() => {
+    if (props.userData) {
+      setIdCompany(props.userData.user.id_company);
+      setUserData(props.userData);
+    }
+  }, [props.userData]);
 
 
     useEffect(()=>{
@@ -97,14 +107,14 @@ const SchedModalEditor = (props)=>{
       console.log(sourceData);
         setIdSkudScheduleType(sourceData.skud_schedule_type_id);
         setCtrlKey(props.ctrl_key);
-        let COM_ID = sourceData && sourceData.id_company ? sourceData.id_company : props.userData.companies.reverse()[0].id;
+        let COM_ID = sourceData && sourceData.id_company ? sourceData.id_company : userData.companies.reverse()[0].id;
         setIdCompany(COM_ID);
 
-        setCreatorId(sourceData.creator_id ? sourceData.creator_id : props.userData.id_company);
+        setCreatorId(sourceData.creator_id ? sourceData.creator_id : userData.id_company);
         setName(sourceData.name ? sourceData.name : "График " + dayjs().year());
         setDescription(sourceData.description);
-        setCompanyName(sourceData.company_name ? sourceData.company_name : props.userData.companies[0].name);
-        // setCompanyColor(sourceData.company_color ? sourceData.company_color : props.userData.companies[0].color);
+        setCompanyName(sourceData.company_name ? sourceData.company_name : userData.companies[0].name);
+        // setCompanyColor(sourceData.company_color ? sourceData.company_color : userData.companies[0].color);
 
         
         
@@ -140,7 +150,7 @@ const SchedModalEditor = (props)=>{
         // console.log(props.schedTypes);
         setUsedSchedType(props.schedTypes.find((el)=> el.value === sourceData.skud_schedule_type_id));
 
-        let edittcom = sourceData && sourceData.id_company ? sourceData.id_company : props.userData.id_company;
+        let edittcom = sourceData && sourceData.id_company ? sourceData.id_company : userData.id_company;
         console.log(edittcom);
         // setProdCalendar(prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === edittcom)}));
         setProdCalendar(item);
@@ -148,8 +158,8 @@ const SchedModalEditor = (props)=>{
 
 
     useEffect(()=>{
-      setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : props.userData.id_company) )}));
-      setCompanyName(props.userData.companies.find((el)=>{return el.id === idCompany}).name);
+      setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : userData.id_company) )}));
+      setCompanyName(userData.companies.find((el)=>{return el.id === idCompany}).name);
 
     },[idCompany]);
 
@@ -220,7 +230,7 @@ const SchedModalEditor = (props)=>{
         skud_prod_calendar_id: idSkudProdCalendar,
       };
       if (item_id == null){
-        data.creator_id = props.userData.user.id
+        data.creator_id = userData.user.id
       } else {
         data.id = item_id;
       }
@@ -392,7 +402,7 @@ const SchedModalEditor = (props)=>{
           <span className="sk-microspacer"></span>
 
           <div className={"sk-form-group"}>
-        {props.userData.companies.length > 1 ? (
+        { userData.companies && userData.companies.length > 1 ? (
 
           
         <div className={'sk-flex-sides sk-flex-form-row'}>
@@ -402,7 +412,7 @@ const SchedModalEditor = (props)=>{
           <div className={'sk-w-60'}>
             { openMode === OPENMODE.CREATE ? (
                           <Select 
-                  options={props.userData.companies.reverse().map((el)=>(
+                  options={userData.companies.reverse().map((el)=>(
                     {
                       key: el.id,
                       value: el.id,

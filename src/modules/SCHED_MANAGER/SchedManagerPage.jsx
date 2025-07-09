@@ -345,14 +345,11 @@ const SchedManagerPage = (props) => {
                         console.log(data, body);
                         update_history(data);
                 }
+                setTimeout(fetchSchedules(filtersState), 200);
+
+                console.log(filtersState);
             } catch (e) {
                 console.log(e)
-            } finally {
-                setBaseScheduleList(prevList => 
-                    prevList.map(item => 
-                        item.id === body.id ? { ...item, ...body } : item // Заменяем объект по id
-                    )
-                );
             }
         }
  
