@@ -242,11 +242,8 @@ function RulesWorkspace(props) {
     const fetchRemoveRule = async (id) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userruleremove/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/userruleremove/${id}`,
                     {
-                        data: {
-                            ruleId: id
-                        },
                         _token: CSRF_TOKEN
                     }
                 );
