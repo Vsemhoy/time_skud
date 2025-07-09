@@ -774,7 +774,7 @@ export const RULES = [
         "name": "Сдвиг графика",
         "name_2": "Сдвиг графика",
         "start": "2025-07-14 00:00:00",
-        "end": "2025-07-20 23:59:59",
+        "end": null,
         "duration_time": 3600,
         "variable_a": 0,
         "variable_b": 0,
