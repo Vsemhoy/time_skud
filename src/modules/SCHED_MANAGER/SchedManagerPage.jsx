@@ -62,7 +62,10 @@ const SchedManagerPage = (props) => {
         }
     };
 
-
+    useEffect(() => {
+      console.log("PROPS", props);
+    }, [props]);
+    
 
     // Эффект для загрузки данных при монтировании компонента
     // useEffect(() => {
@@ -772,7 +775,8 @@ const SchedManagerPage = (props) => {
                     </div>
                 </Content>
             </Layout>
-
+        {(userdata && userdata?.companies  && userdata.companies?.length > 0) ? (
+            <div>
             <SchedModalEditor
                 open={editorModalOpen}
                 on_cancel={cancelEditorModal}
@@ -796,6 +800,8 @@ const SchedManagerPage = (props) => {
                 userData={userdata}
                 schedTypes={scheduleTypes}
             />
+            </div>
+        ) : (" ")}
 
         </Layout>
     )

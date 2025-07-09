@@ -22,6 +22,8 @@ const { Text, Link } = Typography;
 
 const SchedModalEditor = (props)=>{
   
+  console.log("MODAL PROPS", props);
+
   const [open, setOpen] = useState(false);
   const [item_id, setItem_id] = useState(null);
 
@@ -48,10 +50,7 @@ const SchedModalEditor = (props)=>{
   const [creatorId, setCreatorId]                   = useState(null);
   const [prodCalendar, setProdCalendar]             = useState(null);
 
-  const [userData, setUserData]                     = useState({
-    user: null,
-    companies: null,
-  });
+  const [userData, setUserData]                     = useState(props.userData);
 
   const [ctrlKey, setCtrlKey] = useState(false);
 
@@ -66,6 +65,7 @@ const SchedModalEditor = (props)=>{
     if (props.userData) {
       setIdCompany(props.userData.user.id_company);
       setUserData(props.userData);
+        console.log("MODAL PROPS 2 ", props);
     }
   }, [props.userData]);
 
@@ -158,8 +158,11 @@ const SchedModalEditor = (props)=>{
 
 
     useEffect(()=>{
-      setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : userData.id_company) )}));
-      setCompanyName(userData.companies.find((el)=>{return el.id === idCompany}).name);
+      if (idCompany){
+        setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : userData.id_company) )}));
+        setCompanyName(userData.companies.find((el)=>{return el.id === idCompany}).name);
+
+      }
 
     },[idCompany]);
 
