@@ -363,7 +363,7 @@ export const SCHEDULES = [
     {
         "id": 201,
         "start": "2025-12-10 00:00:00",
-        "end": "2026-12-09 23:59:59",
+        "end": null,
         "enter": "00:00:00",
         "leave": "23:59:59",
         "lunch_start": "00:00:00",

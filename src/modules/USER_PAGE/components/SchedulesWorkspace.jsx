@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import styles from "../style/user_page.module.css";
 import {useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
-import {ClearOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import {ClearOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
 import {SCHEDULES, SCHEDULES_NAMES_SELECTS, SCHEDULES_TYPES_SELECT} from "../mock/mock";
 import dayjs from "dayjs";
@@ -55,14 +55,9 @@ function SchedulesWorkspace(props) {
     useEffect(() => {
         if (isMounted) {
             findActiveSchedule();
-        }
-    }, [schedules]);
-
-    useEffect(() => {
-        if (isMounted) {
             findNextSchedule();
         }
-    }, [activeSchedule]);
+    }, [schedules]);
 
     useEffect(() => {
         if (isMounted) {
@@ -76,12 +71,13 @@ function SchedulesWorkspace(props) {
                 setToolbarTypeScheduleId(editedSchedule.schedule_type);
                 setToolbarNameScheduleId(editedSchedule.schedule_id);
                 setToolbarDateStartSchedule(dayjs(editedSchedule.start));
-                setToolbarDateEndSchedule(dayjs(editedSchedule.end));
+                setToolbarDateEndSchedule(editedSchedule.end ? dayjs(editedSchedule.end) : null);
             } else {
                 setToolbarTypeScheduleId(null);
                 setToolbarNameScheduleId(null);
                 setToolbarDateStartSchedule(null);
                 setToolbarDateEndSchedule(null);
+                setIntersections([]);
             }
         }
     }, [editedSchedule]);
@@ -90,11 +86,22 @@ function SchedulesWorkspace(props) {
         const arr = [];
         schedules.forEach(schedule => {
             if (+schedule.id !== +editedSchedule.id) {
-                if (dayjs(toolbarDateStartSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateStartSchedule) <= dayjs(schedule.end)) {
-                    arr.push(schedule.id);
-                }
-                if (dayjs(toolbarDateEndSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateEndSchedule) <= dayjs(schedule.end)) {
-                    arr.push(schedule.id);
+                if (schedule.end) {
+                    if (dayjs(toolbarDateStartSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateStartSchedule) <= dayjs(schedule.end)) {
+                        arr.push(schedule.id);
+                    }
+                    if (dayjs(toolbarDateEndSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateEndSchedule) <= dayjs(schedule.end)) {
+                        arr.push(schedule.id);
+                    }
+                } else {
+                    if (+editedSchedule.id === +activeSchedule.id) {
+                        if (dayjs(toolbarDateEndSchedule) >= dayjs(schedule.start)) {
+                            arr.push(schedule.id);
+                        }
+                    }
+                    if (toolbarDateStartSchedule && +editedSchedule.id !== +activeSchedule.id) {
+                        arr.push(schedule.id);
+                    }
                 }
             }
         });
@@ -188,16 +195,26 @@ function SchedulesWorkspace(props) {
         }
     };
     const findActiveSchedule = () => {
+        console.log('findActiveSchedule')
         const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
         const activeSched = schedules.find(schedule => {
             const start = dayjs(schedule.start, 'YYYY-MM-DD HH:mm:ss');
-            const end = dayjs(schedule.end, 'YYYY-MM-DD HH:mm:ss');
-            return start.isBefore(now) && end.isAfter(now);
+            if (schedule.end) {
+                const end = dayjs(schedule.end, 'YYYY-MM-DD HH:mm:ss');
+                return start.isBefore(now) && end.isAfter(now);
+            }
+            return start.isBefore(now)
         });
         if (activeSched) setActiveSchedule(activeSched);
     };
     const findNextSchedule = () => {
-        const nextSched = schedules.find(schedule => schedule.id > activeSchedule.id);
+        console.log('findNextSchedule')
+        const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
+        const nextSched = schedules.find(schedule => {
+            const start = dayjs(schedule.start, 'YYYY-MM-DD HH:mm:ss');
+            return start.isAfter(now);
+        });
+        console.log(nextSched)
         if (nextSched) setNextSchedule(nextSched);
     };
 
@@ -441,27 +458,40 @@ function SchedulesWorkspace(props) {
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_name}>{dayjs(schedule.end).format('DD.MM.YYYY')}</p>
+                                            <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : '—'}</p>
                                         </div>
                                     </div>
-                                    <div className={styles.sk_schedule_table_cell} style={{padding: '15px', justifyContent: 'space-between'}}>
-                                        {schedule.id >= activeSchedule.id && (
+                                    {schedule.id !== editedSchedule.id ? (
+                                        <div className={styles.sk_schedule_table_cell}
+                                              style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
+                                            {(schedule.id === activeSchedule.id || schedule.id === nextSchedule.id) && (
+                                                <Button color={'default'}
+                                                        variant={'outlined'}
+                                                        shape="circle"
+                                                        icon={<EditOutlined/>}
+                                                        onClick={() => toEditSchedule(schedule.id)}
+                                                ></Button>
+                                            )}
+                                            {schedule.id !== activeSchedule.id && schedule.id === nextSchedule.id && (
+                                                <Button color={'default'}
+                                                        variant={'outlined'}
+                                                        shape="circle"
+                                                        icon={<DeleteOutlined/>}
+                                                        onClick={() => removeSchedule(schedule.id)}
+                                                ></Button>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className={styles.sk_schedule_table_cell}
+                                             style={{padding: '15px', justifyContent: 'center'}}>
                                             <Button color={'default'}
                                                     variant={'outlined'}
                                                     shape="circle"
-                                                    icon={<EditOutlined/>}
-                                                    onClick={() => toEditSchedule(schedule.id)}
+                                                    icon={<CloseOutlined />}
+                                                    onClick={() => clearEdit()}
                                             ></Button>
-                                        )}
-                                        {schedule.id !== activeSchedule.id && schedule.id > activeSchedule.id && (
-                                            <Button color={'default'}
-                                                    variant={'outlined'}
-                                                    shape="circle"
-                                                    icon={<DeleteOutlined/>}
-                                                    onClick={() => removeSchedule(schedule.id)}
-                                            ></Button>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                                 {/*<div className={`${styles.sk_schedule_table_break_row}`}>
                                     <div className={styles.sk_schedule_table_cell}><p></p></div>
