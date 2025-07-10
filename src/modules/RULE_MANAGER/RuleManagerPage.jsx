@@ -20,6 +20,7 @@ import {
 import Cookies from "js-cookie";
 import ClaimManagerSidebar from "../RULE_MANAGER/components/ClaimManagerSidebar";
 import {NavLink} from "react-router-dom";
+import RuleIcons from "../../assets/Comicon/RuleIcons";
 const { Header, Sider, Content } = Layout;
 
 
@@ -333,6 +334,9 @@ const RuleManagerPage = (props) => {
                                              onDoubleClick={() => openCloseRules(rule.id)}
                                         >
                                             <div className="sk-department-header-hover-container">
+
+                                                {/*<RuleIcons type={rule.rule_type_id} />*/}
+
                                                 <p className="sk-department-header-p">{rule.id}</p>
                                                 <p className="sk-department-header-p" style={{flexGrow: 1}}>{rule.name}</p>
 
