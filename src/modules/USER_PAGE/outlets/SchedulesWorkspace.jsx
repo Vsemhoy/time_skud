@@ -422,7 +422,7 @@ function SchedulesWorkspace(props) {
                             }>
                                 <div className={`${styles.sk_schedule_table_row}`}>
                                     <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container}>
+                                        <div className={styles.sk_schedule_container} title={schedule.schedule_type}>
                                             <SchedIcons type={schedule.schedule_type} size={'100%'} />
                                         </div>
                                     </div>
