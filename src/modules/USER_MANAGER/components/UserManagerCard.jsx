@@ -10,7 +10,7 @@ import SchedFreeSVG from "../../../media/schedule-free.svg";
 import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
 import SchedEmptySVG from "../../../media/schedule-empty.svg";
-import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import RuleIcons from "../../../assets/Comicon/RuleIcons";
 import UmCardSchedRow from "./UmCardSchedRow";
 import UmCardRuleRow from "./UmCardRuleRow";
 
