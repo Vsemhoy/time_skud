@@ -67,11 +67,11 @@ const ClaimManagerSidebar = (props) => {
             </div>
 
             <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Типы правил</span>
+                <span className={'sk-usp-filter-col-label'}>Типы графиков</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Все типы'}
                         value={currentRule}
-                        options={props.current_rules_list}
+                        options={props.schedules_types_list}
                         onChange={(ev) => {
                             setCurrentRule(ev)
                         }}

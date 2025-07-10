@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
-import ClaimManagerSidebar from "../RULE_MANAGER/components/ClaimManagerSidebar";
+import ClaimManagerSidebar from "../SCHED_MANAGER/components/ClaimManagerSidebar";
 import SchedListRow from "./components/SchedListRow";
 import SchedModalEditor from "./components/SchedModalEditor";
 import './components/style/schedmanager.css';
@@ -370,7 +370,6 @@ const SchedManagerPage = (props) => {
                                 {scheduleList.map((item, index) => (
                                     <SchedListRow key={index} data={item}
                                         onOpenEditorModal={openEditorModal}
-                                        // onOpenUserManager={openUserModal}
                                         users_count={item.users_count}
                                     />
                                 ))}
@@ -381,25 +380,17 @@ const SchedManagerPage = (props) => {
             </Layout>
         {(userdata && userdata?.companies  && userdata.companies?.length > 0) ? (
             <div>
-            <SchedModalEditor
-                open={editorModalOpen}
-                on_cancel={cancelEditorModal}
-                on_save={saveScheduleForm}
-                target_id={editedId}
-                data={editedIdtem}
-                userData={userdata}
-                prodCalendars={baseProdCalendars}
-                schedTypes={scheduleTypes}
-                ctrl_key={ctrlKey}
-            />
-
-            {/*<SchedModalUsers*/}
-            {/*    open={userManagerModalOpen}*/}
-            {/*    target_id={editedId}*/}
-            {/*    group_data={editedIdtem}*/}
-            {/*    userData={userdata}*/}
-            {/*    schedTypes={scheduleTypes}*/}
-            {/*/>*/}
+                <SchedModalEditor
+                    open={editorModalOpen}
+                    on_cancel={cancelEditorModal}
+                    on_save={saveScheduleForm}
+                    target_id={editedId}
+                    data={editedIdtem}
+                    userData={userdata}
+                    prodCalendars={baseProdCalendars}
+                    schedTypes={scheduleTypes}
+                    ctrl_key={ctrlKey}
+                />
             </div>
         ) : (" ")}
 
