@@ -1,6 +1,7 @@
 import {Table, Transfer} from "antd";
 import React from "react";
 import '../style/user_page.module.css'
+import '../style/TableTransfer.css'
 
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
@@ -11,15 +12,15 @@ var __rest = (this && this.__rest) || function (s, e) {
             if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
                 t[p[i]] = s[p[i]];
         }
-    console.log(t)
     return t;
 };
 
 const TableTransfer = props => {
     const { leftColumns, rightColumns } = props,
         restProps = __rest(props, ['leftColumns', 'rightColumns']);
+    console.log(restProps)
     return (
-        <Transfer style={{width: '100%', height: '100%', maxHeight: '100%', overflow: 'hidden'}}
+        <Transfer style={{width: '1055px', height: '100%', maxHeight: '100%', overflow: 'hidden'}}
                   styles={{
                       list: {
                           style: {
@@ -27,6 +28,7 @@ const TableTransfer = props => {
                           },
                       },
                   }}
+                  className="custom-table-transfer ant-transfer"
                   operations={['Добавить', 'Удалить']}
                   locale={{
                       itemUnit: 'элементов',
@@ -63,9 +65,8 @@ const TableTransfer = props => {
                         pagination={false}
                         style={{
                             pointerEvents: listDisabled ? 'none' : undefined,
-                            overflowY: 'auto',
-                            maxHeight: 'calc(100vh - 10px - 52px - 52px - 10px - 46px - 20px - 56px - 40px - 24px)'
                         }}
+                        className="custom-transfer-table"
                         onRow={({ key, disabled: itemDisabled }) => ({
                             onClick: () => {
                                 if (itemDisabled || listDisabled) {

@@ -6,7 +6,7 @@ import {ClearOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-d
 import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
 import {SCHEDULES, SCHEDULES_NAMES_SELECTS, SCHEDULES_TYPES_SELECT} from "../mock/mock";
 import dayjs from "dayjs";
-import SchedIcons from "../../SCHED_MANAGER/components/SchedIcons";
+import SchedIcons from "../../../assets/Comicon/SchedIcons";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 function SchedulesWorkspace(props) {
@@ -423,7 +423,7 @@ function SchedulesWorkspace(props) {
                                 <div className={`${styles.sk_schedule_table_row}`}>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container}>
-                                            <p className={styles.sk_schedule_icon}><SchedIcons type={schedule.schedule_type} /></p>
+                                            <SchedIcons type={schedule.schedule_type} size={'100%'} />
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>

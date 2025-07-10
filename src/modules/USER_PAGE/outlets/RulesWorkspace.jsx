@@ -10,7 +10,7 @@ import {
 } from "../mock/mock";
 import dayjs from "dayjs";
 import {CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
-import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import RuleIcons from "../../../assets/Comicon/RuleIcons";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {DEF_SCHEDULE as activeRule} from "../../../CONFIG/DEFFORMS";
 
@@ -435,7 +435,7 @@ function RulesWorkspace(props) {
                                 <div className={styles.sk_rules_table_row}>
                                     <div className={`${styles.sk_rules_table_cell}`}>
                                         <div className={styles.sk_rules_container}>
-                                            <p className={styles.sk_rules_icon}><RuleIcons type={rule.rule_type_id}/></p>
+                                            <RuleIcons type={rule.rule_type_id} size={'100%'}/>
                                         </div>
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}>

@@ -328,6 +328,7 @@ h1 {
 .sk_groups_container {
     width: 100%;
     height: 100%;
+    overflow-x: auto;
     background: #EFEFEF;
     border-radius: 6px;
     display: flex;
@@ -341,6 +342,10 @@ h1 {
     background-color: #e1e1e1;
     border-radius: 6px;
     padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 }
 .sk_group {
     width: 100%;
@@ -358,9 +363,11 @@ h1 {
 .sk_rule_name {
     font-size: 13px;
     color: black;
+    width: 300px;
 }
 .sk_rule_description {
     font-size: 12px;
+    width: 300px;
 }
 
 .ant-transfer-list-body {
@@ -372,7 +379,6 @@ h1 {
 .custom-transfer .ant-transfer-list {
     overflow: hidden !important;
 }
-
 
 .sk_table_row_header {
     background-color: #C1CAD6;

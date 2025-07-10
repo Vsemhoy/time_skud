@@ -7,7 +7,7 @@ import { DS_RULES, DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
-import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import RuleIcons from "../../../assets/Comicon/RuleIcons";
 import { WordDayNumerate } from '../../../components/Helpers/TextHelpers';
 
 

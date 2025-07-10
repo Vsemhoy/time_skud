@@ -5,7 +5,7 @@ import { DS_SCHED_UNITS } from "../../../CONFIG/DEFAULTSTATE";
 import { HOST_COMPONENT_ROOT } from "../../../CONFIG/config";
 
 
-import RuleIcons from "../../RULE_MANAGER/components/RuleIcons";
+import RuleIcons from "../../../assets/Comicon/RuleIcons";
 import { EllipsisOutlined } from "@ant-design/icons";
 
 

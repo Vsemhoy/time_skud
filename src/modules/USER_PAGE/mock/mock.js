@@ -1129,3 +1129,98 @@ export const RULES_NAMES_SELECT = [
         "type_color": "#ff91004b"
     }
 ];
+
+export const USER_GROUPS = [
+    {
+        "id": 9,
+        "name": "СКЛАДУ",
+        "description": "",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 4
+    },
+    {
+        "id": 8,
+        "name": "Инженеры",
+        "description": "Все инженеры",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 9
+    },
+];
+export const POSSIBLE_GROUPS = [
+    {
+        "id": 7,
+        "name": "Креативный отдел",
+        "description": "Нетакие люди",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 7
+    },
+    {
+        "id": 6,
+        "name": "Нестандартное время графика",
+        "description": "Все челы, у которых нестандартное время стандартного графика",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 3
+    },
+    {
+        "id": 5,
+        "name": "Рондовцы",
+        "description": "Rondosoundovcy zdes zhivut",
+        "deleted": 0,
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 5
+    },
+    {
+        "id": 4,
+        "name": "А это рондосаундная группа 3",
+        "description": "Емай ай нид хелпхер!",
+        "deleted": 0,
+        "id_company": 3,
+        "company_name": "Rondo",
+        "company_color": "#229922",
+        "users_count": 0
+    },
+    {
+        "id": 3,
+        "name": "Айтишники - отдел",
+        "description": "афывафы",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 3
+    },
+    {
+        "id": 2,
+        "name": "Бухгалтерия",
+        "description": "Для тестов, сюда ничего не добавлять!",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 3
+    },
+    {
+        "id": 1,
+        "name": "Продажники",
+        "description": "Группа с ординарным графиком",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "users_count": 10
+    },
+]
