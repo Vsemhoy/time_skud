@@ -34,10 +34,10 @@ import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
 import AclSkudPage2 from './modules/ADMIN/ACLSKUD/AclSkudPage2';
 import UserManagerPage_2025 from "./modules/USER_MANAGER_2025/USER_MANAGER/UserManagerPage_2025";
 import UserPage from "./modules/USER_PAGE/UserPage";
-import BaseInfoWorkspace from "./modules/USER_PAGE/components/BaseInfoWorkspace";
-import SchedulesWorkspace from "./modules/USER_PAGE/components/SchedulesWorkspace";
-import RulesWorkspace from "./modules/USER_PAGE/components/RulesWorkspace";
-import GroupsWorkspace from "./modules/USER_PAGE/components/GroupsWorkspace";
+import BaseInfoWorkspace from "./modules/USER_PAGE/outlets/BaseInfoWorkspace";
+import SchedulesWorkspace from "./modules/USER_PAGE/outlets/SchedulesWorkspace";
+import RulesWorkspace from "./modules/USER_PAGE/outlets/RulesWorkspace";
+import GroupsWorkspace from "./modules/USER_PAGE/outlets/GroupsWorkspace";
 import GrotpuckovPage from './modules/GROTPUCKOV/GrotpuckovPage';
 const WS_URL = 'ws://192.168.1.16:5002';
 

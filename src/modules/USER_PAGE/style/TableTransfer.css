@@ -1,0 +1,19 @@
+.custom-table-transfer {
+    min-width: 1055px !important;
+}
+
+.custom-table-transfer .ant-transfer-list {
+    min-width: 402px !important;
+    height: 100%;
+    flex: none !important;
+}
+
+.ant-transfer {
+    grid-template-columns: minmax(402px, 1fr) 120px minmax(402px, 1fr) !important;
+}
+
+.custom-table-transfer .ant-table {
+    min-width: 400px !important;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 10px - 52px - 52px - 10px - 46px - 20px - 56px - 40px - 24px) !important;
+}
