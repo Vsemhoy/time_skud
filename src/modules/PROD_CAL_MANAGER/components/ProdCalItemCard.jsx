@@ -7,7 +7,7 @@ import { Badge, Button, Flex, Select, Tag, Typography } from 'antd';
 import { Card } from 'antd';
 
 import { CheckCircleFilled, ClockCircleOutlined, CloseCircleOutlined, EditOutlined, ExclamationCircleOutlined, MinusCircleFilled, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
-import ChineseZodiac from "./ChineseZodiac";
+import ChineseZodiac from "../../../assets/Comicon/ChineseZodiac";
 
 
  
