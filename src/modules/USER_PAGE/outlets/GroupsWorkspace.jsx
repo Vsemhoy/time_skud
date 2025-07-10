@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, Input, Spin} from "antd";
 import styles from "../style/user_page.module.css";
-import {ClearOutlined, EditOutlined} from "@ant-design/icons";
+import {ClearOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
 import TableTransfer from "../components/TableTransfer";
 import {POSSIBLE_GROUPS, USER_GROUPS} from "../mock/mock";
 import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
@@ -82,18 +82,30 @@ function GroupsWorkspace(props) {
         dataIndex: 'title',
         title: 'Группа, описание',
         render: (title, record) => (
-            <div className={`${styles.sk_group}`}>
+            <div className={`${styles.sk_group} ${+editGroupId === +record.id ? styles.sk_group_active : ''}`}>
                 <div className={styles.sk_rule_name_container}>
                     <p className={styles.sk_rule_name}>{title}</p>
-                    <Button color={'default'}
+                    {+editGroupId !== +record.id ? (
+                        <Button color={'default'}
+                             variant={'outlined'}
+                             shape="circle"
+                             icon={<EditOutlined/>}
+                             onClick={(e) => {
+                                 e.stopPropagation();
+                                 toEditGroup(record)
+                             }}
+                        ></Button>
+                    ) : (
+                        <Button color={'default'}
                             variant={'outlined'}
                             shape="circle"
-                            icon={<EditOutlined/>}
+                            icon={<CloseOutlined/>}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                toEditGroup(record)
+                                clearEditGroup()
                             }}
-                    ></Button>
+                        ></Button>
+                )}
                 </div>
                 <p className={styles.sk_rule_description}>{record.description}</p>
             </div>
