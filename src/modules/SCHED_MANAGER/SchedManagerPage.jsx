@@ -713,7 +713,7 @@ const SchedManagerPage = (props) => {
                             <div className="sk-usp-filter-col">
                                 <ClaimManagerSidebar
                                     company_list={prepareSelectOptions('company', companies)}
-                                    schedules_types_list={scheduleTypes}
+                                    schedules_types_list={prepareSelectOptions('schedule', scheduleTypes)}
                                     on_change_filter={handleFilterChanged}
                                 />
                             </div>
