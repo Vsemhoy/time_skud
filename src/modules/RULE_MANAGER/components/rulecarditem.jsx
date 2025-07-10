@@ -11,7 +11,7 @@ import {
     UserSwitchOutlined
 } from "@ant-design/icons";
 import { ShortName } from "../../../components/Helpers/TextHelpers";
-import RuleIcons from "./RuleIcons";
+import RuleIcons from "../../../assets/Comicon/RuleIcons";
 const { Text, Link } = Typography;
 
 const RuleCardItem = (props)=>{
