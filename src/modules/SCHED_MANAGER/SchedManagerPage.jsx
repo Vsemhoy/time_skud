@@ -601,7 +601,7 @@ const SchedManagerPage = (props) => {
     const fetchFilters = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/filterselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/schedule/filterselects`,
                     {
                         _token: CSRF_TOKEN
                     }
