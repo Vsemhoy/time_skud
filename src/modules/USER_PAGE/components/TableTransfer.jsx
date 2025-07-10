@@ -2,6 +2,7 @@ import {Table, Transfer} from "antd";
 import React from "react";
 import '../style/user_page.module.css'
 import '../style/TableTransfer.css'
+import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
 
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
@@ -20,7 +21,7 @@ const TableTransfer = props => {
         restProps = __rest(props, ['leftColumns', 'rightColumns']);
     console.log(restProps)
     return (
-        <Transfer style={{width: '1055px', height: '100%', maxHeight: '100%', overflow: 'hidden'}}
+        <Transfer style={{width: '100%', height: '100%', maxHeight: '100%', overflow: 'hidden'}}
                   styles={{
                       list: {
                           style: {
@@ -29,7 +30,7 @@ const TableTransfer = props => {
                       },
                   }}
                   className="custom-table-transfer ant-transfer"
-                  operations={['Добавить', 'Удалить']}
+                  operations={[<PlusOutlined title={"Добавить"}/>, <MinusOutlined title={"Удалить"}/>]}
                   locale={{
                       itemUnit: 'элементов',
                       itemsUnit: 'элементов',

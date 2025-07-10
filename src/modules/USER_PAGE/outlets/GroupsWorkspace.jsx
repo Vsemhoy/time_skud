@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useOutletContext} from "react-router-dom";
-import {Affix, Button, Input, Select, Spin, Table, Tag, Transfer} from "antd";
+import {Affix, Button, Input, Spin} from "antd";
 import styles from "../style/user_page.module.css";
 import {ClearOutlined, EditOutlined} from "@ant-design/icons";
 import TableTransfer from "../components/TableTransfer";
@@ -11,12 +11,16 @@ import TextArea from "antd/es/input/TextArea";
 
 function GroupsWorkspace(props) {
     const navigate = useNavigate();
-    const { userIdState, userFIO } = useOutletContext();
+    const { userIdState } = useOutletContext();
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     const [userGroups, setUserGroups] = useState([]);
     const [possibleGroups, setPossibleGroups] = useState([]);
+
+    const [editGroupId, setEditGroupId] = useState(0);
+    const [editGroupName, setEditGroupName] = useState('');
+    const [editGroupDescription, setEditGroupDescription] = useState('');
 
     const [targetKeys, setTargetKeys] = useState([]);
 
@@ -50,7 +54,7 @@ function GroupsWorkspace(props) {
     const fetchGroupsInfo = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/usergroups/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroups/${userIdState}`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -69,6 +73,11 @@ function GroupsWorkspace(props) {
         }
     };
 
+    const toEditGroup = (group) => {
+        setEditGroupId(group.id);
+        setEditGroupName(group.title || group.name); // Используйте group.title или group.name в зависимости от структуры данных
+        setEditGroupDescription(group.description);
+    };
     const column = [{
         dataIndex: 'title',
         title: 'Группа, описание',
@@ -80,7 +89,10 @@ function GroupsWorkspace(props) {
                             variant={'outlined'}
                             shape="circle"
                             icon={<EditOutlined/>}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toEditGroup(record)
+                            }}
                     ></Button>
                 </div>
                 <p className={styles.sk_rule_description}>{record.description}</p>
@@ -123,7 +135,7 @@ function GroupsWorkspace(props) {
     const fetchAddGroups = async (moveKeys) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/usergroupsadd/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupsadd/${userIdState}`,
                     {
                         data: { addGroups: moveKeys },
                         _token: CSRF_TOKEN
@@ -137,7 +149,7 @@ function GroupsWorkspace(props) {
     const fetchRemoveGroups = async (moveKeys) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/usergroupsremove/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupsremove/${userIdState}`,
                     {
                         data: { removeGroups: moveKeys },
                         _token: CSRF_TOKEN
@@ -147,6 +159,70 @@ function GroupsWorkspace(props) {
                 console.error('Error fetching remove groups from user:', error);
             }
         }
+    };
+    const deleteGroup = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/usergroupsdelete/${editGroupId}`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+                clearEditGroup();
+            } catch (error) {
+                console.error('Error fetching delete groups:', error);
+            }
+        } else {
+            await fetchInfo();
+            clearEditGroup();
+        }
+    };
+    const updateGroup = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupsupdate/${editGroupId}`,
+                    {
+                        data: {name: editGroupName, description: editGroupDescription},
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+                clearEditGroup();
+            } catch (error) {
+                console.error('Error fetching update groups:', error);
+            }
+        } else {
+            await fetchInfo();
+            clearEditGroup();
+        }
+    };
+    const createGroup = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupscreate`,
+                    {
+                        data: {name: editGroupName, description: editGroupDescription},
+                        _token: CSRF_TOKEN
+                    }
+                );
+                await fetchInfo();
+                clearEditGroup();
+            } catch (error) {
+                console.error('Error fetching create groups:', error);
+            }
+        } else {
+            await fetchInfo();
+            clearEditGroup();
+        }
+    };
+    const clearEditGroup = () => {
+        setEditGroupId(0);
+        setEditGroupName('');
+        setEditGroupDescription('');
+    };
+    const isCantAdd = () => {
+        return !(editGroupName && editGroupDescription);
     };
     return (
         <Spin spinning={isLoading}>
@@ -169,10 +245,7 @@ function GroupsWorkspace(props) {
                         <div style={{width: '100%'}}>
                             <div className={styles.sk_flex_space}>
                                 <span className={'sk-totoro'}>Редактирование/создание группы</span>
-                                <span
-                                    onClick={() => {
-                                    }}
-                                >
+                                <span onClick={() => clearEditGroup()}>
                                     <ClearOutlined/>
                                 </span>
                             </div>
@@ -181,26 +254,33 @@ function GroupsWorkspace(props) {
                             <Input
                                 placeholder={'Введите название'}
                                 style={{width: '100%'}}
-                                onChange={(ev) => {
-                                }}
+                                value={editGroupName}
+                                onChange={(e) => setEditGroupName(e.target.value)}
                             />
                             <br/>
                             <br/>
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Описание</div>
-                            <TextArea rows={4} placeholder="Введите описание" axLength={6}/>
+                            <TextArea placeholder="Введите описание"
+                                      rows={4}
+                                      maxLength={6}
+                                      value={editGroupDescription}
+                                      onChange={(e) => setEditGroupDescription(e.target.value)}
+                            />
                             <br/>
                             <br/>
                             <Button block
-                                    onClick={() => {}}
-                            >Привязать группу</Button>
+                                    onClick={() => (editGroupId ? updateGroup() : createGroup())}
+                                    disabled={isCantAdd()}
+                            >{!editGroupId ? 'Привязать группу' : 'Обновить группу'}</Button>
                         </div>
                         <div style={{width: '100%'}}>
                             <Button block
                                     color="danger"
                                     variant="outlined"
-                                    onClick={() => {}}
+                                    onClick={() => deleteGroup()}
+                                    disabled={!editGroupId}
                             >Отвязать и удалить группу</Button>
                         </div>
                     </div>
