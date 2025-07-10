@@ -5,9 +5,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ConfigProvider, theme } from 'antd';
 import { StateProvider } from './components/ComStateProvider25/ComStateProvider25';
+
+/* + LOCALE */
 import ruRU from 'antd/lib/locale/ru_RU'; // Импорт русской локали
 import ru from "antd/es/date-picker/locale/ru_RU";
-import moment from "moment";
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/ru'; // русская локаль
+import updateLocale from 'dayjs/plugin/updateLocale';
+
+dayjs.locale('ru');
+dayjs.extend(updateLocale);
+
+// Устанавливаем понедельник первым днём недели
+dayjs.updateLocale('ru', {
+    weekStart: 1,
+});
 
 const buddhistLocale = {
     ...ru,
@@ -15,20 +28,24 @@ const buddhistLocale = {
         ...ru.lang,
     },
 };
-export const globalBuddhistLocale = {
+const customLocale = {
     ...ruRU,
     DatePicker: {
         ...ruRU.DatePicker,
-        lang: buddhistLocale.lang,
+        lang: {
+            ...ruRU.DatePicker.lang,
+            firstDayOfWeek: 1, // 0 - вс, 1 - пн, 2 - вт и т.д.
+        },
     },
 };
+/* - LOCALE */
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
     <React.StrictMode>
         <ConfigProvider
-            locale={globalBuddhistLocale}
+            locale={customLocale}
             theme={{
             // 1. Use dark algorithm
             //   algorithm: theme.darkAlgorithm,
@@ -36,12 +53,11 @@ root.render(
             // 2. Combine dark algorithm and compact algorithm
             //   algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
             }}
-    >
-      <StateProvider>
-        <App />
-      </StateProvider>
-
-    </ConfigProvider>
+        >
+          <StateProvider>
+            <App />
+          </StateProvider>
+        </ConfigProvider>
     </React.StrictMode>
 
 );
