@@ -355,7 +355,7 @@ const SchedManagerPage = (props) => {
                                             backgroundColor: '#ededed',
                                             borderColor: '#ededed',
                                         }}
-                                    >Всего найдено: {0}</Tag>
+                                    >Всего найдено: {totalCount}</Tag>
                                 </div>
                                 <Button color={'primary'}
                                         variant={'outlined'}
