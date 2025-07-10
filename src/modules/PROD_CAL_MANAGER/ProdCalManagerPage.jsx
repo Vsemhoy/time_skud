@@ -447,16 +447,18 @@ const ProdCalManagerPage = (props) => {
                 </Content>
             </Layout>
 
-            <ProdCalModal
-                userData={userdata}
-                is_open={isModalOpen}
-                onClose={closeModal}
-                data={editedItem}
-                onSave={saveCalendar}
-                allow_delete={allowDelete}
-                onDelete={delete_calendar}
-                data_list={baseCalendarList}
-            />
+            {(userdata && userdata?.companies  && userdata.companies?.length > 0) ? (
+                <ProdCalModal
+                    userData={userdata}
+                    is_open={isModalOpen}
+                    onClose={closeModal}
+                    data={editedItem}
+                    onSave={saveCalendar}
+                    allow_delete={allowDelete}
+                    onDelete={delete_calendar}
+                    data_list={baseCalendarList}
+                />
+            ) : (" ")}
         </Layout>
     )
 };
