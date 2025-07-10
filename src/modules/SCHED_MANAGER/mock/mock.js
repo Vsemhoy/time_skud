@@ -163,3 +163,562 @@ export const SCHEDULE_LIST = [
     }
 ];
 
+const OFFICIAL_SCHED = {
+    year: 2025,
+    total: 365,
+    wtotal:247,
+    htotal: 118,
+    "months": [
+        {
+            "month": 1,
+            "days": [
+                {
+                    "d": 1
+                },
+                {
+                    "d": 2
+                },
+                {
+                    "d": 3
+                },
+                {
+                    "d": 4,
+                    "mv_to": {
+                        "l": 0,
+                        "m": 5,
+                        "d": 2
+                    }
+                },
+                {
+                    "d": 5,
+                    "mv_to": {
+                        "l": 4,
+                        "m": 12,
+                        "d": 31
+                    }
+                },
+                {
+                    "d": 6
+                },
+                {
+                    "d": 7
+                },
+                {
+                    "d": 8
+                },
+                {
+                    "d": 11
+                },
+                {
+                    "d": 12
+                },
+                {
+                    "d": 18
+                },
+                {
+                    "d": 19
+                },
+                {
+                    "d": 25
+                },
+                {
+                    "d": 26
+                }
+            ]
+        },
+        {
+            "month": 2,
+            "days": [
+                {
+                    "d": 1
+                },
+                {
+                    "d": 2
+                },
+                {
+                    "d": 8
+                },
+                {
+                    "d": 9
+                },
+                {
+                    "d": 15
+                },
+                {
+                    "d": 16
+                },
+                {
+                    "d": 22
+                },
+                {
+                    "d": 23,
+                    "mv_to": {
+                        "l": 1,
+                        "m": 5,
+                        "d": 8
+                    }
+                }
+            ]
+        },
+        {
+            "month": 3,
+            "days": [
+                {
+                    "d": 1
+                },
+                {
+                    "d": 2
+                },
+                {
+                    "d": 7,
+                    "short": 1,
+                    "w": 1
+                },
+                {
+                    "d": 8,
+                    "mv_to": {
+                        "l": 2,
+                        "m": 6,
+                        "d": 13
+                    }
+                },
+                {
+                    "d": 9
+                },
+                {
+                    "d": 15
+                },
+                {
+                    "d": 16
+                },
+                {
+                    "d": 22
+                },
+                {
+                    "d": 23
+                },
+                {
+                    "d": 29
+                },
+                {
+                    "d": 30
+                }
+            ]
+        },
+        {
+            "month": 4,
+            "days": [
+                {
+                    "d": 5
+                },
+                {
+                    "d": 6
+                },
+                {
+                    "d": 12
+                },
+                {
+                    "d": 13
+                },
+                {
+                    "d": 19
+                },
+                {
+                    "d": 20
+                },
+                {
+                    "d": 26
+                },
+                {
+                    "d": 27
+                },
+                {
+                    "d": 30,
+                    "short": 1,
+                    "w": 1
+                }
+            ]
+        },
+        {
+            "month": 5,
+            "days": [
+                {
+                    "d": 1
+                },
+                {
+                    "d": 2,
+                    "mv_from": {
+                        "l": 0,
+                        "m": 1,
+                        "d": 4
+                    }
+                },
+                {
+                    "d": 3
+                },
+                {
+                    "d": 4
+                },
+                {
+                    "d": 8,
+                    "mv_from": {
+                        "l": 1,
+                        "m": 2,
+                        "d": 23
+                    }
+                },
+                {
+                    "d": 9
+                },
+                {
+                    "d": 10
+                },
+                {
+                    "d": 11
+                },
+                {
+                    "d": 17
+                },
+                {
+                    "d": 18
+                },
+                {
+                    "d": 24
+                },
+                {
+                    "d": 25
+                },
+                {
+                    "d": 31
+                }
+            ]
+        },
+        {
+            "month": 6,
+            "days": [
+                {
+                    "d": 1
+                },
+                {
+                    "d": 7
+                },
+                {
+                    "d": 8
+                },
+                {
+                    "d": 11,
+                    "short": 1,
+                    "w": 1
+                },
+                {
+                    "d": 12
+                },
+                {
+                    "d": 13,
+                    "mv_from": {
+                        "l": 2,
+                        "m": 3,
+                        "d": 8
+                    }
+                },
+                {
+                    "d": 14
+                },
+                {
+                    "d": 15
+                },
+                {
+                    "d": 21
+                },
+                {
+                    "d": 22
+                },
+                {
+                    "d": 28
+                },
+                {
+                    "d": 29
+                }
+            ]
+        },
+        {
+            "month": 7,
+            "days": [
+                {
+                    "d": 5
+                },
+                {
+                    "d": 6
+                },
+                {
+                    "d": 12
+                },
+                {
+                    "d": 13
+                },
+                {
+                    "d": 19
+                },
+                {
+                    "d": 20
+                },
+                {
+                    "d": 26
+                },
+                {
+                    "d": 27
+                }
+            ]
+        },
+        {
+            "month": 8,
+            "days": [
+                {
+                    "d": 2
+                },
+                {
+                    "d": 3
+                },
+                {
+                    "d": 9
+                },
+                {
+                    "d": 10
+                },
+                {
+                    "d": 16
+                },
+                {
+                    "d": 17
+                },
+                {
+                    "d": 23
+                },
+                {
+                    "d": 24
+                },
+                {
+                    "d": 30
+                },
+                {
+                    "d": 31
+                }
+            ]
+        },
+        {
+            "month": 9,
+            "days": [
+                {
+                    "d": 6
+                },
+                {
+                    "d": 7
+                },
+                {
+                    "d": 13
+                },
+                {
+                    "d": 14
+                },
+                {
+                    "d": 20
+                },
+                {
+                    "d": 21
+                },
+                {
+                    "d": 27
+                },
+                {
+                    "d": 28
+                }
+            ]
+        },
+        {
+            "month": 10,
+            "days": [
+                {
+                    "d": 4
+                },
+                {
+                    "d": 5
+                },
+                {
+                    "d": 11
+                },
+                {
+                    "d": 12
+                },
+                {
+                    "d": 18
+                },
+                {
+                    "d": 19
+                },
+                {
+                    "d": 25
+                },
+                {
+                    "d": 26
+                }
+            ]
+        },
+        {
+            "month": 11,
+            "days": [
+                {
+                    "d": 1,
+                    "short": 1,
+                    "w": 1,
+                    "mv_to": {
+                        "l": 3,
+                        "m": 11,
+                        "d": 3
+                    }
+                },
+                {
+                    "d": 2
+                },
+                {
+                    "d": 3,
+                    "mv_from": {
+                        "l": 3,
+                        "m": 11,
+                        "d": 1
+                    }
+                },
+                {
+                    "d": 4
+                },
+                {
+                    "d": 8
+                },
+                {
+                    "d": 9
+                },
+                {
+                    "d": 15
+                },
+                {
+                    "d": 16
+                },
+                {
+                    "d": 22
+                },
+                {
+                    "d": 23
+                },
+                {
+                    "d": 29
+                },
+                {
+                    "d": 30
+                }
+            ]
+        },
+        {
+            "month": 12,
+            "days": [
+                {
+                    "d": 6
+                },
+                {
+                    "d": 7
+                },
+                {
+                    "d": 13
+                },
+                {
+                    "d": 14
+                },
+                {
+                    "d": 20
+                },
+                {
+                    "d": 21
+                },
+                {
+                    "d": 27
+                },
+                {
+                    "d": 28
+                },
+                {
+                    "d": 31,
+                    "mv_from": {
+                        "l": 4,
+                        "m": 1,
+                        "d": 5
+                    }
+                }
+            ]
+        }
+    ]
+};
+
+export const PROD_CALENDARS = [
+    {
+        id: 1,
+        year: '2024',
+        count_days: 100,
+        count_work_days: 100,
+        count_holidays: 100,
+        archieved: 1,
+        schedule: OFFICIAL_SCHED,
+        creator_id: 377,
+        created_at: 1737782394,
+        id_company: 1,
+
+        company_color: '#ff7700',
+        company_name: 'Arstel',
+        count_links: 2,
+    },
+    {
+        id: 2,
+        year: '2025',
+        count_days: 100,
+        count_work_days: 100,
+        count_holidays: 100,
+        archieved: 0,
+        schedule: OFFICIAL_SCHED,
+        creator_id: 377,
+        created_at: 1737782394,
+        id_company: 1,
+
+        company_color: '#ff7700',
+        company_name: 'Arstel',
+        count_links: 16,
+    },
+    {
+        id: 3,
+        year: '2025',
+        count_days: 100,
+        count_work_days: 100,
+        count_holidays: 100,
+        archieved: 0,
+        schedule: OFFICIAL_SCHED,
+        creator_id: 377,
+        created_at: 1737782394,
+        id_company: 2,
+
+        company_color: '#2ccf2c',
+        company_name: 'Rondo',
+        count_links: 1,
+    },
+    {
+        id: 4,
+        year: '2026',
+        count_days: 100,
+        count_work_days: 100,
+        count_holidays: 100,
+        archieved: -1,
+        schedule: OFFICIAL_SCHED,
+        creator_id: 377,
+        created_at: 1737782394,
+        id_company: 2,
+
+        company_color: '#2ccf2c',
+        company_name: 'Rondo',
+        count_links: 0,
+    },
+]

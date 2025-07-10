@@ -13,6 +13,7 @@ import SchedFreeSVG from "../../../media/schedule-free.svg";
 import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
 import SchedEmptySVG from "../../../media/schedule-empty.svg";
+import SchedIcons from "../../../assets/Comicon/SchedIcons";
 
 const { Text, Link } = Typography;
 
@@ -129,7 +130,9 @@ const SchedListRow = (props)=>{
         >
             <div className="sk-row sk-first-row">
                 <div>
-                    <div><Sched_type_icon>{itemData.skud_schedule_type_id}</Sched_type_icon></div>
+                    <div>
+                        <SchedIcons type={itemData.skud_schedule_type_id} />
+                    </div>
                     
                 </div> 
 

@@ -351,6 +351,16 @@ const SchedModalEditor = (props)=>{
     }
 
 
+  const prepareSelectOptions = (options) => {
+    return options.map((option) => {
+      return ({
+        key: `option-chedules-${option.id}`,
+        value: option.id,
+        label: option.name
+      })
+    });
+  }
+
 
 
 
@@ -377,7 +387,7 @@ const SchedModalEditor = (props)=>{
               size="large"
               value={idSkudScheduleType}
               onChange={handleIdSkudScheduleTypeChange}
-              options={props.schedTypes}
+              options={prepareSelectOptions(props.schedTypes)}
               disabled={deleted}
             />
           ) : ""}
@@ -389,16 +399,16 @@ const SchedModalEditor = (props)=>{
            type="warning" />
         </div> */}
 
-          { !ctrlKey ?? usedSchedType ? (
-            <Collapse
-              style={{width:'100%'}}
-              size="small"
-              items={[{ key: '1', label: 'График: ' + usedSchedType.label, children: <p>
-                {usedSchedType.description}
-              </p> }]}
-            />
+          {/*{ !ctrlKey ?? usedSchedType ? (*/}
+          {/*  <Collapse*/}
+          {/*    style={{width:'100%'}}*/}
+          {/*    size="small"*/}
+          {/*    items={[{ key: '1', label: 'График: ' + usedSchedType.label, children: <p>*/}
+          {/*      {usedSchedType.description}*/}
+          {/*    </p> }]}*/}
+          {/*  />*/}
 
-          ):''}
+          {/*):''}*/}
             </div>
           
           <span className="sk-microspacer"></span>
