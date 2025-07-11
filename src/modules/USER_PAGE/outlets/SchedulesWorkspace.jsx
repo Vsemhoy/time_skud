@@ -562,6 +562,41 @@ function SchedulesWorkspace(props) {
                                     }}
                                     disabled={isDisableField()}
                             />
+                            {toolbarNameScheduleId ? (
+                                    (() => {
+                                        let start = null;
+                                        let end = null;
+                                        let duration = null;
+                                        let lunch_start = null;
+                                        let lunch_end = null;
+                                        let lunch_duration = null;
+
+                                        const shedName = scheduleNames.find(name => name.id === toolbarNameScheduleId);
+                                        if (shedName) {
+                                            console.log(shedName)
+                                            start          = dayjs(shedName.start_time).format('HH:mm');
+                                            end            = dayjs(shedName.end_time).format('HH:mm');
+                                            duration       = dayjs(shedName.target_time).format('HH');
+                                            lunch_start    = dayjs(shedName.lunch_start).format('HH:mm');
+                                            lunch_end      = dayjs(shedName.lunch_end).format('HH:mm');
+                                            lunch_duration = dayjs(shedName.lunch_time).format('HH');
+                                        }
+                                        return (
+                                            <>
+                                                <br/>
+                                                <br/>
+                                                <div className={styles.sk_expanded_info}>
+                                                    <p className={styles.sk_expanded_info_header}>Параметры выбранного
+                                                        графика:</p>
+                                                    <p className={styles.sk_expanded_info_line}>Рабочее
+                                                        время: {start} - {end} ({duration} ч.)</p>
+                                                    <p className={styles.sk_expanded_info_line}>Обед: {lunch_start} - {lunch_end} ({lunch_duration} ч.)</p>
+                                                </div>
+                                            </>
+                                        );
+                                    })()
+                                ) : null
+                            }
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Дата начала действия графика</div>

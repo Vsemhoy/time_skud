@@ -392,3 +392,27 @@ h1 {
 .sk_table_row_edit {
     outline: 2px solid #1E88E5;
 }
+
+.sk_expanded_info {
+    padding: 5px;
+    border: 1px solid #BFBFBF;
+    background-color: #ededed;
+}
+.sk_expanded_info_type {
+    padding: 5px;
+    border: 1px solid #BFBFBF;
+    background-color: #FFF0DD;
+}
+.sk_expanded_info_header {
+    padding: 0;
+    margin: 0;
+    font-size: 11px;
+    color: #757575;
+    text-decoration: underline;
+}
+.sk_expanded_info_line {
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    color: #757575;
+}
