@@ -13,6 +13,8 @@ import {NavLink} from "react-router-dom";
 import RuleEditorModal from "../RULE_MANAGER/components/ruleeditormodal";
 import Cookies from "js-cookie";
 import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
+import {COMPANIES, RULE_LIST, RULE_TYPE_LIST} from "../RULE_MANAGER/mock/mock";
+import {YEARS} from "./mock/mock";
 
 
 
@@ -39,17 +41,18 @@ const ProdCalManagerPage = (props) => {
     const [allowDelete , setAllowDelete] = useState(false);
 
     
-    useEffect(() => {
-        if (CSRF_TOKEN){
-            setCompanies([{ key: 0, value: 0, label: 'Все компании' },
-                ...userdata.companies.map((com) => ({
-                    key: com.id,
-                    value: Number(com.id),
-                    label: com.name,
-                }))]
-            );
-            get_calendarList();
-        }},[userdata]);
+    // useEffect(() => {
+    //     if (CSRF_TOKEN){
+    //         setCompanies([{ key: 0, value: 0, label: 'Все компании' },
+    //             ...userdata.companies.map((com) => ({
+    //                 key: com.id,
+    //                 value: Number(com.id),
+    //                 label: com.name,
+    //             }))]
+    //         );
+    //         get_calendarList();
+    //     }
+    //     },[userdata]);
 
 
 
@@ -265,6 +268,7 @@ const ProdCalManagerPage = (props) => {
      * БОГДАН
      */
     const prepareSelectOptions = (name, options) => {
+        console.log(options);
         return options.map((option) => {
             return ({
                 key: `option-${name}-${option.id}`,
@@ -290,12 +294,94 @@ const ProdCalManagerPage = (props) => {
     const [isOpenFilters, setIsOpenFilters] = useCookieState('prod_manager_filters', true);
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [filtersState, setFiltersState] = useState([]);
+    const [years, setYears] = useState([]);
+
+    useEffect(() => {
+        fetchInfo().then(() => {
+            setIsMounted(true);
+        });
+    }, []);
 
     const handleFilterChanged = async (filterParams) => {
         if (isMounted) {
         //     await fetchInfo(filterParams);
         }
     };
+
+    const fetchInfo = async (filterParams) => {
+        setIsLoading(true);
+        await fetchCalendars(filterParams);
+        await fetchFilters();
+        // await fetchUsers();
+        if (PRODMODE) {
+            setIsLoading(false);
+        } else {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
+        }
+    };
+
+
+    const fetchCalendars = async (filterParams) => {
+        if (PRODMODE) {
+            try {
+                setFiltersState(filterParams);
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get',
+                    {
+                        data: {},
+                        _token: CSRF_TOKEN
+                    });
+                setCalendarList(response.data);
+                // Обновление состояния archieved календарей в соответствии с текущим годом
+                for (let i = 0; i < response.data.length; i++) {
+                    const element = response.data[i];
+                    if (parseInt(element.year) === dayjs().year() && element.archieved !== 0){
+                        element.archieved = 0;
+                        await update_calendar(element);
+                    } else if (parseInt(element.year) < dayjs().year() && element.archieved !== 1){
+                        element.archieved = 1;
+                        await update_calendar(element);
+                    } else if (parseInt(element.year) > dayjs().year() && element.archieved !== -1){
+                        element.archieved = -1;
+                        await update_calendar(element);
+                    };
+                }
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setCalendarList(RULE_LIST);
+        }
+    }
+
+    const fetchFilters = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/prodcalendar/filterselects`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+                if (serverResponse.data.content) {
+                    setCompanies(serverResponse.data.content.companies);
+                    setYears(serverResponse.data.content.years);
+                }
+
+                console.log('Response data as JSON:', JSON.stringify(serverResponse.data.content, null, 2));
+
+            } catch (error) {
+                console.error('Error fetching users info:', error);
+            }
+        } else {
+            setCompanies(COMPANIES);
+            setYears(YEARS);
+
+            console.log("XKHJGBKFJDHS", YEARS);
+        }
+    };
+
     /**
      * БОГДАН
      */
@@ -323,7 +409,7 @@ const ProdCalManagerPage = (props) => {
                             <div className="sk-usp-filter-col">
                                 <ClaimManagerSidebar
                                     company_list={prepareSelectOptions('company', companies)}
-                                    // current_rules_list={prepareSelectOptions('current_rules_list', currentRules)}
+                                    years_list={prepareSelectOptions('years', years)}
                                     on_change_filter={handleFilterChanged}
                                 />
                             </div>
@@ -336,9 +422,6 @@ const ProdCalManagerPage = (props) => {
                             <div className="sk-pagination-wrapper">
                                 <div className="sk-pagination-container">
                                     <Pagination
-                                        // current={currentPage}
-                                        // total={count}
-                                        // pageSize={pageSize}
                                         pageSizeOptions={[10, 50, 100]}
                                         locale={{
                                             items_per_page: 'на странице',

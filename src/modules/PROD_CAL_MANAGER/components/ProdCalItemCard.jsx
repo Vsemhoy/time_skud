@@ -62,9 +62,9 @@ const [ calData, setCalData] = useState(data);
                         <strong>{calData.year}</strong>
                     </div>
 
-                    <div className={'sk-cal-stats'}><span>{calData.schedule.total}</span> всего дней</div>
-                    <div className={'sk-cal-stats'}><span>{calData.schedule.wtotal}</span> рабочих</div>
-                    <div className={'sk-cal-stats'}><span>{calData.schedule.htotal}</span> выходных</div>
+                    {/*<div className={'sk-cal-stats'}><span>{calData.schedule.total}</span> всего дней</div>*/}
+                    {/*<div className={'sk-cal-stats'}><span>{calData.schedule.wtotal}</span> рабочих</div>*/}
+                    {/*<div className={'sk-cal-stats'}><span>{calData.schedule.htotal}</span> выходных</div>*/}
                 </div>
                 <div className={"sk-row sk-cal-second-row"}>
                     <div>
