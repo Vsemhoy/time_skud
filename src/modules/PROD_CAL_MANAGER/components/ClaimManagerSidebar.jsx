@@ -71,7 +71,7 @@ const ClaimManagerSidebar = (props) => {
                 <Select style={{width: '100%'}}
                         placeholder={'Все типы'}
                         value={currentRule}
-                        options={props.current_rules_list}
+                        options={props.years_list}
                         onChange={(ev) => {
                             setCurrentRule(ev)
                         }}
