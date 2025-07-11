@@ -158,7 +158,11 @@ function SchedulesWorkspace(props) {
                 );
                 if (serverResponse.data.content) {
                     const content = serverResponse.data.content;
-                    setSchedules(findBreaks(content.schedules));
+                    if (!scheduleTypeFilter) {
+                        setSchedules(findBreaks(content.schedules));
+                    } else {
+                        setSchedules(content.schedules);
+                    }
                     setCurrentPage(content.currentPage);
                     setPageSize(content.pageSize);
                     setAllSchedulesCount(content.allSchedulesCount);
