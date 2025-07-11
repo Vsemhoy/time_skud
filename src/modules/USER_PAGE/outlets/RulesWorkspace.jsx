@@ -333,7 +333,7 @@ function RulesWorkspace(props) {
         } else {
             await fetchInfo();
         }
-    }
+    };
     const fetchAddRule = async () => {
         if (PRODMODE) {
             try {
@@ -356,7 +356,24 @@ function RulesWorkspace(props) {
         } else {
             await fetchInfo();
         }
-    }
+    };
+
+    const timeString = (totalSeconds, mod = null) => {
+        if (mod === 'm') {
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            return totalMinutes.toString();
+        }
+
+        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+
+        if (mod) {
+            if (mod === 'h') return `${hours}`;
+            if (mod === 'hm') return `${hours}:${minutes}`;
+        } else {
+            return `${hours}:${minutes}`;
+        }
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -451,7 +468,7 @@ function RulesWorkspace(props) {
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}>
                                         <div className={styles.sk_rules_container_center}>
-                                            <p className={styles.sk_rules_name}>{dayjs(rule.duration_time).format('HH:mm')}</p>
+                                            <p className={styles.sk_rules_name}>{timeString(rule.duration_time)}</p>
                                         </div>
                                     </div>
                                     <div className={`${styles.sk_rules_table_cell}`}>
@@ -564,7 +581,7 @@ function RulesWorkspace(props) {
                                     const rulName = ruleNames.find(name => name.id === toolbarNameRuleId);
                                     if (rulName) {
                                         console.log(rulName)
-                                        duration_time          = dayjs(rulName.duration_time).format('mm');
+                                        duration_time = timeString(rulName.duration_time, 'm');
                                     }
                                     return (
                                         <>
