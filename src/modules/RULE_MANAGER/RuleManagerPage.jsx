@@ -32,7 +32,8 @@ const RuleManagerPage = (props) => {
             return ({
                 key: `option-${name}-${option.id}`,
                 value: option.id,
-                label: option.name
+                label: option.name,
+                description: option.description,
             })
         });
     }
