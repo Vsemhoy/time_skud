@@ -158,7 +158,7 @@ function SchedulesWorkspace(props) {
                 );
                 if (serverResponse.data.content) {
                     const content = serverResponse.data.content;
-                    setSchedules(content.schedules);
+                    setSchedules(findBreaks(content.schedules));
                     setCurrentPage(content.currentPage);
                     setPageSize(content.pageSize);
                     setAllSchedulesCount(content.allSchedulesCount);
@@ -167,7 +167,8 @@ function SchedulesWorkspace(props) {
                 console.error('Error fetching users schedules:', error);
             }
         } else {
-            setSchedules(SCHEDULES);
+            setSchedules(findBreaks(SCHEDULES));
+            console.log(findBreaks(SCHEDULES))
             setCurrentPage(1);
             setPageSize(20);
             setAllSchedulesCount(228);
@@ -193,6 +194,28 @@ function SchedulesWorkspace(props) {
             setScheduleTypes(SCHEDULES_TYPES_SELECT);
             setScheduleNames(SCHEDULES_NAMES_SELECTS);
         }
+    };
+    const findBreaks = (schedules) => {
+        const result = [...schedules];
+        for (let i = result.length - 1; i > 0; i--) {
+            const current = result[i];
+            const previous = result[i - 1];
+            const breakStart = dayjs(previous.start).valueOf();
+            const breakEnd = dayjs(current.end).valueOf();
+            const breakDuration = breakStart - breakEnd;
+            if (breakDuration > 60000) {
+                const breakItem = {
+                    id: `break-${i}-${Date.now()}`,
+                    isBreak: true,
+                    start: dayjs(current.end).add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                    end: dayjs(previous.start).subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+                    breakDuration: breakDuration,
+                    breakDays: Math.round(breakDuration / 86400000)
+                };
+                result.splice(i, 0, breakItem);
+            }
+        }
+        return result;
     };
     const findActiveSchedule = () => {
         console.log('findActiveSchedule')
@@ -432,93 +455,96 @@ function SchedulesWorkspace(props) {
                             </div>
                         </div>
                         {schedules.map(schedule => (
-                            <div key={schedule.id} className={`${styles.sk_schedule_table_row_wrapper} 
-                                                               ${+schedule.id === +activeSchedule.id ? styles.sk_table_row_active : ''}
-                                                               ${schedule.id === +editedSchedule.id ? styles.sk_table_row_edit : ''}
-                                                               ${intersections.find(scheduleId => +scheduleId === +schedule.id) ? styles.sk_table_row_danger : ''}`
-                            }>
-                                <div className={`${styles.sk_schedule_table_row}`}>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container} title={schedule.schedule_type}>
-                                            <SchedIcons type={schedule.schedule_type} size={'100%'} />
-                                        </div>
-                                    </div>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container}>
-                                            <p className={styles.sk_schedule_p}>{schedule.id}</p>
-                                        </div>
-                                    </div>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container}>
-                                            <p className={styles.sk_schedule_name}>{schedule.schedule_name}</p>
-                                            <p className={styles.sk_schedule_description}>{schedule.schedule_type_name}</p>
-                                        </div>
-                                    </div>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_description}>с {timeString(schedule.enter)}</p>
-                                            <p className={styles.sk_schedule_description}>до {timeString(schedule.leave)}</p>
-                                        </div>
-                                    </div>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_description}>с {timeString(schedule.lunch_start)}</p>
-                                            <p className={styles.sk_schedule_description}>до {timeString(schedule.lunch_end)}</p>
-                                        </div>
-                                    </div>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_name}>{dayjs(schedule.start).format('DD.MM.YYYY')}</p>
-                                        </div>
-                                    </div>
-                                    <div className={styles.sk_schedule_table_cell}>
-                                        <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : '—'}</p>
-                                        </div>
-                                    </div>
-                                    {+schedule.id !== +editedSchedule.id ? (
-                                        <div className={styles.sk_schedule_table_cell}
-                                              style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
-                                            {(schedule.id === activeSchedule.id || schedule.id === nextSchedule.id) && (
-                                                <Button color={'default'}
-                                                        variant={'outlined'}
-                                                        shape="circle"
-                                                        icon={<EditOutlined/>}
-                                                        onClick={() => toEditSchedule(schedule.id)}
-                                                ></Button>
+                            !schedule.isBreak ? (
+                                    <div key={schedule.id} className={`${styles.sk_schedule_table_row_wrapper} 
+                                                                       ${+schedule.id === +activeSchedule.id ? styles.sk_table_row_active : ''}
+                                                                       ${schedule.id === +editedSchedule.id ? styles.sk_table_row_edit : ''}
+                                                                       ${intersections.find(scheduleId => +scheduleId === +schedule.id) ? styles.sk_table_row_danger : ''}`
+                                    }>
+                                        <div className={`${styles.sk_schedule_table_row}`}>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container} title={schedule.schedule_type}>
+                                                    <SchedIcons type={schedule.schedule_type} size={'100%'}/>
+                                                </div>
+                                            </div>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container}>
+                                                    <p className={styles.sk_schedule_p}>{schedule.id}</p>
+                                                </div>
+                                            </div>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container}>
+                                                    <p className={styles.sk_schedule_name}>{schedule.schedule_name}</p>
+                                                    <p className={styles.sk_schedule_description}>{schedule.schedule_type_name}</p>
+                                                </div>
+                                            </div>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container_center}>
+                                                    <p className={styles.sk_schedule_description}>с {timeString(schedule.enter)}</p>
+                                                    <p className={styles.sk_schedule_description}>до {timeString(schedule.leave)}</p>
+                                                </div>
+                                            </div>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container_center}>
+                                                    <p className={styles.sk_schedule_description}>с {timeString(schedule.lunch_start)}</p>
+                                                    <p className={styles.sk_schedule_description}>до {timeString(schedule.lunch_end)}</p>
+                                                </div>
+                                            </div>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container_center}>
+                                                    <p className={styles.sk_schedule_name}>{dayjs(schedule.start).format('DD.MM.YYYY')}</p>
+                                                </div>
+                                            </div>
+                                            <div className={styles.sk_schedule_table_cell}>
+                                                <div className={styles.sk_schedule_container_center}>
+                                                    <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : '—'}</p>
+                                                </div>
+                                            </div>
+                                            {+schedule.id !== +editedSchedule.id ? (
+                                                <div className={styles.sk_schedule_table_cell}
+                                                     style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
+                                                    {(schedule.id === activeSchedule.id || schedule.id === nextSchedule.id) && (
+                                                        <Button color={'default'}
+                                                                variant={'outlined'}
+                                                                shape="circle"
+                                                                icon={<EditOutlined/>}
+                                                                onClick={() => toEditSchedule(schedule.id)}
+                                                        ></Button>
+                                                    )}
+                                                    {schedule.id !== activeSchedule.id && schedule.id === nextSchedule.id && (
+                                                        <Button color={'default'}
+                                                                variant={'outlined'}
+                                                                shape="circle"
+                                                                icon={<DeleteOutlined/>}
+                                                                onClick={() => removeSchedule(schedule.id)}
+                                                        ></Button>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className={styles.sk_schedule_table_cell}
+                                                     style={{padding: '15px', justifyContent: 'center'}}>
+                                                    <Button color={'default'}
+                                                            variant={'outlined'}
+                                                            shape="circle"
+                                                            icon={<CloseOutlined/>}
+                                                            onClick={() => clearEdit()}
+                                                    ></Button>
+                                                </div>
                                             )}
-                                            {schedule.id !== activeSchedule.id && schedule.id === nextSchedule.id && (
-                                                <Button color={'default'}
-                                                        variant={'outlined'}
-                                                        shape="circle"
-                                                        icon={<DeleteOutlined/>}
-                                                        onClick={() => removeSchedule(schedule.id)}
-                                                ></Button>
-                                            )}
                                         </div>
-                                    ) : (
-                                        <div className={styles.sk_schedule_table_cell}
-                                             style={{padding: '15px', justifyContent: 'center'}}>
-                                            <Button color={'default'}
-                                                    variant={'outlined'}
-                                                    shape="circle"
-                                                    icon={<CloseOutlined />}
-                                                    onClick={() => clearEdit()}
-                                            ></Button>
-                                        </div>
-                                    )}
-                                </div>
-                                {/*<div className={`${styles.sk_schedule_table_break_row}`}>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                    <div className={styles.sk_schedule_table_cell}><p></p></div>
-                                </div>*/}
-                            </div>
+                                    </div>
+                                ) : (
+                                    <div key={schedule.id} className={`${styles.sk_schedule_table_break_row}`}>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info} style={{textAlign: 'left'}}>Разрыв {schedule.breakDays} дней</p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}>{dayjs(schedule.start).format('DD.MM.YYYY')}</p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}>{dayjs(schedule.end).format('DD.MM.YYYY')}</p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
+                                    </div>
+                            )
                         ))}
                     </div>
                 </div>

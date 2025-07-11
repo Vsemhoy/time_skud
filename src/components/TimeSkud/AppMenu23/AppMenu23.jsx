@@ -62,8 +62,6 @@ const AppMenu23 = (props) => {
                 {
                     key: '/hr/usermanager',
                     label: <NavLink to="/hr/usermanager">Управление пользователями</NavLink>,
-                    /*key: '/hr/usersettings',
-                    label: <NavLink to="/hr/usersettings">Управление пользователями</NavLink>,*/
                 },
                 {
                     key: '/hr/rules',
@@ -88,8 +86,8 @@ const AppMenu23 = (props) => {
             ],
         },
         /*{
-            key: '/hr/usermanager',
-            label: <NavLink to="/hr/usermanager">Персонал_2</NavLink>,
+            key: '/hr/usersettings',
+            label: <NavLink to="/hr/usersettings">Управление пользователями</NavLink>,
         },*/
         /*{
             key: 'menu228',

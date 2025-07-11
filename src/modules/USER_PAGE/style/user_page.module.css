@@ -175,10 +175,26 @@ h1 {
 }
 .sk_schedule_table_break_row {
     width: 100%;
-    height: 0;
+    height: 31px;
     background-color: #E5E5E5;
     display: grid;
     grid-template-columns: 50px 50px 1fr 100px 100px 100px 100px 100px;
+}
+.sk_schedule_table_break_cell {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid #BFBFBF;
+}
+.sk_schedule_table_break_info {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    font-size: 12px;
+    height: 31px;
+    line-height: 25px;
+    text-align: center;
 }
 .sk_break_row_open {
     height: 31px;

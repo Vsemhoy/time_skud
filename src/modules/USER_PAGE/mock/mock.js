@@ -362,7 +362,7 @@ export const USDA = {
 export const SCHEDULES = [
     {
         "id": 201,
-        "start": "2025-12-10 00:00:00",
+        "start": "2025-12-12 00:00:00",
         "end": null,
         "enter": 26100,
         "leave": 82800,
