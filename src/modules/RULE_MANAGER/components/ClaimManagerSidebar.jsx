@@ -1,6 +1,7 @@
 import { Button, DatePicker, Input, Select, Switch } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import styles from "../../USER_PAGE/style/user_page.module.css";
 
 const ClaimManagerSidebar = (props) => {
 
@@ -11,6 +12,7 @@ const ClaimManagerSidebar = (props) => {
     }
 
     const [companies, setCompanies] = useState([]);
+    const [rules, setRules] = useState(null);
     const [filterName, setFilterName] = useState('');
     const [filterCompany, setFilterCompany] = useState(null);
     const [currentRule, setCurrentRule] = useState(null);
@@ -36,6 +38,12 @@ const ClaimManagerSidebar = (props) => {
         setCompanies(props.company_list);
         console.log(props.company_list)
     }, [props.company_list]);
+
+    useEffect(() => {
+        setRules(props.current_rules_list);
+        console.log(props.current_rules_list)
+    }, [props.current_rules_list]);
+
 
     return (
         <div style={{maxHeight: '100vh', overflow: 'auto'}}>
@@ -77,6 +85,29 @@ const ClaimManagerSidebar = (props) => {
                         }}
                         allowClear
                 />
+
+                {currentRule ? (
+                    (() => {
+                        let description = null;
+
+                        const rulType = rules.find(type => type.value === currentRule);
+                        if (rulType) {
+                            console.log(rulType)
+                            description = rulType.description;
+                        }
+                        return (
+                            <>
+                                <br/>
+                                <br/>
+                                <div className={styles.sk_expanded_info_type}>
+                                    <p className={styles.sk_expanded_info_header}>Описание выбранного типа:</p>
+                                    <p className={styles.sk_expanded_info_line}>{description}</p>
+                                </div>
+                            </>
+                        );
+                    })()
+                ) : null
+                }
             </div>
 
             <br/>
