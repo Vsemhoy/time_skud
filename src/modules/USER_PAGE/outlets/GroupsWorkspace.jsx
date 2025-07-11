@@ -285,7 +285,7 @@ function GroupsWorkspace(props) {
                             <Button block
                                     onClick={() => (editGroupId ? updateGroup() : createGroup())}
                                     disabled={isCantAdd()}
-                            >{!editGroupId ? 'Привязать группу' : 'Обновить группу'}</Button>
+                            >{!editGroupId ? 'Создать группу' : 'Обновить группу'}</Button>
                         </div>
                         <div style={{width: '100%'}}>
                             <Button block

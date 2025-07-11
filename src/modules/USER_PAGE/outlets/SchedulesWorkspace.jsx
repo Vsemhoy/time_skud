@@ -344,6 +344,23 @@ function SchedulesWorkspace(props) {
         }
     }
 
+    const timeString = (totalSeconds, mod = null) => {
+        if (mod === 'm') {
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            return totalMinutes.toString();
+        }
+
+        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+
+        if (mod) {
+            if (mod === 'h') return `${hours}`;
+            if (mod === 'hm') return `${hours}:${minutes}`;
+        } else {
+            return `${hours}:${minutes}`;
+        }
+    };
+
     return (
         <Spin spinning={isLoading}>
             <div className={styles.sk_schedule_workspace}>
@@ -439,14 +456,14 @@ function SchedulesWorkspace(props) {
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_description}>с {dayjs(schedule.enter).format('HH:mm')}</p>
-                                            <p className={styles.sk_schedule_description}>до {dayjs(schedule.leave).format('HH:mm')}</p>
+                                            <p className={styles.sk_schedule_description}>с {timeString(schedule.enter)}</p>
+                                            <p className={styles.sk_schedule_description}>до {timeString(schedule.leave)}</p>
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
                                         <div className={styles.sk_schedule_container_center}>
-                                            <p className={styles.sk_schedule_description}>с {dayjs(schedule.lunch_start).format('HH:mm')}</p>
-                                            <p className={styles.sk_schedule_description}>до {dayjs(schedule.lunch_end).format('HH:mm')}</p>
+                                            <p className={styles.sk_schedule_description}>с {timeString(schedule.lunch_start)}</p>
+                                            <p className={styles.sk_schedule_description}>до {timeString(schedule.lunch_end)}</p>
                                         </div>
                                     </div>
                                     <div className={styles.sk_schedule_table_cell}>
@@ -574,12 +591,12 @@ function SchedulesWorkspace(props) {
                                         const shedName = scheduleNames.find(name => name.id === toolbarNameScheduleId);
                                         if (shedName) {
                                             console.log(shedName)
-                                            start          = dayjs(shedName.start_time).format('HH:mm');
-                                            end            = dayjs(shedName.end_time).format('HH:mm');
-                                            duration       = dayjs(shedName.target_time).format('HH');
-                                            lunch_start    = dayjs(shedName.lunch_start).format('HH:mm');
-                                            lunch_end      = dayjs(shedName.lunch_end).format('HH:mm');
-                                            lunch_duration = dayjs(shedName.lunch_time).format('HH');
+                                            start          = timeString(shedName.start_time);
+                                            end            = timeString(shedName.end_time);
+                                            duration       = timeString(shedName.target_time, 'h');
+                                            lunch_start    = timeString(shedName.lunch_start);
+                                            lunch_end      = timeString(shedName.lunch_end);
+                                            lunch_duration = timeString(shedName.lunch_time, 'm');
                                         }
                                         return (
                                             <>
@@ -590,7 +607,7 @@ function SchedulesWorkspace(props) {
                                                         графика:</p>
                                                     <p className={styles.sk_expanded_info_line}>Рабочее
                                                         время: {start} - {end} ({duration} ч.)</p>
-                                                    <p className={styles.sk_expanded_info_line}>Обед: {lunch_start} - {lunch_end} ({lunch_duration} ч.)</p>
+                                                    <p className={styles.sk_expanded_info_line}>Обед: {lunch_start} - {lunch_end} ({lunch_duration} мин.)</p>
                                                 </div>
                                             </>
                                         );
