@@ -40,9 +40,9 @@ const ClaimManagerSidebar = (props) => {
     }, [props.company_list]);
 
     useEffect(() => {
-        setRules(props.current_rules_list);
-        console.log(props.current_rules_list)
-    }, [props.current_rules_list]);
+        setRules(props.schedules_types_list);
+        console.log(props.schedules_types_list)
+    }, [props.schedules_types_list]);
 
     return (
         <div style={{maxHeight: '100vh', overflow: 'auto'}}>
