@@ -557,6 +557,28 @@ function RulesWorkspace(props) {
                                     }}
                                     disabled={isDisableField()}
                             />
+                            {toolbarNameRuleId ? (
+                                (() => {
+                                    let duration_time = null;
+
+                                    const rulName = ruleNames.find(name => name.id === toolbarNameRuleId);
+                                    if (rulName) {
+                                        console.log(rulName)
+                                        duration_time          = dayjs(rulName.duration_time).format('mm');
+                                    }
+                                    return (
+                                        <>
+                                            <br/>
+                                            <br/>
+                                            <div className={styles.sk_expanded_info}>
+                                                <p className={styles.sk_expanded_info_header}>Параметры выбранного правила:</p>
+                                                <p className={styles.sk_expanded_info_line}>Временной интервал: {duration_time} минут</p>
+                                            </div>
+                                        </>
+                                    );
+                                })()
+                            ) : null
+                            }
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Дата начала действия правила</div>
@@ -582,6 +604,28 @@ function RulesWorkspace(props) {
                                     disabled={isCantAddRule()}
                                     onClick={() => fetchAddOrUpdateRule()}
                             >Привязать правило</Button>
+                            {toolbarTypeRuleId ? (
+                                (() => {
+                                    let description = null;
+
+                                    const rulType = ruleTypes.find(type => type.id === toolbarTypeRuleId);
+                                    if (rulType) {
+                                        console.log(rulType)
+                                        description = rulType.description;
+                                    }
+                                    return (
+                                        <>
+                                            <br/>
+                                            <br/>
+                                            <div className={styles.sk_expanded_info_type}>
+                                                <p className={styles.sk_expanded_info_header}>Описание выбранного типа:</p>
+                                                <p className={styles.sk_expanded_info_line}>{description}</p>
+                                            </div>
+                                        </>
+                                    );
+                                })()
+                            ) : null
+                            }
                         </div>
                     </div>
                 </Affix>
