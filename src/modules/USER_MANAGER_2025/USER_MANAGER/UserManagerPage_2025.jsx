@@ -443,7 +443,7 @@ const UserManagerPage_2025 = (props) => {
                                                                         </div>
                                                                         {user.groups && user.groups.length > 0 && (
                                                                             <div
-                                                                                className="sk-person-row-basic-groups">
+                                                                                className="sk-person-row-basic-groups no-select">
                                                                                 {user.groups.map((group, idx) => {
                                                                                     return (
                                                                                         <Tag
@@ -463,7 +463,7 @@ const UserManagerPage_2025 = (props) => {
                                                                         )}
                                                                     </div>
                                                                     {openRules.find(item => item === user.id) && (
-                                                                        <div className="sk-person-rules">
+                                                                        <div className="sk-person-rules no-select">
                                                                             {user.linked_schedule && (
                                                                                 <div className="sk-person-schedule">
                                                                                     <div
@@ -503,7 +503,7 @@ const UserManagerPage_2025 = (props) => {
                                                                                 </div>
                                                                             )}
                                                                             {user.linked_rules && user.linked_rules.length > 0 && user.linked_rules.map((rule, idx) => (
-                                                                                <div className="sk-person-rule" key={`${user.id}-${rule.id}`}>
+                                                                                <div className="sk-person-rule no-select" key={`${user.id}-${rule.id}`}>
                                                                                     <div className="sk-person-rule-hover-container">
                                                                                         <div className="sk-schedule-cell">
                                                                                             <RuleIcons type={rule.type} size={'30px'}/>
