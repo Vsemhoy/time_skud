@@ -41,7 +41,7 @@ function GroupsWorkspace(props) {
 
     useEffect(() => {
         if (userIdState === 'new') {
-            navigate(`/hr/users/${userIdState}`);
+            navigate(`/hr/usermanager/${userIdState}`);
         }
     }, [userIdState]);
 

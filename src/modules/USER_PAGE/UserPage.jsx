@@ -5,6 +5,7 @@ import styles from './style/user_page.module.css'
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USDA} from "./mock/mock";
+import {RollbackOutlined} from "@ant-design/icons";
 const UserPage = (props) => {
     const location = useLocation();
     const {userId} = useParams();
@@ -89,24 +90,30 @@ const UserPage = (props) => {
         <div className={styles.sk_mega_layout}>
             <Affix>
                 <div className={styles.sk_user_tabs}>
+                    <Button variant={'outlined'}
+                            color="primary"
+                            onClick={() => navigate(`/hr/usermanager`)}
+                            icon={<RollbackOutlined />}
+                            title={'В список сотрудников'}
+                    ></Button>
                     <Button variant={activeTab === 'base' ? 'solid' : 'outlined'}
                             color="default"
-                            onClick={() => userIdState !== 'new' && navigate(`/hr/users/${userIdState}`)}
+                            onClick={() => userIdState !== 'new' && navigate(`/hr/usermanager/${userIdState}`)}
                     >Основная информация</Button>
                     <Button variant={activeTab === 'schedules' ? 'solid' : 'outlined'}
                             color="default"
                             disabled={userIdState === 'new'}
-                            onClick={() => userIdState !== 'new' && navigate(`/hr/users/${userIdState}/schedules`)}
+                            onClick={() => userIdState !== 'new' && navigate(`/hr/usermanager/${userIdState}/schedules`)}
                     >График работы</Button>
                     <Button variant={activeTab === 'rules' ? 'solid' : 'outlined'}
                             color="default"
                             disabled={userIdState === 'new'}
-                            onClick={() => userIdState !== 'new' && navigate(`/hr/users/${userIdState}/rules`)}
+                            onClick={() => userIdState !== 'new' && navigate(`/hr/usermanager/${userIdState}/rules`)}
                     >Правила учёта РВ</Button>
                     <Button variant={activeTab === 'groups' ? 'solid' : 'outlined'}
                             color="default"
                             disabled={userIdState === 'new'}
-                            onClick={() => userIdState !== 'new' && navigate(`/hr/users/${userIdState}/groups`)}
+                            onClick={() => userIdState !== 'new' && navigate(`/hr/usermanager/${userIdState}/groups`)}
                     >Группы</Button>
                 </div>
             </Affix>
