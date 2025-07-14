@@ -469,7 +469,7 @@ const UserManagerPage_2025 = (props) => {
                                                                                     <div
                                                                                         className="sk-person-schedule-hover-container">
                                                                                         <div className="sk-schedule-cell">
-                                                                                            <SchedIcons type={user.linked_schedule.skud_schedule_type_id} size={'100%'}/>
+                                                                                            <SchedIcons type={user.linked_schedule.skud_schedule_type_id} size={'30px'}/>
                                                                                             <p>{user.linked_schedule.skud_schedule.name}</p>
                                                                                         </div>
                                                                                         <p className="sk-schedule-cell sk-schedule-cell-center">
@@ -506,7 +506,7 @@ const UserManagerPage_2025 = (props) => {
                                                                                 <div className="sk-person-rule" key={`${user.id}-${rule.id}`}>
                                                                                     <div className="sk-person-rule-hover-container">
                                                                                         <div className="sk-schedule-cell">
-                                                                                            <RuleIcons type={rule.type} size={'100%'}/>
+                                                                                            <RuleIcons type={rule.type} size={'30px'}/>
                                                                                             <p>{rule.name}</p>
                                                                                         </div>
                                                                                         <p className="sk-schedule-cell sk-schedule-cell-center">
