@@ -2,7 +2,7 @@ import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
 import React, { useContext, useState } from 'react';
 import { HTTP_ROOT } from '../../../CONFIG/config';
 import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 
@@ -19,6 +19,14 @@ const AppMenu23 = (props) => {
         setNotificatorOpened(true);
         setNotificatorLoading(true);
         setTimeout(() => setNotificatorLoading(false), 2000);
+    };
+
+    const getSelectedKeys = () => {
+        const path = location.pathname;
+        if (matchPath('/hr/usermanager/*', path)) {
+            return ['/hr/usermanager'];
+        }
+        return [path];
     };
 
     // User dropdown menu
@@ -117,7 +125,7 @@ const AppMenu23 = (props) => {
                 <Menu
                     mode="horizontal"
                     style={{ background: '#00000000', flex: 1 }}
-                    selectedKeys={[selectedKey]}
+                    selectedKeys={getSelectedKeys()}
                     items={mainMenuItems}
                 />
 

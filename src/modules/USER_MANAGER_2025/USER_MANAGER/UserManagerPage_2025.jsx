@@ -362,7 +362,7 @@ const UserManagerPage_2025 = (props) => {
                                             }}
                                         >Всего найдено: {allUsersCount}</Tag>
                                     </div>
-                                    <NavLink to={'/hr/users/new'}>
+                                    <NavLink to={'/hr/usermanager/new'}>
                                         <Button color={'primary'}
                                                 variant={'outlined'}
                                                 icon={<PlusOutlined/>}
@@ -410,7 +410,7 @@ const UserManagerPage_2025 = (props) => {
                                                                                 <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
                                                                                 <p className="sk-person-row-p occupy">{user.occupy}</p>
                                                                             </div>
-                                                                            <NavLink to={'/hr/users/' + user.id}>
+                                                                            <NavLink to={'/hr/usermanager/' + user.id}>
                                                                                 <Button color={'default'}
                                                                                         variant={'outlined'}
                                                                                         icon={<EditOutlined/>}
@@ -478,7 +478,7 @@ const UserManagerPage_2025 = (props) => {
                                                                                             .format('HH:mm')} / день</p>
                                                                                 </div>
                                                                             </div>
-                                                                            {user.linked_rules.map((rule, idx) => (
+                                                                            {user.linked_rules && user.linked_rules.length > 0 && user.linked_rules.map((rule, idx) => (
                                                                                 <div className="sk-person-rule" key={`${user.id}-${rule.id}`}>
                                                                                     <div className="sk-person-rule-hover-container">
                                                                                         <div className="sk-schedule-cell">

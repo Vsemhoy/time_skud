@@ -219,13 +219,13 @@ function App() {
             <Route path={'/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
 
-            <Route path={'/hr/users/:userId'} element={<UserPage userdata={userAct}/>}>
+            <Route path={'/hr/usermanager/:userId'} element={<UserPage userdata={userAct}/>}>
                 <Route index element={<BaseInfoWorkspace />} />
                 <Route path={'schedules'} element={<SchedulesWorkspace />} />
                 <Route path={'rules'} element={<RulesWorkspace />} />
                 <Route path={'groups'} element={<GroupsWorkspace />} />
             </Route>
-            <Route path={BASE_ROUTE + '/hr/users/:userId'} element={<UserPage userdata={userAct}/>}>
+            <Route path={BASE_ROUTE + '/hr/usermanager/:userId'} element={<UserPage userdata={userAct}/>}>
                 <Route index element={<BaseInfoWorkspace />} />
                 <Route path={'schedules'} element={<SchedulesWorkspace />} />
                 <Route path={'rules'} element={<RulesWorkspace />} />
