@@ -3,12 +3,15 @@ import { Button, Input, Modal, Select, Drawer, Checkbox, Badge, Tag, Radio, Aler
 import "./style/prodcalmodal.css";
 import dayjs from "dayjs";
 import isLeapYear from 'dayjs/plugin/isLeapYear';
-import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT, DS_DEFAULT_SCHED } from "../../../CONFIG/DEFAULTSTATE";
+import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import { generateYearOptions, getMonthName } from "../../../components/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
 import { PRODMODE } from "../../../CONFIG/config";
 import { months } from "moment";
 import { ClockCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
+
+import {DEFAULT_SCHED} from "../mock/mock";
+
 dayjs.extend(isLeapYear);
 
 const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, onDelete, data_list }) => {
@@ -52,7 +55,7 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
         setSelectedYear(data.schedule && data.schedule.year ? data.schedule.year : dayjs().year());
         setSelectedCompany(data.id_company ? data.id_company : userData.user.id_company);
         setArchievedState(data.archieved);
-        let defSched = DS_DEFAULT_SCHED;
+        let defSched = DEFAULT_SCHED;
         defSched.year = dayjs().year();
         setJobCalendar(data.schedule ? data.schedule : defSched);
         setAllowDelete(allow_delete === true ? true : false);
@@ -121,7 +124,7 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
 
     useEffect(()=>{
         if (jobCalendar == null || selectedYear !== jobCalendar.year){
-            setJobCalendar(DS_DEFAULT_SCHED);
+            setJobCalendar(DEFAULT_SCHED);
         }
     }, [selectedYear])
 
@@ -203,11 +206,11 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
         console.log(calendarData.id);
         if (data.id === null)
         {
-            console.log(data_list);
+            console.log("DATA", data_list);
             console.log(year, company);
             for (let i = 0; i < data_list.length; i++) {
                 const element = data_list[i];
-                if (parseInt(element.year) == year && element.id_company == company){
+                if (parseInt(element.year) === year && element.id_company === company){
                     setDisableSave(true);
                     return;
                 }
@@ -401,7 +404,8 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
 
 
     const loadOfficialPublicCalendar = async (ev) => {
-        const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://xmlcalendar.ru/data/ru/${selectedYear}/calendar.json`));
+        // const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://xmlcalendar.ru/data/ru/${selectedYear}/calendar.json`));
+        const response = await fetch("https://api.allorigins.win/get?url=https://xmlcalendar.ru/data/ru/" + selectedYear + "/calendar.json");
         if (!response.ok) {
             throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
         }
