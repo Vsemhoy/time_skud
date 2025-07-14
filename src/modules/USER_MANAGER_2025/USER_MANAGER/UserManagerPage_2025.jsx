@@ -25,6 +25,8 @@ import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import {Link, NavLink} from "react-router-dom";
+import SchedIcons from "../../../assets/Comicon/SchedIcons";
+import RuleIcons from "../../../assets/Comicon/RuleIcons";
 const { Header, Sider, Content } = Layout;
 
 const UserManagerPage_2025 = (props) => {
@@ -274,11 +276,33 @@ const UserManagerPage_2025 = (props) => {
     const setSelectedGroups = (val) => {
 
     };
-    const removeGroup = (e, userId, groupId) => {
+    const removeGroup = async (e, group, userId) => {
         e.preventDefault();
-        console.log('userId:', userId);
-        console.log('groupId:', groupId);
-
+        await fetchRemoveGroup(group.grouplink);
+        setUsers(prevUsers => {
+            return prevUsers.map(user => {
+                if (user.id === userId && user.groups.some(g => g.grouplink === group.grouplink)) {
+                    return {
+                        ...user,
+                        groups: user.groups.filter(g => g.grouplink !== group.grouplink)
+                    };
+                }
+                return user;
+            });
+        });
+    };
+    const fetchRemoveGroup = async (groupLinkId) => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usermanagerremovegroup/${groupLinkId}`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+            } catch (error) {
+                console.error('Error fetching remove user group:', error);
+            }
+        }
     };
 
     return (
@@ -420,69 +444,69 @@ const UserManagerPage_2025 = (props) => {
                                                                         {user.groups && user.groups.length > 0 && (
                                                                             <div
                                                                                 className="sk-person-row-basic-groups">
-                                                                                {user.groups.map((groupId, idx) => {
-                                                                                    if (groups.find(item => item.id === groupId)) {
-                                                                                        return (
-                                                                                            <Tag
-                                                                                                key={`group-tag-${user.id}-${groupId}`}
-                                                                                                style={{
-                                                                                                    color: '#757575',
-                                                                                                    borderBottom: '1px solid #FF6200',
-                                                                                                    margin: '0'
-                                                                                                }}
-                                                                                                closeIcon
-                                                                                                onClose={(e) => removeGroup(e, groupId, user.id)}>
-                                                                                                {groups.find(item => item.id === groupId)?.name}
-                                                                                            </Tag>
-                                                                                        );
-                                                                                    } else return '';
+                                                                                {user.groups.map((group, idx) => {
+                                                                                    return (
+                                                                                        <Tag
+                                                                                            key={`group-tag-${user.id}-${group.id}`}
+                                                                                            style={{
+                                                                                                color: '#757575',
+                                                                                                borderBottom: '1px solid #FF6200',
+                                                                                                margin: '0'
+                                                                                            }}
+                                                                                            closeIcon
+                                                                                            onClose={(e) => removeGroup(e, group, user.id)}>
+                                                                                            {group.name}
+                                                                                        </Tag>
+                                                                                    );
                                                                                 })}
                                                                             </div>
                                                                         )}
                                                                     </div>
-                                                                    {openRules.find(item => item === user.id) && user.linked_schedule && (
+                                                                    {openRules.find(item => item === user.id) && (
                                                                         <div className="sk-person-rules">
-                                                                            <div className="sk-person-schedule">
-                                                                                <div
-                                                                                    className="sk-person-schedule-hover-container">
-                                                                                <div className="sk-schedule-cell">
-                                                                                        <CalendarOutlined />
-                                                                                        <p>{user.linked_schedule.skud_schedule.name}</p>
+                                                                            {user.linked_schedule && (
+                                                                                <div className="sk-person-schedule">
+                                                                                    <div
+                                                                                        className="sk-person-schedule-hover-container">
+                                                                                        <div className="sk-schedule-cell">
+                                                                                            <SchedIcons type={user.linked_schedule.skud_schedule_type_id} size={'100%'}/>
+                                                                                            <p>{user.linked_schedule.skud_schedule.name}</p>
+                                                                                        </div>
+                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.start_time, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                            -
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.end_time, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                        </p>
+                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.lunch_start, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                            -
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.lunch_end, 'seconds')
+                                                                                                .format('HH:mm')}
+                                                                                        </p>
+                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                                                                                            {dayjs()
+                                                                                                .startOf('day')
+                                                                                                .add(user.linked_schedule.skud_schedule.target_time, 'seconds')
+                                                                                                .format('HH:mm')} / день</p>
                                                                                     </div>
-                                                                                    <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                        {dayjs()
-                                                                                            .startOf('day')
-                                                                                            .add(user.linked_schedule.skud_schedule.start_time, 'seconds')
-                                                                                            .format('HH:mm')}
-                                                                                        -
-                                                                                        {dayjs()
-                                                                                            .startOf('day')
-                                                                                            .add(user.linked_schedule.skud_schedule.end_time, 'seconds')
-                                                                                            .format('HH:mm')}
-                                                                                    </p>
-                                                                                    <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                        {dayjs()
-                                                                                            .startOf('day')
-                                                                                            .add(user.linked_schedule.skud_schedule.lunch_start, 'seconds')
-                                                                                            .format('HH:mm')}
-                                                                                        -
-                                                                                        {dayjs()
-                                                                                            .startOf('day')
-                                                                                            .add(user.linked_schedule.skud_schedule.lunch_end, 'seconds')
-                                                                                            .format('HH:mm')}
-                                                                                    </p>
-                                                                                    <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                        {dayjs()
-                                                                                            .startOf('day')
-                                                                                            .add(user.linked_schedule.skud_schedule.target_time, 'seconds')
-                                                                                            .format('HH:mm')} / день</p>
                                                                                 </div>
-                                                                            </div>
+                                                                            )}
                                                                             {user.linked_rules && user.linked_rules.length > 0 && user.linked_rules.map((rule, idx) => (
                                                                                 <div className="sk-person-rule" key={`${user.id}-${rule.id}`}>
                                                                                     <div className="sk-person-rule-hover-container">
                                                                                         <div className="sk-schedule-cell">
-                                                                                            <HistoryOutlined />
+                                                                                            <RuleIcons type={rule.type} size={'100%'}/>
                                                                                             <p>{rule.name}</p>
                                                                                         </div>
                                                                                         <p className="sk-schedule-cell sk-schedule-cell-center">
