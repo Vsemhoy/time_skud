@@ -421,21 +421,19 @@ const UserManagerPage_2025 = (props) => {
                                                                             <div
                                                                                 className="sk-person-row-basic-groups">
                                                                                 {user.groups.map((groupId, idx) => {
-                                                                                    if (groups.find(item => item.id === groupId)) {
-                                                                                        return (
-                                                                                            <Tag
-                                                                                                key={`group-tag-${user.id}-${groupId}`}
-                                                                                                style={{
-                                                                                                    color: '#757575',
-                                                                                                    borderBottom: '1px solid #FF6200',
-                                                                                                    margin: '0'
-                                                                                                }}
-                                                                                                closeIcon
-                                                                                                onClose={(e) => removeGroup(e, groupId, user.id)}>
-                                                                                                {groups.find(item => item.id === groupId)?.name}
-                                                                                            </Tag>
-                                                                                        );
-                                                                                    } else return '';
+                                                                                    return (
+                                                                                        <Tag
+                                                                                            key={`group-tag-${user.id}-${groupId}`}
+                                                                                            style={{
+                                                                                                color: '#757575',
+                                                                                                borderBottom: '1px solid #FF6200',
+                                                                                                margin: '0'
+                                                                                            }}
+                                                                                            closeIcon
+                                                                                            onClose={(e) => removeGroup(e, groupId, user.id)}>
+                                                                                            {groups.find(item => item.id === groupId)?.name}
+                                                                                        </Tag>
+                                                                                    );
                                                                                 })}
                                                                             </div>
                                                                         )}
