@@ -116,74 +116,6 @@ export const DEPARTMENTS = [
 ];
 export const USERS =  [
     {
-        "id": 334,
-        "name": "Мария",
-        "surname": "Глинтвейник",
-        "patronymic": "Алексеевна",
-        "occupy": "",
-        "departament": null,
-        "departament_name": null,
-        "status": "0",
-        "deleted": 0,
-        "id_company": 2,
-        "company_name": "Arstel",
-        "company_color": "#ff7700",
-        "visible": 0,
-        "email": "",
-        "linked_rules": [
-            {
-                "id": 9,
-                "start": 1752440400,
-                "end": 1753995599,
-                "name": "Правило_1751958365",
-                "type": 3,
-                "duration_time": 36060,
-                "variable_a": 0,
-                "variable_b": 0
-            }
-        ],
-        "linked_schedule": {
-            "id": 187,
-            "skud_schedule_id": 3,
-            "creator_id": 46,
-            "deleted_at": null,
-            "deleted": false,
-            "created_at": "2025-07-14 11:44:32",
-            "start": "2025-07-14 00:00:00",
-            "end": "2025-07-31 23:59:59",
-            "skud_user_id": 334,
-            "actual": 1,
-            "name": "Стандартный график с 9 до 18",
-            "skud_schedule": {
-                "id": 3,
-                "skud_schedule_type_id": 1,
-                "name": "Стандартный график с 9 до 18",
-                "description": "Самый стандартный из возможных графиков",
-                "start_time": 33300,
-                "end_time": 64800,
-                "target_time": 28800,
-                "target_unit": 1,
-                "schedule": [],
-                "id_company": 2,
-                "next_id": 0,
-                "skud_prod_calendar_id": 1,
-                "deleted": false,
-                "created_at": 1744385725,
-                "creator_id": 46,
-                "lunch_start": 46800,
-                "lunch_end": 54000,
-                "lunch_time": 2700
-            }
-        },
-        "groups": [
-            {
-                "grouplink": 915,
-                "id": 14,
-                "name": "Глинтерники"
-            }
-        ]
-    },
-    {
         "id": 46,
         "name": "Александр",
         "surname": "Кошелев",
@@ -199,7 +131,7 @@ export const USERS =  [
         "visible": 1,
         "email": "",
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": [
             {
                 "grouplink": 907,
@@ -237,6 +169,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 134,
             "skud_schedule_id": 7,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -291,7 +224,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": []
     },
     {
@@ -313,6 +246,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 131,
             "skud_schedule_id": 7,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -343,13 +277,7 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "groups": [
-            {
-                "grouplink": 860,
-                "id": 5,
-                "name": "Рондовцы"
-            }
-        ]
+        "groups": []
     },
     {
         "id": 569,
@@ -370,6 +298,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 172,
             "skud_schedule_id": 5,
+            "skud_schedule_type_id": 2,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -403,6 +332,69 @@ export const USERS =  [
         "groups": []
     },
     {
+        "id": 334,
+        "name": "Мария",
+        "surname": "Глинтвейник",
+        "patronymic": "Алексеевна",
+        "occupy": "",
+        "departament": 2,
+        "departament_name": "Отдел персонала",
+        "status": "0",
+        "deleted": 0,
+        "id_company": 2,
+        "company_name": "Arstel",
+        "company_color": "#ff7700",
+        "visible": 0,
+        "email": "",
+        "linked_rules": [
+            {
+                "id": 9,
+                "start": 1752440400,
+                "end": 1753995599,
+                "name": "Правило_1751958365",
+                "type": 3,
+                "duration_time": 36060,
+                "variable_a": 0,
+                "variable_b": 0
+            }
+        ],
+        "linked_schedule": {
+            "id": 187,
+            "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
+            "creator_id": 46,
+            "deleted_at": null,
+            "deleted": false,
+            "created_at": "2025-07-14 11:44:32",
+            "start": "2025-07-14 00:00:00",
+            "end": "2025-07-31 23:59:59",
+            "skud_user_id": 334,
+            "actual": 1,
+            "name": "Стандартный график с 9 до 18",
+            "skud_schedule": {
+                "id": 3,
+                "skud_schedule_type_id": 1,
+                "name": "Стандартный график с 9 до 18",
+                "description": "Самый стандартный из возможных графиков",
+                "start_time": 33300,
+                "end_time": 64800,
+                "target_time": 28800,
+                "target_unit": 1,
+                "schedule": [],
+                "id_company": 2,
+                "next_id": 0,
+                "skud_prod_calendar_id": 1,
+                "deleted": false,
+                "created_at": 1744385725,
+                "creator_id": 46,
+                "lunch_start": 46800,
+                "lunch_end": 54000,
+                "lunch_time": 2700
+            }
+        },
+        "groups": []
+    },
+    {
         "id": 521,
         "name": "Любовь",
         "surname": "Палагушина",
@@ -421,6 +413,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 119,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -478,6 +471,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 120,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -535,6 +529,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 130,
             "skud_schedule_id": 7,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -592,6 +587,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 118,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -649,6 +645,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 86,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -700,6 +697,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 142,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -757,6 +755,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 143,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -814,6 +813,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 139,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -871,6 +871,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 144,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -933,6 +934,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 132,
             "skud_schedule_id": 7,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -990,6 +992,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 133,
             "skud_schedule_id": 7,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1047,6 +1050,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 125,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1104,6 +1108,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 141,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1161,6 +1166,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 145,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1215,7 +1221,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": [
             {
                 "grouplink": 878,
@@ -1243,6 +1249,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 126,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1300,6 +1307,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 128,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1357,6 +1365,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 127,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1414,6 +1423,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 90,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1471,6 +1481,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 117,
             "skud_schedule_id": 5,
+            "skud_schedule_type_id": 2,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1535,7 +1546,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": []
     },
     {
@@ -1557,6 +1568,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 147,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1608,6 +1620,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 136,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1659,6 +1672,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 129,
             "skud_schedule_id": 4,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1716,6 +1730,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 138,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1767,6 +1782,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 137,
             "skud_schedule_id": 5,
+            "skud_schedule_type_id": 2,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1818,6 +1834,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 88,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1875,6 +1892,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 146,
             "skud_schedule_id": 5,
+            "skud_schedule_type_id": 2,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -1905,13 +1923,7 @@ export const USERS =  [
                 "lunch_time": 2700
             }
         },
-        "groups": [
-            {
-                "grouplink": 898,
-                "id": 9,
-                "name": "СКЛАДУ"
-            }
-        ]
+        "groups": []
     },
     {
         "id": 180,
@@ -1929,7 +1941,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": [
             {
                 "grouplink": 897,
@@ -1954,7 +1966,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": [
             {
                 "grouplink": 889,
@@ -1984,7 +1996,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": []
     },
     {
@@ -2003,7 +2015,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": []
     },
     {
@@ -2022,7 +2034,7 @@ export const USERS =  [
         "visible": 0,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": []
     },
     {
@@ -2044,6 +2056,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 87,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2101,6 +2114,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 122,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2158,6 +2172,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 123,
             "skud_schedule_id": 9,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2215,6 +2230,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 98,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2269,7 +2285,7 @@ export const USERS =  [
         "visible": 1,
         "email": null,
         "linked_rules": [],
-        "linked_schedule": [],
+        "linked_schedule": null,
         "groups": [
             {
                 "grouplink": 867,
@@ -2297,6 +2313,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 121,
             "skud_schedule_id": 3,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2354,6 +2371,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 101,
             "skud_schedule_id": 4,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2411,6 +2429,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 102,
             "skud_schedule_id": 4,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2468,6 +2487,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 124,
             "skud_schedule_id": 8,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2525,6 +2545,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 113,
             "skud_schedule_id": 5,
+            "skud_schedule_type_id": 2,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
@@ -2582,6 +2603,7 @@ export const USERS =  [
         "linked_schedule": {
             "id": 140,
             "skud_schedule_id": 10,
+            "skud_schedule_type_id": 1,
             "creator_id": 46,
             "deleted_at": null,
             "deleted": false,
