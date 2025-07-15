@@ -29,9 +29,10 @@ import {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
-import {PRODMODE} from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
 import {CHART_STATES, USDA} from "./mock/mock";
 import dayjs from "dayjs";
+import {PROD_AXIOS_INSTANCE} from "../../API/API";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -143,7 +144,17 @@ const  Charts = (props) => {
     };
     const fetchChartStates = async () => {
         if (PRODMODE) {
-
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+                    {
+                        _token: CSRF_TOKEN
+                    });
+                if (response.data.content) {
+                    setChartStates(response.data.content);
+                }
+            } catch (e) {
+                console.log(e)
+            }
         } else {
             setChartStates(CHART_STATES
                 .filter(state => state.fillable)
