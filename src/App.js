@@ -39,6 +39,14 @@ import SchedulesWorkspace from "./modules/USER_PAGE/outlets/SchedulesWorkspace";
 import RulesWorkspace from "./modules/USER_PAGE/outlets/RulesWorkspace";
 import GroupsWorkspace from "./modules/USER_PAGE/outlets/GroupsWorkspace";
 import GrotpuckovPage from './modules/GROTPUCKOV/GrotpuckovPage';
+import Charts from "./modules/CHARTS/Charts";
+import SickLeave from "./modules/CHARTS/outlets/SickLeave";
+import LongTrip from "./modules/CHARTS/outlets/LongTrip";
+import ShortTrip from "./modules/CHARTS/outlets/ShortTrip";
+import SVO from "./modules/CHARTS/outlets/SVO";
+import Vacation from "./modules/CHARTS/outlets/Vacation";
+import Overtime from "./modules/CHARTS/outlets/Overtime";
+import Containers from "./modules/CHARTS/outlets/Containers";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -206,57 +214,62 @@ function App() {
             
             <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/my'} element={<AccountPage userdata={userAct}/>} />
-
             <Route path={BASE_ROUTE + '/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
-
+            <Route path={BASE_ROUTE + '/hr/charts'} element={<Charts userdata={userAct}/>}>
+                <Route path={'sickleave'} element={<SickLeave />} />
+                <Route path={'longtrip'} element={<LongTrip />} />
+                <Route path={'shorttrip'} element={<ShortTrip />} />
+                <Route path={'svo'} element={<SVO />} />
+                <Route path={'vacation'} element={<Vacation />} />
+                <Route path={'overtime'} element={<Overtime />} />
+                <Route path={'containers'} element={<Containers />} />
+            </Route>
             <Route path={BASE_ROUTE + '/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/schedules'} element={<SchedManagerPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/rules'} element={<RuleManagerPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/notify'} element={<NotifierPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/usersettings'} element={<UserManagerPage userdata={userAct}/>} />
-
-            <Route path={'/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
-
-            <Route path={'/hr/usermanager/:userId'} element={<UserPage userdata={userAct}/>}>
-                <Route index element={<BaseInfoWorkspace />} />
-                <Route path={'schedules'} element={<SchedulesWorkspace />} />
-                <Route path={'rules'} element={<RulesWorkspace />} />
-                <Route path={'groups'} element={<GroupsWorkspace />} />
-            </Route>
             <Route path={BASE_ROUTE + '/hr/usermanager/:userId'} element={<UserPage userdata={userAct}/>}>
                 <Route index element={<BaseInfoWorkspace />} />
                 <Route path={'schedules'} element={<SchedulesWorkspace />} />
                 <Route path={'rules'} element={<RulesWorkspace />} />
                 <Route path={'groups'} element={<GroupsWorkspace />} />
             </Route>
-
-
+            <Route path={BASE_ROUTE + '/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
-
-
             <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />            
             
 
 
             <Route path={'/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
-
+            <Route path={'/charts'} element={<Charts userdata={userAct}/>}>
+                <Route path={'sickleave'} element={<SickLeave />} />
+                <Route path={'longtrip'} element={<LongTrip />} />
+                <Route path={'shorttrip'} element={<ShortTrip />} />
+                <Route path={'shortvacation'} element={<SVO />} />
+                <Route path={'longvacation'} element={<Vacation />} />
+                <Route path={'overtime'} element={<Overtime />} />
+                <Route path={'containers'} element={<Containers />} />
+            </Route>
             <Route path={'/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
             <Route path={'/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />
             <Route path={'/hr/schedules'} element={<SchedManagerPage userdata={userAct}/>} />
             <Route path={'/hr/rules'} element={<RuleManagerPage userdata={userAct}/>} />
             <Route path={'/hr/notify'} element={<NotifierPage userdata={userAct}/>} />
             <Route path={'/hr/usersettings'} element={<UserManagerPage userdata={userAct}/>} />
-
+            <Route path={'/hr/usermanager'} element={<UserManagerPage_2025 userdata={userAct}/>} />
+            <Route path={'/hr/usermanager/:userId'} element={<UserPage userdata={userAct}/>}>
+                <Route index element={<BaseInfoWorkspace />} />
+                <Route path={'schedules'} element={<SchedulesWorkspace />} />
+                <Route path={'rules'} element={<RulesWorkspace />} />
+                <Route path={'groups'} element={<GroupsWorkspace />} />
+            </Route>
             <Route path={'/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
-            <Route path={BASE_ROUTE + '/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
-
             <Route path={'/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
-
-
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
           </Routes>
       </Content>
