@@ -30,7 +30,8 @@ const ClaimManagerSidebar = (props) => {
         if (props.on_change_filter){
             props.on_change_filter(params);
         }
-    }, [setFilterName, filterCompany, currentRule]);
+
+    }, [filterName, filterCompany, currentRule]);
 
     useEffect(() => {
         setCompanies(props.company_list);
@@ -43,13 +44,12 @@ const ClaimManagerSidebar = (props) => {
             <div className={'sk-usp-filter-col-item'}>
                 <span className={'sk-usp-filter-col-label'}>Поиск по названию</span>
                 <Input style={{width: '100%'}}
-                        placeholder={'Поиск по названию'}
-                        allowClear={true}
-                        value={filterName}
-                        onChange={(ev) => {
-                            setFilterName(ev.target.value)
-                        }}
-
+                       placeholder={'Поиск по названию'}
+                       allowClear={true}
+                       value={filterName}
+                       onChange={(ev) => {
+                           setFilterName(ev.target.value)
+                       }}
                 />
             </div>
 

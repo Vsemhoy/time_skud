@@ -32,7 +32,7 @@ const ClaimManagerSidebar = (props) => {
         if (props.on_change_filter){
             props.on_change_filter(params);
         }
-    }, [setFilterName, filterCompany, currentRule]);
+    }, [filterName, filterCompany, currentRule]);
 
     useEffect(() => {
         setCompanies(props.company_list);

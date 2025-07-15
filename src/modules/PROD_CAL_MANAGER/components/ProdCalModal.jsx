@@ -419,18 +419,11 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
                 throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
             }
 
-            // const data = await response.json();
-            // const newcal = JSON.parse(data.contents);
-            // setJobCalendar(normalizeObjectFromApi(newcal));
-
             const newcal = JSON.parse(response.data.content);
             setJobCalendar(normalizeObjectFromApi(newcal));
         } catch (error) {
             console.error('Error fetching users info:', error);
         }
-        // const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://xmlcalendar.ru/data/ru/${selectedYear}/calendar.json`));
-        // const response = await fetch("https://api.allorigins.win/get?url=https://xmlcalendar.ru/data/ru/" + selectedYear + "/calendar.json");
-
     }
 
 
