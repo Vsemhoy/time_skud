@@ -150,16 +150,16 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
-                    setChartStates(prepateStates(response.data.content));
+                    setChartStates(prepareStates(response.data.content));
                 }
             } catch (e) {
                 console.log(e)
             }
         } else {
-            setChartStates(prepateStates(CHART_STATES));
+            setChartStates(prepareStates(CHART_STATES));
         }
     };
-    const prepateStates = (states) => {
+    const prepareStates = (states) => {
         return states.filter(state => state.fillable).map(state => ({
                 label: state.badge,
                 value: state.id,
@@ -172,6 +172,26 @@ const  Charts = (props) => {
         const name = chartStates.find(state => +state.value === +value)?.name;
         if (name) {
             navigate(`../charts/${name}`, { relative: 'path' });
+        }
+    };
+    const returnHeader = () => {
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const lastSegment = pathSegments[pathSegments.length - 1];
+        switch (lastSegment) {
+            case 'sickleave':
+                return 'График больничных';
+            case 'longtrip':
+                return 'График длительных командировок';
+            case 'shorttrip':
+                return 'График местных командировок';
+            case 'shortvacation':
+                return 'График отпусков за свой счет';
+            case 'longvacation':
+                return 'График отпусков';
+            case 'overtime':
+                return 'График сверхурочных';
+            case 'containers':
+                return 'График контейнеров';
         }
     };
 
@@ -209,7 +229,7 @@ const  Charts = (props) => {
                                     style={{ width: '140px' }}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
                             >Фильтры</Button>
-                            <h1 className={'page-header'}>График больничных</h1>
+                            <h1 className={'page-header'}>{returnHeader()}</h1>
                             <Button color={'primary'}
                                     variant={'solid'}
                                     icon={<PlusOutlined/>}

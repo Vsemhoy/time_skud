@@ -158,7 +158,7 @@ const ChartsSidebar = (props) => {
                 />
             </div>
 
-            {props.userAls.includes(17) && (
+            {props.userAls && props.userAls.includes(17) && (
                 <div className={'sk-usp-filter-col-item'}>
                     <span className={'sk-usp-filter-col-label'}>Статус пользователя</span>
                     <Select style={{width: '100%'}}
@@ -173,7 +173,7 @@ const ChartsSidebar = (props) => {
                 </div>
             )}
 
-            {props.userAls.includes(17) && (
+            {props.userAls && props.userAls.includes(17) && (
                 <div className={'sk-usp-filter-col-item'}>
                     <span className={'sk-usp-filter-col-label'}>Группа пользователя</span>
                     <Select style={{width: '100%'}}
