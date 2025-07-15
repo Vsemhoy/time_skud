@@ -145,7 +145,7 @@ const SchedManagerPage = (props) => {
                         data: {},
                         _token: CSRF_TOKEN
                     });
-                setBaseProdCalendars(response.data);
+                setBaseProdCalendars(response.data.content.calendars);
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }

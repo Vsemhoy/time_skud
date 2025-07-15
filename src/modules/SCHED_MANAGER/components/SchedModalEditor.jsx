@@ -67,6 +67,7 @@ const SchedModalEditor = (props)=>{
       setUserData(props.userData);
         console.log("MODAL PROPS 2 ", props);
     }
+
   }, [props.userData]);
 
 
