@@ -6,11 +6,12 @@ import isLeapYear from 'dayjs/plugin/isLeapYear';
 import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import { generateYearOptions, getMonthName } from "../../../components/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
-import { PRODMODE } from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import { months } from "moment";
 import { ClockCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 
 import {DEFAULT_SCHED} from "../mock/mock";
+import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 dayjs.extend(isLeapYear);
 
@@ -404,14 +405,32 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
 
 
     const loadOfficialPublicCalendar = async (ev) => {
-        // const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://xmlcalendar.ru/data/ru/${selectedYear}/calendar.json`));
-        const response = await fetch("https://api.allorigins.win/get?url=https://xmlcalendar.ru/data/ru/" + selectedYear + "/calendar.json");
-        if (!response.ok) {
-            throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
+
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/getjsoncalendar',
+                {
+                    data: {year:selectedYear},
+                    _token: CSRF_TOKEN
+                });
+
+            console.log(response);
+
+            if (response.status !== 200) {
+                throw new Error(`Ошибка загрузки данных: ${response.statusText}`);
+            }
+
+            // const data = await response.json();
+            // const newcal = JSON.parse(data.contents);
+            // setJobCalendar(normalizeObjectFromApi(newcal));
+
+            const newcal = JSON.parse(response.data.content);
+            setJobCalendar(normalizeObjectFromApi(newcal));
+        } catch (error) {
+            console.error('Error fetching users info:', error);
         }
-        const data = await response.json();
-        const newcal = JSON.parse(data.contents);
-        setJobCalendar(normalizeObjectFromApi(newcal));
+        // const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://xmlcalendar.ru/data/ru/${selectedYear}/calendar.json`));
+        // const response = await fetch("https://api.allorigins.win/get?url=https://xmlcalendar.ru/data/ru/" + selectedYear + "/calendar.json");
+
     }
 
 
