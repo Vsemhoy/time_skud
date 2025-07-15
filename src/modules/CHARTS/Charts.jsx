@@ -150,23 +150,24 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
-                    setChartStates(response.data.content);
+                    setChartStates(prepateStates(response.data.content));
                 }
             } catch (e) {
                 console.log(e)
             }
         } else {
-            setChartStates(CHART_STATES
-                .filter(state => state.fillable)
-                .map(state => ({
-                    label: state.badge,
-                    value: state.id,
-                    icon: iconComponents[state.icon] || null,
-                    color: state.color,
-                    name: state.name
-                })));
+            setChartStates(prepateStates(CHART_STATES));
         }
     };
+    const prepateStates = (states) => {
+        return states.filter(state => state.fillable).map(state => ({
+                label: state.badge,
+                value: state.id,
+                icon: iconComponents[state.icon] || null,
+                color: state.color,
+                name: state.name
+            }))
+    }
     const navigateTo = (value) => {
         const name = chartStates.find(state => +state.value === +value)?.name;
         if (name) {
