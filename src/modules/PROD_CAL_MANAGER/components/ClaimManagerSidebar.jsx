@@ -41,17 +41,17 @@ const ClaimManagerSidebar = (props) => {
     return (
         <div style={{maxHeight: '100vh', overflow: 'auto'}}>
 
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Поиск по названию</span>
-                <Input style={{width: '100%'}}
-                       placeholder={'Поиск по названию'}
-                       allowClear={true}
-                       value={filterName}
-                       onChange={(ev) => {
-                           setFilterName(ev.target.value)
-                       }}
-                />
-            </div>
+            {/*<div className={'sk-usp-filter-col-item'}>*/}
+            {/*    <span className={'sk-usp-filter-col-label'}>Поиск по названию</span>*/}
+            {/*    <Input style={{width: '100%'}}*/}
+            {/*           placeholder={'Поиск по названию'}*/}
+            {/*           allowClear={true}*/}
+            {/*           value={filterName}*/}
+            {/*           onChange={(ev) => {*/}
+            {/*               setFilterName(ev.target.value)*/}
+            {/*           }}*/}
+            {/*    />*/}
+            {/*</div>*/}
 
             <div className={'sk-usp-filter-col-item'}>
                 <span className={'sk-usp-filter-col-label'}>Компания</span>

@@ -322,7 +322,7 @@ const ProdCalManagerPage = (props) => {
                                             backgroundColor: '#ededed',
                                             borderColor: '#ededed',
                                         }}
-                                    >Всего найдено: {0}</Tag>
+                                    >Всего найдено: {count}</Tag>
                                 </div>
                                 <Button color={'primary'}
                                         variant={'outlined'}
