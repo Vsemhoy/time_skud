@@ -12,7 +12,7 @@ const ChartsSidebar = (props) => {
         filterGroup: null,
     }
 
-    const [filterYears, setFilterYears] = useState(dayjs().year());
+    const [filterYear, setFilterYear] = useState(dayjs().year());
     const [filterUser, setFilterUser] = useState(null);
     const [filterCompany, setFilterCompany] = useState(null);
     const [filterDepartment, setFilterDepartment] = useState(null);
@@ -20,7 +20,7 @@ const ChartsSidebar = (props) => {
     const [filterGroup, setFilterGroup] = useState(null);
 
     const setInitialState = () => {
-        setFilterYears(initialstate.filterYear);
+        setFilterYear(initialstate.filterYear);
         setFilterUser(initialstate.filterUser);
         setFilterCompany(initialstate.filterCompany);
         setFilterDepartment(initialstate.filterDepartment);
@@ -30,6 +30,7 @@ const ChartsSidebar = (props) => {
 
     useEffect(() => {
         const params = {};
+        if (filterYear) params.year = filterYear;
         if (filterUser) params.users = filterUser;
         if (filterCompany) params.company = filterCompany;
         if (filterDepartment) params.department = filterDepartment;
@@ -39,7 +40,7 @@ const ChartsSidebar = (props) => {
         if (props.on_change_filter){
             props.on_change_filter(params);
         }
-    }, [filterYears, filterUser, filterCompany,
+    }, [filterYear, filterUser, filterCompany,
         filterDepartment, filterUserStatus, filterGroup]);
 
 
@@ -51,12 +52,11 @@ const ChartsSidebar = (props) => {
                 <span className={'sk-usp-filter-col-label'}>Год</span>
                 <Select style={{width: '100%'}}
                         placeholder={'Выберите год'}
-                        value={filterYears}
+                        value={filterYear}
                         options={props.year_list}
                         onChange={(ev) => {
-                            setFilterYears(ev)
+                            setFilterYear(ev)
                         }}
-                        allowClear
                 />
             </div>
 

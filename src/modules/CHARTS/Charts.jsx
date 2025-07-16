@@ -45,7 +45,7 @@ const  Charts = (props) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
-    const [allUsersCount, setAllUsersCount] = useState(100);
+    const [allUsersCount, setAllUsersCount] = useState(0);
     const [filterParams, setFilterParams] = useState(null);
 
     const [usersPage, setUsersPage] = useState(null);
@@ -53,6 +53,8 @@ const  Charts = (props) => {
     const [chartStates, setChartStates] = useState([]);
     const [selectedChartState, setSelectedChartState] = useState(null);
     const [reactiveColor, setReactiveColor] = useState(null);
+
+    const [activeYear, setActiveYear] = useState(dayjs().year());
 
     const [acls, setAcls] = useState([]);
     const [years, setYears] = useState([]);
@@ -138,28 +140,24 @@ const  Charts = (props) => {
 
     useEffect(() => {
         if (isMounted) {
-            fetchInfo().then();
+            fetchUsers().then();
         }
-    }, [currentPage, pageSize, filterParams]);
+    }, [currentPage, pageSize, filterParams, selectedChartState, rangeValues]);
 
     useEffect(() => {
-        if (isMounted) {
-            const pathSegments = location.pathname.split('/').filter(Boolean);
-            const lastSegment = pathSegments[pathSegments.length - 1];
-            console.log(lastSegment)
-            const chart = chartStates.find(state => state.name === lastSegment);
-            if (chart && chart.value) {
-                setSelectedChartState(chart.value);
-            }
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const lastSegment = pathSegments[pathSegments.length - 1];
+        console.log(lastSegment)
+        const chart = chartStates.find(state => state.name === lastSegment);
+        if (chart && chart.value) {
+            setSelectedChartState(chart.value);
         }
     }, [chartStates, location.pathname]);
 
     useEffect(() => {
-        if (isMounted) {
-            setReactiveColor(chartStates.find(state => +state.value === +selectedChartState) ?
-                chartStates.find(state => +state.value === +selectedChartState).color :
-                '#1890ff');
-        }
+        setReactiveColor(chartStates.find(state => +state.value === +selectedChartState) ?
+            chartStates.find(state => +state.value === +selectedChartState).color :
+            '#1890ff');
     }, [selectedChartState]);
 
     const fetchInfo = async () => {
@@ -216,17 +214,20 @@ const  Charts = (props) => {
                         data: {
                             filterParams,
                             currentPage,
-                            pageSize
+                            pageSize,
+                            selectedChartState,
+                            rangeValues: prepareRangeValuesToServer()
                         },
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
-                    setChartStates(prepareStates(response.data.content));
+                    setUsersPage(response.data.content);
                 }
             } catch (e) {
                 console.log(e);
             }
         } else {
+            console.log(prepareRangeValuesToServer())
             setUsersPage(USERS);
             setCurrentPage(1);
             setPageSize(20);
@@ -241,7 +242,45 @@ const  Charts = (props) => {
                 color: state.color,
                 name: state.name
             }))
-    }
+    };
+    const prepareRangeValuesToServer = () => {
+        if (!rangeValues || rangeValues.length === 0) {
+            return [];
+        }
+
+        const [firstMonth, secondMonth] = rangeValues;
+
+        // Начало первого месяца указанного года
+        const startTimestamp = dayjs()
+            .year(activeYear) // Указываем нужный год
+            .month(firstMonth - 1) // Месяцы в dayjs: 0-11
+            .startOf('month')
+            .valueOf();
+
+        // Если есть второй месяц
+        if (secondMonth !== undefined) {
+            const endTimestamp = dayjs()
+                .year(activeYear)
+                .month(secondMonth - 1)
+                .endOf('month')
+                .valueOf();
+
+            return [{
+                start: startTimestamp,
+                end: endTimestamp
+            }];
+        }
+
+        // Если только один месяц
+        return [{
+            start: startTimestamp,
+            end: dayjs()
+                .year(activeYear)
+                .month(firstMonth - 1)
+                .endOf('month')
+                .valueOf()
+        }];
+    };
     const navigateTo = (value) => {
         const name = chartStates.find(state => +state.value === +value)?.name;
         if (name) {
@@ -298,6 +337,7 @@ const  Charts = (props) => {
     };
     const handleFilterChanged = async (filters) => {
         setFilterParams(filters);
+        setActiveYear(filters.year);
     };
 
     return (
@@ -419,7 +459,10 @@ const  Charts = (props) => {
                                                 value={rangeValues}
                                                 min={1}
                                                 max={12}
-                                                onChange={setRangeValues}
+                                                onChange={(ev) => {
+                                                    console.log('Slider value changed:', ev);
+                                                    setRangeValues(ev);
+                                                }}
                                             />
                                         </div>
                                     </div>
