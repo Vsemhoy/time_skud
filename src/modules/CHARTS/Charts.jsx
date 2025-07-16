@@ -138,28 +138,24 @@ const  Charts = (props) => {
 
     useEffect(() => {
         if (isMounted) {
-            fetchInfo().then();
+            fetchUsers().then();
         }
     }, [currentPage, pageSize, filterParams]);
 
     useEffect(() => {
-        if (isMounted) {
-            const pathSegments = location.pathname.split('/').filter(Boolean);
-            const lastSegment = pathSegments[pathSegments.length - 1];
-            console.log(lastSegment)
-            const chart = chartStates.find(state => state.name === lastSegment);
-            if (chart && chart.value) {
-                setSelectedChartState(chart.value);
-            }
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const lastSegment = pathSegments[pathSegments.length - 1];
+        console.log(lastSegment)
+        const chart = chartStates.find(state => state.name === lastSegment);
+        if (chart && chart.value) {
+            setSelectedChartState(chart.value);
         }
     }, [chartStates, location.pathname]);
 
     useEffect(() => {
-        if (isMounted) {
-            setReactiveColor(chartStates.find(state => +state.value === +selectedChartState) ?
-                chartStates.find(state => +state.value === +selectedChartState).color :
-                '#1890ff');
-        }
+        setReactiveColor(chartStates.find(state => +state.value === +selectedChartState) ?
+            chartStates.find(state => +state.value === +selectedChartState).color :
+            '#1890ff');
     }, [selectedChartState]);
 
     const fetchInfo = async () => {
