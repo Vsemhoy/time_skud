@@ -47,6 +47,7 @@ import SVO from "./modules/CHARTS/outlets/SVO";
 import Vacation from "./modules/CHARTS/outlets/Vacation";
 import Overtime from "./modules/CHARTS/outlets/Overtime";
 import Containers from "./modules/CHARTS/outlets/Containers";
+import Chart from "./modules/CHARTS/components/Chart";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -246,13 +247,13 @@ function App() {
 
             <Route path={'/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
             <Route path={'/charts'} element={<Charts userdata={userAct}/>}>
-                <Route path={'sickleave'} element={<SickLeave />} />
-                <Route path={'longtrip'} element={<LongTrip />} />
-                <Route path={'shorttrip'} element={<ShortTrip />} />
-                <Route path={'shortvacation'} element={<SVO />} />
-                <Route path={'longvacation'} element={<Vacation />} />
-                <Route path={'overtime'} element={<Overtime />} />
-                <Route path={'containers'} element={<Containers />} />
+                <Route path={'sickleave'} element={<Chart />} />
+                <Route path={'longtrip'} element={<Chart />} />
+                <Route path={'shorttrip'} element={<Chart />} />
+                <Route path={'shortvacation'} element={<Chart />} />
+                <Route path={'longvacation'} element={<Chart />} />
+                <Route path={'overtime'} element={<Chart />} />
+                <Route path={'containers'} element={<Chart />} />
             </Route>
             <Route path={'/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
             <Route path={'/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />

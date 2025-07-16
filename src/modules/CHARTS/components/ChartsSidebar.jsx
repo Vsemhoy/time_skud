@@ -1,22 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, Select} from "antd";
+import {Button, Input, Select, Space} from "antd";
 import dayjs from "dayjs";
 
 const ChartsSidebar = (props) => {
     const initialstate = {
-        filterYear: {
-            value: 0,
-            label: dayjs().year()
-        },
-        filterUserNameOrOccupy: '',
+        filterYear: dayjs().year(),
+        filterUser: null,
         filterCompany: null,
         filterDepartment: null,
         filterUserStatus: null,
         filterGroup: null,
     }
 
-    const [filterYears, setFilterYears] = useState(null);
-    const [filterUserNameOrOccupy, setFilterUserNameOrOccupy] = useState('');
+    const [filterYears, setFilterYears] = useState(dayjs().year());
+    const [filterUser, setFilterUser] = useState(null);
     const [filterCompany, setFilterCompany] = useState(null);
     const [filterDepartment, setFilterDepartment] = useState(null);
     const [filterUserStatus, setFilterUserStatus] = useState(null);
@@ -24,73 +21,16 @@ const ChartsSidebar = (props) => {
 
     const setInitialState = () => {
         setFilterYears(initialstate.filterYear);
-        setFilterUserNameOrOccupy(initialstate.filterUserNameOrOccupy);
+        setFilterUser(initialstate.filterUser);
         setFilterCompany(initialstate.filterCompany);
         setFilterDepartment(initialstate.filterDepartment);
         setFilterUserStatus(initialstate.filterUserStatus);
         setFilterGroup(initialstate.filterGroup);
     };
 
-    const [bossList, setBossList] = useState([]);
-    const [companyList, setCompanyList] = useState([]);
-
-    useEffect(() => {
-        if (props.user_list && props.user_list.length > 0) {
-            // 1. Собираем уникальные boss_id
-            const bossIds = new Set();
-            props.user_list.forEach(user => {
-                if (user.boss_id && user.boss_id !== 0) {
-                    bossIds.add(user.boss_id);
-                }
-            });
-
-            // 2. Формируем массив объектов только для тех, кто является чьим-то боссом
-            const bosses = props.user_list
-                .filter(user => bossIds.has(user.id))
-                .map(user => ({
-                    key: `userkey_${user.id}`,
-                    value: user.id,
-                    label: (
-                        <div className="sk-flex-space">
-                            <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
-                            <div>{user.id}</div>
-                        </div>
-                    ),
-                }));
-
-            setBossList(bosses);
-        } else {
-            setBossList([]);
-        }
-    }, [props.user_list]);
-
-
-
-
-    useEffect(()=>{
-        //console.log('props.company_list', props.company_list);
-        if (props.company_list){
-            setCompanyList([{ key: 0, value: 0, label: 'Все компании' },
-                ...props.company_list.filter(com => com.id != 1)
-                    .map(com => ({
-                            key: `usercom_${com.id}`,
-                            value: com.id,
-                            label: (
-                                <div className="sk-flex-space">
-                                    <div>{`${com.name}`}</div>
-                                    <div>{com.id}</div>
-                                </div>
-                            ),
-                        })
-                    )]
-            );
-        }
-
-    },[props.company_list]);
-
     useEffect(() => {
         const params = {};
-        if (filterUserNameOrOccupy?.trim()) params.username = filterUserNameOrOccupy.trim();
+        if (filterUser) params.users = filterUser;
         if (filterCompany) params.company = filterCompany;
         if (filterDepartment) params.department = filterDepartment;
         if (filterUserStatus) params.user_status_id = filterUserStatus;
@@ -99,7 +39,7 @@ const ChartsSidebar = (props) => {
         if (props.on_change_filter){
             props.on_change_filter(params);
         }
-    }, [filterYears, filterUserNameOrOccupy, filterCompany,
+    }, [filterYears, filterUser, filterCompany,
         filterDepartment, filterUserStatus, filterGroup]);
 
 
@@ -121,14 +61,21 @@ const ChartsSidebar = (props) => {
             </div>
 
             <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Пользователь / должность</span>
-                <Input style={{width: '100%'}}
-                       placeholder={'Имя пользователя / должность'}
-                       allowClear={true}
-                       value={filterUserNameOrOccupy}
-                       onChange={(ev) => {
-                           setFilterUserNameOrOccupy(ev.target.value)
-                       }}
+                <span className={'sk-usp-filter-col-label'}>Пользователи</span>
+                <Select style={{width: '100%'}}
+                        placeholder={'Выберите пользователя'}
+                        value={filterUser}
+                        options={props.user_list}
+                        onChange={(ev) => {
+                            setFilterUser(ev)
+                        }}
+                        allowClear
+                        mode="multiple"
+                        optionRender={option => (
+                            <Space>
+                                <span>{option.label}</span>
+                            </Space>
+                        )}
                 />
             </div>
 
@@ -137,7 +84,7 @@ const ChartsSidebar = (props) => {
                 <Select style={{width: '100%'}}
                         placeholder={'Все компании'}
                         value={filterCompany}
-                        options={props.company_list}
+                        options={props.company_list.filter(company => company.value > 1)}
                         onChange={(ev) => {
                             setFilterCompany(ev)
                         }}
