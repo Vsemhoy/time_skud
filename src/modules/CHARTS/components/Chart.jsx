@@ -5,8 +5,7 @@ import {useOutletContext} from "react-router-dom";
 import {PRODMODE} from "../../../CONFIG/config";
 
 const Chart = (props) => {
-    const { selectedChartState, chartStates, rangeValues, } = useOutletContext();
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoadingChart, selectedChartState, chartStates, rangeValues, } = useOutletContext();
 
     useEffect(() => {
         if (selectedChartState) {
@@ -15,17 +14,15 @@ const Chart = (props) => {
     }, [selectedChartState]);
 
     const fetchInfo = async () => {
-        setIsLoading(true);
         if (PRODMODE) {
 
         } else {
 
         }
-        setTimeout(() => setIsLoading(false), 500);
     };
 
     return (
-        <Spin spinning={isLoading}>
+        <Spin spinning={isLoadingChart}>
             <div className={styles.sk_chart}>
                 <div className={styles.month_row}>
                     <div></div>

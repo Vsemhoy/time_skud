@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Input, Select, Space} from "antd";
 import dayjs from "dayjs";
+import {PRODMODE} from "../../../CONFIG/config";
+import {USDA} from "../mock/mock";
 
 const ChartsSidebar = (props) => {
     const initialstate = {
@@ -42,8 +44,45 @@ const ChartsSidebar = (props) => {
         }
     }, [filterYear, filterUser, filterCompany,
         filterDepartment, filterUserStatus, filterGroup]);
-
-
+    useEffect(() => {
+        if (props.myClaims) {
+            setFilterUser(props.user_list.filter(user => user.value === props.currentUser.id).map(user => user.value));
+            console.log(props.user_list.filter(user => user.value === props.currentUser.id).map(user => user.value))
+        } else {
+            const arr = props.user_list.filter(user => user.value === props.currentUser.id).map(user => user.value);
+            if (!props.mySubjects && areArraysEqualSimple(arr, filterUser)) {
+                setFilterUser([]);
+            }
+        }
+    }, [props.myClaims]);
+    useEffect(() => {
+        if (props.mySubjects) {
+            setFilterUser(props.user_list.filter(user => user.boss_id === props.currentUser.id).map(user => user.value));
+            console.log(props.user_list.filter(user => user.boss_id === props.currentUser.id).map(user => user.value))
+        } else {
+            const arr = props.user_list.filter(user => user.boss_id === props.currentUser.id).map(user => user.value);
+            if (!props.myClaims && areArraysEqualSimple(arr, filterUser)) {
+                setFilterUser([]);
+            }
+        }
+    }, [props.mySubjects]);
+    useEffect(() => {
+        if (props.myClaims) {
+            const arr = props.user_list.filter(user => user.value === props.currentUser.id).map(user => user.value);
+            props.on_change_filter_user('myClaims', areArraysEqualSimple(arr, filterUser));
+        }
+        if (props.mySubjects) {
+            const arr = props.user_list.filter(user => user.boss_id === props.currentUser.id).map(user => user.value);
+            props.on_change_filter_user('mySubjects', areArraysEqualSimple(arr, filterUser));
+        }
+    }, [filterUser]);
+    const areArraysEqualSimple = (arr1, arr2) => {
+        if (arr1 && arr2) {
+            return arr1.length === arr2.length &&
+                arr1.every((item, index) => item === arr2[index]);
+        }
+        return false;
+    };
 
     return (
         <div style={{maxHeight: '100vh', overflow: 'auto'}}>
