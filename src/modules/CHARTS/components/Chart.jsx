@@ -5,21 +5,7 @@ import {useOutletContext} from "react-router-dom";
 import {PRODMODE} from "../../../CONFIG/config";
 
 const Chart = (props) => {
-    const { isLoadingChart, selectedChartState, chartStates, rangeValues, } = useOutletContext();
-
-    useEffect(() => {
-        if (selectedChartState) {
-            fetchInfo().then();
-        }
-    }, [selectedChartState]);
-
-    const fetchInfo = async () => {
-        if (PRODMODE) {
-
-        } else {
-
-        }
-    };
+    const { isLoadingChart, selectedChartState, usersPage } = useOutletContext();
 
     return (
         <Spin spinning={isLoadingChart}>
@@ -61,39 +47,44 @@ const Chart = (props) => {
                     <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
                     <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
                 </div>
-                <div className={styles.user_row}>
-                    <div className={styles.user_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                    <div className={styles.chart_cell}></div>
-                </div>
+                {usersPage && usersPage.map((user, index) => (
+                    <div className={styles.user_row}>
+                        <div className={styles.user_cell}>
+                            <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
+                            <div>{(user.charts && user.charts.length > 0) ? user.charts.length: ''}</div>
+                        </div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                        <div className={styles.chart_cell}></div>
+                    </div>
+                ))}
             </div>
         </Spin>
     );
