@@ -1,5 +1,5 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { HTTP_ROOT } from '../../../CONFIG/config';
 import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
@@ -8,18 +8,29 @@ import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 
 const AppMenu23 = (props) => {
     const { state, setState } = useContext(StateContext);
-    const [notificatorOpened, setNotificatorOpened] = useState(false);
     const [notificatorLoading, setNotificatorLoading] = useState(true);
+
     const [countOfNotifications, setCountOfNotifications] = useState(0);
     const navigate = useNavigate();
     const location = useLocation();
     const selectedKey = location.pathname;
 
     const showNotyBar = () => {
-        setNotificatorOpened(true);
+        if (props.on_open_notificator){
+            props.on_open_notificator();
+            
+        }
+        // setNotificatorOpened(true);
         setNotificatorLoading(true);
         setTimeout(() => setNotificatorLoading(false), 2000);
     };
+
+    useEffect(() => {
+      setCountOfNotifications(props.count_of_notifications);
+      console.log(props.count_of_notifications);
+    }, [props.count_of_notifications]);
+
+
 
     const getSelectedKeys = () => {
         const path = location.pathname;
@@ -175,7 +186,7 @@ const AppMenu23 = (props) => {
 
                 <div style={{ display: 'flex', alignItems: 'center'}}>
                     <div onClick={showNotyBar} style={{ cursor: "pointer", marginRight: '24px'}}>
-                        <Badge count={countOfNotifications} offset={[2, 24]}>
+                        <Badge count={countOfNotifications} offset={[4, 32]}>
                             <Avatar style={{ backgroundColor: '#33333300' }}>
                                 <NotificationOutlined style={{ fontSize: '36px', color: '#3d3d3d' }} />
                             </Avatar>
@@ -196,7 +207,7 @@ const AppMenu23 = (props) => {
                 </div>
             </Header>
 
-            <Drawer
+            {/* <Drawer
                 closable
                 destroyOnClose
                 title="Уведомления"
@@ -214,7 +225,7 @@ const AppMenu23 = (props) => {
                         <p>Новых уведомлений не найдено...</p>
                     </>
                 )}
-            </Drawer>
+            </Drawer> */}
         </div>
     );
 }

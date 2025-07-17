@@ -48,6 +48,7 @@ import Vacation from "./modules/CHARTS/outlets/Vacation";
 import Overtime from "./modules/CHARTS/outlets/Overtime";
 import Containers from "./modules/CHARTS/outlets/Containers";
 import Chart from "./modules/CHARTS/components/Chart";
+import NotifierDrawer from './components/Notifyer/NotifierDrawer';
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -76,7 +77,8 @@ const useCookieState = (key, defaultValue) => {
 
 function App() {
 
-
+  const [notificatorOpened, setNotificatorOpened] = useState(false);
+  const [countOfNotifications, setCountOfNotifications] = useState(0);
   const { state, setState } = useContext(StateContext);
 
   //console.log('state', state)
@@ -165,7 +167,12 @@ function App() {
     }, []);
 
 
-
+    const handleNotificatorOpened = () => {
+      setNotificatorOpened(true);
+    }
+    const handleNotificatorClosed = () => {
+      setNotificatorOpened(false);
+    }
     
 
   return (
@@ -175,6 +182,8 @@ function App() {
 
        <AppMenu23 
         user_act={userAct}
+        on_open_notificator={handleNotificatorOpened}
+        count_of_notifications={countOfNotifications}
        />
    
 
@@ -276,9 +285,14 @@ function App() {
       </Content>
       </div>
 
-
-
       </BrowserRouter>
+
+        <NotifierDrawer 
+          is_open={notificatorOpened}
+          on_close={handleNotificatorClosed}
+          on_count_change={setCountOfNotifications}
+        />
+
     </Layout>
   );
 }
