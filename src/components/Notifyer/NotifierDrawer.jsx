@@ -34,7 +34,7 @@ const NotifierDrawer = (props) => {
 
     useEffect(() => {
       if (props.on_count_change){
-
+          props.on_count_change(countOfNewNotifications);
       }
     }, [countOfNewNotifications]);
 

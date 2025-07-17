@@ -60,7 +60,7 @@ const RulesManagerModal= (props) => {
                           "start": dayjs("2025-03-01 05:27:26"),
                           "end": dayjs("2025-03-15 14:54:19"),
                           "creator_id": 47,
-                          "creator_name": "Валентина",
+                          "creator_name": "Полина",
                           "creator_surname": "Ковалева",
                           "created_at": 1740914795,
                           "deleted": false,

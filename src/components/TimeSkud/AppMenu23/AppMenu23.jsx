@@ -8,8 +8,8 @@ import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 
 const AppMenu23 = (props) => {
     const { state, setState } = useContext(StateContext);
-    const [notificatorOpened, setNotificatorOpened] = useState(false);
     const [notificatorLoading, setNotificatorLoading] = useState(true);
+
     const [countOfNotifications, setCountOfNotifications] = useState(0);
     const navigate = useNavigate();
     const location = useLocation();
@@ -29,6 +29,8 @@ const AppMenu23 = (props) => {
       setCountOfNotifications(props.count_of_notifications);
       console.log(props.count_of_notifications);
     }, [props.count_of_notifications]);
+
+
 
     const getSelectedKeys = () => {
         const path = location.pathname;
@@ -184,7 +186,7 @@ const AppMenu23 = (props) => {
 
                 <div style={{ display: 'flex', alignItems: 'center'}}>
                     <div onClick={showNotyBar} style={{ cursor: "pointer", marginRight: '24px'}}>
-                        <Badge count={countOfNotifications} offset={[2, 24]}>
+                        <Badge count={countOfNotifications} offset={[4, 32]}>
                             <Avatar style={{ backgroundColor: '#33333300' }}>
                                 <NotificationOutlined style={{ fontSize: '36px', color: '#3d3d3d' }} />
                             </Avatar>

@@ -14,14 +14,14 @@ export const CLAIM_USERS = [
         "id": 46,
         "name": "Антон",
         "surname": "Ковалев",
-        "patronymic": "Станиславович",
+        "patronymic": "Бигстэнович",
         "id_departament": 1,
         "id_company": 2,
         "boss_id": 46
     },
     {
         "id": 47,
-        "name": "Валентина",
+        "name": "Полина",
         "surname": "Ковалева",
         "patronymic": "Григорьевна",
         "id_departament": 19,
@@ -75,8 +75,8 @@ export const CLAIM_USERS = [
     },
     {
         "id": 198,
-        "name": "Валентина",
-        "surname": "Рогалева",
+        "name": "Полина",
+        "surname": "Вратарская",
         "patronymic": "Евгеньевна",
         "id_departament": 15,
         "id_company": 2,
@@ -139,7 +139,7 @@ export const CLAIM_USERS = [
     {
         "id": 287,
         "name": "Олег",
-        "surname": "Бибик",
+        "surname": "Бибика",
         "patronymic": "Николаевич",
         "id_departament": 17,
         "id_company": 2,
@@ -383,14 +383,14 @@ export const CLAIM_USERS = [
         "id": 528,
         "name": "Роман",
         "surname": "Карташов",
-        "patronymic": "Станиславович",
+        "patronymic": "Бигстэнович",
         "id_departament": 9,
         "id_company": 2,
         "boss_id": 46
     },
     {
         "id": 530,
-        "name": "Станислав",
+        "name": "Бигстэн",
         "surname": "Самарин",
         "patronymic": "Антонович",
         "id_departament": 17,
@@ -418,7 +418,7 @@ export const CLAIM_USERS = [
     {
         "id": 536,
         "name": "Екатерина",
-        "surname": "Филиппова",
+        "surname": "Краснова",
         "patronymic": "Муриновна",
         "id_departament": 15,
         "id_company": 2,
@@ -1204,7 +1204,7 @@ export const CLAIMS_MOCKS = [
         "state.need_approved": 0,
         "usr_name": "Антон",
         "usr_surname": "Ковалев",
-        "usr_patronymic": "Станиславович",
+        "usr_patronymic": "Бигстэнович",
         "depart_name": "Администрация"
     },
     {
@@ -1234,7 +1234,7 @@ export const CLAIMS_MOCKS = [
         "state.need_approved": 0,
         "usr_name": "Антон",
         "usr_surname": "Ковалев",
-        "usr_patronymic": "Станиславович",
+        "usr_patronymic": "Бигстэнович",
         "depart_name": "Администрация"
     },
     {
@@ -1264,7 +1264,7 @@ export const CLAIMS_MOCKS = [
         "state.need_approved": 0,
         "usr_name": "Антон",
         "usr_surname": "Ковалев",
-        "usr_patronymic": "Станиславович",
+        "usr_patronymic": "Бигстэнович",
         "depart_name": "Администрация"
     },
     {
@@ -1294,7 +1294,7 @@ export const CLAIMS_MOCKS = [
         "state.need_approved": 0,
         "usr_name": "Антон",
         "usr_surname": "Ковалев",
-        "usr_patronymic": "Станиславович",
+        "usr_patronymic": "Бигстэнович",
         "depart_name": "Администрация"
     },
     {

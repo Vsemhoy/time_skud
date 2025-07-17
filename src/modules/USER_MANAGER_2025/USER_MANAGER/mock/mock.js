@@ -119,7 +119,7 @@ export const USERS =  [
         "id": 46,
         "name": "Антон",
         "surname": "Ковалев",
-        "patronymic": "Станиславович",
+        "patronymic": "Бигстэнович",
         "occupy": "коммерческий директор",
         "departament": 1,
         "departament_name": "Администрация",
@@ -1819,7 +1819,7 @@ export const USERS =  [
         "id": 528,
         "name": "Роман",
         "surname": "Карташов",
-        "patronymic": "Станиславович",
+        "patronymic": "Бигстэнович",
         "occupy": "Кладовщик",
         "departament": 9,
         "departament_name": "Склад Санкт-Петербург",
@@ -2529,7 +2529,7 @@ export const USERS =  [
     {
         "id": 536,
         "name": "Екатерина",
-        "surname": "Филиппова",
+        "surname": "Краснова",
         "patronymic": "Муриновна",
         "occupy": "Менеджер",
         "departament": 15,
@@ -2586,8 +2586,8 @@ export const USERS =  [
     },
     {
         "id": 198,
-        "name": "Валентина",
-        "surname": "Рогалева",
+        "name": "Полина",
+        "surname": "Вратарская",
         "patronymic": "Евгеньевна",
         "occupy": "менеджер отдела информации",
         "departament": 15,
@@ -2714,7 +2714,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-07 15:15:45",
         "company_name": "Rondo",
         "company_color": "#229922",
-        "creator_name": "Валентина"
+        "creator_name": "Полина"
     },
     {
         "id": 3,
