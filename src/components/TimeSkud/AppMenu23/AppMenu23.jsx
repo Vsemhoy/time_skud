@@ -16,7 +16,11 @@ const AppMenu23 = (props) => {
     const selectedKey = location.pathname;
 
     const showNotyBar = () => {
-        setNotificatorOpened(true);
+        if (props.on_open_notificator){
+            props.on_open_notificator();
+            
+        }
+        // setNotificatorOpened(true);
         setNotificatorLoading(true);
         setTimeout(() => setNotificatorLoading(false), 2000);
     };
@@ -196,7 +200,7 @@ const AppMenu23 = (props) => {
                 </div>
             </Header>
 
-            <Drawer
+            {/* <Drawer
                 closable
                 destroyOnClose
                 title="Уведомления"
@@ -214,7 +218,7 @@ const AppMenu23 = (props) => {
                         <p>Новых уведомлений не найдено...</p>
                     </>
                 )}
-            </Drawer>
+            </Drawer> */}
         </div>
     );
 }
