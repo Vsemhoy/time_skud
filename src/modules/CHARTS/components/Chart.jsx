@@ -3,6 +3,7 @@ import styles from "../style/charts.module.css";
 import {Spin} from "antd";
 import {useOutletContext} from "react-router-dom";
 import {PRODMODE} from "../../../CONFIG/config";
+import {ShortName} from "../../../components/Helpers/TextHelpers";
 
 const Chart = (props) => {
     const { isLoadingChart, selectedChartState, usersPage } = useOutletContext();
@@ -51,7 +52,7 @@ const Chart = (props) => {
                     {usersPage.map((user, index) => (
                         <div className={styles.user_row}>
                             <div className={styles.user_cell}>
-                                <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
+                                <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
                                 <div>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
                             </div>
                             <div className={styles.chart_cell}></div>
