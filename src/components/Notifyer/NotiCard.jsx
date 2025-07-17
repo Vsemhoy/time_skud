@@ -7,11 +7,11 @@ import MDEditor from "@uiw/react-md-editor";
 
 
 const NotiCard = (props) => {
-    const [isRead, setIsRead] = useState(props.data.is_read);
-    const [isReq, setIsReq] = useState(props.data.mandatory);
+    const [isRead,  setIsRead] = useState(props.data.is_read);
+    const [isReq,   setIsReq ] = useState(props.data.mandatory);
 
-    const [color, setColor] = useState(props.data.color && !props.data.is_read ? props.data.color : "#b3b3b3");
-    const [name, setName] = useState(props.data.name ? props.data.name : "Сообщение");
+    const [color,   setColor ] = useState(props.data.color && !props.data.is_read ? props.data.color : "#b3b3b3");
+    const [name,    setName  ] = useState(props.data.name ? props.data.name : "Сообщение");
     const [updated, setUpdated] = useState(props.data.updated_at? dayjs(props.data.updated_at) : null);
 
 
@@ -67,7 +67,10 @@ const NotiCard = (props) => {
                 {name && (
                     <div className="ma-notihead">{name}</div>
                 )}
-                <MDEditor.Markdown source={props.data.content} />
+                <MDEditor.Markdown source={props.data.content} 
+                    data-color-mode="light"
+                    className="my-markdown-light"
+                />
             </div>
             <div className={"ma-notfooter"}>
                 
