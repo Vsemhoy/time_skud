@@ -30,7 +30,7 @@ import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
-import {CHART_STATES, GROUPS, USDA} from "./mock/mock";
+import {CHART_STATES, GROUPS, USDA, USERS_PAGE} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
@@ -243,7 +243,7 @@ const  Charts = (props) => {
             }
         } else {
             console.log(prepareRangeValuesToServer())
-            setUsersPage(USERS);
+            setUsersPage(USERS_PAGE);
             setCurrentPage(1);
             setPageSize(10);
             setAllUsersCount(80);
@@ -418,8 +418,8 @@ const  Charts = (props) => {
                         <Content className="content">
                             <div className="sk-content-table-wrapper">
                                 <Affix offsetTop={44}>
-                                    <div>
-                                        <div style={{marginTop: '5px'}}>
+                                    <div style={{backgroundColor: '#f3f3f3'}}>
+                                        <div style={{paddingTop: '5px'}}>
                                             <ConfigProvider
                                                 theme={{
                                                     components: {
