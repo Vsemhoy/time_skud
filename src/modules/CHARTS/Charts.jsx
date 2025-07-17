@@ -34,7 +34,6 @@ import {CHART_STATES, GROUPS, USDA} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
-import {debounce} from "chart.js/helpers";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -177,7 +176,7 @@ const  Charts = (props) => {
     const fetchInfo = async () => {
         await fetchSelects();
         await fetchChartStates();
-        await fetchUsers();
+        //await fetchUsers();
     };
     const fetchSelects = async () => {
         if (PRODMODE) {
@@ -235,7 +234,9 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
-                    setUsersPage(response.data.content);
+                    const content = response.data.content;
+                    setUsersPage(content.users);
+                    setAllUsersCount(content.count);
                 }
             } catch (e) {
                 console.log(e);
@@ -507,8 +508,7 @@ const  Charts = (props) => {
                             <Outlet context={{
                                 isLoadingChart,
                                 selectedChartState,
-                                chartStates,
-                                rangeValues,
+                                usersPage
                             }}/>
                         </Content>
                     </Layout>
