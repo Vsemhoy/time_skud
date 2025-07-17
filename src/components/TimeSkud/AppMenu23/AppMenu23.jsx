@@ -1,5 +1,5 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { HTTP_ROOT } from '../../../CONFIG/config';
 import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
@@ -24,6 +24,11 @@ const AppMenu23 = (props) => {
         setNotificatorLoading(true);
         setTimeout(() => setNotificatorLoading(false), 2000);
     };
+
+    useEffect(() => {
+      setCountOfNotifications(props.count_of_notifications);
+      console.log(props.count_of_notifications);
+    }, [props.count_of_notifications]);
 
     const getSelectedKeys = () => {
         const path = location.pathname;

@@ -78,6 +78,7 @@ const useCookieState = (key, defaultValue) => {
 function App() {
 
   const [notificatorOpened, setNotificatorOpened] = useState(false);
+  const [countOfNotifications, setCountOfNotifications] = useState(0);
   const { state, setState } = useContext(StateContext);
 
   //console.log('state', state)
@@ -182,6 +183,7 @@ function App() {
        <AppMenu23 
         user_act={userAct}
         on_open_notificator={handleNotificatorOpened}
+        count_of_notifications={countOfNotifications}
        />
    
 
@@ -288,6 +290,7 @@ function App() {
         <NotifierDrawer 
           is_open={notificatorOpened}
           on_close={handleNotificatorClosed}
+          on_count_change={setCountOfNotifications}
         />
 
     </Layout>

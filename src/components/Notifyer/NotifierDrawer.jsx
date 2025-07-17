@@ -15,6 +15,8 @@ const NotifierDrawer = (props) => {
   const [noticePage, setNoticePage] = useState(1);
   const [noticeIgnore, setNoticeIgnore] = useState([]);
   const [countOfNotifications, setCountOfNotifications] = useState(0);
+  const [countOfNewNotifications, setCountOfNewNotifications] = useState(0);
+
   const [notificatorOpened, setNotificatorOpened] = useState(false);
   const [notificatorLoading, setNotificatorLoading] = useState(true);
   
@@ -27,14 +29,26 @@ const NotifierDrawer = (props) => {
         )
       );
       markNoteRead(id);
+      setCountOfNewNotifications(countOfNewNotifications - 1);
     };
 
+    useEffect(() => {
+      if (props.on_count_change){
+
+      }
+    }, [countOfNewNotifications]);
 
     useEffect(() => {
       console.log(props.is_open);
       setNotificatorOpened(props.is_open);
     }, [props.is_open]);
 
+
+    useEffect(() => {
+      if (notificatorOpened === true){
+        getFreshNotices();
+      }
+    }, [notificatorOpened]);
 
       // EFFECTS
       useEffect(() => {
@@ -91,7 +105,7 @@ const NotifierDrawer = (props) => {
         };
         setNoticeIgnore(ignore);
         setCountOfNotifications(ignore.length);
-
+        setCountOfNewNotifications(ignore.length);
       } catch (e) {
           console.log(e)
       } finally {
