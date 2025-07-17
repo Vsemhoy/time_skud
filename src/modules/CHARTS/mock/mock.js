@@ -420,8 +420,8 @@ export const USDA = {
     ],
     "user": {
         "id": 46,
-        "surname": "Кошелев",
-        "name": "Александр",
+        "surname": "Ковалев",
+        "name": "Антон",
         "secondname": "Станиславович",
         "occupy": "коммерческий директор",
         "id_departament": 1,
@@ -594,21 +594,21 @@ export const GROT_MOCK = {
         { id: 539080, approved: 0, start: '05-11-2025', end: '15-11-2025' }
     ],
 
-    // 2. Юрий Дегелевич
+    // 2. Георгий Делиев
     493: [
         { id: 539081, approved: 1, start: '02-04-2025', end: '16-04-2025' },
         { id: 539082, approved: 1, start: '01-09-2025', end: '14-09-2025' },
         { id: 539083, approved: 1, start: '20-12-2025', end: '03-01-2026' }
     ],
 
-    // 3. Александр Кошелев
+    // 3. Антон Ковалев
     46: [
         { id: 539084, approved: 1, start: '12-05-2025', end: '25-05-2025' },
         { id: 539085, approved: 0, start: '08-08-2025', end: '22-08-2025' },
         { id: 539086, approved: 1, start: '15-10-2025', end: '29-10-2025' }
     ],
 
-    // 4. Мария Глинтерник
+    // 4. Анастасия Глинтерник
     334: [
         { id: 539087, approved: 1, start: '03-02-2025', end: '17-02-2025' },
         { id: 539088, approved: 1, start: '05-06-2025', end: '19-06-2025' },
@@ -623,14 +623,14 @@ export const GROT_MOCK = {
         { id: 539093, approved: 1, start: '15-11-2025', end: '25-11-2025' }
     ],
 
-    // 6. Виктория Друговейко
+    // 6. Сильвия Нитакойко
     133: [
         { id: 539094, approved: 1, start: '01-03-2025', end: '14-03-2025' },
         { id: 539095, approved: 0, start: '01-07-2025', end: '14-07-2025' },
         { id: 539096, approved: 1, start: '10-10-2025', end: '20-10-2025' }
     ],
 
-    // 7. Анна Захарова
+    // 7. Анна Сахарова
     531: [
         { id: 539097, approved: 1, start: '20-01-2025', end: '02-02-2025' },
         { id: 539098, approved: 1, start: '15-05-2025', end: '29-05-2025' },
@@ -638,21 +638,21 @@ export const GROT_MOCK = {
         { id: 539100, approved: 0, start: '01-12-2025', end: '15-12-2025' }
     ],
 
-    // 8. Наталия Минина
+    // 8. Наталия Пожарская
     560: [
         { id: 539101, approved: 1, start: '10-02-2025', end: '23-02-2025' },
         { id: 539102, approved: 1, start: '05-06-2025', end: '18-06-2025' },
         { id: 539103, approved: 1, start: '20-10-2025', end: '02-11-2025' }
     ],
 
-    // 9. Любовь Палагушина
+    // 9. Анналенна Конусова
     521: [
         { id: 539104, approved: 1, start: '05-04-2025', end: '19-04-2025' },
         { id: 539105, approved: 0, start: '10-08-2025', end: '24-08-2025' },
         { id: 539106, approved: 1, start: '15-11-2025', end: '25-11-2025' }
     ],
 
-    // 10. Геннадий Балымов
+    // 10. Геннадий Бачаров
     547: [
         { id: 539107, approved: 1, start: '12-01-2025', end: '26-01-2025' },
         { id: 539108, approved: 1, start: '03-05-2025', end: '17-05-2025' },
@@ -660,21 +660,21 @@ export const GROT_MOCK = {
         { id: 539110, approved: 0, start: '10-12-2025', end: '24-12-2025' }
     ],
 
-    // 11. Сергей Безбородов
+    // 11. Севослав Бородатый
     134: [
         { id: 539111, approved: 1, start: '20-03-2025', end: '02-04-2025' },
         { id: 539112, approved: 1, start: '15-07-2025', end: '28-07-2025' },
         { id: 539113, approved: 1, start: '10-10-2025', end: '20-10-2025' }
     ],
 
-    // 12. Ксения Горяева
+    // 12. Ксения Пожарских
     339: [
         { id: 539114, approved: 1, start: '01-02-2025', end: '14-02-2025' },
         { id: 539115, approved: 0, start: '01-06-2025', end: '15-06-2025' },
         { id: 539116, approved: 1, start: '05-09-2025', end: '19-09-2025' }
     ],
 
-    // 13. Ирина Зеленко
+    // 13. Виолетта Ктурошоско
     304: [
         { id: 539117, approved: 1, start: '10-04-2025', end: '24-04-2025' },
         { id: 539118, approved: 1, start: '12-08-2025', end: '26-08-2025' },
@@ -682,21 +682,21 @@ export const GROT_MOCK = {
         { id: 539120, approved: 0, start: '20-12-2025', end: '31-12-2025' }
     ],
 
-    // 14. Анастасия Коляскина
+    // 14. Анастасия Потеркацешвили
     562: [
         { id: 539121, approved: 1, start: '05-03-2025', end: '19-03-2025' },
         { id: 539122, approved: 1, start: '10-07-2025', end: '24-07-2025' },
         { id: 539123, approved: 1, start: '12-10-2025', end: '22-10-2025' }
     ],
 
-    // 15. Евгений Котоликов
+    // 15. Евгений Православных
     374: [
         { id: 539124, approved: 1, start: '15-01-2025', end: '29-01-2025' },
         { id: 539125, approved: 0, start: '01-05-2025', end: '15-05-2025' },
         { id: 539126, approved: 1, start: '10-09-2025', end: '24-09-2025' }
     ],
 
-    // 16. Мария Ладыгина
+    // 16. Анастасия Ладыгина
     555: [
         { id: 539127, approved: 1, start: '20-02-2025', end: '05-03-2025' },
         { id: 539128, approved: 1, start: '15-06-2025', end: '29-06-2025' },
@@ -704,21 +704,21 @@ export const GROT_MOCK = {
         { id: 539130, approved: 0, start: '15-12-2025', end: '29-12-2025' }
     ],
 
-    // 17. Павел Петровский
+    // 17. Стивен Петровский
     340: [
         { id: 539131, approved: 1, start: '01-04-2025', end: '14-04-2025' },
         { id: 539132, approved: 1, start: '05-08-2025', end: '19-08-2025' },
         { id: 539133, approved: 1, start: '10-11-2025', end: '20-11-2025' }
     ],
 
-    // 18. Дмитрий Печников
+    // 18. Дмитрий Панченко
     57: [
         { id: 539134, approved: 1, start: '10-03-2025', end: '24-03-2025' },
         { id: 539135, approved: 0, start: '15-07-2025', end: '29-07-2025' },
         { id: 539136, approved: 1, start: '12-10-2025', end: '22-10-2025' }
     ],
 
-    // 19. Анна Столярова
+    // 19. Анна Деловая
     226: [
         { id: 539137, approved: 1, start: '05-02-2025', end: '19-02-2025' },
         { id: 539138, approved: 1, start: '01-06-2025', end: '15-06-2025' },
@@ -726,7 +726,7 @@ export const GROT_MOCK = {
         { id: 539140, approved: 0, start: '10-12-2025', end: '24-12-2025' }
     ],
 
-    // 20. Максим Турлов
+    // 20. Максим Тутушкин
     405: [
         { id: 539141, approved: 1, start: '12-01-2025', end: '26-01-2025' },
         { id: 539142, approved: 1, start: '15-05-2025', end: '29-05-2025' },
@@ -783,8 +783,8 @@ export const USERS = [
     },
     {
         "id": 493,
-        "name": "Юрий",
-        "user_surname": "Дегелевич",
+        "name": "Георгий",
+        "user_surname": "Делиев",
         "user_patronymic": "Евгеньевич",
         "user_occupy": "Технический директор",
         "phone": "217",
@@ -816,8 +816,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -828,8 +828,8 @@ export const USERS = [
     },
     {
         "id": 46,
-        "name": "Александр",
-        "user_surname": "Кошелев",
+        "name": "Антон",
+        "user_surname": "Ковалев",
         "user_patronymic": "Станиславович",
         "user_occupy": "коммерческий директор",
         "phone": "1000",
@@ -861,8 +861,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -906,8 +906,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -918,7 +918,7 @@ export const USERS = [
     },
     {
         "id": 334,
-        "name": "Мария",
+        "name": "Анастасия",
         "user_surname": "Глинтвейник",
         "user_patronymic": "Алексеевна",
         "user_occupy": "",
@@ -951,8 +951,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -1008,9 +1008,9 @@ export const USERS = [
     },
     {
         "id": 133,
-        "name": "Виктория",
-        "user_surname": "Друговейко",
-        "user_patronymic": "Юрьевна",
+        "name": "Сильвия",
+        "user_surname": "Нитакойко",
+        "user_patronymic": "Муриновна",
         "user_occupy": "главный бухгалтер",
         "phone": "221",
         "email": null,
@@ -1041,8 +1041,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -1054,8 +1054,8 @@ export const USERS = [
     {
         "id": 531,
         "name": "Анна",
-        "user_surname": "Захарова",
-        "user_patronymic": "Юрьевна",
+        "user_surname": "Сахарова",
+        "user_patronymic": "Муриновна",
         "user_occupy": "Бухгалтер",
         "phone": "222",
         "email": null,
@@ -1086,9 +1086,9 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Виктория",
-        "boss_surname": "Друговейко",
-        "boss_patronymic": "Юрьевна",
+        "boss_name": "Сильвия",
+        "boss_surname": "Нитакойко",
+        "boss_patronymic": "Муриновна",
         "boss_occupy": "главный бухгалтер",
         "boss_phone": "221",
         "boss_email": null,
@@ -1099,8 +1099,8 @@ export const USERS = [
     {
         "id": 560,
         "name": "Наталия",
-        "user_surname": "Минина",
-        "user_patronymic": "Юрьевна",
+        "user_surname": "Пожарская",
+        "user_patronymic": "Муриновна",
         "user_occupy": "Администратор",
         "phone": "201",
         "email": null,
@@ -1143,8 +1143,8 @@ export const USERS = [
     },
     {
         "id": 521,
-        "name": "Любовь",
-        "user_surname": "Палагушина",
+        "name": "Анналенна",
+        "user_surname": "Конусова",
         "user_patronymic": "Владимировна",
         "user_occupy": "Бухгалтер",
         "phone": "223",
@@ -1176,9 +1176,9 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Виктория",
-        "boss_surname": "Друговейко",
-        "boss_patronymic": "Юрьевна",
+        "boss_name": "Сильвия",
+        "boss_surname": "Нитакойко",
+        "boss_patronymic": "Муриновна",
         "boss_occupy": "главный бухгалтер",
         "boss_phone": "221",
         "boss_email": null,
@@ -1221,8 +1221,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -1279,7 +1279,7 @@ export const USERS = [
     {
         "id": 547,
         "name": "Геннадий",
-        "user_surname": "Балымов",
+        "user_surname": "Бачаров",
         "user_patronymic": "Робертович",
         "user_occupy": "Региональный менеджер",
         "phone": "230",
@@ -1311,8 +1311,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1323,9 +1323,9 @@ export const USERS = [
     },
     {
         "id": 134,
-        "name": "Сергей",
-        "user_surname": "Безбородов",
-        "user_patronymic": "Дмитриевич",
+        "name": "Севослав",
+        "user_surname": "Бородатый",
+        "user_patronymic": "Анатольевич",
         "user_occupy": "менеджер проектов",
         "phone": "227",
         "email": "proekt@arstel.com",
@@ -1356,8 +1356,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1369,7 +1369,7 @@ export const USERS = [
     {
         "id": 339,
         "name": "Ксения",
-        "user_surname": "Горяева",
+        "user_surname": "Пожарских",
         "user_patronymic": "Викторовна",
         "user_occupy": "менеджер-координатор",
         "phone": "219",
@@ -1401,8 +1401,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1413,8 +1413,8 @@ export const USERS = [
     },
     {
         "id": 304,
-        "name": "Ирина",
-        "user_surname": "Зеленко",
+        "name": "Виолетта",
+        "user_surname": "Ктурошоско",
         "user_patronymic": "Вячеславовна",
         "user_occupy": "менеджер-координатор",
         "phone": "225",
@@ -1446,8 +1446,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -1459,8 +1459,8 @@ export const USERS = [
     {
         "id": 562,
         "name": "Анастасия",
-        "user_surname": "Коляскина",
-        "user_patronymic": "Константиновна",
+        "user_surname": "Потеркацешвили",
+        "user_patronymic": "Брекотиновна",
         "user_occupy": "Руководитель отдела продаж Рондо",
         "phone": "403",
         "email": null,
@@ -1491,8 +1491,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -1504,7 +1504,7 @@ export const USERS = [
     {
         "id": 374,
         "name": "Евгений",
-        "user_surname": "Котоликов",
+        "user_surname": "Православных",
         "user_patronymic": "Алексеевич",
         "user_occupy": "региональный менеджер",
         "phone": "224",
@@ -1536,8 +1536,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1548,7 +1548,7 @@ export const USERS = [
     },
     {
         "id": 555,
-        "name": "Мария",
+        "name": "Анастасия",
         "user_surname": "Ладыгина",
         "user_patronymic": "Владимировна",
         "user_occupy": "Региональный менеджер",
@@ -1581,8 +1581,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1593,7 +1593,7 @@ export const USERS = [
     },
     {
         "id": 340,
-        "name": "Павел",
+        "name": "Стивен",
         "user_surname": "Петровский",
         "user_patronymic": "Сергеевич",
         "user_occupy": "менеджер региональный",
@@ -1626,8 +1626,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1639,7 +1639,7 @@ export const USERS = [
     {
         "id": 57,
         "name": "Дмитрий",
-        "user_surname": "Печников",
+        "user_surname": "Панченко",
         "user_patronymic": "Валерьевич",
         "user_occupy": "менеджер региональный",
         "phone": "226",
@@ -1671,8 +1671,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -1684,7 +1684,7 @@ export const USERS = [
     {
         "id": 226,
         "name": "Анна ",
-        "user_surname": "Столярова",
+        "user_surname": "Деловая",
         "user_patronymic": "Владимировна",
         "user_occupy": "Ведущий менеджер",
         "phone": "251",
@@ -1716,8 +1716,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1774,7 +1774,7 @@ export const USERS = [
     {
         "id": 405,
         "name": "Максим",
-        "user_surname": "Турлов",
+        "user_surname": "Тутушкин",
         "user_patronymic": "Георгиевич",
         "user_occupy": "менеджер-координатор",
         "phone": "209",
@@ -1806,8 +1806,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -1818,7 +1818,7 @@ export const USERS = [
     },
     {
         "id": 563,
-        "name": "Сергей",
+        "name": "Севослав",
         "user_surname": "Гельмбрехт",
         "user_patronymic": "Сергеевич",
         "user_occupy": "Инженер",
@@ -1896,8 +1896,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -1908,7 +1908,7 @@ export const USERS = [
     },
     {
         "id": 537,
-        "name": "Сергей",
+        "name": "Севослав",
         "user_surname": "Иванов",
         "user_patronymic": "Алексеевич",
         "user_occupy": "Инженер",
@@ -1941,8 +1941,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -1953,7 +1953,7 @@ export const USERS = [
     },
     {
         "id": 411,
-        "name": "Павел",
+        "name": "Стивен",
         "user_surname": "Мельников",
         "user_patronymic": "Валерьевич",
         "user_occupy": "инженер-консультант",
@@ -1986,8 +1986,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -1998,7 +1998,7 @@ export const USERS = [
     },
     {
         "id": 91,
-        "name": "Сергей",
+        "name": "Севослав",
         "user_surname": "Фокин",
         "user_patronymic": "Петрович",
         "user_occupy": "радиоинженер",
@@ -2031,8 +2031,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -2043,7 +2043,7 @@ export const USERS = [
     },
     {
         "id": 400,
-        "name": "Сергей",
+        "name": "Севослав",
         "user_surname": "Шевченко",
         "user_patronymic": "Витальевич",
         "user_occupy": "радиоинженер",
@@ -2076,8 +2076,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -2088,9 +2088,9 @@ export const USERS = [
     },
     {
         "id": 371,
-        "name": "Константин",
-        "user_surname": "Батов",
-        "user_patronymic": "Александрович",
+        "name": "Брекотин",
+        "user_surname": "Батон",
+        "user_patronymic": "Антонович",
         "user_occupy": "радиоинженер",
         "phone": "243",
         "email": null,
@@ -2121,8 +2121,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -2133,7 +2133,7 @@ export const USERS = [
     },
     {
         "id": 309,
-        "name": "Александр ",
+        "name": "Антон ",
         "user_surname": "Бобко ",
         "user_patronymic": "Владимирович ",
         "user_occupy": "инженер-проектировщик",
@@ -2166,8 +2166,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -2179,7 +2179,7 @@ export const USERS = [
     {
         "id": 180,
         "name": "Леонид",
-        "user_surname": "Александров",
+        "user_surname": "Антонов",
         "user_patronymic": "Алексеевич",
         "user_occupy": "водитель-экспедитор",
         "phone": "",
@@ -2211,8 +2211,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2256,8 +2256,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2301,8 +2301,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2346,8 +2346,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2391,7 +2391,7 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Руслан",
+        "boss_name": "Рудэн",
         "boss_surname": "Шалин",
         "boss_patronymic": "Викторович",
         "boss_occupy": "главный инженер",
@@ -2436,7 +2436,7 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Руслан",
+        "boss_name": "Рудэн",
         "boss_surname": "Шалин",
         "boss_patronymic": "Викторович",
         "boss_occupy": "главный инженер",
@@ -2481,7 +2481,7 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Руслан",
+        "boss_name": "Рудэн",
         "boss_surname": "Шалин",
         "boss_patronymic": "Викторович",
         "boss_occupy": "главный инженер",
@@ -2493,7 +2493,7 @@ export const USERS = [
     },
     {
         "id": 282,
-        "name": "Руслан",
+        "name": "Рудэн",
         "user_surname": "Шалин",
         "user_patronymic": "Викторович",
         "user_occupy": "главный инженер",
@@ -2526,7 +2526,7 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Руслан",
+        "boss_name": "Рудэн",
         "boss_surname": "Шалин",
         "boss_patronymic": "Викторович",
         "boss_occupy": "главный инженер",
@@ -2538,8 +2538,8 @@ export const USERS = [
     },
     {
         "id": 533,
-        "name": "Татьяна",
-        "user_surname": "Балабанова",
+        "name": "Янина",
+        "user_surname": "Балабасова",
         "user_patronymic": "Алексеевна",
         "user_occupy": "Графический дизайнер",
         "phone": "239",
@@ -2583,8 +2583,8 @@ export const USERS = [
     },
     {
         "id": 482,
-        "name": "Артём",
-        "user_surname": "Дрюков",
+        "name": "Патефон",
+        "user_surname": "Подрюкайко",
         "user_patronymic": "Владимирович",
         "user_occupy": "3д-дизайнер",
         "phone": "248",
@@ -2629,8 +2629,8 @@ export const USERS = [
     {
         "id": 558,
         "name": "Богдан",
-        "user_surname": "Красников",
-        "user_patronymic": "Юрьевич",
+        "user_surname": "Зеленко",
+        "user_patronymic": "Вальдерпасович",
         "user_occupy": "Самый лучший программист",
         "phone": "0",
         "email": null,
@@ -2674,8 +2674,8 @@ export const USERS = [
     {
         "id": 483,
         "name": "Максим",
-        "user_surname": "Матченков",
-        "user_patronymic": "Юрьевич",
+        "user_surname": "Гранченко",
+        "user_patronymic": "Вальдерпасович",
         "user_occupy": "Программист",
         "phone": "231",
         "email": null,
@@ -2706,8 +2706,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2796,8 +2796,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2855,7 +2855,7 @@ export const USERS = [
         "id": 486,
         "name": "Андрей",
         "user_surname": "Шаранда",
-        "user_patronymic": "Дмитриевич",
+        "user_patronymic": "Анатольевич",
         "user_occupy": "Программист",
         "phone": "211",
         "email": null,
@@ -2886,8 +2886,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2931,8 +2931,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -2945,7 +2945,7 @@ export const USERS = [
         "id": 536,
         "name": "Екатерина",
         "user_surname": "Филиппова",
-        "user_patronymic": "Юрьевна",
+        "user_patronymic": "Муриновна",
         "user_occupy": "Менеджер",
         "phone": "229",
         "email": null,
@@ -2976,8 +2976,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Ирина",
-        "boss_surname": "Зеленко",
+        "boss_name": "Виолетта",
+        "boss_surname": "Ктурошоско",
         "boss_patronymic": "Вячеславовна",
         "boss_occupy": "менеджер-координатор",
         "boss_phone": "225",
@@ -3034,7 +3034,7 @@ export const USERS = [
     {
         "id": 327,
         "name": "Вячеслав",
-        "user_surname": "Кобяков",
+        "user_surname": "Коробочкин",
         "user_patronymic": "Борисович",
         "user_occupy": "контроллер КПП",
         "phone": "",
@@ -3125,7 +3125,7 @@ export const USERS = [
         "id": 530,
         "name": "Станислав",
         "user_surname": "Самарин",
-        "user_patronymic": "Александрович",
+        "user_patronymic": "Антонович",
         "user_occupy": "Контролер КПП",
         "phone": "0",
         "email": null,
@@ -3484,7 +3484,7 @@ export const USERS = [
     {
         "id": 47,
         "name": "Валентина",
-        "user_surname": "Кошелева",
+        "user_surname": "Ковалева",
         "user_patronymic": "Григорьевна",
         "user_occupy": "финансовый директор",
         "phone": "",
@@ -3561,8 +3561,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -3606,8 +3606,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",
@@ -3618,7 +3618,7 @@ export const USERS = [
     },
     {
         "id": 522,
-        "name": "Александр",
+        "name": "Антон",
         "user_surname": "Степанченко",
         "user_patronymic": "Николаевич",
         "user_occupy": "Инженер",
@@ -3651,8 +3651,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Юрий",
-        "boss_surname": "Дегелевич",
+        "boss_name": "Георгий",
+        "boss_surname": "Делиев",
         "boss_patronymic": "Евгеньевич",
         "boss_occupy": "Технический директор",
         "boss_phone": "217",
@@ -3665,7 +3665,7 @@ export const USERS = [
         "id": 498,
         "name": "Ольга",
         "user_surname": "Булышева",
-        "user_patronymic": "Александровна",
+        "user_patronymic": "Антоновна",
         "user_occupy": "менеджер ВЭД",
         "phone": "204",
         "email": null,
@@ -3696,8 +3696,8 @@ export const USERS = [
         "state_icon": null,
         "state_color": null,
         "state_nwork": null,
-        "boss_name": "Александр",
-        "boss_surname": "Кошелев",
+        "boss_name": "Антон",
+        "boss_surname": "Ковалев",
         "boss_patronymic": "Станиславович",
         "boss_occupy": "коммерческий директор",
         "boss_phone": "1000",

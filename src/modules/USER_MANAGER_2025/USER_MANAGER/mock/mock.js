@@ -117,8 +117,8 @@ export const DEPARTMENTS = [
 export const USERS =  [
     {
         "id": 46,
-        "name": "Александр",
-        "surname": "Кошелев",
+        "name": "Антон",
+        "surname": "Ковалев",
         "patronymic": "Станиславович",
         "occupy": "коммерческий директор",
         "departament": 1,
@@ -210,8 +210,8 @@ export const USERS =  [
     },
     {
         "id": 493,
-        "name": "Юрий",
-        "surname": "Дегелевич",
+        "name": "Георгий",
+        "surname": "Делиев",
         "patronymic": "Евгеньевич",
         "occupy": "Технический директор",
         "departament": 1,
@@ -333,7 +333,7 @@ export const USERS =  [
     },
     {
         "id": 334,
-        "name": "Мария",
+        "name": "Анастасия",
         "surname": "Глинтвейник",
         "patronymic": "Алексеевна",
         "occupy": "",
@@ -396,8 +396,8 @@ export const USERS =  [
     },
     {
         "id": 521,
-        "name": "Любовь",
-        "surname": "Палагушина",
+        "name": "Анналенна",
+        "surname": "Конусова",
         "patronymic": "Владимировна",
         "occupy": "Бухгалтер",
         "departament": 3,
@@ -455,8 +455,8 @@ export const USERS =  [
     {
         "id": 531,
         "name": "Анна",
-        "surname": "Захарова",
-        "patronymic": "Юрьевна",
+        "surname": "Сахарова",
+        "patronymic": "Муриновна",
         "occupy": "Бухгалтер",
         "departament": 3,
         "departament_name": "Бухгалтерия",
@@ -513,8 +513,8 @@ export const USERS =  [
     {
         "id": 560,
         "name": "Наталия",
-        "surname": "Минина",
-        "patronymic": "Юрьевна",
+        "surname": "Пожарская",
+        "patronymic": "Муриновна",
         "occupy": "Администратор",
         "departament": 3,
         "departament_name": "Бухгалтерия",
@@ -570,9 +570,9 @@ export const USERS =  [
     },
     {
         "id": 133,
-        "name": "Виктория",
-        "surname": "Друговейко",
-        "patronymic": "Юрьевна",
+        "name": "Сильвия",
+        "surname": "Нитакойко",
+        "patronymic": "Муриновна",
         "occupy": "главный бухгалтер",
         "departament": 3,
         "departament_name": "Бухгалтерия",
@@ -681,7 +681,7 @@ export const USERS =  [
     {
         "id": 547,
         "name": "Геннадий",
-        "surname": "Балымов",
+        "surname": "Бачаров",
         "patronymic": "Робертович",
         "occupy": "Региональный менеджер",
         "departament": 5,
@@ -738,7 +738,7 @@ export const USERS =  [
     },
     {
         "id": 555,
-        "name": "Мария",
+        "name": "Анастасия",
         "surname": "Ладыгина",
         "patronymic": "Владимировна",
         "occupy": "Региональный менеджер",
@@ -796,8 +796,8 @@ export const USERS =  [
     },
     {
         "id": 304,
-        "name": "Ирина",
-        "surname": "Зеленко",
+        "name": "Виолетта",
+        "surname": "Ктурошоско",
         "patronymic": "Вячеславовна",
         "occupy": "менеджер-координатор",
         "departament": 5,
@@ -855,8 +855,8 @@ export const USERS =  [
     {
         "id": 562,
         "name": "Анастасия",
-        "surname": "Коляскина",
-        "patronymic": "Константиновна",
+        "surname": "Потеркацешвили",
+        "patronymic": "Брекотиновна",
         "occupy": "Руководитель отдела продаж Рондо",
         "departament": 5,
         "departament_name": "Отдел оптовых продаж",
@@ -1034,7 +1034,7 @@ export const USERS =  [
     {
         "id": 57,
         "name": "Дмитрий",
-        "surname": "Печников",
+        "surname": "Панченко",
         "patronymic": "Валерьевич",
         "occupy": "менеджер региональный",
         "departament": 5,
@@ -1092,7 +1092,7 @@ export const USERS =  [
     {
         "id": 339,
         "name": "Ксения",
-        "surname": "Горяева",
+        "surname": "Пожарских",
         "patronymic": "Викторовна",
         "occupy": "менеджер-координатор",
         "departament": 5,
@@ -1149,7 +1149,7 @@ export const USERS =  [
     },
     {
         "id": 340,
-        "name": "Павел",
+        "name": "Стивен",
         "surname": "Петровский",
         "patronymic": "Сергеевич",
         "occupy": "менеджер региональный",
@@ -1208,7 +1208,7 @@ export const USERS =  [
     {
         "id": 374,
         "name": "Евгений",
-        "surname": "Котоликов",
+        "surname": "Православных",
         "patronymic": "Алексеевич",
         "occupy": "региональный менеджер",
         "departament": 5,
@@ -1232,9 +1232,9 @@ export const USERS =  [
     },
     {
         "id": 134,
-        "name": "Сергей",
-        "surname": "Безбородов",
-        "patronymic": "Дмитриевич",
+        "name": "Севослав",
+        "surname": "Бородатый",
+        "patronymic": "Анатольевич",
         "occupy": "менеджер проектов",
         "departament": 5,
         "departament_name": "Отдел оптовых продаж",
@@ -1291,7 +1291,7 @@ export const USERS =  [
     {
         "id": 405,
         "name": "Максим",
-        "surname": "Турлов",
+        "surname": "Тутушкин",
         "patronymic": "Георгиевич",
         "occupy": "менеджер-координатор",
         "departament": 5,
@@ -1349,7 +1349,7 @@ export const USERS =  [
     {
         "id": 226,
         "name": "Анна ",
-        "surname": "Столярова",
+        "surname": "Деловая",
         "patronymic": "Владимировна",
         "occupy": "Ведущий менеджер",
         "departament": 5,
@@ -1406,7 +1406,7 @@ export const USERS =  [
     },
     {
         "id": 537,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Иванов",
         "patronymic": "Алексеевич",
         "occupy": "Инженер",
@@ -1464,7 +1464,7 @@ export const USERS =  [
     },
     {
         "id": 563,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Гельмбрехт",
         "patronymic": "Сергеевич",
         "occupy": "Инженер",
@@ -1551,7 +1551,7 @@ export const USERS =  [
     },
     {
         "id": 91,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Фокин",
         "patronymic": "Петрович",
         "occupy": "радиоинженер",
@@ -1603,7 +1603,7 @@ export const USERS =  [
     },
     {
         "id": 400,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Шевченко",
         "patronymic": "Витальевич",
         "occupy": "радиоинженер",
@@ -1655,7 +1655,7 @@ export const USERS =  [
     },
     {
         "id": 411,
-        "name": "Павел",
+        "name": "Стивен",
         "surname": "Мельников",
         "patronymic": "Валерьевич",
         "occupy": "инженер-консультант",
@@ -1686,7 +1686,7 @@ export const USERS =  [
                 "id": 4,
                 "skud_schedule_type_id": 1,
                 "name": "Стандартный с 9:30 до 18:15",
-                "description": "Для Матченкова М. и Шаранда А",
+                "description": "Для Гранченкоа М. и Шаранда А",
                 "start_time": 34200,
                 "end_time": 65700,
                 "target_time": 28800,
@@ -1713,7 +1713,7 @@ export const USERS =  [
     },
     {
         "id": 309,
-        "name": "Александр ",
+        "name": "Антон ",
         "surname": "Бобко ",
         "patronymic": "Владимирович ",
         "occupy": "инженер-проектировщик",
@@ -1765,9 +1765,9 @@ export const USERS =  [
     },
     {
         "id": 371,
-        "name": "Константин",
-        "surname": "Батов",
-        "patronymic": "Александрович",
+        "name": "Брекотин",
+        "surname": "Батон",
+        "patronymic": "Антонович",
         "occupy": "радиоинженер",
         "departament": 8,
         "departament_name": "Проектный отдел",
@@ -1928,7 +1928,7 @@ export const USERS =  [
     {
         "id": 180,
         "name": "Леонид",
-        "surname": "Александров",
+        "surname": "Антонов",
         "patronymic": "Алексеевич",
         "occupy": "водитель-экспедитор",
         "departament": 9,
@@ -1982,7 +1982,7 @@ export const USERS =  [
     },
     {
         "id": 282,
-        "name": "Руслан",
+        "name": "Рудэн",
         "surname": "Шалин",
         "patronymic": "Викторович",
         "occupy": "главный инженер",
@@ -2097,8 +2097,8 @@ export const USERS =  [
     },
     {
         "id": 533,
-        "name": "Татьяна",
-        "surname": "Балабанова",
+        "name": "Янина",
+        "surname": "Балабасова",
         "patronymic": "Алексеевна",
         "occupy": "Графический дизайнер",
         "departament": 14,
@@ -2214,8 +2214,8 @@ export const USERS =  [
     {
         "id": 558,
         "name": "Богдан",
-        "surname": "Красников",
-        "patronymic": "Юрьевич",
+        "surname": "Зеленко",
+        "patronymic": "Вальдерпасович",
         "occupy": "Самый лучший программист",
         "departament": 14,
         "departament_name": "Отдел информационных технологий",
@@ -2296,8 +2296,8 @@ export const USERS =  [
     },
     {
         "id": 482,
-        "name": "Артём",
-        "surname": "Дрюков",
+        "name": "Патефон",
+        "surname": "Подрюкайко",
         "patronymic": "Владимирович",
         "occupy": "3д-дизайнер",
         "departament": 14,
@@ -2355,8 +2355,8 @@ export const USERS =  [
     {
         "id": 483,
         "name": "Максим",
-        "surname": "Матченков",
-        "patronymic": "Юрьевич",
+        "surname": "Гранченко",
+        "patronymic": "Вальдерпасович",
         "occupy": "Программист",
         "departament": 14,
         "departament_name": "Отдел информационных технологий",
@@ -2385,7 +2385,7 @@ export const USERS =  [
                 "id": 4,
                 "skud_schedule_type_id": 1,
                 "name": "Стандартный с 9:30 до 18:15",
-                "description": "Для Матченкова М. и Шаранда А",
+                "description": "Для Гранченкоа М. и Шаранда А",
                 "start_time": 34200,
                 "end_time": 65700,
                 "target_time": 28800,
@@ -2414,7 +2414,7 @@ export const USERS =  [
         "id": 486,
         "name": "Андрей",
         "surname": "Шаранда",
-        "patronymic": "Дмитриевич",
+        "patronymic": "Анатольевич",
         "occupy": "Программист",
         "departament": 14,
         "departament_name": "Отдел информационных технологий",
@@ -2443,7 +2443,7 @@ export const USERS =  [
                 "id": 4,
                 "skud_schedule_type_id": 1,
                 "name": "Стандартный с 9:30 до 18:15",
-                "description": "Для Матченкова М. и Шаранда А",
+                "description": "Для Гранченкоа М. и Шаранда А",
                 "start_time": 34200,
                 "end_time": 65700,
                 "target_time": 28800,
@@ -2530,7 +2530,7 @@ export const USERS =  [
         "id": 536,
         "name": "Екатерина",
         "surname": "Филиппова",
-        "patronymic": "Юрьевна",
+        "patronymic": "Муриновна",
         "occupy": "Менеджер",
         "departament": 15,
         "departament_name": "Отдел информации",
@@ -2649,7 +2649,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-06-03 12:21:47",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 8,
@@ -2662,7 +2662,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 19:02:22",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 7,
@@ -2675,7 +2675,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 18:58:19",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 6,
@@ -2688,7 +2688,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 18:55:43",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 5,
@@ -2701,7 +2701,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 18:53:37",
         "company_name": "Rondo",
         "company_color": "#229922",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 4,
@@ -2727,7 +2727,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 18:54:02",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 2,
@@ -2740,7 +2740,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 18:54:11",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     },
     {
         "id": 1,
@@ -2753,7 +2753,7 @@ export const GROUPS_LIST = [
         "updated_at": "2025-04-11 18:54:27",
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр"
+        "creator_name": "Антон"
     }
 ];
 export const SCHEDULE_TYPE_LIST = [
@@ -2815,7 +2815,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     },
@@ -2840,7 +2840,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     },
@@ -2865,7 +2865,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     },
@@ -2890,7 +2890,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Rondo",
         "company_color": "#229922",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     },
@@ -2915,7 +2915,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Свободный",
         "type_description": "Ходите на работу когда хотите. Кайфуйте - жизнь одна!\nСоздание свободного графика работы без учета рабочего времени"
     },
@@ -2940,7 +2940,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Гибкий",
         "type_description": "Главное здесь - отработать требуемое количество часов в день.\nСоздание гибкого графика работы, без указания фиксированного времени начала рабочего дня и его окончания.\nУказывается количество часов, которые необходимо отработать в течение рабочего дня, продолжительность рабочей недели, диапазон рабочего времени."
     },
@@ -2948,7 +2948,7 @@ export const SCHEDULE_LIST = [
         "id": 4,
         "skud_schedule_type_id": 1,
         "name": "Стандартный с 9:30 до 18:15",
-        "description": "Для Матченкова М. и Шаранда А",
+        "description": "Для Гранченкоа М. и Шаранда А",
         "start_time": 34200,
         "end_time": 65700,
         "target_time": 28800,
@@ -2965,7 +2965,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     },
@@ -2990,7 +2990,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     },
@@ -3015,7 +3015,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Гибкий",
         "type_description": "Главное здесь - отработать требуемое количество часов в день.\nСоздание гибкого графика работы, без указания фиксированного времени начала рабочего дня и его окончания.\nУказывается количество часов, которые необходимо отработать в течение рабочего дня, продолжительность рабочей недели, диапазон рабочего времени."
     },
@@ -3040,7 +3040,7 @@ export const SCHEDULE_LIST = [
         "lunch_time": 2700,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Стандартный",
         "type_description": "Установите начало и конец рабочего дня с учётом входящего времени обеда.\r\nСоздание односменного графика работы, с указанием фиксированного времени начала рабочего дня и его окончания.\nУказывается время начала и окончания рабочего дня. Указывается продолжительность рабочей недели."
     }
@@ -3131,7 +3131,7 @@ export const RULE_LIST = [
         "id_company": 2,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Сдвиг графика",
         "type_description": "Можно приходить раньше или позже начала смены на заданное количество минут"
     },
@@ -3148,7 +3148,7 @@ export const RULE_LIST = [
         "id_company": 2,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Накопительная система",
         "type_description": "Можно приходить раньше или уходить позже, чтобы накапливать время переработок и гасить им ПВ"
     },
@@ -3165,7 +3165,7 @@ export const RULE_LIST = [
         "id_company": 2,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Кратковременные выходы",
         "type_description": "Можно отрабатывать кратковременные выходы за текущий день после окончания смены в рамках заданного количества минут"
     },
@@ -3182,7 +3182,7 @@ export const RULE_LIST = [
         "id_company": 2,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Сдвиг графика",
         "type_description": "Можно приходить раньше или позже начала смены на заданное количество минут"
     },
@@ -3199,7 +3199,7 @@ export const RULE_LIST = [
         "id_company": 2,
         "company_name": "Arstel",
         "company_color": "#ff7700",
-        "creator_name": "Александр",
+        "creator_name": "Антон",
         "type_name": "Опоздания",
         "type_description": "Разрешение на отработку потерянного времени за опоздание в рамках текущего дня, но не более заданного количества"
     }

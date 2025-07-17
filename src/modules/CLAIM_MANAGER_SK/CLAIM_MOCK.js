@@ -12,8 +12,8 @@ export const CLAIM_USERS = [
     },
     {
         "id": 46,
-        "name": "Александр",
-        "surname": "Кошелев",
+        "name": "Антон",
+        "surname": "Ковалев",
         "patronymic": "Станиславович",
         "id_departament": 1,
         "id_company": 2,
@@ -22,7 +22,7 @@ export const CLAIM_USERS = [
     {
         "id": 47,
         "name": "Валентина",
-        "surname": "Кошелева",
+        "surname": "Ковалева",
         "patronymic": "Григорьевна",
         "id_departament": 19,
         "id_company": 2,
@@ -31,7 +31,7 @@ export const CLAIM_USERS = [
     {
         "id": 57,
         "name": "Дмитрий",
-        "surname": "Печников",
+        "surname": "Панченко",
         "patronymic": "Валерьевич",
         "id_departament": 5,
         "id_company": 2,
@@ -39,7 +39,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 91,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Фокин",
         "patronymic": "Петрович",
         "id_departament": 7,
@@ -48,18 +48,18 @@ export const CLAIM_USERS = [
     },
     {
         "id": 133,
-        "name": "Виктория",
-        "surname": "Друговейко",
-        "patronymic": "Юрьевна",
+        "name": "Сильвия",
+        "surname": "Нитакойко",
+        "patronymic": "Муриновна",
         "id_departament": 3,
         "id_company": 2,
         "boss_id": 46
     },
     {
         "id": 134,
-        "name": "Сергей",
-        "surname": "Безбородов",
-        "patronymic": "Дмитриевич",
+        "name": "Севослав",
+        "surname": "Бородатый",
+        "patronymic": "Анатольевич",
         "id_departament": 5,
         "id_company": 2,
         "boss_id": 304
@@ -67,7 +67,7 @@ export const CLAIM_USERS = [
     {
         "id": 180,
         "name": "Леонид",
-        "surname": "Александров",
+        "surname": "Антонов",
         "patronymic": "Алексеевич",
         "id_departament": 9,
         "id_company": 2,
@@ -85,7 +85,7 @@ export const CLAIM_USERS = [
     {
         "id": 226,
         "name": "Анна ",
-        "surname": "Столярова",
+        "surname": "Деловая",
         "patronymic": "Владимировна",
         "id_departament": 5,
         "id_company": 2,
@@ -120,7 +120,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 282,
-        "name": "Руслан",
+        "name": "Рудэн",
         "surname": "Шалин",
         "patronymic": "Викторович",
         "id_departament": 11,
@@ -156,8 +156,8 @@ export const CLAIM_USERS = [
     },
     {
         "id": 304,
-        "name": "Ирина",
-        "surname": "Зеленко",
+        "name": "Виолетта",
+        "surname": "Ктурошоско",
         "patronymic": "Вячеславовна",
         "id_departament": 5,
         "id_company": 2,
@@ -165,7 +165,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 309,
-        "name": "Александр ",
+        "name": "Антон ",
         "surname": "Бобко ",
         "patronymic": "Владимирович ",
         "id_departament": 8,
@@ -175,7 +175,7 @@ export const CLAIM_USERS = [
     {
         "id": 327,
         "name": "Вячеслав",
-        "surname": "Кобяков",
+        "surname": "Коробочкин",
         "patronymic": "Борисович",
         "id_departament": 17,
         "id_company": 2,
@@ -183,7 +183,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 334,
-        "name": "Мария",
+        "name": "Анастасия",
         "surname": "Глинтерник",
         "patronymic": "Алексеевна",
         "id_departament": 2,
@@ -202,7 +202,7 @@ export const CLAIM_USERS = [
     {
         "id": 339,
         "name": "Ксения",
-        "surname": "Горяева",
+        "surname": "Пожарских",
         "patronymic": "Викторовна",
         "id_departament": 5,
         "id_company": 2,
@@ -210,7 +210,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 340,
-        "name": "Павел",
+        "name": "Стивен",
         "surname": "Петровский",
         "patronymic": "Сергеевич",
         "id_departament": 5,
@@ -228,9 +228,9 @@ export const CLAIM_USERS = [
     },
     {
         "id": 371,
-        "name": "Константин",
-        "surname": "Батов",
-        "patronymic": "Александрович",
+        "name": "Брекотин",
+        "surname": "Батон",
+        "patronymic": "Антонович",
         "id_departament": 8,
         "id_company": 2,
         "boss_id": 493
@@ -238,7 +238,7 @@ export const CLAIM_USERS = [
     {
         "id": 374,
         "name": "Евгений",
-        "surname": "Котоликов",
+        "surname": "Православных",
         "patronymic": "Алексеевич",
         "id_departament": 5,
         "id_company": 2,
@@ -255,7 +255,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 400,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Шевченко",
         "patronymic": "Витальевич",
         "id_departament": 7,
@@ -265,7 +265,7 @@ export const CLAIM_USERS = [
     {
         "id": 405,
         "name": "Максим",
-        "surname": "Турлов",
+        "surname": "Тутушкин",
         "patronymic": "Георгиевич",
         "id_departament": 5,
         "id_company": 2,
@@ -273,7 +273,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 411,
-        "name": "Павел",
+        "name": "Стивен",
         "surname": "Мельников",
         "patronymic": "Валерьевич",
         "id_departament": 7,
@@ -309,8 +309,8 @@ export const CLAIM_USERS = [
     },
     {
         "id": 482,
-        "name": "Артём",
-        "surname": "Дрюков",
+        "name": "Патефон",
+        "surname": "Подрюкайко",
         "patronymic": "Владимирович",
         "id_departament": 14,
         "id_company": 2,
@@ -319,8 +319,8 @@ export const CLAIM_USERS = [
     {
         "id": 483,
         "name": "Максим",
-        "surname": "Матченков",
-        "patronymic": "Юрьевич",
+        "surname": "Гранченко",
+        "patronymic": "Вальдерпасович",
         "id_departament": 14,
         "id_company": 2,
         "boss_id": 46
@@ -329,15 +329,15 @@ export const CLAIM_USERS = [
         "id": 486,
         "name": "Андрей",
         "surname": "Шаранда",
-        "patronymic": "Дмитриевич",
+        "patronymic": "Анатольевич",
         "id_departament": 14,
         "id_company": 2,
         "boss_id": 46
     },
     {
         "id": 493,
-        "name": "Юрий",
-        "surname": "Дегелевич",
+        "name": "Георгий",
+        "surname": "Делиев",
         "patronymic": "Евгеньевич",
         "id_departament": 1,
         "id_company": 2,
@@ -347,7 +347,7 @@ export const CLAIM_USERS = [
         "id": 498,
         "name": "Ольга",
         "surname": "Булышева",
-        "patronymic": "Александровна",
+        "patronymic": "Антоновна",
         "id_departament": 21,
         "id_company": 3,
         "boss_id": 46
@@ -363,8 +363,8 @@ export const CLAIM_USERS = [
     },
     {
         "id": 521,
-        "name": "Любовь",
-        "surname": "Палагушина",
+        "name": "Анналенна",
+        "surname": "Конусова",
         "patronymic": "Владимировна",
         "id_departament": 3,
         "id_company": 2,
@@ -372,7 +372,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 522,
-        "name": "Александр",
+        "name": "Антон",
         "surname": "Степанченко",
         "patronymic": "Николаевич",
         "id_departament": 20,
@@ -392,7 +392,7 @@ export const CLAIM_USERS = [
         "id": 530,
         "name": "Станислав",
         "surname": "Самарин",
-        "patronymic": "Александрович",
+        "patronymic": "Антонович",
         "id_departament": 17,
         "id_company": 2,
         "boss_id": 43
@@ -400,16 +400,16 @@ export const CLAIM_USERS = [
     {
         "id": 531,
         "name": "Анна",
-        "surname": "Захарова",
-        "patronymic": "Юрьевна",
+        "surname": "Сахарова",
+        "patronymic": "Муриновна",
         "id_departament": 3,
         "id_company": 2,
         "boss_id": 133
     },
     {
         "id": 533,
-        "name": "Татьяна",
-        "surname": "Балабанова",
+        "name": "Янина",
+        "surname": "Балабасова",
         "patronymic": "Алексеевна",
         "id_departament": 14,
         "id_company": 2,
@@ -419,14 +419,14 @@ export const CLAIM_USERS = [
         "id": 536,
         "name": "Екатерина",
         "surname": "Филиппова",
-        "patronymic": "Юрьевна",
+        "patronymic": "Муриновна",
         "id_departament": 15,
         "id_company": 2,
         "boss_id": 304
     },
     {
         "id": 537,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Иванов",
         "patronymic": "Алексеевич",
         "id_departament": 7,
@@ -454,7 +454,7 @@ export const CLAIM_USERS = [
     {
         "id": 547,
         "name": "Геннадий",
-        "surname": "Балымов",
+        "surname": "Бачаров",
         "patronymic": "Робертович",
         "id_departament": 5,
         "id_company": 2,
@@ -480,7 +480,7 @@ export const CLAIM_USERS = [
     },
     {
         "id": 555,
-        "name": "Мария",
+        "name": "Анастасия",
         "surname": "Ладыгина",
         "patronymic": "Владимировна",
         "id_departament": 5,
@@ -508,8 +508,8 @@ export const CLAIM_USERS = [
     {
         "id": 558,
         "name": "Богдан",
-        "surname": "Красников",
-        "patronymic": "Юрьевич",
+        "surname": "Зеленко",
+        "patronymic": "Вальдерпасович",
         "id_departament": 14,
         "id_company": 3,
         "boss_id": 0
@@ -517,8 +517,8 @@ export const CLAIM_USERS = [
     {
         "id": 560,
         "name": "Наталия",
-        "surname": "Минина",
-        "patronymic": "Юрьевна",
+        "surname": "Пожарская",
+        "patronymic": "Муриновна",
         "id_departament": 3,
         "id_company": 3,
         "boss_id": 0
@@ -526,15 +526,15 @@ export const CLAIM_USERS = [
     {
         "id": 562,
         "name": "Анастасия",
-        "surname": "Коляскина",
-        "patronymic": "Константиновна",
+        "surname": "Потеркацешвили",
+        "patronymic": "Брекотиновна",
         "id_departament": 5,
         "id_company": 2,
         "boss_id": 46
     },
     {
         "id": 563,
-        "name": "Сергей",
+        "name": "Севослав",
         "surname": "Гельмбрехт",
         "patronymic": "Сергеевич",
         "id_departament": 7,
@@ -903,7 +903,7 @@ export const CLAIMS_MOCKS = [
         "state.need_work": 0,
         "state.need_approved": 0,
         "usr_name": "Евгений",
-        "usr_surname": "Котоликов",
+        "usr_surname": "Православных",
         "usr_patronymic": "Алексеевич",
         "depart_name": "Отдел оптовых продаж"
     },
@@ -962,7 +962,7 @@ export const CLAIMS_MOCKS = [
         "state_color": "#ffc107",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Руслан",
+        "usr_name": "Рудэн",
         "usr_surname": "Шалин",
         "usr_patronymic": "Викторович",
         "depart_name": "Строительный отдел"
@@ -1052,7 +1052,7 @@ export const CLAIMS_MOCKS = [
         "state_color": "#ffc107",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Руслан",
+        "usr_name": "Рудэн",
         "usr_surname": "Шалин",
         "usr_patronymic": "Викторович",
         "depart_name": "Строительный отдел"
@@ -1112,7 +1112,7 @@ export const CLAIMS_MOCKS = [
         "state_color": "#c4e8e5",
         "state.need_work": 1,
         "state.need_approved": 0,
-        "usr_name": "Сергей",
+        "usr_name": "Севослав",
         "usr_surname": "Фокин",
         "usr_patronymic": "Петрович",
         "depart_name": "Технический отдел трансляционного звука"
@@ -1143,7 +1143,7 @@ export const CLAIMS_MOCKS = [
         "state.need_work": 1,
         "state.need_approved": 0,
         "usr_name": "Леонид",
-        "usr_surname": "Александров",
+        "usr_surname": "Антонов",
         "usr_patronymic": "Алексеевич",
         "depart_name": "Склад Санкт-Петербург"
     },
@@ -1173,7 +1173,7 @@ export const CLAIMS_MOCKS = [
         "state.need_work": 3,
         "state.need_approved": 0,
         "usr_name": "Дмитрий",
-        "usr_surname": "Печников",
+        "usr_surname": "Панченко",
         "usr_patronymic": "Валерьевич",
         "depart_name": "Отдел оптовых продаж"
     },
@@ -1202,8 +1202,8 @@ export const CLAIMS_MOCKS = [
         "state_color": "#e3dbf1",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Александр",
-        "usr_surname": "Кошелев",
+        "usr_name": "Антон",
+        "usr_surname": "Ковалев",
         "usr_patronymic": "Станиславович",
         "depart_name": "Администрация"
     },
@@ -1232,8 +1232,8 @@ export const CLAIMS_MOCKS = [
         "state_color": "#e3dbf1",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Александр",
-        "usr_surname": "Кошелев",
+        "usr_name": "Антон",
+        "usr_surname": "Ковалев",
         "usr_patronymic": "Станиславович",
         "depart_name": "Администрация"
     },
@@ -1262,8 +1262,8 @@ export const CLAIMS_MOCKS = [
         "state_color": "#e3dbf1",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Александр",
-        "usr_surname": "Кошелев",
+        "usr_name": "Антон",
+        "usr_surname": "Ковалев",
         "usr_patronymic": "Станиславович",
         "depart_name": "Администрация"
     },
@@ -1292,8 +1292,8 @@ export const CLAIMS_MOCKS = [
         "state_color": "#e3dbf1",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Александр",
-        "usr_surname": "Кошелев",
+        "usr_name": "Антон",
+        "usr_surname": "Ковалев",
         "usr_patronymic": "Станиславович",
         "depart_name": "Администрация"
     },
@@ -1322,7 +1322,7 @@ export const CLAIMS_MOCKS = [
         "state_color": "#e3dbf1",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Сергей",
+        "usr_name": "Севослав",
         "usr_surname": "Фокин",
         "usr_patronymic": "Петрович",
         "depart_name": "Технический отдел трансляционного звука"
@@ -1352,7 +1352,7 @@ export const CLAIMS_MOCKS = [
         "state_color": "#e3dbf1",
         "state.need_work": 0,
         "state.need_approved": 0,
-        "usr_name": "Сергей",
+        "usr_name": "Севослав",
         "usr_surname": "Фокин",
         "usr_patronymic": "Петрович",
         "depart_name": "Технический отдел трансляционного звука"
@@ -1382,9 +1382,9 @@ export const CLAIMS_MOCKS = [
         "state_color": "#c4e8e5",
         "state.need_work": 1,
         "state.need_approved": 0,
-        "usr_name": "Сергей",
-        "usr_surname": "Безбородов",
-        "usr_patronymic": "Дмитриевич",
+        "usr_name": "Севослав",
+        "usr_surname": "Бородатый",
+        "usr_patronymic": "Анатольевич",
         "depart_name": "Отдел оптовых продаж"
     }
 ]
