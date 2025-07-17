@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {Affix, Button, ConfigProvider, Layout, Pagination, Segmented, Slider, Spin, Tag} from "antd";
 import {
@@ -34,6 +34,7 @@ import {CHART_STATES, GROUPS, USDA} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
+import {debounce} from "chart.js/helpers";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -41,10 +42,11 @@ const  Charts = (props) => {
 
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingChart, setIsLoadingChart] = useState(false);
     const [isOpenFilters, setIsOpenFilters] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(20);
+    const [pageSize, setPageSize] = useState(10);
     const [allUsersCount, setAllUsersCount] = useState(0);
     const [filterParams, setFilterParams] = useState(null);
 
@@ -57,6 +59,7 @@ const  Charts = (props) => {
     const [activeYear, setActiveYear] = useState(dayjs().year());
 
     const [acls, setAcls] = useState([]);
+    const [currentUser, setCurrentUser] = useState({id:0});
     const [years, setYears] = useState([]);
     const [users, setUsers] = useState([]);
     const [bosses, setBosses] = useState([]);
@@ -117,6 +120,8 @@ const  Charts = (props) => {
         12: 'Декабрь',
     };
 
+    const debounceTimer = useRef(null);
+
     useEffect(() => {
         if (!isMounted) {
             setIsLoading(true);
@@ -126,7 +131,6 @@ const  Charts = (props) => {
             });
         }
     }, []);
-
     useEffect(() => {
         if (props.userdata) {
             if (props.userdata.companies) {
@@ -135,15 +139,26 @@ const  Charts = (props) => {
             if (props.userdata.acls) {
                 setAcls(props.userdata.acls);
             }
+            if (props.userdata.user) {
+                setCurrentUser(props.userdata.user);
+            }
         }
     }, [props.userdata]);
-
     useEffect(() => {
         if (isMounted) {
-            fetchUsers().then();
+            setIsLoadingChart(true);
+            if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current);
+            }
+            debounceTimer.current = setTimeout(() => {
+                fetchUsers().then(r => setTimeout(() => setIsLoadingChart(false), 500));
+                debounceTimer.current = null;
+            }, 1000);
         }
-    }, [currentPage, pageSize, filterParams, selectedChartState, rangeValues]);
-
+        return () => {
+            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        };
+    }, [currentPage, pageSize, filterParams, selectedChartState, rangeValues, isMounted]);
     useEffect(() => {
         const pathSegments = location.pathname.split('/').filter(Boolean);
         const lastSegment = pathSegments[pathSegments.length - 1];
@@ -153,7 +168,6 @@ const  Charts = (props) => {
             setSelectedChartState(chart.value);
         }
     }, [chartStates, location.pathname]);
-
     useEffect(() => {
         setReactiveColor(chartStates.find(state => +state.value === +selectedChartState) ?
             chartStates.find(state => +state.value === +selectedChartState).color :
@@ -230,8 +244,8 @@ const  Charts = (props) => {
             console.log(prepareRangeValuesToServer())
             setUsersPage(USERS);
             setCurrentPage(1);
-            setPageSize(20);
-            setAllUsersCount(100);
+            setPageSize(10);
+            setAllUsersCount(80);
         }
     };
     const prepareStates = (states) => {
@@ -311,7 +325,7 @@ const  Charts = (props) => {
     const updateYears = () => {
         const startYear = 2024;
         const arrYears = [];
-        for (let i = startYear; i < dayjs().year() + 1; i++) {
+        for (let i = startYear; i <= dayjs().year() + 1; i++) {
             arrYears.push({
                 id: i,
                 name: i,
@@ -328,7 +342,8 @@ const  Charts = (props) => {
                 return ({
                     key: `option-${name}-${option.id}`,
                     value: option.id,
-                    label: option.name
+                    label: option.name,
+                    boss_id: option.boss_id
                 })
             });
         } else {
@@ -338,6 +353,17 @@ const  Charts = (props) => {
     const handleFilterChanged = async (filters) => {
         setFilterParams(filters);
         setActiveYear(filters.year);
+    };
+    const handleFilterUsersChanged = (name, bool) => {
+        // eslint-disable-next-line default-case
+        switch (name) {
+            case 'myClaims':
+                setMyClaims(bool);
+                break;
+            case 'mySubjects':
+                setMySubjects(bool);
+                break;
+        }
     };
 
     return (
@@ -377,10 +403,12 @@ const  Charts = (props) => {
                                             depart_list={prepareSelectOptions('dep', departments)}
                                             user_statuses_list={prepareSelectOptions('user_status', userStatuses)}
                                             groups_list={prepareSelectOptions('group', groups)}
-
                                             userAls={PRODMODE ? acls : USDA.acls}
-
+                                            currentUser={PRODMODE ? currentUser : USDA.user}
+                                            myClaims={myClaims}
+                                            mySubjects={mySubjects}
                                             on_change_filter={handleFilterChanged}
+                                            on_change_filter_user={handleFilterUsersChanged}
                                         />
                                     </div>
                                 </div>
@@ -390,7 +418,7 @@ const  Charts = (props) => {
                             <div className="sk-content-table-wrapper">
                                 <Affix offsetTop={44}>
                                     <div>
-                                        <div>
+                                        <div style={{marginTop: '5px'}}>
                                             <ConfigProvider
                                                 theme={{
                                                     components: {
@@ -417,7 +445,7 @@ const  Charts = (props) => {
                                                     current={currentPage}
                                                     total={allUsersCount}
                                                     pageSize={pageSize}
-                                                    pageSizeOptions={[20, 50, 100]}
+                                                    pageSizeOptions={[10, 20]}
                                                     locale={{
                                                         items_per_page: 'на странице',
                                                         jump_to: 'Перейти',
@@ -445,10 +473,18 @@ const  Charts = (props) => {
                                                 <Button color={'default'}
                                                         variant={myClaims ? 'solid' : 'outlined'}
                                                         style={{width: '140px'}}
+                                                        onClick={(ev) => {
+                                                            setMySubjects(false);
+                                                            setMyClaims(!myClaims);
+                                                        }}
                                                 >Мои заявки</Button>
                                                 <Button color={'default'}
                                                         variant={mySubjects ? 'solid' : 'outlined'}
                                                         style={{width: '140px'}}
+                                                        onClick={(ev) => {
+                                                            setMyClaims(false);
+                                                            setMySubjects(!mySubjects);
+                                                        }}
                                                 >Мои сотрудники</Button>
                                             </div>
                                         </div>
@@ -469,6 +505,7 @@ const  Charts = (props) => {
                                 </Affix>
                             </div>
                             <Outlet context={{
+                                isLoadingChart,
                                 selectedChartState,
                                 chartStates,
                                 rangeValues,
