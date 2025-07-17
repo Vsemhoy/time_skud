@@ -34,7 +34,6 @@ import {CHART_STATES, GROUPS, USDA} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
-import {debounce} from "chart.js/helpers";
 const  Charts = (props) => {
 
     const navigate = useNavigate();

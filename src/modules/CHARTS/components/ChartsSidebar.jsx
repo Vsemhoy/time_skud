@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Input, Select, Space} from "antd";
 import dayjs from "dayjs";
-import {PRODMODE} from "../../../CONFIG/config";
-import {USDA} from "../mock/mock";
+
 
 const ChartsSidebar = (props) => {
     const initialstate = {
@@ -101,7 +100,7 @@ const ChartsSidebar = (props) => {
 
             <div className={'sk-usp-filter-col-item'}>
                 <span className={'sk-usp-filter-col-label'}>Пользователи</span>
-                <Select style={{width: '100%'}}
+                <Select style={{width: '100%',maxHeight: 300, overflow: 'auto',}}
                         placeholder={'Выберите пользователя'}
                         value={filterUser}
                         options={props.user_list}
