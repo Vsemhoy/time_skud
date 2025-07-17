@@ -418,8 +418,8 @@ const  Charts = (props) => {
                         <Content className="content">
                             <div className="sk-content-table-wrapper">
                                 <Affix offsetTop={44}>
-                                    <div>
-                                        <div style={{marginTop: '5px'}}>
+                                    <div style={{backgroundColor: '#f3f3f3'}}>
+                                        <div style={{paddingTop: '5px'}}>
                                             <ConfigProvider
                                                 theme={{
                                                     components: {
