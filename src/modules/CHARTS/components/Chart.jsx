@@ -4,9 +4,15 @@ import {Spin} from "antd";
 import {useOutletContext} from "react-router-dom";
 import {PRODMODE} from "../../../CONFIG/config";
 import {ShortName} from "../../../components/Helpers/TextHelpers";
+import dayjs from "dayjs";
 
 const Chart = (props) => {
-    const { isLoadingChart, selectedChartState, usersPage } = useOutletContext();
+    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear } = useOutletContext();
+
+    const getDaysInMonth = (date) =>
+        Array.from({ length: date.daysInMonth() }, (_, i) =>
+            date.startOf('month').add(i, 'day')
+        );
 
     return (
         <Spin spinning={isLoadingChart}>
@@ -16,7 +22,7 @@ const Chart = (props) => {
                         <div></div>
                         <div className={styles.month}></div>
                     </div>
-                    <div className={`${styles.user_row} ${styles.by_day}`}>
+                    <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
                         <div className={styles.user_cell}></div>
                         <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
                         <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
@@ -50,41 +56,14 @@ const Chart = (props) => {
                         <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
                     </div>
                     {usersPage.map((user, index) => (
-                        <div className={styles.user_row}>
+                        <div className={styles.user_row} key={`user_${index}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
                             <div className={styles.user_cell}>
                                 <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
-                                <div>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
+                                <div style={{color: '#2788e1'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
                             </div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
-                            <div className={styles.chart_cell}></div>
+                            {getDaysInMonth(dayjs('2023-11-01')).map((day, dayIndex) => (
+                                <div className={styles.chart_cell} key={`day_${dayIndex}`}></div>
+                            ))}
                         </div>
                     ))}
                 </div>
