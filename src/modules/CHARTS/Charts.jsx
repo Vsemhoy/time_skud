@@ -176,7 +176,6 @@ const  Charts = (props) => {
     const fetchInfo = async () => {
         await fetchSelects();
         await fetchChartStates();
-        //await fetchUsers();
     };
     const fetchSelects = async () => {
         if (PRODMODE) {
@@ -507,8 +506,11 @@ const  Charts = (props) => {
                             </div>
                             <Outlet context={{
                                 isLoadingChart,
+                                usersPage,
                                 selectedChartState,
-                                usersPage
+                                reactiveColor,
+                                rangeValues,
+                                activeYear
                             }}/>
                         </Content>
                     </Layout>
