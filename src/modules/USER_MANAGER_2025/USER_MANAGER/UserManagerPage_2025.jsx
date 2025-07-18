@@ -29,6 +29,10 @@ import SchedIcons from "../../../assets/Comicon/SchedIcons";
 import RuleIcons from "../../../assets/Comicon/RuleIcons";
 const { Header, Sider, Content } = Layout;
 
+
+
+
+
 const UserManagerPage_2025 = (props) => {
 
     const useCookieState = (key, defaultValue) => {
@@ -43,6 +47,8 @@ const UserManagerPage_2025 = (props) => {
 
         return [state, setState];
     };
+    const [selectedCompany, setSelectedCompany] = useState(null);
+
 
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
@@ -65,6 +71,9 @@ const UserManagerPage_2025 = (props) => {
     const [openRules, setOpenRules] = useState([]);
     const [checkedUsers, setCheckedUsers] = useState([]);
 
+    const [filterParams, setFilterParams] = useState([]);
+
+
     const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', true);
     const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', false);
 
@@ -79,11 +88,14 @@ const UserManagerPage_2025 = (props) => {
             fetchInfo().then();
         }
     }, [pageSize, currentPage]);
+    useEffect(() => {
+       fetchUsers(); 
+    }, [filterParams]);
 
     /* fetch + pagination */
-    const fetchInfo = async (filterParams) => {
+    const fetchInfo = async () => {
         setIsLoading(true);
-        await fetchUsers(filterParams);
+        await fetchUsers();
         await fetchFilters();
         if (PRODMODE) {
             setIsLoading(false);
@@ -93,7 +105,7 @@ const UserManagerPage_2025 = (props) => {
             }, 300);
         }
     };
-    const fetchUsers = async (filterParams) => {
+    const fetchUsers = async () => {
          if (PRODMODE) {
              try {
                  const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
@@ -163,6 +175,7 @@ const UserManagerPage_2025 = (props) => {
                 console.error('Error fetching users info:', error);
             }
         } else {
+            setCompanies(props.userdata.companies)
             setBosses(USERS);
             setEnters(USERS);
             setUserStatuses(USERS);
@@ -262,11 +275,8 @@ const UserManagerPage_2025 = (props) => {
             return [];
         }
     }
-    const handleFilterChanged = async (filterParams) => {
-        //console.log(filterParams);
-        if (isMounted) {
-            await fetchInfo(filterParams);
-        }
+    const handleFilterChanged = async (filterParasha) => {
+        setFilterParams(filterParasha)
     };
 
     /* multi tool */
@@ -335,6 +345,8 @@ const UserManagerPage_2025 = (props) => {
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
                                     <ClaimManagerSidebar
+                                        on_select_company={(val)=> {setSelectedCompany(val);}}
+
                                         user_list={prepareSelectOptions('user', users)}
                                         boss_list={prepareSelectOptions('boss', bosses)}
                                         company_list={prepareSelectOptions('company', companies)}
@@ -432,7 +444,7 @@ const UserManagerPage_2025 = (props) => {
                                                                             <p className="sk-person-row-p">{user.id}</p>
                                                                             <div className="sk-person-row-content">
                                                                                 <p className="sk-person-row-p">{`${user.surname} ${user.name} ${user.patronymic}`}</p>
-                                                                                <p className="sk-person-row-p occupy">{user.occupy}</p>
+                                                                                <span className="sk-person-row-p occupy">{user.occupy}</span>
                                                                             </div>
                                                                             <NavLink to={'/hr/usermanager/' + user.id}>
                                                                                 <Button color={'default'}
@@ -548,7 +560,7 @@ const UserManagerPage_2025 = (props) => {
 
                                     companies={props.userdata?.companies}
                                     groups={groups}
-                                    selectedCompany={null}
+                                    selectedCompany={selectedCompany}
 
                                     schedules={currentSchedules}
                                     schedTypes={currentScheduleTypes}
@@ -557,6 +569,8 @@ const UserManagerPage_2025 = (props) => {
                                     rules={currentRules}
                                     ruleTypes={currentRuleTypes}
                                     onBidnRules={null}
+
+                                    on_action={fetchUsers}
                                 />
                             </div>
                         </Affix>

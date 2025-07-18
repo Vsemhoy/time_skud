@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Affix, Button, DatePicker, Modal, Radio, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
-import { DS_SKUD_GROUPS } from "../../../../CONFIG/DEFAULTSTATE";
+import { DS_RULES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS } from "../../../../CONFIG/DEFAULTSTATE";
 import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, QuestionCircleFilled, QuestionCircleOutlined, QuestionCircleTwoTone, ToolOutlined } from "@ant-design/icons";
 import Checkbox from "antd/es/checkbox/Checkbox";
 import dayjs from "dayjs";
@@ -9,13 +9,17 @@ import dayjs from "dayjs";
 import { StateContext } from "../../../../components/ComStateProvider25/ComStateProvider25";
 import Her from "../../../../components/HybridEmbeddedRouter/Her";
 import { Link } from "react-router-dom";
-import { BASE_ROUTE } from "../../../../CONFIG/config";
+import { BASE_ROUTE, CSRF_TOKEN, PRODMODE } from "../../../../CONFIG/config";
+import { PROD_AXIOS_INSTANCE } from "../../../../API/API";
 
 
 const UserManagerExtraTools = (props)=>{
     const { state, setState } = useContext(StateContext);
 
+    const [baseRuleList, setBaseRuleList] = useState([]);
     const [ruleList, setRuleList] = useState(props.rules);
+    
+    const [baseScheduleList, setBaseScheduleList] = useState([]);
     const [scheduleList, setScheduleList] = useState(props.schedules);
 
     const [openedConsole, setOpenedConsole] = useState(true);
@@ -44,7 +48,7 @@ const UserManagerExtraTools = (props)=>{
 
     const [selectedSchedType, setSelectedSchedType] = useState('');
     const [selectedRuleType, setSelectedRuleType] = useState('');
-
+    const [baseGroupList, setBaseGroupList] = useState([]);
 
 
     const [dateSchedStart, setDateSchedStart] = useState(dayjs().add(1, 'day').startOf('day'));
@@ -60,58 +64,175 @@ const UserManagerExtraTools = (props)=>{
     const [openModalSchedInfo, setOpenModalSchedInfo] = useState(false);
     const [openModalRuleTypeInfo, setOpenModalRuleTypeInfo] = useState(false);
 
+
+    useEffect(() => {
+      if (PRODMODE){
+        get_ruleList();
+        get_scheduleList();
+        get_groupList();
+      } else {
+        setBaseRuleList(DS_RULES);
+        setBaseScheduleList(DS_SCHEDULE_LIST);
+        setBaseGroupList(DS_SKUD_GROUPS);
+      }
+    }, []);
+
+
+
+
+    useEffect(() => {
+        if (baseScheduleList === undefined) return;
+
+        let sh = baseScheduleList;
+
+        if (selectedCompany !== null && selectedCompany > 1){
+            sh = baseScheduleList.filter((item)=> item.id_company === selectedCompany);
+        }
+
+        if (selectedSchedType != null && selectedSchedType != "")
+        {
+          setScheduleList(sh.filter((item)=> item.skud_schedule_type_id === selectedSchedType).map((item)=>(
+              {
+                  key: `ajrk_${item.id}`,
+                  value: item.id,
+                  label: item.name,
+                }
+            )));
+        } else {
+            setScheduleList(sh.filter((item)=> item.skud_schedule_type_id !== selectedSchedType).map((item)=>(
+              {
+                  key: `arejk_${item.id}`,
+                  value: item.id,
+                  label: item.name,
+                }
+            )));
+      }
+    }, [baseScheduleList, selectedSchedType, selectedCompany]);
+
+    useEffect(() => {
+        if (baseRuleList === undefined) return;
+
+        let rl = baseRuleList;
+
+        if (selectedCompany !== null && selectedCompany > 1){
+            rl = baseRuleList.filter((item)=> item.id_company === selectedCompany);
+        }
+
+        if (selectedRuleType != null && selectedRuleType != "")
+        {
+          setRuleList(rl.filter((item)=> item.rule_type_id === selectedRuleType).map((item)=>(
+              {
+                  key: `rrajk_${item.id}`,
+                  value: item.id,
+                  label: item.name,
+                }
+            )));
+        } else {
+            setRuleList(rl.filter((item)=> item.rule_type_id !== selectedRuleType).map((item)=>(
+              {
+                  key: `ajrrk_${item.id}`,
+                  value: item.id,
+                  label: item.name,
+                }
+            )));
+      }
+    }, [baseRuleList, selectedRuleType,selectedCompany]);
+
+
     /* useEffects */
     useEffect(()=>{
             if (props.schedTypes === undefined){
                 return;
             };
 
-            let arr = [
-                ({
-                    key: ``,
-                    value: '',
-                    label: 'Все типы',
-                })
-            ];
-            for (let i = 0; i < props.schedTypes.length; i++) {
-                const element = props.schedTypes[i];
-                arr.push(
-                    {
-                        key: `ajk_${element.id}`,
-                        value: element.id,
-                        label: element.name,
-                    });
+            let baseCount = 0;
+            if (baseScheduleList){
+                if (selectedCompany !== null && selectedCompany > 1){
+                    baseCount = baseScheduleList.filter((item)=> item.id_company === selectedCompany).length;
+                } else {
+                    baseCount = baseScheduleList.length;
+                }
             }
-            setSchedTypes(arr);
-        },
-        [props.schedTypes]);
-    useEffect(()=>{
-            if (props.ruleTypes === undefined){
-                return;
-            };
 
             let arr = [
                 ({
                     key: ``,
                     value: '',
-                    label: 'Все типы',
+                    label: <span className="sk-flex-space"><span>Все типы</span><span>{baseCount}</span></span>,
                 })
             ];
-            for (let i = 0; i < props.ruleTypes.length; i++) {
-                const element = props.ruleTypes[i];
+            for (let i = 0; i < props.schedTypes.length; i++) {
+                const element = props.schedTypes[i];
+                let localCount = 0;
+                if (baseScheduleList){
+                    if (selectedCompany !== null && selectedCompany > 1){
+                        localCount = baseScheduleList.filter((item)=> item.id_company === selectedCompany && item.skud_schedule_type_id === element.id).length;
+                    } else {
+                        localCount = baseScheduleList.filter((item)=> item.skud_schedule_type_id === element.id).length;
+                    }
+                }
                 arr.push(
                     {
                         key: `ajk_${element.id}`,
                         value: element.id,
-                        label: element.name,
+                        label: <span className="sk-flex-space"><span>{element.name}</span><span>{localCount}</span></span>,
+                    });
+            }
+            setSchedTypes(arr);
+        },
+        [props.schedTypes, selectedCompany]);
+
+
+
+
+    useEffect(()=>{
+            if (props.ruleTypes === undefined){
+                return;
+            };
+
+            let baseCount = 0;
+            if (baseRuleList){
+                if (selectedCompany !== null && selectedCompany > 1){
+                    baseCount = baseRuleList.filter((item)=> item.id_company === selectedCompany).length;
+                } else {
+                    baseCount = baseRuleList.length;
+                }
+            }
+
+            let arr = [
+                ({
+                    key: ``,
+                    value: '',
+                    label: <span className="sk-flex-space"><span>Все типы</span><span>{baseCount}</span></span>,
+                })
+            ];
+            for (let i = 0; i < props.ruleTypes.length; i++) {
+                const element = props.ruleTypes[i];
+                let localCount = 0;
+                if (baseRuleList){
+                    if (selectedCompany !== null && selectedCompany > 1){
+                        localCount = baseRuleList.filter((item)=> item.id_company === selectedCompany && item.rule_type_id === element.id).length;
+                    } else {
+                        localCount = baseRuleList.filter((item)=> item.rule_type_id === element.id).length;
+                    }
+                }
+                arr.push(
+                    {
+                        key: `ajk56_${element.id}`,
+                        value: element.id,
+                        label: <span className="sk-flex-space"><span>{element.name}</span><span>{localCount}</span></span>,
                     });
             }
             setRuleTypes(arr);
         },
-        [props.ruleTypes]);
+        [props.ruleTypes, selectedCompany]);
+
+
     useEffect(()=>{
         setSelectedUsers(props.selected_users);
     },[props.selected_users]);
+
+
 
     useEffect(()=>{
         if (props.companies?.length){
@@ -135,75 +256,226 @@ const UserManagerExtraTools = (props)=>{
 
     useEffect(()=>{
         setSelectedCompany(props.selectedCompany);
+        console.log(selectedCompany);
     },[props.selectedCompany])
 
+
     useEffect(() => {
-        if (props.groups && props.groups.length > 0) {
-            setSelectedGroups([]);
-            let groups = [...props.groups || []];
-            if (selectedCompany) {
-                groups = groups.filter(item => item.id_company === selectedCompany);
-            }
+        let gro = baseGroupList;
+        setGroupList([]);
+        if (selectedCompany !== null && selectedCompany > 1){
+            gro = baseGroupList.filter((item)=> item.id_company === selectedCompany);
+        }
+
             setGroupList(
-                groups.map(item => ({
+                gro.map(item => ({
                     key: item.id,
-                    label: item.name,
+                    label: <span title={item.name}>{item.name}</span>,
                     value: item.id,
                     color: item.company_color
                 }))
             );
-        }
-    }, [props.groups, selectedCompany]);
+        
+    }, [baseGroupList, selectedCompany]);
 
-    useEffect(()=>{
-        if (props.schedules && props.schedules.length > 0) {
-            let sched = props.schedules;
-            //console.log(sched);
-            if (selectedCompany)
-            {
-                sched = sched.filter((item)=>{return item.id_company === selectedCompany});
-            };
-            if (selectedSchedType !== null && selectedSchedType !== 0)
-            {
-                sched = sched.filter((item)=>{return item.skud_schedule_type_id === selectedSchedType});
-            };
 
-            setScheduleList(
-                sched.map(item => ({
-                    key: item.id,
-                    label: item.name,
-                    value: item.id,
-                }))
-            );
-        }
-    },[props.schedules, selectedCompany, selectedSchedType]);
-    useEffect(()=>{
-        if (props.rules && props.rules.length > 0) {
-            let ruls = props.rules;
 
-            if (selectedCompany)
-            {
-                ruls = ruls.filter((item)=>{return item.id_company === selectedCompany});
-            }
-            if (selectedRuleType !== 0 && selectedRuleType !== null)
-            {
-                ruls = ruls.filter((item)=>{return item.skud_rule_type_id === selectedRuleType});
-            }
-            setRuleList(
-                ruls.map(item => ({
-                    key: item.id,
-                    label: item.name,
-                    value: item.id,
-                }))
-            );
-        }
-    },[props.rules, selectedCompany, selectedRuleType]);
 
     const handleSelectAll = (ev) => {
         if (props.onSelectAllUsers){
             props.onSelectAllUsers(ev.target.checked);
         }
     }
+
+
+    /* ------------------------- FETCH ---------------------- */
+
+    /**
+     * Получение графиков
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const get_scheduleList = async (req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/schedulelist?_token=' + CSRF_TOKEN);
+            console.log('departs', response.data);
+            // setOrganizations(organizations_response.data.org_list)
+            // setTotal(organizations_response.data.total_count)
+            setBaseScheduleList(response.data.content);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            // setLoadingOrgs(false)
+        }
+    }
+
+
+
+   /**
+     * Получение списка правил
+     * @param {*} req 
+     * @param {*} res 
+     */
+        const get_ruleList = async (req, res) => {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/rulelist', 
+                  {
+                      data: {
+                        id_company: null
+                      },
+                      _token: CSRF_TOKEN
+                  });
+                  setBaseRuleList(response.data.content);
+                  console.log('get_calendarList => ', response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                
+            }
+        }
+
+
+        
+            /**
+             * Получение списка групп
+             * @param {*} req 
+             * @param {*} res 
+             */
+            const get_groupList = async (req, res) => {
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/grouplist', 
+                        {
+                            data: {
+                            id_company: null
+                            },
+                            _token: CSRF_TOKEN
+                        });
+                        setBaseGroupList(response.data.content);
+                        console.log('get_calendarList => ', response.data);
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    
+                }
+            }
+
+
+    /**
+     * Перелинковка юзеров с правилами массовая
+     * @param {*} req 
+     * @param {*} res 
+     */
+            const create_links_with_rules = async (body, req, res) => {
+                console.log('body',body);
+                try {
+                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindrules',
+                        {   
+                            data: body, 
+                            _token: CSRF_TOKEN
+                        }
+                    );
+                    
+                    if (response){
+                      
+                    }
+  
+                } catch (e) {
+                    console.log(e)
+                } finally {
+              }
+          }
+
+    /**
+     * Перелинковка юзеров с графиками
+     * @param {*} req 
+     * @param {*} res 
+     */
+          const create_links_with_schedules = async (body, req, res) => {
+              console.log('body',body);
+              try {
+                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindschedules',
+                      {   
+                          data: body, 
+                          _token: CSRF_TOKEN
+                      }
+                  );
+                  
+                  if (response){
+                  }
+
+              } catch (e) {
+                  console.log(e)
+              } finally {
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Получение списка групп
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const bind_groups_to_users = async (users, groups, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindgroups', 
+                {
+                    data: {
+                        users: users,
+                        groups: groups
+                    },
+                    _token: CSRF_TOKEN
+                });
+                // setBaseGroupList(response.data.content);
+                console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+        /**
+     * Получение списка групп
+     * @param {*} req 
+     * @param {*} res 
+     */
+    const unlink_groups_for_users = async (users, groups, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/unlinkgroups', 
+                {
+                    data: {
+                        users: users,
+                        groups: groups
+                    },
+                    _token: CSRF_TOKEN
+                });
+                // setBaseGroupList(response.data.content);
+                console.log('get_calendarList => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
+            
+        }
+    }
+
+
+
+    /* ------------------------- FETCH ---------------------- */
+
+
 
     const handleSetStartSched = (value)=>{
         if (value.startOf('day').unix() <= dayjs().startOf('day').unix())
@@ -309,16 +581,16 @@ const UserManagerExtraTools = (props)=>{
     };
 
     const callToSelectGroups = ()=>{
-        if (props.onCallToSelectGroups)
-        {
-            props.onCallToSelectGroups(selectedGroups);
+        bind_groups_to_users(selectedUsers, selectedGroups);
+        if (props.on_action){
+            props.on_action();
         }
     }
 
     const callToClearGroups = ()=>{
-        if (props.onCallToClearGroups)
-        {
-            props.onCallToClearGroups(selectedGroups);
+        unlink_groups_for_users(selectedUsers, selectedGroups);
+        if (props.on_action){
+            props.on_action();
         }
     }
 
@@ -341,6 +613,94 @@ const UserManagerExtraTools = (props)=>{
             )
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+    
+        const handleCardSelection = (item, value) => {
+            if (value) {
+              setSelectedUsers(prev => [...prev, item]);
+            } else {
+              setSelectedUsers(prev => prev.filter(v => v !== item));
+            }
+        };
+        
+        const handleCallToClearGroups = (groups) => {
+            console.log("CLEAR");
+            console.log(groups);
+            console.log(selectedUsers);
+            unlink_groups_for_users(selectedUsers, groups);
+    
+            // let bus = JSON.parse(JSON.stringify(baseUserList));
+            // if (groups && groups.length){
+            //     for (let i = 0; i < bus.length; i++) {
+            //         const element = bus[i];
+        
+            //         if (selectedUsers.includes(element.id)){
+            //             for (let g = 0; g < groups.length; g++) {
+            //                 const grp = groups[g];
+            //                 const indexxer = element.groups.indexOf(grp);
+            //                 if (indexxer > -1) {
+            //                     bus[i].groups.splice(indexxer, 1);
+            //                 }
+            //         }
+            //     }
+            // }
+    
+            // } else {
+            //     console.log('ELSE - empty groups - clear all existed');
+            //     for (let i = 0; i < bus.length; i++) {
+            //         const element = bus[i];
+    
+            //         if (selectedUsers.includes(element.id)){
+            //                 bus[i].groups = [];
+            //             }
+            //         }
+            //     }
+            // setBaseUserList(bus);
+        }
+    
+    
+        const handleBindSchedules = ()=>{
+            let start = formStart;
+            let end   = formEnd;
+            let schedule = selectedSchedule;
+            const data = {
+                users: selectedUsers,
+                schedule_id: schedule,
+                start: start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+                end: !end ? null : end.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+              };
+            create_links_with_schedules(data);
+        }
+    
+    
+        const handleBindRules = ()=>{
+            let start = formStart;
+            let end   = formEnd;
+            let rule = selectedRule;
+            const data = {
+                users: selectedUsers,
+                rule_id: rule,
+                rule_type: null,
+                start: start.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+                end: !end ? null : end.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+              };
+            create_links_with_rules(data);
+        }
+
+
+
+
+
 
     return (
         <div>
@@ -474,7 +834,7 @@ const UserManagerExtraTools = (props)=>{
                                                 disabled={selectedUsers.length === 0 || selectedSchedule == null ? true : false}
                                                 size={'small'}
                                                 block
-                                                onClick={callToBindSchedules}
+                                                onClick={handleBindSchedules}
                                             >Привязать график</Button>
                                         </div>
                                         <br />
@@ -559,7 +919,7 @@ const UserManagerExtraTools = (props)=>{
                                                 disabled={selectedUsers.length === 0 || selectedRule == null ? true : false}
                                                 size={'small'}
                                                 block
-                                                onClick={callToBindRules}
+                                                onClick={handleBindRules}
                                             >Привязать правила</Button>
                                         </div>
                                         <br />

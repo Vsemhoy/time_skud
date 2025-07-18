@@ -329,7 +329,7 @@ const UserManagerPage = (props) => {
     
 
 
-            /**
+    /**
      * Перелинковка юзеров с правилами массовая
      * @param {*} req 
      * @param {*} res 

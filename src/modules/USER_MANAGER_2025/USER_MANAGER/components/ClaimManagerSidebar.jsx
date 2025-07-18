@@ -30,6 +30,13 @@ const ClaimManagerSidebar = (props) => {
     const [currentRuleType, setCurrentRuleType] = useState(null);
     const [currentRule, setCurrentRule] = useState(null);
 
+    useEffect(() => {
+      if (props.on_select_company)
+      {
+        props.on_select_company(filterCompany);
+      }
+    }, [filterCompany]);
+
     const setInitialState = () => {
         setFilterUserNameOrDepartment(initialstate.filterUserNameOrDepartment);
         setFilterCompany(initialstate.filterCompany);
