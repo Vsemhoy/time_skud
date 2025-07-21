@@ -640,8 +640,8 @@ export const USERS_PAGE = [
                 {
                     "id": 71,
                     "approved": 0,
-                    "start": "2025-07-12T21:00:00.000000Z",
-                    "end": "2025-07-18T21:00:00.000000Z",
+                    "start": "2025-07-02",
+                    "end": "2025-07-09",
                     "user_id": 43
                 }
             ]
@@ -654,9 +654,9 @@ export const USERS_PAGE = [
             "charts": [
                 {
                     "id": 70,
-                    "approved": 0,
-                    "start": "2025-07-12T21:00:00.000000Z",
-                    "end": "2025-07-18T21:00:00.000000Z",
+                    "approved": 1,
+                    "start": "2025-07-18",
+                    "end": "2025-07-29",
                     "user_id": 46
                 }
             ]
@@ -717,8 +717,7 @@ export const USERS_PAGE = [
             "patronymic": "Веничковна",
             "charts": []
         }
-    ]
-;
+    ];
 export const DEPARTMENTS = [
     {
         id: 1,
