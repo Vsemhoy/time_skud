@@ -268,9 +268,9 @@ const ClaimManagerCard = (props) => {
             </div>
             <div>
                 <div className={'sk-claiminfo'}>
-                    {jsonData.comment && (
+                    {/*{jsonData.comment && (
                         <Typography.Paragraph style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}</Typography.Paragraph>
-                    )}
+                    )}*/}
                     {jsonData.reason && (
                         <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
                     )}

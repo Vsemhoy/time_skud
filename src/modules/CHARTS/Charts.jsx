@@ -34,6 +34,8 @@ import {CHART_STATES, GROUPS, USDA, USERS_PAGE} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
+import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
+import {CLAIM_ACL_MOCK} from "../CLAIM_MANAGER_SK/CLAIM_MOCK";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -78,6 +80,9 @@ const  Charts = (props) => {
 
     const [myClaims, setMyClaims] = useState(false);
     const [mySubjects, setMySubjects] = useState(false);
+
+    const [editorMode, setEditorMode] = useState('read');
+    const [editorOpened, setEditorOpened] = useState(false);
 
     const [rangeValues, setRangeValues] = useState([dayjs().month() + 1,dayjs().month() + 1]);
 
@@ -365,6 +370,119 @@ const  Charts = (props) => {
                 break;
         }
     };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const handleCloseEditor = ()=> {
+        if (editorOpened){
+            setEditorOpened(false);
+            setEditorMode('read');
+
+            setTimeout(() => {
+                console.log(2222222222222222);
+                //setSelectedClaimId(0);
+            }, 555);
+        }
+    };
+    const handleSaveClaim = (claim, editmode) => {
+        if (editmode === 'create'){
+            create_claim(claim);
+        } else if (editmode === 'update'){
+            console.log('update claim');
+            update_claim(claim);
+        }
+        setEditorOpened(false);
+        setTimeout(() => {
+            //setSelectedClaimId(0);
+            console.log(999999999);
+        }, 555);
+    };
+    const create_claim = async (claimObj, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+                {
+                    data: claimObj,
+                    _token: CSRF_TOKEN
+                });
+            console.log('response data => ', response.data);
+            //get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    };
+    const update_claim = async (claimObj, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+                {
+                    data: claimObj,
+                    _token: CSRF_TOKEN
+                });
+            console.log('response data => ', response.data);
+            //get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    };
+    const handleGetBackEvent = (id)=> {
+        setTimeout(() => {
+            //setSelectedClaimId(0);
+            console.log(1111111111111);
+        }, 555);
+        setEditorOpened(false);
+        delete_claim(id);
+    };
+    const handleApproveEvent = (id, type)=> {
+        const obj = {
+            id: id,
+            state: 1,
+        };
+        update_claim_state(obj)
+        setEditorOpened(false);
+        setTimeout(() => {
+            //setSelectedClaimId(0);
+            console.log(888888333333);
+        }, 555);
+    };
+    const handleDeclineEvent = (id, type)=> {
+        const obj = {
+            id: id,
+            state: 2,
+        };
+        update_claim_state(obj);
+        setEditorOpened(false);
+        setTimeout(() => {
+            //setSelectedClaimId(0);
+            console.log(555555555555);
+        }, 555);
+    };
+    const delete_claim = async (claim_id, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
+                {
+                    data: {id: claim_id},
+                    _token: CSRF_TOKEN
+                });
+            console.log('response data => ', response.data);
+            //get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    };
+    const update_claim_state = async (claimObj, req, res) => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
+                {
+                    data: claimObj,
+                    _token: CSRF_TOKEN
+                });
+            console.log('response data => ', response.data);
+            //get_claimList(filterPack);
+        } catch (e) {
+            console.log(e)
+        } finally {
+        }
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -510,11 +628,28 @@ const  Charts = (props) => {
                                 selectedChartState,
                                 reactiveColor,
                                 rangeValues,
-                                activeYear
+                                activeYear,
+                                openDrawer: () => setEditorOpened(true)
                             }}/>
                         </Content>
                     </Layout>
                 </Layout>
+                <ClaimEditorDrawer
+                    data={selectedChartState}
+                    mode={editorMode}
+                    acl_base={CLAIM_ACL_MOCK}
+                    user_list={USERS}
+                    opened={editorOpened}
+                    claim_type={selectedChartState}
+                    on_close={handleCloseEditor}
+
+                    claim_types={chartStates}
+                    on_send={handleSaveClaim}
+                    my_id={currentUser?.id}
+                    on_get_back={handleGetBackEvent}
+                    on_approve={handleApproveEvent}
+                    on_decline={handleDeclineEvent}
+                />
             </div>
         </Spin>
     );
