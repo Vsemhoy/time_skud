@@ -392,117 +392,115 @@ const  Charts = (props) => {
         }
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const create_claim = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const update_claim = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const delete_claim = async (claim_id) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
+                    {
+                        data: {id: claim_id},
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const update_claim_state = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
     const handleCloseEditor = ()=> {
         if (editorOpened){
             setEditorOpened(false);
             setEditorMode('read');
-
             setTimeout(() => {
-                console.log(2222222222222222);
-                //setSelectedClaimId(0);
+                setClaimForDrawer(null);
             }, 555);
         }
     };
     const handleSaveClaim = (claim, editmode) => {
         if (editmode === 'create'){
-            create_claim(claim);
+            create_claim(claim).then();
         } else if (editmode === 'update'){
             console.log('update claim');
-            update_claim(claim);
+            update_claim(claim).then();
         }
         setEditorOpened(false);
         setTimeout(() => {
-            //setSelectedClaimId(0);
-            console.log(999999999);
+            setClaimForDrawer(null);
         }, 555);
-    };
-    const create_claim = async (claimObj, req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
-                {
-                    data: claimObj,
-                    _token: CSRF_TOKEN
-                });
-            console.log('response data => ', response.data);
-            //get_claimList(filterPack);
-        } catch (e) {
-            console.log(e)
-        } finally {
-        }
-    };
-    const update_claim = async (claimObj, req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
-                {
-                    data: claimObj,
-                    _token: CSRF_TOKEN
-                });
-            console.log('response data => ', response.data);
-            //get_claimList(filterPack);
-        } catch (e) {
-            console.log(e)
-        } finally {
-        }
     };
     const handleGetBackEvent = (id)=> {
         setTimeout(() => {
-            //setSelectedClaimId(0);
-            console.log(1111111111111);
+            setClaimForDrawer(null);
         }, 555);
         setEditorOpened(false);
-        delete_claim(id);
+        delete_claim(id).then();
     };
-    const handleApproveEvent = (id, type)=> {
+    const handleApproveEvent = (id)=> {
         const obj = {
             id: id,
             state: 1,
         };
-        update_claim_state(obj)
+        update_claim_state(obj).then();
         setEditorOpened(false);
         setTimeout(() => {
-            //setSelectedClaimId(0);
-            console.log(888888333333);
+            setClaimForDrawer(null);
         }, 555);
     };
-    const handleDeclineEvent = (id, type)=> {
+    const handleDeclineEvent = (id)=> {
         const obj = {
             id: id,
             state: 2,
         };
-        update_claim_state(obj);
+        update_claim_state(obj).then();
         setEditorOpened(false);
         setTimeout(() => {
-            //setSelectedClaimId(0);
-            console.log(555555555555);
+            setClaimForDrawer(null);
         }, 555);
-    };
-    const delete_claim = async (claim_id, req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
-                {
-                    data: {id: claim_id},
-                    _token: CSRF_TOKEN
-                });
-            console.log('response data => ', response.data);
-            //get_claimList(filterPack);
-        } catch (e) {
-            console.log(e)
-        } finally {
-        }
-    };
-    const update_claim_state = async (claimObj, req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
-                {
-                    data: claimObj,
-                    _token: CSRF_TOKEN
-                });
-            console.log('response data => ', response.data);
-            //get_claimList(filterPack);
-        } catch (e) {
-            console.log(e)
-        } finally {
-        }
     };
     const prepareDrawer = (currentChart, user) => {
         setClaimForDrawer({
@@ -681,7 +679,6 @@ const  Charts = (props) => {
                         opened={editorOpened}
                         claim_type={selectedChartState}
                         on_close={handleCloseEditor}
-
                         claim_types={chartStates}
                         on_send={handleSaveClaim}
                         my_id={currentUser?.id}
