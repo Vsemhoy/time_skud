@@ -87,50 +87,51 @@ const ClaimEditorDrawer = (props) => {
       setUserCard(props.data);
       console.log(props.data);
       let res2 = JSON.parse(props.data.info);
+      if (res2) {
+        /// ДОделать тут
+        if (res2.target_address){
+          setFormTargetAddress(res2.target_address);
+        };
 
-      /// ДОделать тут
-      if (res2.target_address){
-        setFormTargetAddress(res2.target_address);
-      };
+        if (res2.contact_person){
+          setFormContactFace(res2.contact_person);
+        };
+        if (res2.contact_phone){
+          setFormContactFacePhone(res2.contact_phone);
+        };
 
-      if (res2.contact_person){
-        setFormContactFace(res2.contact_person);
-      };
-      if (res2.contact_phone){
-        setFormContactFacePhone(res2.contact_phone);
-      };
+        if (res2.target_point){
+          setFormTargetPoint(res2.target_point);
+        };
 
-      if (res2.target_point){
-        setFormTargetPoint(res2.target_point);
-      };
+        if (res2.task){
+          setFormTask(res2.task);
+        };
+        if (res2.comment){
+          setFormComment(res2.comment);
+        };
 
-      if (res2.task){
-        setFormTask(res2.task);
-      };
-      if (res2.comment){
-        setFormComment(res2.comment);
-      };
+        if (res2.subway_count){
+          setFormSubwayCount(res2.subway_count);
+        };
+        if (res2.bus_count){
+          setFormBusCount(res2.bus_count);
+        };
 
-      if (res2.subway_count){
-        setFormSubwayCount(res2.subway_count);
-      };
-      if (res2.bus_count){
-        setFormBusCount(res2.bus_count);
-      };
+        if (res2.reason){
+          setFormReason(res2.reason);
+        };
+        if (res2.description){
+          setFormDescription(res2.description);
+        };
 
-      if (res2.reason){
-        setFormReason(res2.reason);
-      };
-      if (res2.description){
-        setFormDescription(res2.description);
-      };
-
-      if (res2.disease_number){
-        setFormDiseaseNumber(res2.disease_number);
-      };
-      if (res2.result){
-        setFormResult(res2.result);
-      };
+        if (res2.disease_number){
+          setFormDiseaseNumber(res2.disease_number);
+        };
+        if (res2.result){
+          setFormResult(res2.result);
+        };
+      }
 
       setFormDateRange([dayjs(props.data.start), props.data.end ? dayjs(props.data.end) : null]);
       setItemId(props.data.id);

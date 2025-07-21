@@ -267,26 +267,29 @@ const ClaimManagerCard = (props) => {
                 </div>
             </div>
             <div>
-                <div className={'sk-claiminfo'}>
-                    {jsonData.comment && (
-                        <Typography.Paragraph style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}</Typography.Paragraph>
-                    )}
-                    {jsonData.reason && (
-                        <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
-                    )}
-                    {jsonData.target_point && (
-                        <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}</Typography.Paragraph>
-                    )}
-                    {jsonData.task && (
-                        <Typography.Paragraph><i>Задача:</i> {jsonData.task}</Typography.Paragraph>
-                    )}
-                    {jsonData.result && (
-                        <Typography.Paragraph><i>Результат:</i> {jsonData.result}</Typography.Paragraph>
-                    )}
-                    {jsonData.description && (
-                        <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>
-                    )}
-                </div>
+                {jsonData && (
+                    <div className={'sk-claiminfo'}>
+                        {jsonData.comment && (
+                            <Typography.Paragraph style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}
+                            </Typography.Paragraph>
+                        )}
+                        {jsonData.reason && (
+                            <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
+                        )}
+                        {jsonData.target_point && (
+                            <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}</Typography.Paragraph>
+                        )}
+                        {jsonData.task && (
+                            <Typography.Paragraph><i>Задача:</i> {jsonData.task}</Typography.Paragraph>
+                        )}
+                        {jsonData.result && (
+                            <Typography.Paragraph><i>Результат:</i> {jsonData.result}</Typography.Paragraph>
+                        )}
+                        {jsonData.description && (
+                            <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>
+                        )}
+                    </div>
+                )}
             </div>
             <div >
                 <div className={'sk-timestring-claim'}>

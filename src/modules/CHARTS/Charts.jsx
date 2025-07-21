@@ -34,6 +34,8 @@ import {CHART_STATES, GROUPS, USDA, USERS_PAGE} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
+import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
+import {CLAIM_ACL_MOCK} from "../CLAIM_MANAGER_SK/CLAIM_MOCK";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -78,6 +80,11 @@ const  Charts = (props) => {
 
     const [myClaims, setMyClaims] = useState(false);
     const [mySubjects, setMySubjects] = useState(false);
+
+    const [editorMode, setEditorMode] = useState('read');
+    const [editorOpened, setEditorOpened] = useState(false);
+    const [claimForDrawer, setClaimForDrawer] = useState(null);
+    const [aclBase, setAclBase] = useState({});
 
     const [rangeValues, setRangeValues] = useState([dayjs().month() + 1,dayjs().month() + 1]);
 
@@ -176,6 +183,7 @@ const  Charts = (props) => {
     const fetchInfo = async () => {
         await fetchSelects();
         await fetchChartStates();
+        await get_aclbase();
     };
     const fetchSelects = async () => {
         if (PRODMODE) {
@@ -216,6 +224,24 @@ const  Charts = (props) => {
             }
         } else {
             setChartStates(prepareStates(CHART_STATES));
+        }
+    };
+    const get_aclbase = async () => {
+        if (PRODMODE) {
+            try {
+
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+                    {
+                        data: [],
+                        _token: CSRF_TOKEN
+                    });
+                setAclBase(response.data.content);
+                console.log('response data => ', response.data);
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            setAclBase(CLAIM_ACL_MOCK);
         }
     };
     const fetchUsers = async () => {
@@ -365,6 +391,134 @@ const  Charts = (props) => {
                 break;
         }
     };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const create_claim = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const update_claim = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const delete_claim = async (claim_id) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
+                    {
+                        data: {id: claim_id},
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const update_claim_state = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                console.log('response data => ', response.data);
+                fetchInfo().then();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+    const handleCloseEditor = ()=> {
+        if (editorOpened){
+            setEditorOpened(false);
+            setEditorMode('read');
+            setTimeout(() => {
+                setClaimForDrawer(null);
+            }, 555);
+        }
+    };
+    const handleSaveClaim = (claim, editmode) => {
+        if (editmode === 'create'){
+            create_claim(claim).then();
+        } else if (editmode === 'update'){
+            console.log('update claim');
+            update_claim(claim).then();
+        }
+        setEditorOpened(false);
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+    };
+    const handleGetBackEvent = (id)=> {
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+        setEditorOpened(false);
+        delete_claim(id).then();
+    };
+    const handleApproveEvent = (id)=> {
+        const obj = {
+            id: id,
+            state: 1,
+        };
+        update_claim_state(obj).then();
+        setEditorOpened(false);
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+    };
+    const handleDeclineEvent = (id)=> {
+        const obj = {
+            id: id,
+            state: 2,
+        };
+        update_claim_state(obj).then();
+        setEditorOpened(false);
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+    };
+    const prepareDrawer = (currentChart, user) => {
+        setClaimForDrawer({
+            id: currentChart.id,
+            user_id: user.id,
+            start: currentChart.start,
+            end: currentChart.end,
+            is_approved: currentChart.approved,
+            skud_current_state_id: selectedChartState,
+            info: currentChart.info,
+            days_count: dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day'),
+            state_color: reactiveColor,
+            usr_name: user.name,
+            usr_surname: user.surname,
+            usr_patronymic: user.patronymic,
+        });
+        setEditorOpened(true);
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -510,11 +664,29 @@ const  Charts = (props) => {
                                 selectedChartState,
                                 reactiveColor,
                                 rangeValues,
-                                activeYear
+                                activeYear,
+                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user)
                             }}/>
                         </Content>
                     </Layout>
                 </Layout>
+                {claimForDrawer && (
+                    <ClaimEditorDrawer
+                        data={claimForDrawer}
+                        mode={editorMode}
+                        acl_base={aclBase}
+                        user_list={users}
+                        opened={editorOpened}
+                        claim_type={selectedChartState}
+                        on_close={handleCloseEditor}
+                        claim_types={chartStates}
+                        on_send={handleSaveClaim}
+                        my_id={currentUser?.id}
+                        on_get_back={handleGetBackEvent}
+                        on_approve={handleApproveEvent}
+                        on_decline={handleDeclineEvent}
+                    />
+                )}
             </div>
         </Spin>
     );

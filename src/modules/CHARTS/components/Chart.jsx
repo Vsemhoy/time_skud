@@ -9,7 +9,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
 const Chart = (props) => {
-    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear } = useOutletContext();
+    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear, openDrawer } = useOutletContext();
 
     const getDaysInMonth = (date) =>
         Array.from({ length: date.daysInMonth() }, (_, i) =>
@@ -47,6 +47,10 @@ const Chart = (props) => {
         }
     };
 
+    const openDrawerFunc = () => {
+        openDrawer();
+    };
+
     return (
         <Spin spinning={isLoadingChart}>
             {usersPage && (
@@ -60,7 +64,9 @@ const Chart = (props) => {
                         {getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)).map((day, dayIndex) => {
                             const isWeekend = day.day() === 0 || day.day() === 6;
                             return (
-                                <div className={`${styles.chart_cell} ${styles.chart_header_cell} ${isWeekend ? styles.weekend : ''}`}>
+                                <div className={`${styles.chart_cell} ${styles.chart_header_cell} ${isWeekend ? styles.weekend : ''}`}
+                                     key={`${day.date()}-${day.day()}`}
+                                >
                                     <p className={styles.chart_cell_text}>{day.date()}</p>
                                 </div>
                             );
@@ -75,7 +81,7 @@ const Chart = (props) => {
                             {getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)).map((day, dayIndex) => {
                                 const currentChart = isInChartRange(user.charts, day);
                                 return currentChart ? (
-                                    <Tooltip title={
+                                    <Tooltip key={`day_${dayIndex}`} title={
                                         <div>
                                             <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
                                             <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
@@ -85,8 +91,12 @@ const Chart = (props) => {
                                         </div>
                                     }>
                                         <div className={styles.chart_cell}
-                                             key={`day_${dayIndex}`}
-                                             style={{backgroundColor: reactiveColor}}
+                                             style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
+                                             onClick={() => {
+                                                 if (currentChart && user) {
+                                                     openDrawer(currentChart, user);
+                                                 }
+                                             }}
                                         ></div>
                                     </Tooltip>
                                     ) : (
