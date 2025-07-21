@@ -180,10 +180,11 @@ const  Charts = (props) => {
             '#1890ff');
     }, [selectedChartState]);
 
+    /* fetch */
     const fetchInfo = async () => {
         await fetchSelects();
         await fetchChartStates();
-        await get_aclbase();
+        await fetchAclBase();
     };
     const fetchSelects = async () => {
         if (PRODMODE) {
@@ -226,7 +227,7 @@ const  Charts = (props) => {
             setChartStates(prepareStates(CHART_STATES));
         }
     };
-    const get_aclbase = async () => {
+    const fetchAclBase = async () => {
         if (PRODMODE) {
             try {
 
@@ -274,6 +275,9 @@ const  Charts = (props) => {
             setAllUsersCount(80);
         }
     };
+
+
+    /* prepare */
     const prepareStates = (states) => {
         return states.filter(state => state.fillable).map(state => ({
                 label: state.badge,
@@ -391,7 +395,9 @@ const  Charts = (props) => {
                 break;
         }
     };
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /* drawer */
     const create_claim = async (claimObj) => {
         if (PRODMODE) {
             try {
@@ -571,7 +577,7 @@ const  Charts = (props) => {
                         <Content className="content">
                             <div className="sk-content-table-wrapper">
                                 <Affix offsetTop={44}>
-                                    <div style={{backgroundColor: '#f3f3f3'}}>
+                                    <div style={{backgroundColor: '#f3f3f3', outline: '2px solid #f3f3f3'}}>
                                         <div style={{paddingTop: '5px'}}>
                                             <ConfigProvider
                                                 theme={{
@@ -579,9 +585,6 @@ const  Charts = (props) => {
                                                         Segmented: {
                                                             itemSelectedBg: reactiveColor,
                                                             itemSelectedColor: 'black',
-                                                            /*itemHoverColor: '#1890ff',
-                                                            itemHoverBg: '#e6f7ff',
-                                                            itemActiveBg: '#bae7ff',*/
                                                         },
                                                     },
                                                 }}
