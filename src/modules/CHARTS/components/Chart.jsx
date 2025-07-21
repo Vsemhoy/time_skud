@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import styles from "../style/charts.module.css";
-import {Spin} from "antd";
+import {Spin, Tooltip} from "antd";
 import {useOutletContext} from "react-router-dom";
-import {PRODMODE} from "../../../CONFIG/config";
 import {ShortName} from "../../../components/Helpers/TextHelpers";
 import dayjs from "dayjs";
+import isBetween from 'dayjs/plugin/isBetween';
+
+dayjs.extend(isBetween);
 
 const Chart = (props) => {
     const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear } = useOutletContext();
@@ -13,6 +15,37 @@ const Chart = (props) => {
         Array.from({ length: date.daysInMonth() }, (_, i) =>
             date.startOf('month').add(i, 'day')
         );
+
+    const isInChartRange = (charts, day) => {
+        if (!charts || !day) return null;
+        const currentDay = dayjs.isDayjs(day) ? day : dayjs(day);
+        if (!currentDay.isValid()) return null;
+        return charts.find(chart => {
+            if (!chart?.start || !chart?.end) return false;
+            const startDate = dayjs(chart.start);
+            const endDate = dayjs(chart.end);
+            return currentDay.isBetween(startDate, endDate, null, '[]');
+        });
+    };
+
+    const ruWord = () => {
+        switch (selectedChartState) {
+            case 6:
+                return 'больничного';
+            case 7:
+                return 'длительной командировки';
+            case 8:
+                return 'местной командировки';
+            case 9:
+                return 'отпуска за свой счет';
+            case 10:
+                return 'отпуска';
+            case 11:
+                return 'сверхурочных';
+            case 13:
+                return 'контейнеров';
+        }
+    };
 
     return (
         <Spin spinning={isLoadingChart}>
@@ -24,36 +57,14 @@ const Chart = (props) => {
                     </div>
                     <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
                         <div className={styles.user_cell}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
-                        <div className={`${styles.chart_cell} ${styles.chart_header_cell}`}></div>
+                        {getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)).map((day, dayIndex) => {
+                            const isWeekend = day.day() === 0 || day.day() === 6;
+                            return (
+                                <div className={`${styles.chart_cell} ${styles.chart_header_cell} ${isWeekend ? styles.weekend : ''}`}>
+                                    <p className={styles.chart_cell_text}>{day.date()}</p>
+                                </div>
+                            );
+                        })}
                     </div>
                     {usersPage.map((user, index) => (
                         <div className={styles.user_row} key={`user_${index}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
@@ -61,9 +72,29 @@ const Chart = (props) => {
                                 <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
                                 <div style={{color: '#2788e1'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
                             </div>
-                            {getDaysInMonth(dayjs('2023-11-01')).map((day, dayIndex) => (
-                                <div className={styles.chart_cell} key={`day_${dayIndex}`}></div>
-                            ))}
+                            {getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)).map((day, dayIndex) => {
+                                const currentChart = isInChartRange(user.charts, day);
+                                return currentChart ? (
+                                    <Tooltip title={
+                                        <div>
+                                            <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
+                                            <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
+                                            <div>Конец {ruWord()}: {dayjs(currentChart.end).format('DD.MM.YYYY')}</div>
+                                            <div>Длительность: {dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') + 1} дней</div>
+                                            <div>{user.approved ? 'Согласовано' : ''}</div>
+                                        </div>
+                                    }>
+                                        <div className={styles.chart_cell}
+                                             key={`day_${dayIndex}`}
+                                             style={{backgroundColor: reactiveColor}}
+                                        ></div>
+                                    </Tooltip>
+                                    ) : (
+                                    <div className={styles.chart_cell}
+                                         key={`day_${dayIndex}`}
+                                    ></div>
+                                )
+                            })}
                         </div>
                     ))}
                 </div>
