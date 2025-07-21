@@ -640,8 +640,8 @@ export const USERS_PAGE = [
                 {
                     "id": 71,
                     "approved": 0,
-                    "start": "2025-07-02",
-                    "end": "2025-07-09",
+                    "start": "2025-07-12",
+                    "end": "2025-07-18",
                     "user_id": 43
                 }
             ]
@@ -654,9 +654,9 @@ export const USERS_PAGE = [
             "charts": [
                 {
                     "id": 70,
-                    "approved": 1,
-                    "start": "2025-07-18",
-                    "end": "2025-07-29",
+                    "approved": 0,
+                    "start": "2025-07-12",
+                    "end": "2025-07-18",
                     "user_id": 46
                 }
             ]
