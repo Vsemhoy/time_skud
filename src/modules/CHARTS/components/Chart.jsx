@@ -92,7 +92,11 @@ const Chart = (props) => {
                                     }>
                                         <div className={styles.chart_cell}
                                              style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
-                                             onClick={openDrawerFunc}
+                                             onClick={() => {
+                                                 if (currentChart && user) {
+                                                     openDrawer(currentChart, user);
+                                                 }
+                                             }}
                                         ></div>
                                     </Tooltip>
                                     ) : (

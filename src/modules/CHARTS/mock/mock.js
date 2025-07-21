@@ -642,7 +642,8 @@ export const USERS_PAGE = [
                     "approved": 0,
                     "start": "2025-07-12",
                     "end": "2025-07-18",
-                    "user_id": 43
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
         },
@@ -657,7 +658,8 @@ export const USERS_PAGE = [
                     "approved": 0,
                     "start": "2025-07-12",
                     "end": "2025-07-18",
-                    "user_id": 46
+                    "user_id": 46,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
         },

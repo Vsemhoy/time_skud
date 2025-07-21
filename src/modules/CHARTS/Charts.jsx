@@ -83,6 +83,8 @@ const  Charts = (props) => {
 
     const [editorMode, setEditorMode] = useState('read');
     const [editorOpened, setEditorOpened] = useState(false);
+    const [claimForDrawer, setClaimForDrawer] = useState(null);
+    const [aclBase, setAclBase] = useState({});
 
     const [rangeValues, setRangeValues] = useState([dayjs().month() + 1,dayjs().month() + 1]);
 
@@ -181,6 +183,7 @@ const  Charts = (props) => {
     const fetchInfo = async () => {
         await fetchSelects();
         await fetchChartStates();
+        await get_aclbase();
     };
     const fetchSelects = async () => {
         if (PRODMODE) {
@@ -221,6 +224,24 @@ const  Charts = (props) => {
             }
         } else {
             setChartStates(prepareStates(CHART_STATES));
+        }
+    };
+    const get_aclbase = async () => {
+        if (PRODMODE) {
+            try {
+
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+                    {
+                        data: [],
+                        _token: CSRF_TOKEN
+                    });
+                setAclBase(response.data.content);
+                console.log('response data => ', response.data);
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            setAclBase(CLAIM_ACL_MOCK);
         }
     };
     const fetchUsers = async () => {
@@ -483,6 +504,23 @@ const  Charts = (props) => {
         } finally {
         }
     };
+    const prepareDrawer = (currentChart, user) => {
+        setClaimForDrawer({
+            id: currentChart.id,
+            user_id: user.id,
+            start: currentChart.start,
+            end: currentChart.end,
+            is_approved: currentChart.approved,
+            skud_current_state_id: selectedChartState,
+            info: currentChart.info,
+            days_count: dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day'),
+            state_color: reactiveColor,
+            usr_name: user.name,
+            usr_surname: user.surname,
+            usr_patronymic: user.patronymic,
+        });
+        setEditorOpened(true);
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -629,27 +667,29 @@ const  Charts = (props) => {
                                 reactiveColor,
                                 rangeValues,
                                 activeYear,
-                                openDrawer: () => setEditorOpened(true)
+                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user)
                             }}/>
                         </Content>
                     </Layout>
                 </Layout>
-                <ClaimEditorDrawer
-                    data={selectedChartState}
-                    mode={editorMode}
-                    acl_base={CLAIM_ACL_MOCK}
-                    user_list={USERS}
-                    opened={editorOpened}
-                    claim_type={selectedChartState}
-                    on_close={handleCloseEditor}
+                {claimForDrawer && (
+                    <ClaimEditorDrawer
+                        data={claimForDrawer}
+                        mode={editorMode}
+                        acl_base={aclBase}
+                        user_list={users}
+                        opened={editorOpened}
+                        claim_type={selectedChartState}
+                        on_close={handleCloseEditor}
 
-                    claim_types={chartStates}
-                    on_send={handleSaveClaim}
-                    my_id={currentUser?.id}
-                    on_get_back={handleGetBackEvent}
-                    on_approve={handleApproveEvent}
-                    on_decline={handleDeclineEvent}
-                />
+                        claim_types={chartStates}
+                        on_send={handleSaveClaim}
+                        my_id={currentUser?.id}
+                        on_get_back={handleGetBackEvent}
+                        on_approve={handleApproveEvent}
+                        on_decline={handleDeclineEvent}
+                    />
+                )}
             </div>
         </Spin>
     );
