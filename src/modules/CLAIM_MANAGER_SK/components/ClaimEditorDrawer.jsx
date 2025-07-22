@@ -296,23 +296,6 @@ const ClaimEditorDrawer = (props) => {
       setBaseUserList(props.user_list);
     }
   },[props.user_list]);
-
-  // useEffect(()=>{
-  //   if (props.opened){
-  //     setOpen(true);
-  //     if (editMode === 'create'){
-  //       setItemId(null);
-  //       refreshForm();
-  //     };
-  //       let title = "";
-  //       if (props.claim_types)
-  //       {
-  //         title = props.claim_types.find((item)=> item.value === props.claim_type)?.label +  itemId ? (" [" + itemId + "]"): "";
-  //         setFormType(props.claim_type);
-  //       }
-  //       setPageTitle(title);
-  //   }
-  // },[props.opened, props.claim_type, editMode]);
   
 
   const refreshForm = () => {
