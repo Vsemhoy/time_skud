@@ -545,6 +545,24 @@ const  Charts = (props) => {
             setClaimForDrawer(null);
         }, 555);
     };
+    const onPreviousMonth = () => {
+        let startMonth = rangeValues[0];
+        let endMonth = rangeValues[1];
+        if (rangeValues[1] === rangeValues[0]) {
+            endMonth--;
+        }
+        startMonth--;
+        setRangeValues([startMonth, endMonth]);
+    };
+    const onNextMonth = () => {
+        let startMonth = rangeValues[0];
+        let endMonth = rangeValues[1];
+        if (rangeValues[0] === rangeValues[1]) {
+            startMonth++;
+        }
+        endMonth++;
+        setRangeValues([startMonth, endMonth]);
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -688,7 +706,9 @@ const  Charts = (props) => {
                                 reactiveColor,
                                 rangeValues,
                                 activeYear,
-                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user)
+                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user),
+                                onPreviousMonth,
+                                onNextMonth,
                             }}/>
                         </Content>
                     </Layout>
