@@ -36,6 +36,7 @@ import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
 import {CLAIM_ACL_MOCK} from "../CLAIM_MANAGER_SK/CLAIM_MOCK";
+import {ShortName} from "../../components/Helpers/TextHelpers";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -44,7 +45,7 @@ const  Charts = (props) => {
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingChart, setIsLoadingChart] = useState(false);
-    const [isOpenFilters, setIsOpenFilters] = useState(true);
+    const [isOpenFilters, setIsOpenFilters] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -168,7 +169,7 @@ const  Charts = (props) => {
     useEffect(() => {
         const pathSegments = location.pathname.split('/').filter(Boolean);
         const lastSegment = pathSegments[pathSegments.length - 1];
-        console.log(lastSegment)
+        //console.log(lastSegment)
         const chart = chartStates.find(state => state.name === lastSegment);
         if (chart && chart.value) {
             setSelectedChartState(chart.value);
@@ -237,7 +238,7 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 setAclBase(response.data.content);
-                console.log('response data => ', response.data);
+                //console.log('response data => ', response.data);
             } catch (e) {
                 console.log(e)
             }
@@ -268,7 +269,7 @@ const  Charts = (props) => {
                 console.log(e);
             }
         } else {
-            console.log(prepareRangeValuesToServer())
+            //console.log(prepareRangeValuesToServer())
             setUsersPage(USERS_PAGE);
             setCurrentPage(1);
             setPageSize(10);
@@ -380,6 +381,15 @@ const  Charts = (props) => {
             return [];
         }
     };
+    const prepareShortFio = (users) => {
+        return users.map((user) => {
+            return {
+                id: user.id,
+                name: ShortName(user.surname, user.name, user.patronymic),
+                boss_id: user.boss_id,
+            }
+        });
+    }
     const handleFilterChanged = async (filters) => {
         setFilterParams(filters);
         setActiveYear(filters.year);
@@ -398,6 +408,27 @@ const  Charts = (props) => {
 
 
     /* drawer */
+    const openCreateDrawer = () => {
+        setEditorMode('create');
+        prepareDrawer();
+    };
+    const prepareDrawer = (currentChart = null, user = null) => {
+        setClaimForDrawer({
+            id: currentChart?.id,
+            user_id: user?.id,
+            start: currentChart?.start,
+            end: currentChart?.end,
+            is_approved: currentChart?.approved,
+            skud_current_state_id: selectedChartState,
+            info: currentChart?.info,
+            days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
+            state_color: reactiveColor,
+            usr_name: user?.name,
+            usr_surname: user?.surname,
+            usr_patronymic: user?.patronymic,
+        });
+        setEditorOpened(true);
+    };
     const create_claim = async (claimObj) => {
         if (PRODMODE) {
             try {
@@ -406,7 +437,7 @@ const  Charts = (props) => {
                         data: claimObj,
                         _token: CSRF_TOKEN
                     });
-                console.log('response data => ', response.data);
+                //console.log('response data => ', response.data);
                 fetchInfo().then();
             } catch (e) {
                 console.log(e)
@@ -421,7 +452,7 @@ const  Charts = (props) => {
                         data: claimObj,
                         _token: CSRF_TOKEN
                     });
-                console.log('response data => ', response.data);
+                //console.log('response data => ', response.data);
                 fetchInfo().then();
             } catch (e) {
                 console.log(e)
@@ -436,7 +467,7 @@ const  Charts = (props) => {
                         data: {id: claim_id},
                         _token: CSRF_TOKEN
                     });
-                console.log('response data => ', response.data);
+                //console.log('response data => ', response.data);
                 fetchInfo().then();
             } catch (e) {
                 console.log(e)
@@ -451,7 +482,7 @@ const  Charts = (props) => {
                         data: claimObj,
                         _token: CSRF_TOKEN
                     });
-                console.log('response data => ', response.data);
+                //console.log('response data => ', response.data);
                 fetchInfo().then();
             } catch (e) {
                 console.log(e)
@@ -471,7 +502,7 @@ const  Charts = (props) => {
         if (editmode === 'create'){
             create_claim(claim).then();
         } else if (editmode === 'update'){
-            console.log('update claim');
+            //console.log('update claim');
             update_claim(claim).then();
         }
         setEditorOpened(false);
@@ -508,23 +539,6 @@ const  Charts = (props) => {
             setClaimForDrawer(null);
         }, 555);
     };
-    const prepareDrawer = (currentChart, user) => {
-        setClaimForDrawer({
-            id: currentChart.id,
-            user_id: user.id,
-            start: currentChart.start,
-            end: currentChart.end,
-            is_approved: currentChart.approved,
-            skud_current_state_id: selectedChartState,
-            info: currentChart.info,
-            days_count: dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day'),
-            state_color: reactiveColor,
-            usr_name: user.name,
-            usr_surname: user.surname,
-            usr_patronymic: user.patronymic,
-        });
-        setEditorOpened(true);
-    };
 
     return (
         <Spin spinning={isLoading}>
@@ -544,6 +558,7 @@ const  Charts = (props) => {
                                         variant={'solid'}
                                         icon={<PlusOutlined/>}
                                         style={{ width: '140px' }}
+                                        onClick={openCreateDrawer}
                                 >Создать заявку</Button>
                             </div>
                         </Affix>
@@ -557,7 +572,7 @@ const  Charts = (props) => {
                                     <div className="sk-usp-filter-col">
                                         <ChartsSidebar
                                             year_list={prepareSelectOptions('years', years)}
-                                            user_list={prepareSelectOptions('users', users)}
+                                            user_list={prepareSelectOptions('users', prepareShortFio(users))}
                                             boss_list={prepareSelectOptions('boss', bosses)}
                                             company_list={prepareSelectOptions('company', companies)}
                                             depart_list={prepareSelectOptions('dep', departments)}
@@ -653,7 +668,7 @@ const  Charts = (props) => {
                                                 min={1}
                                                 max={12}
                                                 onChange={(ev) => {
-                                                    console.log('Slider value changed:', ev);
+                                                    //console.log('Slider value changed:', ev);
                                                     setRangeValues(ev);
                                                 }}
                                             />
