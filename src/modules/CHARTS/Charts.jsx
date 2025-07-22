@@ -151,14 +151,7 @@ const  Charts = (props) => {
     }, [props.userdata]);
     useEffect(() => {
         if (isMounted) {
-            setIsLoadingChart(true);
-            if (debounceTimer.current) {
-                clearTimeout(debounceTimer.current);
-            }
-            debounceTimer.current = setTimeout(() => {
-                fetchUsers().then(r => setTimeout(() => setIsLoadingChart(false), 500));
-                debounceTimer.current = null;
-            }, 1000);
+            debounceFetchUsers();
         }
         return () => {
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
@@ -243,6 +236,16 @@ const  Charts = (props) => {
         } else {
             setAclBase(CLAIM_ACL_MOCK);
         }
+    };
+    const debounceFetchUsers = () => {
+        setIsLoadingChart(true);
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+        debounceTimer.current = setTimeout(() => {
+            fetchUsers().then(r => setTimeout(() => setIsLoadingChart(false), 500));
+            debounceTimer.current = null;
+        }, 1000);
     };
     const fetchUsers = async () => {
         if (PRODMODE) {
@@ -428,6 +431,7 @@ const  Charts = (props) => {
             usr_surname: user?.surname,
             usr_patronymic: user?.patronymic,
             id_company: user?.id_company,
+            boss_id: user?.boss_id
         });
         setEditorOpened(true);
     };
@@ -440,7 +444,7 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 //console.log('response data => ', response.data);
-                fetchInfo().then();
+                debounceFetchUsers();
             } catch (e) {
                 console.log(e)
             }
@@ -455,7 +459,7 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 //console.log('response data => ', response.data);
-                fetchInfo().then();
+                debounceFetchUsers();
             } catch (e) {
                 console.log(e)
             }
@@ -470,7 +474,7 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 //console.log('response data => ', response.data);
-                fetchInfo().then();
+                debounceFetchUsers();
             } catch (e) {
                 console.log(e)
             }
@@ -485,7 +489,7 @@ const  Charts = (props) => {
                         _token: CSRF_TOKEN
                     });
                 //console.log('response data => ', response.data);
-                fetchInfo().then();
+                debounceFetchUsers();
             } catch (e) {
                 console.log(e)
             }
@@ -540,6 +544,24 @@ const  Charts = (props) => {
         setTimeout(() => {
             setClaimForDrawer(null);
         }, 555);
+    };
+    const onPreviousMonth = () => {
+        let startMonth = rangeValues[0];
+        let endMonth = rangeValues[1];
+        if (rangeValues[1] === rangeValues[0]) {
+            endMonth--;
+        }
+        startMonth--;
+        setRangeValues([startMonth, endMonth]);
+    };
+    const onNextMonth = () => {
+        let startMonth = rangeValues[0];
+        let endMonth = rangeValues[1];
+        if (rangeValues[0] === rangeValues[1]) {
+            startMonth++;
+        }
+        endMonth++;
+        setRangeValues([startMonth, endMonth]);
     };
 
     return (
@@ -684,7 +706,9 @@ const  Charts = (props) => {
                                 reactiveColor,
                                 rangeValues,
                                 activeYear,
-                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user)
+                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user),
+                                onPreviousMonth,
+                                onNextMonth,
                             }}/>
                         </Content>
                     </Layout>

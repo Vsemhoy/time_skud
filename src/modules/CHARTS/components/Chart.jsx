@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import styles from "../style/charts.module.css";
-import {Spin, Tooltip} from "antd";
+import {Button, Spin, Tooltip} from "antd";
 import {useOutletContext} from "react-router-dom";
 import {ShortName} from "../../../components/Helpers/TextHelpers";
 import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween';
+import {ArrowLeftOutlined, ArrowRightOutlined} from "@ant-design/icons";
 
 dayjs.extend(isBetween);
 
 const Chart = (props) => {
-    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear, openDrawer } = useOutletContext();
+    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear, openDrawer, onPreviousMonth, onNextMonth } = useOutletContext();
 
     const getDaysInMonth = (date) =>
         Array.from({ length: date.daysInMonth() }, (_, i) =>
@@ -57,7 +58,27 @@ const Chart = (props) => {
                 <div className={styles.sk_chart}>
                     <div className={styles.month_row}>
                         <div></div>
-                        <div className={styles.month}></div>
+                        <div className={styles.month}>
+                            <Button style={{width: '100%'}}
+                                    icon={<ArrowLeftOutlined />}
+                                    color="default"
+                                    variant="text"
+                                    onClick={onPreviousMonth}
+                                    disabled={rangeValues.includes(1)}
+                            />
+                            <div className={styles.month_name}>
+                                <p className={styles.month_name_p}>
+                                    {dayjs(`${activeYear}-${rangeValues[0]}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${rangeValues[0]}-01`).format('MMMM').slice(1)}
+                                </p>
+                            </div>
+                            <Button style={{width: '100%'}}
+                                    icon={<ArrowRightOutlined />}
+                                    color="default"
+                                    variant="text"
+                                    onClick={onNextMonth}
+                                    disabled={rangeValues.includes(12)}
+                            />
+                        </div>
                     </div>
                     <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
                         <div className={styles.user_cell}></div>
