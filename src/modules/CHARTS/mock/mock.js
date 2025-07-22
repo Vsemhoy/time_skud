@@ -581,42 +581,46 @@ export const USDA = {
         149
     ]
 };
-
 export const USERS = [
     {
         "name": "Админатор",
         "patronymic": "Паникулович",
         "surname": "Пультов",
         "id": 1,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Весёлая",
         "patronymic": "Пирожковна",
         "surname": "Чернышовна",
         "id": 8,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Танцующая",
         "patronymic": "Безотчетовна",
         "surname": "Гуляшкина",
         "id": 9,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Елочка",
         "patronymic": "Кексиковна",
         "surname": "Мороженова",
         "id": 10,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Леночка",
         "patronymic": "Пончикова",
         "surname": "Апельсинова",
         "id": 32,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Конфеттин",
@@ -630,35 +634,40 @@ export const USERS = [
         "patronymic": "Пончикова",
         "surname": "Бубликова",
         "id": 34,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Карамель",
         "patronymic": "Вафлевич",
         "surname": "Барбарисов",
         "id": 35,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Ягодка",
         "patronymic": "Медовна",
         "surname": "Блинникова",
         "id": 36,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Драже",
         "patronymic": "Кремовна",
         "surname": "Булочникова",
         "id": 37,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Дима",
         "patronymic": "Пельмешкович",
         "surname": "Вафлев",
         "id": 38,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Маруся",
@@ -672,35 +681,40 @@ export const USERS = [
         "patronymic": "Тортовна",
         "surname": "Пирожкова",
         "id": 40,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Танюшка",
         "patronymic": "Шоколадовна",
         "surname": "Дрожжина",
         "id": 41,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Дениска",
         "patronymic": "Карамельевич",
         "surname": "Дынёв",
         "id": 42,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Елка",
         "patronymic": "Печенюшковна",
         "surname": "Почемучкина",
         "id": 43,
-        "boss_id": 46
+        "boss_id": 46,
+        "id_company": 2
     },
     {
         "name": "Серёжа",
         "patronymic": "Мармеладович",
         "surname": "Золотистый",
         "id": 44,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Лёша",
@@ -714,63 +728,72 @@ export const USERS = [
         "patronymic": "Конфетный",
         "surname": "Кекселёв",
         "id": 46,
-        "boss_id": 46
+        "boss_id": 46,
+        "id_company": 2
     },
     {
         "name": "Валюша",
         "patronymic": "Пончикова",
         "surname": "Плюшкина",
         "id": 47,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Аннюта",
         "patronymic": "Десертевна",
         "surname": "Лакомкина",
         "id": 48,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Мариша",
         "patronymic": "Бисквитовна",
         "surname": "Сладкова",
         "id": 49,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Валера",
         "patronymic": "Пудингович",
         "surname": "Пирожков",
         "id": 50,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Сашка",
         "patronymic": "Шоколадовна",
         "surname": "Оладушкина",
         "id": 51,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Игорька",
         "patronymic": "Марципанович",
         "surname": "Мармеладов",
         "id": 52,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Юрик",
         "patronymic": "Вафлёвич",
         "surname": "Пончиков",
         "id": 53,
-        "boss_id": 46
+        "boss_id": 46,
+        "id_company": 2
     },
     {
         "name": "Анатолий",
         "patronymic": "Морожоварович",
         "surname": "Морожкин",
         "id": 54,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Юра",
@@ -784,42 +807,48 @@ export const USERS = [
         "patronymic": "Вафлёвич",
         "surname": "Тортиков",
         "id": 56,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Дима",
         "patronymic": "Печенькович",
         "surname": "Пирожков",
         "id": 57,
-        "boss_id": 46
+        "boss_id": 46,
+        "id_company": 2
     },
     {
         "name": "Васька",
         "patronymic": "Вафлёнович",
         "surname": "Плюшкинов",
         "id": 58,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Димон",
         "patronymic": "Иваныч",
         "surname": "Пончиков",
         "id": 59,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Димчик",
         "patronymic": "Сахаревич",
         "surname": "Пряничкин",
         "id": 60,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Алекс",
         "patronymic": "Вафлёнович",
         "surname": "Пакетиков",
         "id": 61,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Жанна",
@@ -833,56 +862,64 @@ export const USERS = [
         "patronymic": "Вафлинский",
         "surname": "Рябинов",
         "id": 63,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Леша",
         "patronymic": "Пончикович",
         "surname": "Сахаринов",
         "id": 64,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Сережа",
         "patronymic": "Пломбиревич",
         "surname": "Комаров",
         "id": 65,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Танюша",
         "patronymic": "Вафлёвна",
         "surname": "Тортикова",
         "id": 66,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Ирочка",
         "patronymic": "Пончиковна",
         "surname": "Пирожкова",
         "id": 67,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Елка",
         "patronymic": "Шоколадовна",
         "surname": "Пудингова",
         "id": 68,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Алёша",
         "patronymic": "Вафлёнович",
         "surname": "Ульянович",
         "id": 69,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Юля",
         "patronymic": "Пирожковна",
         "surname": "Чекмушарова",
         "id": 70,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Оксанка",
@@ -896,14 +933,16 @@ export const USERS = [
         "patronymic": "Иваныч",
         "surname": "Чупочкина",
         "id": 72,
-        "boss_id": 0
+        "boss_id": 0,
+        "id_company": 2
     },
     {
         "name": "Наташа",
         "patronymic": "Пончикова",
         "surname": "Юдишкина",
         "id": 73,
-        "boss_id": 46
+        "boss_id": 46,
+        "id_company": 2
     },
 ];
 export const USERS_PAGE = [
@@ -916,8 +955,8 @@ export const USERS_PAGE = [
                 {
                     "id": 71,
                     "approved": 0,
-                    "start": "2025-07-12",
-                    "end": "2025-07-18",
+                    "start": "2025-07-01",
+                    "end": "2025-07-13",
                     "user_id": 43,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
@@ -932,8 +971,8 @@ export const USERS_PAGE = [
                 {
                     "id": 70,
                     "approved": 0,
-                    "start": "2025-07-12",
-                    "end": "2025-07-18",
+                    "start": "2025-07-14",
+                    "end": "2025-07-27",
                     "user_id": 46,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
@@ -951,7 +990,24 @@ export const USERS_PAGE = [
             "name": "Пельмирий",
             "surname": "Лапшиков",
             "patronymic": "Весёлович",
-            "charts": []
+            "charts": [
+                {
+                    "id": 72,
+                    "approved": 0,
+                    "start": "2025-07-07",
+                    "end": "2025-07-13",
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+                },
+                {
+                    "id": 73,
+                    "approved": 0,
+                    "start": "2025-07-21",
+                    "end": "2025-07-27",
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+                },
+            ]
         },
         {
             "id": 91,
@@ -979,7 +1035,24 @@ export const USERS_PAGE = [
             "name": "ЛеоНЛО",
             "surname": "Апельсин",
             "patronymic": "Мандаринович",
-            "charts": []
+            "charts": [
+                {
+                    "id": 74,
+                    "approved": 0,
+                    "start": "2025-07-02",
+                    "end": "2025-07-09",
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+                },
+                {
+                    "id": 75,
+                    "approved": 0,
+                    "start": "2025-07-17",
+                    "end": "2025-07-24",
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+                },
+            ]
         },
         {
             "id": 198,
@@ -1081,4 +1154,168 @@ export const GROUPS = [
         "company_color": "#ff7700",
         "users_count": 10
     },
-]
+];
+export const CLAIM_ACL_MOCK = {
+    "2": {
+        "6": [
+            "ANY_CLAIM_APPROVE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "7": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "8": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "9": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "10": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "11": [
+            "TEAM_CLAIM_UPDATE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "13": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ]
+    },
+    "3": {
+        "6": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "7": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "8": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "9": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "10": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "11": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ],
+        "13": [
+            "PERS_CLAIM_CREATE",
+            "PERS_CLAIM_UPDATE",
+            "PERS_CLAIM_APPROVE",
+            "TEAM_CLAIM_CREATE",
+            "TEAM_CLAIM_UPDATE",
+            "TEAM_CLAIM_APPROVE",
+            "ANY_CLAIM_CREATE",
+            "ANY_CLAIM_UPDATE",
+            "ANY_CLAIM_APPROVE"
+        ]
+    }
+};
