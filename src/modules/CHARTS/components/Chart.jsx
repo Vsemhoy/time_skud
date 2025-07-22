@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import styles from "../style/charts.module.css";
 import {Button, Spin, Tooltip} from "antd";
 import {useOutletContext} from "react-router-dom";
@@ -16,6 +16,16 @@ const Chart = (props) => {
         Array.from({ length: date.daysInMonth() }, (_, i) =>
             date.startOf('month').add(i, 'day')
         );
+
+    const daysInMonth = useMemo(() =>
+            getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)),
+        [activeYear, rangeValues]
+    );
+
+    const gridColumns = useMemo(() =>
+            `160px repeat(${daysInMonth.length}, 1fr)`,
+        [daysInMonth]
+    );
 
     const isInChartRange = (charts, day) => {
         if (!charts || !day) return null;
@@ -80,7 +90,7 @@ const Chart = (props) => {
                             />
                         </div>
                     </div>
-                    <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
+                    <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: gridColumns}}>
                         <div className={styles.user_cell}></div>
                         {getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)).map((day, dayIndex) => {
                             const isWeekend = day.day() === 0 || day.day() === 6;
@@ -94,7 +104,7 @@ const Chart = (props) => {
                         })}
                     </div>
                     {usersPage.map((user, index) => (
-                        <div className={styles.user_row} key={`user_${index}`} style={{gridTemplateColumns: `160px repeat(${dayjs().daysInMonth()}, 1fr)`}}>
+                        <div className={styles.user_row} key={`user_${index}`} style={{gridTemplateColumns: gridColumns}}>
                             <div className={styles.user_cell}>
                                 <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
                                 <div style={{color: '#2788e1'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
