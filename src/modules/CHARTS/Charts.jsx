@@ -30,12 +30,11 @@ import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
-import {CHART_STATES, GROUPS, USDA, USERS_PAGE} from "./mock/mock";
+import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
-import {CLAIM_ACL_MOCK} from "../CLAIM_MANAGER_SK/CLAIM_MOCK";
 import {ShortName} from "../../components/Helpers/TextHelpers";
 const  Charts = (props) => {
 
@@ -64,7 +63,6 @@ const  Charts = (props) => {
     const [currentUser, setCurrentUser] = useState({id:0});
     const [years, setYears] = useState([]);
     const [users, setUsers] = useState([]);
-    const [bosses, setBosses] = useState([]);
     const [companies, setCompanies] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [userStatuses, setUserStatuses] = useState([
@@ -374,7 +372,8 @@ const  Charts = (props) => {
                     key: `option-${name}-${option.id}`,
                     value: option.id,
                     label: option.name,
-                    boss_id: option.boss_id
+                    boss_id: option.boss_id,
+                    id_company: option.id_company,
                 })
             });
         } else {
@@ -387,6 +386,7 @@ const  Charts = (props) => {
                 id: user.id,
                 name: ShortName(user.surname, user.name, user.patronymic),
                 boss_id: user.boss_id,
+                id_company: user.id_company,
             }
         });
     }
@@ -413,6 +413,7 @@ const  Charts = (props) => {
         prepareDrawer();
     };
     const prepareDrawer = (currentChart = null, user = null) => {
+        console.log(user)
         setClaimForDrawer({
             id: currentChart?.id,
             user_id: user?.id,
@@ -426,6 +427,7 @@ const  Charts = (props) => {
             usr_name: user?.name,
             usr_surname: user?.surname,
             usr_patronymic: user?.patronymic,
+            id_company: user?.id_company,
         });
         setEditorOpened(true);
     };
@@ -573,7 +575,6 @@ const  Charts = (props) => {
                                         <ChartsSidebar
                                             year_list={prepareSelectOptions('years', years)}
                                             user_list={prepareSelectOptions('users', prepareShortFio(users))}
-                                            boss_list={prepareSelectOptions('boss', bosses)}
                                             company_list={prepareSelectOptions('company', companies)}
                                             depart_list={prepareSelectOptions('dep', departments)}
                                             user_statuses_list={prepareSelectOptions('user_status', userStatuses)}
@@ -699,7 +700,7 @@ const  Charts = (props) => {
                         on_close={handleCloseEditor}
                         claim_types={chartStates}
                         on_send={handleSaveClaim}
-                        my_id={currentUser?.id}
+                        my_id={PRODMODE ? currentUser?.id : USDA.user.id}
                         on_get_back={handleGetBackEvent}
                         on_approve={handleApproveEvent}
                         on_decline={handleDeclineEvent}

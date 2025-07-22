@@ -29,21 +29,21 @@ const ClaimEditorDrawer = (props) => {
   const [formUsers, setFormUsers] = useState([]); // all 
   const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs().endOf('day')]); // All
 
-  const [formTargetPoint, setFormTargetPoint] = useState('');     // 7, 8,
-  const [formTargetAddress, setFormTargetAddress] = useState(''); // 7, 8,
-  const [formContactFace, setFormContactFace] = useState('');     // 7, 8,
-  const [formContactFacePhone, setFormContactFacePhone] = useState('');  // 7, 8,
-  const [formTask, setFormTask] = useState('');                   // 7, 11, 8,
-  const [formComment, setFormComment] = useState('');             // 7, 8, 10
-  const [formSubwayCount, setFormSubwayCount] = useState(0);      // 7, 8,
-  const [formBusCount, setFormBusCount] = useState(0);            // 7, 8,
+  const [formTargetPoint, setFormTargetPoint] = useState('');                              // 7, 8,
+  const [formTargetAddress, setFormTargetAddress] = useState('');                          // 7, 8,
+  const [formContactFace, setFormContactFace] = useState('');                              // 7, 8,
+  const [formContactFacePhone, setFormContactFacePhone] = useState('');                    // 7, 8,
+  const [formTask, setFormTask] = useState('');                                            // 7, 11, 8,
+  const [formComment, setFormComment] = useState('');                                      // 7, 8, 10
+  const [formSubwayCount, setFormSubwayCount] = useState(0);                             // 7, 8,
+  const [formBusCount, setFormBusCount] = useState(0);                                   // 7, 8,
 
-  const [formReason, setFormReason] = useState('');               // 9, 
+  const [formReason, setFormReason] = useState('');                                        // 9,
 
-  const [formDescription, setFormDescription] = useState('');     // 6,
-  const [formDiseaseNumber, setFormDiseaseNumber] = useState(''); // 6,
+  const [formDescription, setFormDescription] = useState('');                              // 6,
+  const [formDiseaseNumber, setFormDiseaseNumber] = useState('');                          // 6,
   
-  const [formResult, setFormResult] = useState('');               // 11,
+  const [formResult, setFormResult] = useState('');                                        // 11,
   
   const [baseUserList, setBaseUserList] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -71,8 +71,6 @@ const ClaimEditorDrawer = (props) => {
     setOpen(false);
   };
 
-
-
   useEffect(() => {
     if (props.opened){
       refreshForm();
@@ -82,10 +80,8 @@ const ClaimEditorDrawer = (props) => {
     }
     let title = "";
     let color = "#999999";
-    console.log(editMode);
     if (editMode === 'update' || editMode === 'read' && props.data){
       setUserCard(props.data);
-      console.log(props.data);
       let res2 = JSON.parse(props.data.info);
       if (res2) {
         /// ДОделать тут
@@ -155,33 +151,23 @@ const ClaimEditorDrawer = (props) => {
           color = q?.color;
         }
     }
-    console.log(props.claim_types);
 
-        setPageTitle(title);
-        setPageColor(color);
+    setPageTitle(title);
+    setPageColor(color);
 
   }, [props.opened, props.claim_type, props.claim_types, props.data, editMode]);
-
-
-
-
   useEffect(() => {
     setEditMode(props.mode);
   }, [props.mode]);
-
   useEffect(() => {
     setAcls(props.acl_base)
   }, [props.acl_base]);
-
-
   useEffect(() => {
     setMYID(props.my_id);
   }, [props.my_id]);
-
   useEffect(()=>{
     masterFilterUserList();
   },[baseUserList, acls, formType]);
-
   useEffect(() => {
     setAllowApprove(false);
     setAllowBack(false);
@@ -193,7 +179,11 @@ const ClaimEditorDrawer = (props) => {
   }, [userCard, editMode]);
 
   const masterSetReadOptions = () => {
-    if  (userCard.evaluated === 0 && userCard.user_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_CREATE')){
+    if  (userCard.evaluated === 0 && userCard.user_id === MYID &&
+        props.acl_base[userCard.id_company] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_CREATE')
+    ) {
         // Заявку можно отозвать вчера и если она не согласована
         if (!userCard.state !== 1){
           setAllowBack(true);
@@ -203,23 +193,38 @@ const ClaimEditorDrawer = (props) => {
         if (start > today){
           setAllowBack(true);
         }
-    };
+    }
 
+    console.log(props.acl_base[userCard.id_company])
 
-    if (props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_UPDATE')){
+    if (props.acl_base[userCard.id_company] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_UPDATE')
+    ) {
         // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
         setAllowEdit(true);
-    } else if (userCard.boss_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
+    } else if (userCard.boss_id === MYID &&
+        props.acl_base[userCard.id_company] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')
+    ) {
         // Если челик мой подчиненный и у меня есть права добавлять подчиненным
         setAllowEdit(true);
-    } else if (userCard.user_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
+    } else if (userCard.user_id === MYID &&
+        props.acl_base[userCard.id_company] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+        props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')
+    ) {
       setAllowEdit(true);
-    };
+    }
 
     if (userCard.need_approved === 1)
     {
         // Согласовываем только те, что требуют согласования
-        if (props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_APPROVE')){
+        if (props.acl_base[userCard.id_company] &&
+            props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+            props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_APPROVE')
+        ) {
             // фильтр, если есть привилегия согласовывать кому угодно
             if (userCard.state !== 1){
               setAllowApprove(true);
@@ -231,7 +236,11 @@ const ClaimEditorDrawer = (props) => {
                   setAllowDecline(true);
                 }
             }
-        } else if (userCard.boss_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_APPROVE')){
+        } else if (userCard.boss_id === MYID &&
+            props.acl_base[userCard.id_company] &&
+            props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+            props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_APPROVE')
+        ) {
             // Если челик мой подчиненный и у меня есть право ему согласовывать
             if (userCard.state !== 1){
               setAllowApprove(true);
@@ -243,7 +252,11 @@ const ClaimEditorDrawer = (props) => {
                   setAllowDecline(true);
                 }
             }
-        } else if (userCard.user_id === MYID && props.acl_base[userCard.id_company] && props.acl_base[userCard.id_company][userCard.skud_current_state_id] && props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')){
+        } else if (userCard.user_id === MYID &&
+            props.acl_base[userCard.id_company] &&
+            props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
+            props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')
+        ) {
             if (userCard.state !== 1){
               setAllowApprove(true);
               setAllowDecline(true);
@@ -254,31 +267,37 @@ const ClaimEditorDrawer = (props) => {
                   setAllowDecline(true);
                 }
             }
-        };
+        }
     }
   }
 
-  const masterFilterUserList = ()=>{
-    
+  const masterFilterUserList = ()=> {
     let filteredUsers = [];
-    console.log(acls);
     for (let i = 0; i < baseUserList.length; i++) {
       const userCard = baseUserList[i];
-      // console.log(userCard);
-      if (acls[userCard.id_company] && acls[userCard.id_company][formType] && acls[userCard.id_company][formType]?.includes('ANY_CLAIM_CREATE')){
+      if (acls[userCard.id_company] &&
+          acls[userCard.id_company][+formType] &&
+          acls[userCard.id_company][+formType]?.includes('ANY_CLAIM_CREATE')
+      ) {
         // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
         filteredUsers.push(userCard);
         // setPersonalModeUser(null);
-      } else if (userCard.boss_id === MYID && acls[userCard.id_company] && acls[userCard.id_company][formType] && acls[userCard.id_company][formType]?.includes('TEAM_CLAIM_CREATE')){
+      } else if (userCard.boss_id === MYID && acls[userCard.id_company] &&
+          acls[userCard.id_company][+formType] &&
+          acls[userCard.id_company][+formType]?.includes('TEAM_CLAIM_CREATE')
+      ) {
         // Если челик мой подчиненный и у меня есть права добавлять подчиненным
         filteredUsers.push(userCard);
         // setPersonalModeUser(null);
-      } else if (userCard.id === MYID && acls[userCard.id_company] && acls[userCard.id_company][formType] && acls[userCard.id_company][formType]?.includes('PERS_CLAIM_CREATE')){
+      } else if (userCard.id === MYID &&
+          acls[userCard.id_company] &&
+          acls[userCard.id_company][+formType] &&
+          acls[userCard.id_company][+formType]?.includes('PERS_CLAIM_CREATE')
+      ) {
         filteredUsers.push(userCard);
         // setPersonalModeUser(userCard);
       }
     }
-
       setUserList(filteredUsers.map((item)=>{
         return {
           'key': `userkey_${item.id}`,
@@ -290,13 +309,11 @@ const ClaimEditorDrawer = (props) => {
     
   }
 
-
   useEffect(()=>{
     if (props.user_list){
       setBaseUserList(props.user_list);
     }
   },[props.user_list]);
-  
 
   const refreshForm = () => {
     setFormUsers([]);
@@ -313,8 +330,6 @@ const ClaimEditorDrawer = (props) => {
     setFormDiseaseNumber('');
     setFormResult('');
   }
-
-
   const handleSubmitForm = ()=>{
     let res2 = {};
     let result = {};
@@ -379,7 +394,6 @@ const ClaimEditorDrawer = (props) => {
     setOpen(false);
   }
 
-
   useEffect(()=>{
     // console.log('HELLOFD');
     if (formUsers.length > 0){
@@ -389,21 +403,18 @@ const ClaimEditorDrawer = (props) => {
     }
   },[formUsers]);
 
-
   const handleGetBack = () => {
     if (props.on_get_back){
       setOpen(false);
       props.on_get_back(itemId);
     }
   }
-
   const handleApproveClaim = ()=>{
     if (props.on_approve){
       props.on_approve(itemId, userCard);
     }
     setOpen(false);
   }
-
   const handleDeclineClaim = ()=>{
     if (props.on_decline){
       props.on_decline(itemId,userCard);
