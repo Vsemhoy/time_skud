@@ -415,24 +415,45 @@ const  Charts = (props) => {
         setEditorMode('create');
         prepareDrawer();
     };
-    const prepareDrawer = (currentChart = null, user = null) => {
-        console.log(user)
-        setClaimForDrawer({
-            id: currentChart?.id,
-            user_id: user?.id,
-            start: currentChart?.start,
-            end: currentChart?.end,
-            is_approved: currentChart?.approved,
-            skud_current_state_id: selectedChartState,
-            info: currentChart?.info,
-            days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
-            state_color: reactiveColor,
-            usr_name: user?.name,
-            usr_surname: user?.surname,
-            usr_patronymic: user?.patronymic,
-            id_company: user?.id_company,
-            boss_id: user?.boss_id
-        });
+    const prepareDrawer = (currentChart = null, user = null, start = null) => {
+        if (currentChart) {
+            setClaimForDrawer({
+                id: currentChart?.id,
+                user_id: user?.id,
+                start: currentChart?.start,
+                end: currentChart?.end,
+                is_approved: currentChart?.approved,
+                skud_current_state_id: selectedChartState,
+                info: currentChart?.info,
+                days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
+                state_color: reactiveColor,
+                usr_name: user?.name,
+                usr_surname: user?.surname,
+                usr_patronymic: user?.patronymic,
+                id_company: user?.id_company,
+                boss_id: user?.boss_id
+            });
+        } else {
+            setEditorMode('create');
+            console.log({
+                start,
+                user_id: user?.id,
+                usr_name: user?.name,
+                usr_surname: user?.surname,
+                usr_patronymic: user?.patronymic,
+                id_company: user?.id_company,
+                boss_id: user?.boss_id
+            })
+            setClaimForDrawer({
+                start: start,
+                user_id: user?.id,
+                usr_name: user?.name,
+                usr_surname: user?.surname,
+                usr_patronymic: user?.patronymic,
+                id_company: user?.id_company,
+                boss_id: user?.boss_id
+            });
+        }
         setEditorOpened(true);
     };
     const create_claim = async (claimObj) => {
@@ -706,7 +727,7 @@ const  Charts = (props) => {
                                 reactiveColor,
                                 rangeValues,
                                 activeYear,
-                                openDrawer: (currentChart, user) => prepareDrawer(currentChart, user),
+                                openDrawer: (currentChart, user, start) => prepareDrawer(currentChart, user, start),
                                 onPreviousMonth,
                                 onNextMonth,
                             }}/>

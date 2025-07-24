@@ -111,6 +111,7 @@ const Chart = (props) => {
                             </div>
                             {getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)).map((day, dayIndex) => {
                                 const currentChart = isInChartRange(user.charts, day);
+                                const fullDate = day.format('DD.MM.YYYY');
                                 return currentChart ? (
                                     <Tooltip key={`day_${dayIndex}`} title={
                                         <div>
@@ -133,6 +134,12 @@ const Chart = (props) => {
                                     ) : (
                                     <div className={styles.chart_cell}
                                          key={`day_${dayIndex}`}
+                                         title={fullDate}
+                                         onDoubleClick={() => {
+                                             if (user) {
+                                                 openDrawer(null, user, fullDate);
+                                             }
+                                         }}
                                     ></div>
                                 )
                             })}
