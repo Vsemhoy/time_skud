@@ -59,6 +59,9 @@ const ClaimEditorDrawer = (props) => {
   const [allowApprove, setAllowApprove] = useState(false);
   const [allowDecline, setAllowDecline] = useState(false);
 
+
+  const [selectedUser, setSelectedUser] = useState(null);
+
   // const [personalModeUser, setPersonalModeUser] = useState(null);
 
 
@@ -149,6 +152,11 @@ const ClaimEditorDrawer = (props) => {
           const q = props.claim_types.find((item)=> item.value === props.claim_type);
           title = q?.label;
           color = q?.color;
+        }
+        if (props.data) {
+          console.log(props.data.start)
+          setSelectedUser(props.data.user_id);
+          setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
         }
     }
 
@@ -458,6 +466,7 @@ const ClaimEditorDrawer = (props) => {
                     allowClear
                     style={{ width: '100%' }}
                     placeholder={'Имя пользователя'}
+                    value={selectedUser}
                     options={userList}
                       onChange={setFormUsers}
                       optionFilterProp="searchLabel" // ищет по этому полю!
