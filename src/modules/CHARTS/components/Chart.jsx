@@ -12,21 +12,44 @@ dayjs.extend(isBetween);
 const Chart = (props) => {
     const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear, openDrawer, onPreviousMonth, onNextMonth } = useOutletContext();
 
-    const getDaysInMonth = (date) =>
-        Array.from({ length: date.daysInMonth() }, (_, i) =>
-            date.startOf('month').add(i, 'day')
+    const months = useMemo(() => {
+        const arr = [];
+        for (let i = rangeValues[0]; i <= rangeValues[1] ; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }, [rangeValues]);
+    const getDaysInMonth = (date) => {
+        return Array.from(
+            {length: date.daysInMonth()}, (_, i) => date.startOf('month').add(i, 'day')
         );
+    };
+    const daysOrWeeksInMonth = useMemo(() => {
+            // getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`))
+            if (months.length === 1) {
+                console.log(1)
+                return getDaysInMonth(dayjs(`${activeYear}-${months[0]}-01`)).length;
+            } else {
+                console.log(2)
+                // Если выбрано несколько месяцев - вычисляем количество недель
+                const firstMonth = Math.min(...months);
+                const lastMonth = Math.max(...months);
 
-    const daysInMonth = useMemo(() =>
-            getDaysInMonth(dayjs(`${activeYear}-${rangeValues[0]}-01`)),
-        [activeYear, rangeValues]
+                const startDate = dayjs(`${activeYear}-${firstMonth}-01`).startOf('month');
+                const endDate = dayjs(`${activeYear}-${lastMonth}-01`).endOf('month');
+
+                // Вычисляем разницу в неделях между начальной и конечной датой
+                const res = endDate.diff(startDate, 'week') + 1; // +1 чтобы включить начальную неделю
+                console.log(endDate.diff(startDate, 'week') + 1)
+                return res;
+            }
+        }, [activeYear, rangeValues]
     );
-
-    const gridColumns = useMemo(() =>
-            `160px repeat(${daysInMonth.length}, 1fr)`,
-        [daysInMonth]
+    const gridColumns = useMemo(() => {
+            console.log(`160px repeat(${daysOrWeeksInMonth}, 1fr)`)
+            return `160px repeat(${daysOrWeeksInMonth}, 1fr)`;
+        }, [daysOrWeeksInMonth]
     );
-
     const isInChartRange = (charts, day) => {
         if (!charts || !day) return null;
         const currentDay = dayjs.isDayjs(day) ? day : dayjs(day);
@@ -38,7 +61,6 @@ const Chart = (props) => {
             return currentDay.isBetween(startDate, endDate, null, '[]');
         });
     };
-
     const ruWord = () => {
         switch (selectedChartState) {
             case 6:
@@ -58,36 +80,38 @@ const Chart = (props) => {
         }
     };
 
-    const openDrawerFunc = () => {
-        openDrawer();
-    };
-
     return (
         <Spin spinning={isLoadingChart}>
             {usersPage && (
                 <div className={styles.sk_chart}>
                     <div className={styles.month_row}>
                         <div></div>
-                        <div className={styles.month}>
-                            <Button style={{width: '100%'}}
-                                    icon={<ArrowLeftOutlined />}
-                                    color="default"
-                                    variant="text"
-                                    onClick={onPreviousMonth}
-                                    disabled={rangeValues.includes(1)}
-                            />
-                            <div className={styles.month_name}>
-                                <p className={styles.month_name_p}>
-                                    {dayjs(`${activeYear}-${rangeValues[0]}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${rangeValues[0]}-01`).format('MMMM').slice(1)}
-                                </p>
+                        <div className={styles.month_container} style={{gridTemplateColumns: (rangeValues[1] - rangeValues[0] + 1) !== 12 ? '39px 1fr 39px' : '1fr'}}>
+                            {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
+                                <Button style={{width: '100%'}}
+                                        icon={<ArrowLeftOutlined/>}
+                                        color="default"
+                                        variant="text"
+                                        onClick={onPreviousMonth}
+                                        disabled={rangeValues.includes(1)}
+                                />
+                            )}
+                            <div className={styles.months} style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}>
+                                {months.map((month, index) => (
+                                    <p className={styles.month_name_p} key={`month-${month}-${index}`}>
+                                        {dayjs(`${activeYear}-${month}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${month}-01`).format('MMMM').slice(1)}
+                                    </p>
+                                ))}
                             </div>
-                            <Button style={{width: '100%'}}
-                                    icon={<ArrowRightOutlined />}
-                                    color="default"
-                                    variant="text"
-                                    onClick={onNextMonth}
-                                    disabled={rangeValues.includes(12)}
-                            />
+                            {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
+                                <Button style={{width: '100%'}}
+                                        icon={<ArrowRightOutlined />}
+                                        color="default"
+                                        variant="text"
+                                        onClick={onNextMonth}
+                                        disabled={rangeValues.includes(12)}
+                                />
+                            )}
                         </div>
                     </div>
                     <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: gridColumns}}>

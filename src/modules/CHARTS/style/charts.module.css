@@ -23,14 +23,14 @@
     position: sticky;
     /*top: 225px;*/
 }
-.month {
+.month_container {
     width: 100%;
     height: 100%;
     display: grid;
     grid-template-columns: 39px 1fr 39px;
 }
-.month_name {
-    display: flex;
+.months {
+    display: grid;
     align-items: center;
 }
 .month_name_p {
