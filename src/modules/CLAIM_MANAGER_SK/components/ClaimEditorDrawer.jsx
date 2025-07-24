@@ -59,9 +59,6 @@ const ClaimEditorDrawer = (props) => {
   const [allowApprove, setAllowApprove] = useState(false);
   const [allowDecline, setAllowDecline] = useState(false);
 
-
-  const [selectedUser, setSelectedUser] = useState(null);
-
   // const [personalModeUser, setPersonalModeUser] = useState(null);
 
 
@@ -155,7 +152,7 @@ const ClaimEditorDrawer = (props) => {
         }
         if (props.data) {
           console.log(props.data.start)
-          setSelectedUser(props.data.user_id);
+          setFormUsers([props.data.user_id]);
           setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
         }
     }
@@ -466,12 +463,12 @@ const ClaimEditorDrawer = (props) => {
                     allowClear
                     style={{ width: '100%' }}
                     placeholder={'Имя пользователя'}
-                    value={selectedUser}
+                    value={formUsers}
                     options={userList}
-                      onChange={setFormUsers}
-                      optionFilterProp="searchLabel" // ищет по этому полю!
-                      showSearch
-                    />
+                    onChange={setFormUsers}
+                    optionFilterProp="searchLabel" // ищет по этому полю!
+                    showSearch
+                  />
                 ) : (
 
                   <div className='sk-flex-space'>
