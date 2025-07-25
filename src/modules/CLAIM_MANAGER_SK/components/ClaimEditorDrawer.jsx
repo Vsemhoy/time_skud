@@ -26,7 +26,7 @@ const ClaimEditorDrawer = (props) => {
   const [itemId, setItemId] = useState(null);
   const [formType, setFormType] = useState(0);
 
-  const [formUsers, setFormUsers] = useState([]); // all 
+  const [formUsers, setFormUsers] = useState([]); // all
   const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs().endOf('day')]); // All
 
   const [formTargetPoint, setFormTargetPoint] = useState('');                              // 7, 8,
@@ -152,8 +152,12 @@ const ClaimEditorDrawer = (props) => {
         }
         if (props.data) {
           console.log(props.data.start)
-          setFormUsers([props.data.user_id]);
-          setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
+          if (props.data.user_id) {
+            setFormUsers([props.data.user_id]);
+          }
+          if (props.data.start) {
+            setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
+          }
         }
     }
 
@@ -463,7 +467,7 @@ const ClaimEditorDrawer = (props) => {
                     allowClear
                     style={{ width: '100%' }}
                     placeholder={'Имя пользователя'}
-                    value={formUsers}
+                    value={formUsers.length > 0 ? formUsers : []}
                     options={userList}
                     onChange={setFormUsers}
                     optionFilterProp="searchLabel" // ищет по этому полю!

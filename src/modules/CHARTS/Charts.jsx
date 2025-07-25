@@ -85,7 +85,8 @@ const  Charts = (props) => {
     const [claimForDrawer, setClaimForDrawer] = useState(null);
     const [aclBase, setAclBase] = useState({});
 
-    const [rangeValues, setRangeValues] = useState([dayjs().month() + 1,dayjs().month() + 1]);
+    //const [rangeValues, setRangeValues] = useState([1,12]);
+    const [rangeValues, setRangeValues] = useState([dayjs().month() - 1,dayjs().month() + 1]);
 
     const iconComponents = {
         MinusCircleOutlined: <MinusCircleOutlined />,
