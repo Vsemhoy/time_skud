@@ -63,8 +63,8 @@ const Chart = (props) => {
             return currentDay.isBetween(startDate, endDate, null, '[]');
         });
     };
-    const getChartInWeekRange = (charts, week) => {
-        if (!charts?.length || !months?.length) return null;
+    const getChartsInWeekRange = (charts, week) => {
+        if (!charts?.length || !months?.length) return [];
 
         // Сортируем месяцы по возрастанию
         const sortedMonths = [...months].sort((a, b) => a - b);
@@ -73,18 +73,21 @@ const Chart = (props) => {
         const rangeStart = dayjs(`${activeYear}-${sortedMonths[0]}-01`).startOf('month');
         const rangeEnd = dayjs(`${activeYear}-${sortedMonths[sortedMonths.length - 1]}-01`).endOf('month');
 
-        // Вычисляем общее количество недель в диапазоне
-        const totalWeeks = rangeEnd.diff(rangeStart, 'week') + 1;
+        // Находим первый понедельник в диапазоне
+        let firstMonday = rangeStart;
+        while (firstMonday.day() !== 1 && firstMonday.isBefore(rangeEnd)) {
+            firstMonday = firstMonday.add(1, 'day');
+        }
 
-        // Проверяем, что запрошенная неделя существует в диапазоне
-        if (week < 1 || week > totalWeeks) return null;
+        // Вычисляем даты начала и конца запрошенной недели
+        const weekStart = firstMonday.add((week - 1) * 7, 'day');
+        const weekEnd = weekStart.add(6, 'day');
 
-        // Вычисляем дату начала и конца запрошенной недели
-        const weekStart = rangeStart.add(week - 1, 'week');
-        const weekEnd = weekStart.endOf('week');
+        // Проверяем, что неделя входит в диапазон
+        if (weekStart.isAfter(rangeEnd)) return [];
 
-        // Находим первый подходящий график
-        return charts.find(chart => {
+        // Фильтруем все подходящие графики
+        return charts.filter(chart => {
             const chartStart = dayjs(chart.start);
             const chartEnd = dayjs(chart.end);
 
@@ -247,26 +250,32 @@ const Chart = (props) => {
                                 </>
                             ))}
                             {months.length > 2 && Array.from({ length: daysOrWeeksInMonth }).map((_, index) => {
-                                const currentChart = getChartInWeekRange(user.charts, index);
+                                const currentChart = getChartsInWeekRange(user.charts, index);
                                 const fullDate = `${index+1} неделя, ${getStartEndOfWeek(index+1)}`;
-                                return currentChart ? (
+                                return currentChart.length > 0 ? (
                                     <Tooltip key={`week_${index}`} title={
-                                        <div>
+                                        <>
                                             <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
-                                            <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
-                                            <div>Конец {ruWord()}: {dayjs(currentChart.end).format('DD.MM.YYYY')}</div>
-                                            <div>Длительность: {dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') + 1} дней</div>
-                                            <div>{user.approved ? 'Согласовано' : ''}</div>
-                                        </div>
+                                            <ol>
+                                                {currentChart.map((chart, dayIndex) => (
+                                                    <li key={`week_chart_${index}`}>
+                                                        <div>Начало {ruWord()}: {dayjs(chart.start).format('DD.MM.YYYY')}</div>
+                                                        <div>Конец {ruWord()}: {dayjs(chart.end).format('DD.MM.YYYY')}</div>
+                                                        <div>Длительность: {dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней</div>
+                                                        <div>{user.approved ? 'Согласовано' : ''}</div>
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                        </>
                                     }>
-                                        <div className={styles.chart_cell}
+                                    <div className={styles.chart_cell}
                                              style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
                                              onClick={() => {
-                                                 if (currentChart && user) {
-                                                     openDrawer(currentChart, user);
+                                                 if (currentChart.length === 1 && user) {
+                                                     openDrawer(currentChart[0], user);
                                                  }
                                              }}
-                                        ></div>
+                                        ><div>{currentChart.length > 1 ? currentChart.length : ''}</div></div>
                                     </Tooltip>
                                 ) : (
                                     <div className={styles.chart_cell}
