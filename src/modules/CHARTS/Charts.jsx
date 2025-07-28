@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import {Affix, Button, ConfigProvider, Layout, Pagination, Segmented, Slider, Spin, Tag} from "antd";
+import {Affix, Alert, Button, ConfigProvider, Layout, Modal, Pagination, Segmented, Slider, Spin, Tag} from "antd";
 import {
     AppleOutlined,
     CarOutlined,
@@ -84,6 +84,7 @@ const  Charts = (props) => {
     const [editorOpened, setEditorOpened] = useState(false);
     const [claimForDrawer, setClaimForDrawer] = useState(null);
     const [aclBase, setAclBase] = useState({});
+    const [alertInfo, setAlertInfo] = useState(false);
 
     //const [rangeValues, setRangeValues] = useState([1,12]);
     const [rangeValues, setRangeValues] = useState([dayjs().month() - 1,dayjs().month() + 1]);
@@ -266,6 +267,10 @@ const  Charts = (props) => {
                     const content = response.data.content;
                     setUsersPage(content.users);
                     setAllUsersCount(content.count);
+                }
+
+                if (response.data.message === "SPECIAL"){
+                    setAlertInfo(true);
                 }
             } catch (e) {
                 console.log(e);
@@ -588,6 +593,12 @@ const  Charts = (props) => {
 
     return (
         <Spin spinning={isLoading}>
+            {alertInfo && (<Alert
+                message="Показывал ПИСЮНЫ"
+                showIcon
+                description="Человек постоянно показывает писюны!!!!"
+                type="error"
+            />)}
             <div className={'mega-layout'}>
                 <Layout className={'layout'}>
                     <Header className={'header'}>
