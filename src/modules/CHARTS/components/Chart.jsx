@@ -143,9 +143,6 @@ const Chart = (props) => {
                 return 'контейнеров';
         }
     };
-    const hilightColumn = () => {
-
-    };
 
     return (
         <Spin spinning={isLoadingChart}>
@@ -188,23 +185,23 @@ const Chart = (props) => {
                     </div>
                     <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: gridColumns}}>
                         <div className={styles.user_cell}></div>
-                        {months.length <= 2 && months.map((month) => {
+                        {months.length <= 2 && months.map((month, monthIdx) => {
                             const daysInMonth = getDaysInMonth(dayjs(`${activeYear}-${month}-01`));
 
                             return daysInMonth.map((day, idx) => {
                                 const isWeekend = day.day() === 0 || day.day() === 6;
                                 const dayKey = `${activeYear}-${month}-${day.date()}`; // Уникальный ключ
-
+                                const date = day.date() + '.' + monthIdx;
                                 return (
                                     <div
                                         className={`
                                             ${styles.chart_cell} 
                                             ${styles.chart_header_cell} 
                                             ${isWeekend ? styles.weekend : ''}
-                                            ${idx === highlightedColumn ? styles.highlighted : ''}
+                                            ${date === highlightedColumn ? styles.highlighted : ''}
                                         `}
                                         key={dayKey}
-                                        onMouseEnter={() => setHighlightedColumn(idx)}
+                                        onMouseEnter={() => setHighlightedColumn(date)}
                                         onMouseLeave={() => setHighlightedColumn(null)}
                                     >
                                         <p className={styles.chart_cell_text}>{day.date()}</p>
@@ -240,6 +237,7 @@ const Chart = (props) => {
                                         if (months[index-1] === months[index]) return '';
                                         const currentChart = isInChartRange(user.charts, day);
                                         const fullDate = day.format('DD.MM.YYYY');
+                                        const date = day.date() + '.' + index;
                                         return currentChart ? (
                                             <Tooltip key={`${activeYear}-${month}-${day.date()}`} title={
                                                 <div>
@@ -252,7 +250,7 @@ const Chart = (props) => {
                                             }>
                                                 <div className={`
                                                         ${styles.chart_cell}
-                                                        ${dayIndex === highlightedColumn ? styles.highlighted : ''}
+                                                        ${date === highlightedColumn ? styles.highlighted : ''}
                                                     `}
                                                      style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
                                                      onClick={() => {
@@ -260,14 +258,14 @@ const Chart = (props) => {
                                                              openDrawer(currentChart, user);
                                                          }
                                                      }}
-                                                     onMouseEnter={() => setHighlightedColumn(dayIndex)}
+                                                     onMouseEnter={() => setHighlightedColumn(date)}
                                                      onMouseLeave={() => setHighlightedColumn(null)}
                                                 ></div>
                                             </Tooltip>
                                         ) : (
                                             <div className={`
                                                     ${styles.chart_cell}
-                                                    ${dayIndex === highlightedColumn ? styles.highlighted : ''}
+                                                    ${date === highlightedColumn ? styles.highlighted : ''}
                                                 `}
                                                  key={`${activeYear}-${month}-${day.date()}`}
                                                  title={fullDate}
@@ -276,7 +274,7 @@ const Chart = (props) => {
                                                          openDrawer(null, user, fullDate);
                                                      }
                                                  }}
-                                                 onMouseEnter={() => setHighlightedColumn(dayIndex)}
+                                                 onMouseEnter={() => setHighlightedColumn(date)}
                                                  onMouseLeave={() => setHighlightedColumn(null)}
                                             ></div>
                                         )
