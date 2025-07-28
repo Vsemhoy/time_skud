@@ -727,6 +727,7 @@ const  Charts = (props) => {
                                 rangeValues,
                                 setRangeValues,
                                 activeYear,
+                                renderIntersections: filterParams?.intersections,
                                 openDrawer: (currentChart, user, start) => prepareDrawer(currentChart, user, start),
                                 onPreviousMonth,
                                 onNextMonth,
