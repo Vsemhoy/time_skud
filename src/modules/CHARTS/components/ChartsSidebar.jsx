@@ -9,7 +9,7 @@ const ChartsSidebar = (props) => {
         filterUser: null,
         filterCompany: null,
         filterDepartment: null,
-        filterUserStatus: null,
+        filterUserStatus: 1,
         filterGroup: null,
     }
 
@@ -17,9 +17,9 @@ const ChartsSidebar = (props) => {
     const [filterUser, setFilterUser] = useState(null);
     const [filterCompany, setFilterCompany] = useState(null);
     const [filterDepartment, setFilterDepartment] = useState(null);
-    const [filterUserStatus, setFilterUserStatus] = useState(null);
+    const [filterUserStatus, setFilterUserStatus] = useState(1);
     const [filterGroup, setFilterGroup] = useState(null);
-    const [filterIntersections, setFilterIntersections] = useState(false);
+    const [filterIntersections, setFilterIntersections] = useState(true);
 
     const setInitialState = () => {
         setFilterYear(initialstate.filterYear);
@@ -156,7 +156,6 @@ const ChartsSidebar = (props) => {
                                 onChange={(ev) => {
                                     setFilterUserStatus(ev)
                                 }}
-                                allowClear
                         />
                     </div>
                 )}
