@@ -951,7 +951,24 @@ export const USERS_PAGE = [
             "name": "Улыбка",
             "surname": "Пузырёва",
             "patronymic": "Бубновна",
-            "charts": []
+            "charts": [
+                {
+                    "id": 71,
+                    "approved": 0,
+                    "start": "2025-07-07",
+                    "end": "2025-07-08",
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+                },
+                {
+                    "id": 71,
+                    "approved": 0,
+                    "start": "2025-07-12",
+                    "end": "2025-07-13",
+                    "user_id": 43,
+                    "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+                },
+            ]
         },
         {
             "id": 46,
@@ -1051,7 +1068,7 @@ export const USERS_PAGE = [
                     "id": 72,
                     "approved": 0,
                     "start": "2025-09-25",
-                    "end": "2025-09-30",
+                    "end": "2025-09-28",
                     "user_id": 43,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
@@ -1087,7 +1104,7 @@ export const USERS_PAGE = [
             "surname": "Беззубов",
             "patronymic": "Карамельевич",
             "charts": [
-                {
+                /*{
                     "id": 71,
                     "approved": 0,
                     "start": "2025-03-04",
@@ -1099,10 +1116,10 @@ export const USERS_PAGE = [
                     "id": 72,
                     "approved": 0,
                     "start": "2025-09-25",
-                    "end": "2025-09-30",
+                    "end": "2025-09-28",
                     "user_id": 43,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
-                }
+                }*/
             ]
         },
         {
@@ -1111,7 +1128,7 @@ export const USERS_PAGE = [
             "surname": "Апельсин",
             "patronymic": "Мандаринович",
             "charts": [
-                {
+                /*{
                     "id": 71,
                     "approved": 0,
                     "start": "2025-03-04",
@@ -1134,7 +1151,7 @@ export const USERS_PAGE = [
                     "end": "2025-09-20",
                     "user_id": 43,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
-                }
+                }*/
             ]
         },
         {
@@ -1143,7 +1160,7 @@ export const USERS_PAGE = [
             "surname": "Рогаликова",
             "patronymic": "Булочковна",
             "charts": [
-                {
+                /*{
                     "id": 72,
                     "approved": 0,
                     "start": "2025-03-10",
@@ -1166,7 +1183,7 @@ export const USERS_PAGE = [
                     "end": "2025-09-10",
                     "user_id": 43,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
-                }
+                }*/
             ]
         },
         {
@@ -1175,14 +1192,14 @@ export const USERS_PAGE = [
             "surname": "Плетёнова",
             "patronymic": "Веничковна",
             "charts": [
-                {
+                /*{
                     "id": 71,
                     "approved": 0,
                     "start": "2025-03-20",
                     "end": "2025-04-15",
                     "user_id": 43,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
-                }
+                }*/
             ]
         }
     ];
