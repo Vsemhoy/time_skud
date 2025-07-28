@@ -11,7 +11,9 @@ import {log10} from "chart.js/helpers";
 dayjs.extend(isBetween);
 
 const Chart = (props) => {
-    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, activeYear, openDrawer, onPreviousMonth, onNextMonth } = useOutletContext();
+    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, setRangeValues, activeYear, openDrawer, onPreviousMonth, onNextMonth } = useOutletContext();
+
+    const [highlightedColumn, setHighlightedColumn] = useState(null);
 
     const months = useMemo(() => {
         const arr = [];
@@ -141,6 +143,9 @@ const Chart = (props) => {
                 return 'контейнеров';
         }
     };
+    const hilightColumn = () => {
+
+    };
 
     return (
         <Spin spinning={isLoadingChart}>
@@ -158,9 +163,14 @@ const Chart = (props) => {
                                         disabled={rangeValues.includes(1)}
                                 />
                             )}
-                            <div className={styles.months} style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}>
+                            <div className={styles.months}
+                                 style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}
+                            >
                                 {months.map((month, index) => (
-                                    <p className={styles.month_name_p} key={`month-${month}-${index}`}>
+                                    <p className={styles.month_name_p}
+                                       key={`month-${month}-${index}`}
+                                       onClick={() => setRangeValues([month,month])}
+                                    >
                                         {dayjs(`${activeYear}-${month}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${month}-01`).format('MMMM').slice(1)}
                                     </p>
                                 ))}
@@ -178,28 +188,43 @@ const Chart = (props) => {
                     </div>
                     <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: gridColumns}}>
                         <div className={styles.user_cell}></div>
-                        {months.length <= 2 && months.map((month, index) => (
-                            <>
-                                {getDaysInMonth(dayjs(`${activeYear}-${month}-01`)).map((day, dayIndex) => {
-                                    if (months[index-1] === months[index]) return '';
-                                    const isWeekend = day.day() === 0 || day.day() === 6;
-                                    return (
-                                        <div className={`${styles.chart_cell} ${styles.chart_header_cell} ${isWeekend ? styles.weekend : ''}`}
-                                             key={`${day.date()}-${day.day()}`}
-                                        >
-                                            <p className={styles.chart_cell_text}>{day.date()}</p>
-                                        </div>
-                                    );
-                                })}
-                            </>
-                        ))}
-                        {months.length > 2 &&  Array.from({ length: daysOrWeeksInMonth }).map((_, index) => {
+                        {months.length <= 2 && months.map((month) => {
+                            const daysInMonth = getDaysInMonth(dayjs(`${activeYear}-${month}-01`));
+
+                            return daysInMonth.map((day, idx) => {
+                                const isWeekend = day.day() === 0 || day.day() === 6;
+                                const dayKey = `${activeYear}-${month}-${day.date()}`; // Уникальный ключ
+
+                                return (
+                                    <div
+                                        className={`
+                                            ${styles.chart_cell} 
+                                            ${styles.chart_header_cell} 
+                                            ${isWeekend ? styles.weekend : ''}
+                                            ${idx === highlightedColumn ? styles.highlighted : ''}
+                                        `}
+                                        key={dayKey}
+                                        onMouseEnter={() => setHighlightedColumn(idx)}
+                                        onMouseLeave={() => setHighlightedColumn(null)}
+                                    >
+                                        <p className={styles.chart_cell_text}>{day.date()}</p>
+                                    </div>
+                                );
+                            });
+                        })}
+                        {months.length > 2 &&  Array.from({ length: daysOrWeeksInMonth }).map((_, indexx) => {
                             return (
                                 <div
-                                    className={`${styles.chart_cell} ${styles.chart_header_cell}`}
-                                    key={`week-${index}`}
+                                    className={`
+                                        ${styles.chart_cell} 
+                                        ${styles.chart_header_cell}
+                                        ${indexx === highlightedColumn ? styles.highlighted : ''}
+                                    `}
+                                    key={`we-week-${indexx}`}
+                                    onMouseEnter={() => setHighlightedColumn(indexx)}
+                                    onMouseLeave={() => setHighlightedColumn(null)}
                                 >
-                                    <p className={styles.chart_cell_text}>{index+1}</p>
+                                    <p className={styles.chart_cell_text}>{indexx+1}</p>
                                 </div>
                             );
                         })}
@@ -211,13 +236,12 @@ const Chart = (props) => {
                                 <div style={{color: '#2788e1'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
                             </div>
                             {months.length <= 2 && months.map((month, index) => (
-                                <>
-                                    {getDaysInMonth(dayjs(`${activeYear}-${month}-01`)).map((day, dayIndex) => {
+                                    getDaysInMonth(dayjs(`${activeYear}-${month}-01`)).map((day, dayIndex) => {
                                         if (months[index-1] === months[index]) return '';
                                         const currentChart = isInChartRange(user.charts, day);
                                         const fullDate = day.format('DD.MM.YYYY');
                                         return currentChart ? (
-                                            <Tooltip key={`day_${dayIndex}`} title={
+                                            <Tooltip key={`${activeYear}-${month}-${day.date()}`} title={
                                                 <div>
                                                     <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
                                                     <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
@@ -226,28 +250,37 @@ const Chart = (props) => {
                                                     <div>{user.approved ? 'Согласовано' : ''}</div>
                                                 </div>
                                             }>
-                                                <div className={styles.chart_cell}
+                                                <div className={`
+                                                        ${styles.chart_cell}
+                                                        ${dayIndex === highlightedColumn ? styles.highlighted : ''}
+                                                    `}
                                                      style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
                                                      onClick={() => {
                                                          if (currentChart && user) {
                                                              openDrawer(currentChart, user);
                                                          }
                                                      }}
+                                                     onMouseEnter={() => setHighlightedColumn(dayIndex)}
+                                                     onMouseLeave={() => setHighlightedColumn(null)}
                                                 ></div>
                                             </Tooltip>
                                         ) : (
-                                            <div className={styles.chart_cell}
-                                                 key={`day_${dayIndex}`}
+                                            <div className={`
+                                                    ${styles.chart_cell}
+                                                    ${dayIndex === highlightedColumn ? styles.highlighted : ''}
+                                                `}
+                                                 key={`${activeYear}-${month}-${day.date()}`}
                                                  title={fullDate}
                                                  onDoubleClick={() => {
                                                      if (user) {
                                                          openDrawer(null, user, fullDate);
                                                      }
                                                  }}
+                                                 onMouseEnter={() => setHighlightedColumn(dayIndex)}
+                                                 onMouseLeave={() => setHighlightedColumn(null)}
                                             ></div>
                                         )
-                                    })}
-                                </>
+                                    })
                             ))}
                             {months.length > 2 && Array.from({ length: daysOrWeeksInMonth }).map((_, index) => {
                                 const currentChart = getChartsInWeekRange(user.charts, index);
@@ -258,7 +291,7 @@ const Chart = (props) => {
                                             <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
                                             <ol>
                                                 {currentChart.map((chart, dayIndex) => (
-                                                    <li key={`week_chart_${index}`}>
+                                                    <li key={`week_chart_${dayIndex}`}>
                                                         <div>Начало {ruWord()}: {dayjs(chart.start).format('DD.MM.YYYY')}</div>
                                                         <div>Конец {ruWord()}: {dayjs(chart.end).format('DD.MM.YYYY')}</div>
                                                         <div>Длительность: {dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней</div>
@@ -268,17 +301,27 @@ const Chart = (props) => {
                                             </ol>
                                         </>
                                     }>
-                                    <div className={styles.chart_cell}
+                                        <div className={`
+                                                ${styles.chart_cell}
+                                                ${index === highlightedColumn ? styles.highlighted : ''}
+                                            `}
                                              style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
                                              onClick={() => {
                                                  if (currentChart.length === 1 && user) {
                                                      openDrawer(currentChart[0], user);
                                                  }
                                              }}
-                                        ><div>{currentChart.length > 1 ? currentChart.length : ''}</div></div>
+                                             onMouseEnter={() => setHighlightedColumn(index)}
+                                             onMouseLeave={() => setHighlightedColumn(null)}
+                                        >
+                                            <div>{currentChart.length > 1 ? currentChart.length : ''}</div>
+                                        </div>
                                     </Tooltip>
                                 ) : (
-                                    <div className={styles.chart_cell}
+                                    <div className={`
+                                            ${styles.chart_cell}
+                                            ${index === highlightedColumn ? styles.highlighted : ''}
+                                        `}
                                          key={`week_${index}`}
                                          title={fullDate}
                                          onDoubleClick={() => {
@@ -286,6 +329,8 @@ const Chart = (props) => {
                                                  openDrawer(null, user, fullDate);
                                              }
                                          }}
+                                         onMouseEnter={() => setHighlightedColumn(index)}
+                                         onMouseLeave={() => setHighlightedColumn(null)}
                                     ></div>
                                 );
                             })}
