@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, Select, Space} from "antd";
+import {Button, Checkbox, Input, Select, Space} from "antd";
 import dayjs from "dayjs";
 
 
@@ -19,6 +19,7 @@ const ChartsSidebar = (props) => {
     const [filterDepartment, setFilterDepartment] = useState(null);
     const [filterUserStatus, setFilterUserStatus] = useState(null);
     const [filterGroup, setFilterGroup] = useState(null);
+    const [filterIntersections, setFilterIntersections] = useState(false);
 
     const setInitialState = () => {
         setFilterYear(initialstate.filterYear);
@@ -37,12 +38,13 @@ const ChartsSidebar = (props) => {
         if (filterDepartment) params.department = filterDepartment;
         if (filterUserStatus) params.user_status_id = filterUserStatus;
         if (filterGroup) params.group_id = filterGroup;
+        if (filterIntersections) params.intersections = filterIntersections;
 
         if (props.on_change_filter){
             props.on_change_filter(params);
         }
     }, [filterYear, filterUser, filterCompany,
-        filterDepartment, filterUserStatus, filterGroup]);
+        filterDepartment, filterUserStatus, filterGroup, filterIntersections]);
     useEffect(() => {
         if (props.myClaims) {
             setFilterUser(props.user_list.filter(user => user.value === props.currentUser.id).map(user => user.value));
@@ -84,96 +86,110 @@ const ChartsSidebar = (props) => {
     };
 
     return (
-        <div style={{maxHeight: '100vh', overflow: 'auto'}}>
+        <div style={{height: 'calc(100vh - 17px - 64px - 46px)', overflow: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
 
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Год</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Выберите год'}
-                        value={filterYear}
-                        options={props.year_list}
-                        onChange={(ev) => {
-                            setFilterYear(ev)
-                        }}
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Пользователи</span>
-                <Select style={{width: '100%',maxHeight: 300, overflow: 'auto',}}
-                        placeholder={'Выберите пользователя'}
-                        value={filterUser}
-                        options={props.user_list}
-                        onChange={(ev) => {
-                            setFilterUser(ev)
-                        }}
-                        allowClear
-                        mode="multiple"
-                        optionRender={option => (
-                            <Space>
-                                <span>{option.label}</span>
-                            </Space>
-                        )}
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Компания</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Все компании'}
-                        value={filterCompany}
-                        options={props.company_list.filter(company => company.value > 1)}
-                        onChange={(ev) => {
-                            setFilterCompany(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Отдел</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Все отделы'}
-                        value={filterDepartment}
-                        options={props.depart_list}
-                        onChange={(ev) => {
-                            setFilterDepartment(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            {props.userAls && props.userAls.includes(17) && (
+            <div>
                 <div className={'sk-usp-filter-col-item'}>
-                    <span className={'sk-usp-filter-col-label'}>Статус пользователя</span>
+                    <span className={'sk-usp-filter-col-label'}>Год</span>
                     <Select style={{width: '100%'}}
-                            placeholder={'Работающие / уволенные'}
-                            value={filterUserStatus}
-                            options={props.user_statuses_list}
+                            placeholder={'Выберите год'}
+                            value={filterYear}
+                            options={props.year_list}
                             onChange={(ev) => {
-                                setFilterUserStatus(ev)
+                                setFilterYear(ev)
+                            }}
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Пользователи</span>
+                    <Select style={{width: '100%',maxHeight: 300, overflow: 'auto',}}
+                            placeholder={'Выберите пользователя'}
+                            value={filterUser}
+                            options={props.user_list}
+                            onChange={(ev) => {
+                                setFilterUser(ev)
+                            }}
+                            allowClear
+                            mode="multiple"
+                            optionRender={option => (
+                                <Space>
+                                    <span>{option.label}</span>
+                                </Space>
+                            )}
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Компания</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Все компании'}
+                            value={filterCompany}
+                            options={props.company_list.filter(company => company.value > 1)}
+                            onChange={(ev) => {
+                                setFilterCompany(ev)
                             }}
                             allowClear
                     />
                 </div>
-            )}
 
-            {props.userAls && props.userAls.includes(17) && (
                 <div className={'sk-usp-filter-col-item'}>
-                    <span className={'sk-usp-filter-col-label'}>Группа пользователя</span>
+                    <span className={'sk-usp-filter-col-label'}>Отдел</span>
                     <Select style={{width: '100%'}}
-                            placeholder={'Любая'}
-                            value={filterGroup}
-                            options={props.groups_list}
+                            placeholder={'Все отделы'}
+                            value={filterDepartment}
+                            options={props.depart_list}
                             onChange={(ev) => {
-                                setFilterGroup(ev)
+                                setFilterDepartment(ev)
                             }}
                             allowClear
                     />
                 </div>
-            )}
 
-            <br/>
+                {props.userAls && props.userAls.includes(17) && (
+                    <div className={'sk-usp-filter-col-item'}>
+                        <span className={'sk-usp-filter-col-label'}>Статус пользователя</span>
+                        <Select style={{width: '100%'}}
+                                placeholder={'Работающие / уволенные'}
+                                value={filterUserStatus}
+                                options={props.user_statuses_list}
+                                onChange={(ev) => {
+                                    setFilterUserStatus(ev)
+                                }}
+                                allowClear
+                        />
+                    </div>
+                )}
+
+                {props.userAls && props.userAls.includes(17) && (
+                    <div className={'sk-usp-filter-col-item'}>
+                        <span className={'sk-usp-filter-col-label'}>Группа пользователя</span>
+                        <Select style={{width: '100%'}}
+                                placeholder={'Любая'}
+                                value={filterGroup}
+                                options={props.groups_list}
+                                onChange={(ev) => {
+                                    setFilterGroup(ev)
+                                }}
+                                allowClear
+                        />
+                    </div>
+                )}
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <Checkbox checked={filterIntersections}
+                              onChange={() => setFilterIntersections(!filterIntersections)}
+                              style={{
+                                  marginBottom: '6px',
+                                  color: 'gray'
+                              }}
+                    >
+                        Показать пересечения
+                    </Checkbox>
+                </div>
+
+            </div>
+
             <div className={'sk-usp-filter-col-item'}>
                 <Button block onClick={setInitialState}>Очистить фильтры</Button>
             </div>

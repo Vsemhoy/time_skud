@@ -44,7 +44,7 @@ const  Charts = (props) => {
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingChart, setIsLoadingChart] = useState(false);
-    const [isOpenFilters, setIsOpenFilters] = useState(false);
+    const [isOpenFilters, setIsOpenFilters] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -76,6 +76,7 @@ const  Charts = (props) => {
         },
     ]);
     const [groups, setGroups] = useState([]);
+    const [intersections, setIntersections] = useState(false);
 
     const [myClaims, setMyClaims] = useState(false);
     const [mySubjects, setMySubjects] = useState(false);
@@ -85,8 +86,8 @@ const  Charts = (props) => {
     const [claimForDrawer, setClaimForDrawer] = useState(null);
     const [aclBase, setAclBase] = useState({});
 
-    const [rangeValues, setRangeValues] = useState([1,12]);
-    //const [rangeValues, setRangeValues] = useState([dayjs().month() - 1,dayjs().month() + 1]);
+    //const [rangeValues, setRangeValues] = useState([1,12]);
+    const [rangeValues, setRangeValues] = useState([dayjs().month(),dayjs().month()]);
 
     const iconComponents = {
         MinusCircleOutlined: <MinusCircleOutlined />,
@@ -570,18 +571,14 @@ const  Charts = (props) => {
     const onPreviousMonth = () => {
         let startMonth = rangeValues[0];
         let endMonth = rangeValues[1];
-        if (rangeValues[1] === rangeValues[0]) {
-            endMonth--;
-        }
         startMonth--;
+        endMonth--;
         setRangeValues([startMonth, endMonth]);
     };
     const onNextMonth = () => {
         let startMonth = rangeValues[0];
         let endMonth = rangeValues[1];
-        if (rangeValues[0] === rangeValues[1]) {
-            startMonth++;
-        }
+        startMonth++;
         endMonth++;
         setRangeValues([startMonth, endMonth]);
     };
@@ -627,6 +624,7 @@ const  Charts = (props) => {
                                             currentUser={PRODMODE ? currentUser : USDA.user}
                                             myClaims={myClaims}
                                             mySubjects={mySubjects}
+                                            intersections={intersections}
                                             on_change_filter={handleFilterChanged}
                                             on_change_filter_user={handleFilterUsersChanged}
                                         />
@@ -727,6 +725,7 @@ const  Charts = (props) => {
                                 selectedChartState,
                                 reactiveColor,
                                 rangeValues,
+                                setRangeValues,
                                 activeYear,
                                 openDrawer: (currentChart, user, start) => prepareDrawer(currentChart, user, start),
                                 onPreviousMonth,
