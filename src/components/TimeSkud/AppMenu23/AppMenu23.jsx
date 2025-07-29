@@ -148,6 +148,16 @@ const AppMenu23 = (props) => {
                 },
             ],
         },
+        {
+            key: 'menu3',
+            label: 'Бухгалтерия',
+            children: [
+                {
+                    key: '/account/table',
+                    label: <NavLink to="/account/table">Табель</NavLink>,
+                },
+            ]
+        },
         /*{
             key: '/hr/usersettings',
             label: <NavLink to="/hr/usersettings">Управление пользователями</NavLink>,
