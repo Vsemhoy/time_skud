@@ -114,15 +114,15 @@ const UserManagerPage_2025 = (props) => {
                          _token: CSRF_TOKEN
                      }
                  );
-                 if (serverResponse.data.content) {
+                 //if (serverResponse.data.content) {
                      const content = serverResponse.data.content
-                     if (content.users && content.users.length > 0) {
+                     //if (content.users && content.users.length > 0) {
                          filterAndSetUsers(content.users);
-                     }
-                     if (content.count) {
+                    // }
+                    // if (content.count) {
                          setAllUsersCount(content.count);
-                     }
-                 }
+                   //  }
+                 //}
              } catch (error) {
                  console.error('Error fetching users info:', error);
              }
