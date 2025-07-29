@@ -130,6 +130,18 @@ const Chart = (props) => {
 
         return `${formatDate(adjustedWeekStart)} - ${formatDate(adjustedWeekEnd)}`;
     };
+    const getStartOfWeek = (week) => {
+        if (!months?.length) return '';
+        const sortedMonths = [...months].sort((a, b) => a - b);
+        const year = activeYear; // Фиксируем год для примера
+        // Начало диапазона (первый день первого месяца)
+        const rangeStart = dayjs(`${year}-${sortedMonths[0]}-01`).startOf('month');
+        // Вычисляем дату начала недели (понедельник)
+        const weekStart = rangeStart.startOf('week').add((week - 1) * 7, 'day');
+        // Корректировка, чтобы не выходить за границы диапазона
+        const adjustedWeekStart = weekStart.isBefore(rangeStart) ? rangeStart : weekStart;
+        return adjustedWeekStart;
+    };
     const ruWord = () => {
         switch (selectedChartState) {
             case 6:
@@ -266,7 +278,7 @@ const Chart = (props) => {
                         })}
                     </div>
                     {usersPage.map((user, index) => (
-                        <div className={styles.user_row} key={`user_${index}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
+                        <div className={styles.user_row} key={`user_${user.id}_${index}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
                             <div className={styles.user_cell}>
                                 <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
                                 <div style={{color: '#2788e1'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
@@ -279,7 +291,7 @@ const Chart = (props) => {
                                     const inter = isIntersectDay(day);
                                     const date = day.date() + '.' + index;
                                     return currentChart ? (
-                                        <Tooltip key={`${activeYear}-${month}-${day.date()}`} title={
+                                        <Tooltip key={`tooltip_${activeYear}-${month}-${day.date()}`} title={
                                             <div>
                                                 <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
                                                 <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
@@ -305,12 +317,11 @@ const Chart = (props) => {
                                             </div>
                                         </Tooltip>
                                     ) : (
-                                        <div className={`${inter ? styles.intersection : ''}`}>
+                                        <div className={`${inter ? styles.intersection : ''}`} key={`${activeYear}-${month}-${day.date()}`}>
                                             <div className={`
-                                                ${styles.chart_cell}
-                                                ${date === highlightedColumn ? styles.highlighted : ''}
-                                            `}
-                                                 key={`${activeYear}-${month}-${day.date()}`}
+                                                        ${styles.chart_cell}
+                                                        ${date === highlightedColumn ? styles.highlighted : ''}
+                                                 `}
                                                  title={fullDate}
                                                  onDoubleClick={() => {
                                                      if (user) {
@@ -327,10 +338,10 @@ const Chart = (props) => {
                             {/*{months.length > 2 && Array.from({ length: daysOrWeeksInMonth }).map((_, index) => { // по неделям*/}
                             {months.length > 2 && daysOrWeeksInMonth.map((week, index) => { // по неделям
                                 const currentChart = getChartsInWeekRange(user.charts, index);
-                                const fullDate = `${index + 1} неделя, ${getStartEndOfWeek(index + 1)}`;
+                                const fullDate = `${week} неделя, ${getStartEndOfWeek(index + 1)}`;
                                 const inter = isIntersectWeek(week);
                                 return currentChart.length > 0 ? (
-                                    <Tooltip key={`week_${index}`} title={
+                                    <Tooltip key={`week_tooltip_${week}`} title={
                                         <>
                                             <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
                                             <ol>
@@ -364,16 +375,15 @@ const Chart = (props) => {
                                         </div>
                                     </Tooltip>
                                 ) : (
-                                    <div className={`${inter ? styles.intersection : ''}`}>
+                                    <div className={`${inter ? styles.intersection : ''}`} key={`week_${week}`}>
                                         <div className={`
-                                            ${styles.chart_cell}
-                                            ${index === highlightedColumn ? styles.highlighted : ''}
-                                        `}
-                                             key={`week_${index}`}
+                                                ${styles.chart_cell}
+                                                ${index === highlightedColumn ? styles.highlighted : ''}
+                                             `}
                                              title={fullDate}
                                              onDoubleClick={() => {
                                                  if (user) {
-                                                     openDrawer(null, user, fullDate);
+                                                     openDrawer(null, user, getStartOfWeek(week));
                                                  }
                                              }}
                                              onMouseEnter={() => setHighlightedColumn(index)}
