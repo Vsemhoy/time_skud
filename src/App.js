@@ -281,6 +281,8 @@ function App() {
             <Route path={'/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
+
+            <Route path={'/account/table'} element={<AccountPage userdata={userAct}/>} />
           </Routes>
       </Content>
       </div>
