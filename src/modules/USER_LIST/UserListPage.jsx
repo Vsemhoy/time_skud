@@ -625,11 +625,7 @@ const UserList = (props)=>{
                       <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
                         За.
                       </div>
-                      <div
-                        title="Есть опоздание"
-                        onClick={()=>{toggleSelectedColumn(20)}}
-                      >
-                      </div>
+                     
                       <div><div>Рук</div></div>
                       <div><div>Место</div></div>
                   </div>

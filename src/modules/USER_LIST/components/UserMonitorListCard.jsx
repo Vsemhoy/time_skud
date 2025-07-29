@@ -209,22 +209,30 @@ const UserMonitorListCard = (props) => {
                 </div>
                 <div>
                         {content.schedule && (
-                    <div style={{textAlign: 'center'}} title={JSON.stringify(content.schedule)}>
-                        <CalendarOutlined />
-                    </div>
+                        <div style={{textAlign: 'center'}} >
+                            <Tooltip title={JSON.stringify(content.schedule.skud_schedule)} >
+                            <CalendarOutlined />
+                            </Tooltip>
+                        </div>
                         )}
                 </div>
                 <div>
-                    {content.rules && (
+                    {content.rules && content.rules.length > 0 && (
                     <div style={{textAlign: 'center'}} title={JSON.stringify(content.rules)}>
+                        <Tooltip title={JSON.stringify(content.rules)} >
+
                         <FlagOutlined />
+                        </Tooltip>
                     </div>
                     )}
                 </div>
                 <div style={{textAlign: 'center'}}>
                     <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                        {content.claims && (
-                            <FireOutlined />
+                        {content.claims && content.claims.length > 0 && (
+                            <Tooltip title={JSON.stringify(content.claims)} >
+
+                                <FireOutlined />
+                            </Tooltip>
                         )}</div>
                     </div>
                 <div>
