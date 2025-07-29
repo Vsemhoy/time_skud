@@ -49,6 +49,7 @@ import Overtime from "./modules/CHARTS/outlets/Overtime";
 import Containers from "./modules/CHARTS/outlets/Containers";
 import Chart from "./modules/CHARTS/components/Chart";
 import NotifierDrawer from './components/Notifyer/NotifierDrawer';
+import AccountingPage from "./modules/ACCOUNTING/AccountingPage";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -250,7 +251,14 @@ function App() {
             <Route path={BASE_ROUTE + '/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
-            <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />            
+            <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
+
+            <Route path={BASE_ROUTE + '/accounting/timesheet'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/accounting/bankcard'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/accounting/productioncalendar'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/accounting/surcharges'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/accounting/rewards'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/accounting/retentions'} element={<AccountingPage userdata={userAct}/>} />
             
 
 
@@ -282,7 +290,12 @@ function App() {
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
 
-            <Route path={'/account/table'} element={<AccountPage userdata={userAct}/>} />
+            <Route path={'/accounting/timesheet'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={'/accounting/bankcard'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={'/accounting/productioncalendar'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={'/accounting/surcharges'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={'/accounting/rewards'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={'/accounting/retentions'} element={<AccountingPage userdata={userAct}/>} />
           </Routes>
       </Content>
       </div>

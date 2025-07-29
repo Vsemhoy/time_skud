@@ -153,27 +153,32 @@ const AppMenu23 = (props) => {
             label: 'Бухгалтерия',
             children: [
                 {
-                    key: '/account/table',
-                    label: <NavLink to="/account/table">Табель</NavLink>,
+                    key: '/accounting/timesheet',
+                    label: <NavLink to="/accounting/timesheet">Табель</NavLink>,
+                },
+                {
+                    key: '/accounting/bankcard',
+                    label: <NavLink to="/accounting/bankcard">Банковские карты</NavLink>,
+                },
+                {
+                    key: '/accounting/productioncalendar',
+                    label: <NavLink to="/accounting/productioncalendar">Производственный календарь</NavLink>,
+                },
+                {
+                    key: '/accounting/surcharges',
+                    label: <NavLink to="/accounting/surcharges">Доплаты</NavLink>,
+                },
+                {
+                    key: '/accounting/rewards',
+                    label: <NavLink to="/accounting/rewards">Вознаграждения</NavLink>,
+                },{
+                    key: '/accounting/retentions',
+                    label: <NavLink to="/accounting/retentions">Удержания</NavLink>,
                 },
             ]
         },
-        /*{
-            key: '/hr/usersettings',
-            label: <NavLink to="/hr/usersettings">Управление пользователями</NavLink>,
-        },*/
-        /*{
-            key: 'menu228',
-            label: 'Персонал_2',
-            children: [
-                {
-                    key: '/hr/usermanager',
-                    label: <NavLink to="/hr/usermanager">Управление пользователями</NavLink>,
-                },
-            ],
-        },*/
         {
-            key: 'menu634',
+            key: 'menu4',
             label: 'ACL',
             children: [
                 {
