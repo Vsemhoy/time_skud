@@ -616,13 +616,19 @@ const UserList = (props)=>{
                         </div>
                         <div></div>
                       </div>
+                      <div title='График работ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                        Гр.
+                      </div>
+                      <div title='Правила учёта РВ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                        Пр.
+                      </div>
+                      <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                        За.
+                      </div>
                       <div
                         title="Есть опоздание"
                         onClick={()=>{toggleSelectedColumn(20)}}
                       >
-                      <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                        Оп.
-                      </div>
                       </div>
                       <div><div>Рук</div></div>
                       <div><div>Место</div></div>

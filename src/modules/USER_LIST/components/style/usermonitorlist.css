@@ -1,6 +1,6 @@
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) {
     display: grid;
-    grid-template-columns: 42px  300px 50px auto  28px 28px 120px;
+    grid-template-columns: 42px  300px 50px auto 28px 28px 28px 28px 120px;
     border: 1px solid #80808061;
     border-top: none;
     background: var(--row-main-bg-color);

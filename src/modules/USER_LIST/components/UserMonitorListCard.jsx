@@ -15,7 +15,10 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     SmileOutlined,
     DollarOutlined,
     HeatMapOutlined,
-    TruckOutlined
+    TruckOutlined,
+    FireOutlined,
+    FlagOutlined,
+    CalendarOutlined
  } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../components/Helpers/TextHelpers";
 import './style/usermonitorlist.css';
@@ -204,15 +207,28 @@ const UserMonitorListCard = (props) => {
                     </div>
                     <div></div>
                 </div>
-
-                <div style={{textAlign: 'center'}}>
-                <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                    {content.is_late && (<IssuesCloseOutlined 
-                        title="Опоздание"
-                    />)}</div>
+                <div>
+                        {content.schedule && (
+                    <div style={{textAlign: 'center'}} title={JSON.stringify(content.schedule)}>
+                        <CalendarOutlined />
+                    </div>
+                        )}
                 </div>
                 <div>
-                    <div style={{textAlign: 'center'}}>
+                    {content.rules && (
+                    <div style={{textAlign: 'center'}} title={JSON.stringify(content.rules)}>
+                        <FlagOutlined />
+                    </div>
+                    )}
+                </div>
+                <div style={{textAlign: 'center'}}>
+                    <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                        {content.claims && (
+                            <FireOutlined />
+                        )}</div>
+                    </div>
+                <div>
+                    <div style={{textAlign: 'center'}} title={JSON.stringify(content.claims)}>
                     {content.boss_id > 0 && ( 
                         <Tooltip placement="left" title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`} arrow={mergedArrow}>
                             <RobotOutlined
