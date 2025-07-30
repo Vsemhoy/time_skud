@@ -30,12 +30,13 @@ import dayjs from "dayjs";
 
 import UserListSidebar from "./components/UserListSidebar";
 import {
+  ArrowLeftOutlined,
   CrownOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
   EditOutlined,
-  FilterOutlined,
-  PlusOutlined,
+  FilterOutlined, LeftOutlined,
+  PlusOutlined, RightOutlined, RollbackOutlined, StepBackwardOutlined,
   ToolOutlined
 } from "@ant-design/icons";
 import ClaimManagerSidebar from "../USER_LIST_2025/components/ClaimManagerSidebar";
@@ -112,8 +113,8 @@ const UserList2 = (props)=>{
     return [state, setState];
   };
 
-  const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', true);
-  const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', false);
+  const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', false);
+  const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', true);
   const [filterParams, setFilterParams] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [bosses, setBosses] = useState([]);
@@ -153,7 +154,10 @@ const UserList2 = (props)=>{
   }
 
   const handleFilterChanged = async (filterParam) => {
-    setFilterParams(filterParam)
+    // setFilterParams(filterParam)
+    if (isMounted) {
+      await fetchInfo(filterParam);
+    }
   };
 
   const fetchInfo = async () => {
@@ -720,14 +724,12 @@ const UserList2 = (props)=>{
                         style={{width: '125px'}}
                         onClick={() => setIsOpenFilters(!isOpenFilters)}
                 >Фильтры</Button>
-                {/*<h1 className={'page-header'}>Список сотрудников</h1>*/}
                 <div className="sk-flex">
-                  <DoubleLeftOutlined
+                  <LeftOutlined
                       title="На предыдущий день"
                       onClick={decreaseDate}
                       className={'sk-usermonic-filter-bacon'}
                   />
-
 
                   <DatePicker
                       defaultValue={usedDate}
@@ -739,7 +741,7 @@ const UserList2 = (props)=>{
                       title={getWeekDayString(usedDate.day())}
                   />
 
-                  <DoubleRightOutlined
+                  <RightOutlined
                       onClick={increaseDate}
                       className={'sk-usermonic-filter-bacon'}
                       title="На следующий день"

@@ -731,7 +731,39 @@ const UserManagerExtraTools = (props)=>{
                                         onClick={callToSelectGroups}
                                         block
                                     >Командировка</Button>
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Отпуск</Button>
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Больничные</Button>
+
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >СВО</Button>
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Полный отпуск+</Button>
                                 </div>
+
+
+
                             )}
                             {selectedTab === 2 && (
                                 <div style={{width: '100%'}}>
