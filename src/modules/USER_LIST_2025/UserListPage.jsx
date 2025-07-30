@@ -699,6 +699,15 @@ const UserList2 = (props)=>{
 
     }
 
+  useEffect(() => {
+    setDateInContext(usedDate);
+    if (toggleExternalFilters){
+      let params = {};
+      params.date =  usedDate.format('YYYY-MM-DD HH:mm:ss');
+      toggleExternalFilters(params);
+    }
+  }, [usedDate])
+
     return (
       <div className={'mega-layout'}>
         <Layout className={'layout'}>
