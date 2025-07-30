@@ -292,7 +292,7 @@ function App() {
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
 
-            <Route path={'/accounting/timesheet'} element={<AccountingPage userdata={userAct}/>} />
+            <Route path={'/accounting/staffingschedule'} element={<AccountingPage userdata={userAct}/>} />
             <Route path={'/accounting/bankcard'} element={<AccountingPage userdata={userAct}/>} />
             <Route path={'/accounting/productioncalendar'} element={<AccountingPage userdata={userAct}/>} />
             <Route path={'/accounting/surcharges'} element={<AccountingPage userdata={userAct}/>} />

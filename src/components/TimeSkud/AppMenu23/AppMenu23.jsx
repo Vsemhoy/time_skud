@@ -157,8 +157,8 @@ const AppMenu23 = (props) => {
             label: 'Бухгалтерия',
             children: [
                 {
-                    key: '/accounting/timesheet',
-                    label: <NavLink to="/accounting/timesheet">Табель</NavLink>,
+                    key: '/accounting/staffingschedule',
+                    label: <NavLink to="/accounting/staffingschedule">Штатное расписание</NavLink>,
                 },
                 {
                     key: '/accounting/bankcard',
