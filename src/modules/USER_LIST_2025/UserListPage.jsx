@@ -50,7 +50,7 @@ import {
   RULE_TYPE_LIST,
   SCHEDULE_LIST,
   SCHEDULE_TYPE_LIST,
-  USERS
+  USERS_MANAGER
 } from "../USER_MANAGER_2025/USER_MANAGER/mock/mock";
 import {COMPANIES, DEPARTMENTS} from "./mock/mock";
 import {getWeekDayString} from "../../components/Helpers/TextHelpers";
@@ -195,10 +195,10 @@ const UserList2 = (props)=>{
       }
     } else {
       setCompanies(COMPANIES)
-      setBosses(USERS);
+      setBosses(USERS_MANAGER);
       setDepartments(DEPARTMENTS);
-      // setEnters(USERS);
-      // setUserStatuses(USERS);
+      // setEnters(USERS_MANAGER);
+      // setUserStatuses(USERS_MANAGER);
       // setGroups(GROUPS_LIST);
       // setCurrentScheduleTypes(SCHEDULE_TYPE_LIST);
       // setCurrentSchedules(SCHEDULE_LIST);
@@ -224,7 +224,7 @@ const UserList2 = (props)=>{
         setIsLoading(false)
       }
     } else {
-      setBaseUserListData(USERS);
+      setBaseUserListData(USERS_MANAGER);
     }
   }
 
