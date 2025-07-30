@@ -161,7 +161,7 @@ const UserListSidebar = (props) => {
 
     return (
 
-        <Drawer title=<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.user_id}</Tag></span>
+        <Drawer title={<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.user_id}</Tag></span>}
         mask={false}
         onClose={()=>{handleClose()}} 
         open={openUserInfo}
@@ -319,7 +319,7 @@ const UserListSidebar = (props) => {
 
           {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
             <div className="sk-boss-wrapper-sf sk-w-padding-18">  
-              <div style={{fontSize: 'large',
+              <div style={{
                 fontSize: 'initial', fontWeight:'bolder',
                 borderBottom: '1px solid gray'
               }}><span
@@ -353,7 +353,7 @@ const UserListSidebar = (props) => {
             <>
             <br />
               <div className="sk-boss-wrapper-sf sk-w-padding-18">
-                <div style={{fontSize: 'large',
+                <div style={{
                       fontSize: 'initial', fontWeight:'bolder',
                       borderBottom: '1px solid gray'
                     }}><span>Сотрудники</span></div>

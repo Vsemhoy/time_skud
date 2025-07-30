@@ -72,7 +72,7 @@ const AppMenu23 = (props) => {
         },
         {
             key: '/userlist',
-            label: <NavLink to="/">Сотрудники 2025</NavLink>,
+            label: <NavLink to="/userlist">Сотрудники 2025</NavLink>,
         },
         {
             key: 'menu1',
