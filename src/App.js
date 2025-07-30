@@ -8,6 +8,7 @@ import {
   BrowserRouter
 } from "react-router-dom";
 import UserListPage from './modules/USER_LIST/UserListPage';
+import UserListPage2 from './modules/USER_LIST_2025/UserListPage';
 import {  Layout, Menu, Skeleton, Button, Badge, Alert } from 'antd';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
@@ -219,7 +220,8 @@ function App() {
             </div>
           )} 
           <Routes>
-            <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+              <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+              <Route path={'/userlist'} element={<UserListPage2 userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             
             <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
