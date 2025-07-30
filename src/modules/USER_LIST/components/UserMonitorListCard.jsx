@@ -133,7 +133,7 @@ const UserMonitorListCard = (props) => {
             onMouseOver={handleMOuseOver}
             id={`row_${content.user_id}`}
             onDoubleClick={handleDoubleClickOnRow}
-            className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
+            className={`sk-usermonic-cardrow-ou ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
             ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
             ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
         >

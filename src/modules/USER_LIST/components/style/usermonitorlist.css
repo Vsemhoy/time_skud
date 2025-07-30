@@ -1,4 +1,4 @@
-.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) {
+.sk-usermonic-cardrow-ou:not(.sk-usermonic-crd-divider) {
     display: grid;
     grid-template-columns: 42px  300px 50px auto 28px 28px 28px 28px 120px;
     border: 1px solid #80808061;
@@ -6,24 +6,24 @@
     background: var(--row-main-bg-color);
     transition: all ease 0.2s;
 }
-.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div {
+.sk-usermonic-cardrow-ou:not(.sk-usermonic-crd-divider) > div {
     transition: all 0.1s;
 }
-.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div, .sk-usermonic-micro-row > div {
+.sk-usermonic-cardrow-ou:not(.sk-usermonic-crd-divider) > div, .sk-usermonic-micro-row > div {
     box-shadow: -7px 0px 1px -6px var(--column-divider-color);
 }
 .sk-usermonic-micro-row > div:last-child {
     box-shadow: -7px 0px 1px -6px var(--column-divider-color), 7px 0px 1px -6px var(--column-divider-color);
 }
 
-.sk-usermonic-cardrow > div:first-child {
+.sk-usermonic-cardrow-ou > div:first-child {
     box-shadow: none !important;
 }
-/* .sk-usermonic-cardrow:nth-child(even){
+/* .sk-usermonic-cardrow-ou:nth-child(even){
     background-color: #03a9f4;
 } */
 
-.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider):hover > div {
+.sk-usermonic-cardrow-ou:not(.sk-usermonic-crd-divider):hover > div {
     background: var(--row-hovered-bg-color);
 }
 
@@ -33,11 +33,11 @@
     background-color: var(--row-divider-color);
 }
 
-.sk-usermonic-cardrow:first-child {
+.sk-usermonic-cardrow-ou:first-child {
     border-top:  1px solid #80808061 !important;
 }
 
-.sk-usermonic-cardrow > div:not(.sk-flex-space) > div, 
+.sk-usermonic-cardrow-ou > div:not(.sk-flex-space) > div, 
 .sk-usermonic-micro-row > div:not(.sk-flex-space){
     padding: 4px;
     align-content: center;
@@ -193,7 +193,7 @@
     /* border-radius: 3px; */
     background: linear-gradient(85deg,rgba(255, 255, 255, 0) 0%, rgba(30, 30, 30, 0.46) 84%, rgba(0, 0, 0, 0.26) 100%);
 }
-/* .sk-usermonic-cardrow > div:first-child {
+/* .sk-usermonic-cardrow-ou > div:first-child {
     color:#006d9f;
 } */
 .sk-usermonic-crd-notinoffice-state > div:first-child {
@@ -250,7 +250,7 @@
     background-color: white;
     box-shadow: 0px 0px 9px white;
 }
-.sk-usermonic-cardrow {
+.sk-usermonic-cardrow-ou {
     transition: all 0.9s;
 }
 .sk-move-to-me {
