@@ -162,7 +162,7 @@ const UserList2 = (props)=>{
 
   const fetchInfo = async () => {
     setIsLoading(true);
-    // await fetchUsers();
+    await fetchUsers();
     await fetchFilters();
     if (PRODMODE) {
       setIsLoading(false);
@@ -206,6 +206,27 @@ const UserList2 = (props)=>{
       // setCurrentRules(RULE_LIST);
     }
   };
+
+  const fetchUsers = async (filters) => {
+    if (PRODMODE) {
+      try {
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getusers',
+            {
+              data: filters,
+              _token: CSRF_TOKEN
+            });
+        if (response && response.data) {
+          setBaseUserListData(response.data.content);
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        setIsLoading(false)
+      }
+    } else {
+      setBaseUserListData(USERS);
+    }
+  }
 
   const increaseDate = () => {
     setUsedDate(usedDate.add(1, 'day'));
@@ -322,7 +343,6 @@ const UserList2 = (props)=>{
     // useEffect(() => {
     //   if (PRODMODE){
     //     get_departments();
-    //     // get_users();
     //   } else {
     //      // setBaseUserListData(DS_USERLIST_USERS);
     //   }
@@ -333,7 +353,7 @@ const UserList2 = (props)=>{
       if (PRODMODE){
         const debounceTimer = setTimeout(() => {
 
-          get_users(extFilters);
+          fetchUsers(extFilters);
           }, 500);
           return () => clearTimeout(debounceTimer);
       } else {
@@ -356,7 +376,7 @@ const UserList2 = (props)=>{
       info();
       if (props.refresh_trigger != null){
         const debounceTimer = setTimeout(() => {
-          get_users(extFilters);
+          fetchUsers(extFilters);
           }, 500);
           return () => clearTimeout(debounceTimer);
       }
@@ -383,29 +403,6 @@ const UserList2 = (props)=>{
   //         // setLoadingOrgs(false)
   //     }
   // }
-
-
-      /**
-       * Получение списка пользователей
-       * @param {*} req 
-       * @param {*} res 
-       */
-      const get_users = async (filters, req, res) => {
-        try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getusers', 
-                {
-                    data: filters,
-                    _token: CSRF_TOKEN
-                });
-                if (response && response.data){
-                  setBaseUserListData(response.data.content);
-                }
-        } catch (e) {
-            console.log(e)
-        } finally {
-            // setLoadingOrgs(false)
-        }
-    }
   /** ------------------ FETCHES END ---------------- */
 
 
