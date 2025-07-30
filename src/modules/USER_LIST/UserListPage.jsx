@@ -554,7 +554,7 @@ const UserList = (props)=>{
               ):(
                   <>
                   <Affix offsetTop={0}>
-                  <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
+                  <div className={`sk-usermonic-cardrow-ou sk-usermonic-headerrow`}>
                       <div 
                         onClick={()=>{toggleSelectedColumn(1)}}
                       ><div
