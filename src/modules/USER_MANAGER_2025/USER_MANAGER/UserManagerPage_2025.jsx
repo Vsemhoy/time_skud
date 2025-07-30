@@ -12,13 +12,10 @@ import {
     ToolOutlined
 } from "@ant-design/icons";
 import {
-    DEPARTMENTS,
-    GROUPS,
     GROUPS_LIST, RULE_LIST, RULE_TYPE_LIST,
     SCHEDULE_LIST,
     SCHEDULE_TYPE_LIST,
-    USERS,
-    USERS_BY_DEPARTMENTS
+    USERS_MANAGER
 } from "./mock/mock";
 import {CSRF_TOKEN, HTTP_ROOT, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
@@ -127,8 +124,8 @@ const UserManagerPage_2025 = (props) => {
                  console.error('Error fetching users info:', error);
              }
          } else {
-             filterAndSetUsers(USERS);
-             setAllUsersCount(USERS.length);
+             filterAndSetUsers(USERS_MANAGER);
+             setAllUsersCount(USERS_MANAGER.length);
          }
     };
     const fetchFilters = async () => {
@@ -176,9 +173,9 @@ const UserManagerPage_2025 = (props) => {
             }
         } else {
             setCompanies(props.userdata.companies)
-            setBosses(USERS);
-            setEnters(USERS);
-            setUserStatuses(USERS);
+            setBosses(USERS_MANAGER);
+            setEnters(USERS_MANAGER);
+            setUserStatuses(USERS_MANAGER);
             setGroups(GROUPS_LIST);
             setCurrentScheduleTypes(SCHEDULE_TYPE_LIST);
             setCurrentSchedules(SCHEDULE_LIST);

@@ -114,7 +114,7 @@ export const DEPARTMENTS = [
         "name": "Отдел Логистики"
     }
 ];
-export const USERS =  [
+export const USERS_MANAGER =  [
     {
         "id": 46,
         "name": "Антон",

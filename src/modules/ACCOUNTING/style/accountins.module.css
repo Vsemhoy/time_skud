@@ -1,0 +1,82 @@
+.sk_department_header {
+    width: 100%;
+    height: 40px;
+    background-color: #C1CAD6;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    cursor: pointer;
+    transition: .3s;
+}
+.sk_department_header_hover_container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    padding: 5px;
+    cursor: pointer;
+    transition: .3s;
+}
+.sk_department_header_hover_container:hover {
+    background-color: var(--row-hovered-bg-color);
+}
+.sk_department_header_p {
+    min-width: 25px;
+    margin: 0;
+    font-weight: 500;
+    text-align: center;
+}
+.sk_table_row_staffingschedule {
+    width: 100%;
+    height: 45px;
+    display: grid;
+    grid-template-columns: 40px 3fr repeat(8, 1fr);
+    align-items: center;
+    transition: .3s;
+    padding: 5px;
+}
+.sk_department_table_header {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid #C1CAD6;
+}
+.sk_department_table_header:last-child {
+    border-right: none;
+}
+.sk_person_row_basic_hover_container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 40px 3fr repeat(8, 1fr);
+    padding: 5px;
+    transition: .3s;
+    background-color: #F6F6F6;
+}
+.sk_person_row_content {
+    border-right: 2px solid #C1CAD6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+}
+.sk_person_row_content:last-child {
+    border-right: none;
+}
+.sk_person_row_p {
+    min-width: 25px;
+    margin: 0 0 10px 0;
+    text-align: center;
+    margin: 0;
+}
+.sk_person_row_p_occupy {
+    min-width: 25px;
+    margin: 0;
+    text-align: center;
+    color: #757575;
+}

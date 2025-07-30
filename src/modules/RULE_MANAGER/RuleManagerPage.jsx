@@ -5,7 +5,7 @@ import "./style/rule_manager_page.css";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import {Affix, Button, Pagination, Tag, Layout, Spin} from "antd";
 import {
-    USERS
+    USERS_MANAGER
 } from "../USER_MANAGER_2025/USER_MANAGER/mock/mock";
 import {
     COMPANIES,
@@ -171,7 +171,7 @@ const RuleManagerPage = (props) => {
                 console.error('Error fetching users info:', error);
             }
         } else {
-            setUsers(USERS);
+            setUsers(USERS_MANAGER);
             setUserRules(USER_RULES);
 
             console.log(USER_RULES);
