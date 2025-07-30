@@ -30,6 +30,7 @@ import dayjs from "dayjs";
 
 import UserListSidebar from "./components/UserListSidebar";
 import {
+  CrownOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
   EditOutlined,
@@ -210,6 +211,14 @@ const UserList2 = (props)=>{
     setUsedDate(usedDate.add(-1, 'day'));
   }
 
+  useEffect(() => {
+    if (toolbarCommand === "add_day"){
+      setUsedDate(usedDate.add(1, 'day'));
+    } else if (toolbarCommand === "sub_day"){
+      setUsedDate(usedDate.add(-1, 'day'));
+    }
+  }, [toolbarCommand]);
+
   const setDateInContext = (value) => {
     const params = new URLSearchParams(window.location.search);
     params.set('date', value.unix());
@@ -230,6 +239,7 @@ const UserList2 = (props)=>{
       value = dayjs();
     }
     setUsedDate(value);
+    console.log(usedDate);
     setDateInContext(usedDate);
   }
 
@@ -717,7 +727,7 @@ const UserList2 = (props)=>{
                       format={"DD-MM-YYYY"}
                       variant="borderless"
                       size="large"
-                      // title={getWeekDayString(usedDate.day())}
+                      title={getWeekDayString(usedDate.day())}
                   />
 
                   <DoubleRightOutlined
@@ -728,6 +738,7 @@ const UserList2 = (props)=>{
 
 
                 </div>
+
                 <Button color="default"
                         variant={isOpenTools ? 'solid' : 'outlined'}
                         icon={<ToolOutlined/>}
@@ -763,6 +774,7 @@ const UserList2 = (props)=>{
                         boss_list={prepareSelectOptions('boss', bosses)}
                         company_list={prepareSelectOptions('company', companies)}
                         depart_list={prepareSelectOptions('dep', departments)}
+                        on_find_me={handleFindMe}
 
                         on_change_filter={handleFilterChanged}
                     />
@@ -775,102 +787,130 @@ const UserList2 = (props)=>{
                 <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
                   <div className="sk-content-table">
                     <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
-                          {userListData.length == 0 ? (
-                              <Empty />
-                          ):(
-                              <>
-                              <Affix offsetTop={0}>
-                              <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
-                                  <div
-                                    onClick={()=>{toggleSelectedColumn(1)}}
-                                  ><div
-                                  style={{paddingLeft: '9px'}}
-                                  className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
-                                  >id</div></div>
-                                  <div
-                                    onClick={()=>{toggleSelectedColumn(2)}}
-                                  >
-                                  <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
-                                  Имя сотрудника
-                                  </div>
-                                  </div>
-                                  <div
-                                    onClick={()=>{toggleSelectedColumn(3)}}
-                                  >
-                                  <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
-                                    Тел.
-                                  </div>
-                                  </div>
-                                  <div className="sk-flex-space">
-                                    <div></div>
-                                    <div className="sk-usermonic-micro-row">
-                                      <div
-                                        className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}
-                                        onClick={()=>{toggleSelectedColumn(10)}}
-                                      >
-                                        Вход
-                                      </div>
-                                      <div
-                                      className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}
-                                      onClick={()=>{toggleSelectedColumn(11)}}
-                                      >Выход</div>
-                                      <div
-                                      className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}
-                                      onClick={()=>{toggleSelectedColumn(12)}}
-                                        title={'Всего рабочее время'}
-                                      >РВ</div>
-                                      <div
-                                      className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}
-                                      onClick={()=>{toggleSelectedColumn(13)}}
-                                      title={'Общее время на предприятии'}
-                                      >ОВ</div>
-                                      <div
-                                      className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}
-                                      onClick={()=>{toggleSelectedColumn(14)}}
-                                      title={'Время выходов'}
-                                      >ВВ</div>
-                                      <div
-                                      className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}
-                                      onClick={()=>{toggleSelectedColumn(15)}}
-                                      title={'Врямя для отработки'}
-                                      >ОТ</div>
-                                      <div
-                                      className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}
-                                      onClick={()=>{toggleSelectedColumn(16)}}
-                                      title={'Потерянное время'}
-                                      >ПВ</div>
-                                    </div>
-                                    <div></div>
-                                  </div>
-                                  <div
-                                    title="Есть опоздание"
-                                    onClick={()=>{toggleSelectedColumn(20)}}
-                                  >
-                                  <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                                    Оп.
-                                  </div>
-                                  </div>
-                                  <div><div>Рук</div></div>
-                                  <div><div>Место</div></div>
+                      <Affix offsetTop={0}>
+                        <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
+                          <div
+                              onClick={() => {
+                                toggleSelectedColumn(1)
+                              }}
+                          >
+                            <div
+                                style={{paddingLeft: '9px'}}
+                                className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
+                            >id
+                            </div>
+                          </div>
+                          <div
+                              onClick={() => {
+                                toggleSelectedColumn(2)
+                              }}
+                          >
+                            <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}>
+                              Имя сотрудника
+                            </div>
+                          </div>
+                          <div
+                              onClick={() => {
+                                toggleSelectedColumn(3)
+                              }}
+                          >
+                            <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`}>
+                              Тел.
+                            </div>
+                          </div>
+                          <div className="sk-flex-space">
+                            <div></div>
+                            <div className="sk-usermonic-micro-row">
+                              <div
+                                  className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(10)
+                                  }}
+                              >
+                                Вход
                               </div>
-                              </Affix>
-                                  {filteredUsers.map((arche, index)=>
-                                  (
-                                      <UserMonitorListCard
-                                          key={`usmcard_${arche.user_id !== undefined ? arche.user_id : arche.key}`} // так как строки сеператоры не имеют айди
-                                          data={arche}
-                                          on_mark_user={handleMarkUser}
-                                          marked_users={markedUsers}
-                                          its_me={userdata.user.id === arche.user_id}
-                                          on_double_click={handleShowUserInfo}
-                                          selected_columns={selectedColumns}
+                              <div
+                                  className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(11)
+                                  }}
+                              >Выход
+                              </div>
+                              <div
+                                  className={`${selectedColumns.includes(12) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(12)
+                                  }}
+                                  title={'Всего рабочее время'}
+                              >РВ
+                              </div>
+                              <div
+                                  className={`${selectedColumns.includes(13) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(13)
+                                  }}
+                                  title={'Общее время на предприятии'}
+                              >ОВ
+                              </div>
+                              <div
+                                  className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(14)
+                                  }}
+                                  title={'Время выходов'}
+                              >ВВ
+                              </div>
+                              <div
+                                  className={`${selectedColumns.includes(15) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(15)
+                                  }}
+                                  title={'Врямя для отработки'}
+                              >ОТ
+                              </div>
+                              <div
+                                  className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
+                                  onClick={() => {
+                                    toggleSelectedColumn(16)
+                                  }}
+                                  title={'Потерянное время'}
+                              >ПВ
+                              </div>
+                            </div>
+                            <div></div>
+                          </div>
+                          <div
+                              title="Есть опоздание"
+                              onClick={() => {
+                                toggleSelectedColumn(20)
+                              }}
+                          >
+                            <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
+                              Оп.
+                            </div>
+                          </div>
+                          <div>
+                            <div>Рук</div>
+                          </div>
+                          <div>
+                            <div>Место</div>
+                          </div>
+                        </div>
+                      </Affix>
+                      {filteredUsers.map((arche, index) =>
+                          (
+                              <UserMonitorListCard
+                                  key={`usmcard_${arche.user_id !== undefined ? arche.user_id : arche.key}`} // так как строки сеператоры не имеют айди
+                                  data={arche}
+                                  on_mark_user={handleMarkUser}
+                                  marked_users={markedUsers}
+                                  its_me={userdata.user.id === arche.user_id}
+                                  on_double_click={handleShowUserInfo}
+                                  selected_columns={selectedColumns}
 
-                                      />
-                                  ))}
-                              </>
-
-                          )}
-                      </div>
+                              />
+                          ))}
+                    </div>
                   </div>
                 </Spin>
               </div>
@@ -909,15 +949,15 @@ const UserList2 = (props)=>{
                       onClose={() => setIsModalVisible(false)}
                   />
                   <UserListSidebar
-                    key="djafklsdjklfjaskl"
-                    target_user_guys={targetUserGuys}
-                    target_user_info={targetUserInfo}
-                    userdata={userdata}
-                    base_user_list_data={baseUserListData}
-                    open_user_info={openUserInfo}
-                    on_mark_user={handleMarkUser}
-                    on_close={setOpenUserInfo}
-                    target_date={targetDate}
+                      key="djafklsdjklfjaskl"
+                      target_user_guys={targetUserGuys}
+                      target_user_info={targetUserInfo}
+                      userdata={userdata}
+                      base_user_list_data={baseUserListData}
+                      open_user_info={openUserInfo}
+                      on_mark_user={handleMarkUser}
+                      on_close={setOpenUserInfo}
+                      target_date={targetDate}
                   />
                 </div>
               </Affix>
@@ -925,7 +965,7 @@ const UserList2 = (props)=>{
           </Layout>
         </Layout>
       </div>
-  )
+    )
 }
 
 
