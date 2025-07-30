@@ -1,6 +1,7 @@
 import { Button, DatePicker, Input, Select, Switch } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
+import {CrownOutlined, SearchOutlined} from "@ant-design/icons";
 
 const ClaimManagerSidebar = (props) => {
 
@@ -139,12 +140,12 @@ const ClaimManagerSidebar = (props) => {
             <div className={'sk-usp-filter-col-item'}>
                 <span className={'sk-usp-filter-col-label'}>Пользователь / должность</span>
                 <Input style={{width: '100%'}}
-                        placeholder={'Имя пользователя / должность'}
-                        allowClear={true}
-                        value={filterUserNameOrDepartment}
-                        onChange={(ev) => {
-                            setFilterUserNameOrDepartment(ev.target.value)
-                        }}
+                       placeholder={'Имя пользователя / должность'}
+                       allowClear={true}
+                       value={filterUserNameOrDepartment}
+                       onChange={(ev) => {
+                           setFilterUserNameOrDepartment(ev.target.value)
+                       }}
                 />
             </div>
 
@@ -279,6 +280,15 @@ const ClaimManagerSidebar = (props) => {
             {/*</div>*/}
 
             <br/>
+            <div className={'sk-usp-filter-col-item'}>
+                <Button
+                    style={{width: '100%'}}
+                    onClick={props.on_find_me}
+                    icon={<SearchOutlined/>}
+                >
+                    Найти cебя
+                </Button>
+            </div>
             <div className={'sk-usp-filter-col-item'}>
                 <Button block onClick={setInitialState}>Очистить фильтры</Button>
             </div>
