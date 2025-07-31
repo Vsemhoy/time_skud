@@ -183,6 +183,7 @@ function SchedulesWorkspace(props) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduleselects`,
                     {
+                        user_id: userIdState,
                         _token: CSRF_TOKEN
                     }
                 );
