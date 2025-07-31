@@ -10,6 +10,7 @@ import {
     DEPARTMENTS,
 } from "../mock/mock";
 import dayjs from "dayjs";
+import {USERS} from "../../CHARTS/mock/mock";
 
 const BaseInfoWorkspace = (props) => {
     const { currentUser, userIdState, savingInfo, onSavedInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
@@ -18,6 +19,7 @@ const BaseInfoWorkspace = (props) => {
 
     const [companies, setCompanies] = useState([]);
     const [departments, setDepartments] = useState([]);
+    const [bosses, setBosses] = useState([]);
     const [statuses, setStatuses] = useState([
         {
             id: 0,
@@ -61,6 +63,10 @@ const BaseInfoWorkspace = (props) => {
         id: null,
         name: '',
     });
+    const [boss, setBoss] = useState({
+        id: null,
+        name: '',
+    });
     const [occupy, setOccupy] = useState('');
     const [innerPhone, setInnerPhone] = useState('');
     const [telegramID, setTelegramID] = useState('');
@@ -86,14 +92,14 @@ const BaseInfoWorkspace = (props) => {
 
     useEffect(() => {
         if (!isMounted) {
-            baseFetchs().then();
+            fetchInfo().then();
             setIsMounted(true);
         }
     }, []);
 
     useEffect(() => {
         if (isMounted) {
-            baseFetchs().then();
+            fetchInfo().then();
         }
     }, [userIdState]);
 
@@ -137,7 +143,7 @@ const BaseInfoWorkspace = (props) => {
         console.log(company);
     }, [companies, company]);
 
-    const baseFetchs = async () => {
+    const fetchInfo = async () => {
         setIsLoading(true);
         await fetchBaseInfo();
         await fetchSelects();
@@ -146,7 +152,7 @@ const BaseInfoWorkspace = (props) => {
     };
     const isCanSave = () => {
         if (userIdState === 'new') {
-            if (company.id && surname && name && patronymic && occupy && rating) {
+            if (company.id && surname && name && patronymic && occupy && rating && boss.id) {
                 onUpdateBaseInfo(true);
             } else {
                 onUpdateBaseInfo(false);
@@ -184,6 +190,7 @@ const BaseInfoWorkspace = (props) => {
                 setDateEnter(MOCK_USER.dateEnter ? dayjs(MOCK_USER.dateEnter, 'DD.MM.YYYY') : null);
                 setRating(MOCK_USER.rating);
                 setStatus(MOCK_USER.status);
+                setBoss(MOCK_USER.boss);
                 setLogin(MOCK_USER.login);
                 setPassword(MOCK_USER.password);
                 setCardNumber(MOCK_USER.cardNumber);
@@ -225,6 +232,7 @@ const BaseInfoWorkspace = (props) => {
                 if (serverResponse.data.content) {
                     const content = serverResponse.data.content
                     setDepartments(content?.departaments);
+                    setDepartments(content?.bosses);
                 }
             } catch (error) {
                 console.error('Error fetching users base info selects:', error);
@@ -232,6 +240,7 @@ const BaseInfoWorkspace = (props) => {
         } else {
             setCompanies(COMPANIES);
             setDepartments(DEPARTMENTS);
+            setBosses(USERS);
         }
     };
     const createUser = async () => {
@@ -240,7 +249,7 @@ const BaseInfoWorkspace = (props) => {
                 const info = {
                     company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, login, password, cardNumber, conditionalCard, allowEntry
+                    rating, status, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
                 const data = {
                     id: userIdState,
@@ -272,7 +281,7 @@ const BaseInfoWorkspace = (props) => {
                 const data = {
                     company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, login, password, cardNumber, conditionalCard, allowEntry
+                    rating, status, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo/${userIdState}`,
                     {
@@ -444,6 +453,20 @@ const BaseInfoWorkspace = (props) => {
                                 value={(status.id !== undefined && status.id !== null) ? +status.id : null}
                                 options={statuses}
                                 onChange={(id) => setStatus(statuses.find(c => c.id === id))}
+                                style={{width: 360}}
+                                status="warning"
+                                fieldNames={{
+                                    value: 'id',
+                                    label: 'name',
+                                }}
+                        />
+                    </div>
+                    <div className={styles.sk_info_line}>
+                        <p className={styles.sk_line_label}>Руководитель</p>
+                        <Select placeholder="Руководитель"
+                                value={(boss.id !== undefined && boss.id !== null) ? +boss.id : null}
+                                options={bosses}
+                                onChange={(id) => setBoss(bosses.find(c => c.id === id))}
                                 style={{width: 360}}
                                 status="warning"
                                 fieldNames={{

@@ -22,6 +22,10 @@ export const MOCK_USER = {
         id: 0,
         name: 'Работает',
     },
+    boss: {
+        id: 46,
+        name: 'Ковалев Б.Р.',
+    },
     login: 'agd',
     password: '',
     cardNumber: '55GKEK24MM',
