@@ -43,7 +43,7 @@ import ClaimManagerSidebar from "../USER_LIST_2025/components/ClaimManagerSideba
 import {NavLink, useNavigate} from "react-router-dom";
 import SchedIcons from "../../assets/Comicon/SchedIcons";
 import RuleIcons from "../../assets/Comicon/RuleIcons";
-import UserManagerExtraTools from "../USER_MANAGER_2025/USER_MANAGER/components/UserManagerExtraTools";
+// import ClaimManagerTools from "../USER_LIST_2025/components/ClaimManagerTools.jsx";
 import Cookies from "js-cookie";
 import {
   GROUPS_LIST, RULE_LIST,
@@ -55,6 +55,7 @@ import {
 import {COMPANIES, DEPARTMENTS} from "./mock/mock";
 import {getWeekDayString} from "../../components/Helpers/TextHelpers";
 import {StateContext} from "../../components/ComStateProvider25/ComStateProvider25";
+// import ClaimManagerTools from "./components/ClaimManagerTools";
 
 const { Header, Sider, Content } = Layout;
 
@@ -210,6 +211,7 @@ const UserList2 = (props)=>{
   const fetchUsers = async (filters) => {
     if (PRODMODE) {
       try {
+        // setFiltersState(filters);
         let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getusers',
             {
               data: filters,
@@ -928,28 +930,28 @@ const UserList2 = (props)=>{
             >
               <Affix offsetTop={54}>
                 <div className="sk-width-container">
-                  <UserManagerExtraTools
-                      // onChangeFilter={(ev) => {setFilters(ev)}}
-                      // onSelectGroups={(val) => {setSelectedGroups(val)}}
-                      // onCallToSelectGroups={null}
-                      // onCallToClearGroups={null}
-                      // selected_users={checkedUsers}
-                      // onSelectAllUsers={null}
-                      //
-                      // companies={props.userdata?.companies}
-                      // groups={groups}
-                      // selectedCompany={selectedCompany}
-                      //
-                      // schedules={currentSchedules}
-                      // schedTypes={currentScheduleTypes}
-                      // onBidnSchedules={null}
-                      //
-                      // rules={currentRules}
-                      // ruleTypes={currentRuleTypes}
-                      // onBidnRules={null}
+                  {/*<ClaimManagerTools*/}
+                  {/*    // onChangeFilter={(ev) => {setFilters(ev)}}*/}
+                  {/*    // onSelectGroups={(val) => {setSelectedGroups(val)}}*/}
+                  {/*    // onCallToSelectGroups={null}*/}
+                  {/*    // onCallToClearGroups={null}*/}
+                  {/*    // selected_users={checkedUsers}*/}
+                  {/*    // onSelectAllUsers={null}*/}
+                  {/*    //*/}
+                  {/*    // companies={props.userdata?.companies}*/}
+                  {/*    // groups={groups}*/}
+                  {/*    // selectedCompany={selectedCompany}*/}
+                  {/*    //*/}
+                  {/*    // schedules={currentSchedules}*/}
+                  {/*    // schedTypes={currentScheduleTypes}*/}
+                  {/*    // onBidnSchedules={null}*/}
+                  {/*    //*/}
+                  {/*    // rules={currentRules}*/}
+                  {/*    // ruleTypes={currentRuleTypes}*/}
+                  {/*    // onBidnRules={null}*/}
 
-                      // on_action={fetchUsers}
-                  />
+                  {/*    on_action={fetchUsers}*/}
+                  {/*/>*/}
 
                   <UserModal
                       userId={selectedUserId}

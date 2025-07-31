@@ -13,7 +13,7 @@ import { BASE_ROUTE, CSRF_TOKEN, PRODMODE } from "../../../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../../../API/API";
 
 
-const UserManagerExtraTools = (props)=>{
+const ClaimManagerTools = (props)=>{
     const { state, setState } = useContext(StateContext);
 
     const [baseRuleList, setBaseRuleList] = useState([]);
@@ -704,7 +704,6 @@ const UserManagerExtraTools = (props)=>{
 
     return (
         <div>
-            {openedConsole ? (
             <div>
                 <Affix offsetTop={46}>
                     <div className={"sk-tool-console"}>
@@ -712,110 +711,105 @@ const UserManagerExtraTools = (props)=>{
                             <div>
                                 <Radio.Group value={selectedTab} block>
                                     <Radio.Button
-                                        onClick={()=>{setSelectedTab(1)}}
-                                        value={1}>Группы</Radio.Button>
+                                        onClick={() => {
+                                            setSelectedTab(1)
+                                        }}
+                                        value={1}>Мои</Radio.Button>
                                     <Radio.Button
-                                        onClick={()=>{setSelectedTab(2)}}
-                                        value={2}>Графики</Radio.Button>
-                                    <Radio.Button
-                                        onClick={()=>{setSelectedTab(3)}}
-                                        value={3}>Правила</Radio.Button>
+                                        onClick={() => {
+                                            setSelectedTab(2)
+                                        }}
+                                        value={2}>Подчиненные</Radio.Button>
                                 </Radio.Group>
                             </div>
                             <br/>
                             {selectedTab === 1 && (
                                 <div style={{width: '100%'}}>
-                                    <div className={'sk-flex-space'}>
-                                        <span  className={'sk-totoro'}>Группы </span> <span
-                                        onClick={()=>{setSelectedGroups([])}}
-                                    ><ClearOutlined /></span>
-                                    </div>
-                                    <br />
-                                    <label>Выберите группу для назначения/снятия</label>
-                                    <Select
-                                        placeholder={'Группы'}
-                                        value={selectedGroups}
-                                        mode={'multiple'}
-                                        options={groupList}
-                                        style={{ width: '100%' }}
-                                        onChange={(ev)=>{setSelectedGroups(ev)}}
-                                        tagRender={tagRender}
-                                    />
-                                    <br />
-                                    <br />
-                                    <div className={"sk-flex"}>
-                                        <Button
-                                            size={'small'}
-                                            onClick={callToClearGroups}
-                                            block
-                                            danger
-                                            disabled={selectedUsers.length === 0}
-                                        >Удалить группы</Button>
-                                        <Button
-                                            size={'small'}
-                                            disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
-                                            onClick={callToSelectGroups}
-                                            block
-                                        >Привязать группы</Button>
-                                        <br />
-                                    </div>
-                                    <br />
-                                    <br />
-                                    <div>
-                                        <Link to={BASE_ROUTE + "/hr/groups"}>Группы</Link> существуют только для группировки пользователей для удобства поиска.
-                                        <br />
-                                        <br />
-                                        Назначенная группа ни на что не влияет.
-                                        <br />
-                                        <br />
-                                        Каждому пользователю может быть назначено несколько групп.
-                                        <br />
-                                        <br />
-                                        - Чтобы назначить группы (группу), выберите чекбоксами нужных пользователей и нажмите "Привязать группы"
-                                        <br />
-                                        - Чтобы удалить все группы для выбранных пользователей, очистите поле выбора группы и нажмите "Удалить группы"
-                                        <br />
-                                        - Чтобы удалить конкретны группы для выбранных пользователей, выберите нужные в списке групп и нажмите "Удалить группы"
-                                    </div>
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Командировка</Button>
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Отпуск</Button>
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Больничные</Button>
+
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >СВО</Button>
+
+                                    <Button
+                                        // size={'small'}
+                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
+                                        onClick={callToSelectGroups}
+                                        block
+                                    >Полный отпуск+</Button>
                                 </div>
+
+
+
                             )}
                             {selectedTab === 2 && (
                                 <div style={{width: '100%'}}>
                                     <div className={'sk-flex-space'}>
                                         <span className={'sk-totoro'}>Графики работы</span>
                                     </div>
-                                    <br />
+                                    <br/>
                                     <label>Фильтр типа графика</label>
                                     <div className={'sk-flex-space'}>
                                         <Select
                                             status="warning"
                                             style={{width: '100%'}}
                                             options={schedTypes}
-                                            onChange={(ev)=>{setSelectedSchedType(ev)}}
+                                            onChange={(ev) => {
+                                                setSelectedSchedType(ev)
+                                            }}
                                             value={selectedSchedType}
                                         />
                                         <Button
-                                            onClick={()=>{setOpenModalSchedInfo(true)}}
-                                        ><QuestionCircleOutlined /></Button>
+                                            onClick={() => {
+                                                setOpenModalSchedInfo(true)
+                                            }}
+                                        ><QuestionCircleOutlined/></Button>
                                     </div>
-                                    <br />
+                                    <br/>
                                     <label>Выберите график работы</label>
                                     <Select
                                         status="error"
                                         style={{width: '100%'}}
                                         options={scheduleList}
                                         value={selectedSchedule}
-                                        onChange={(ev)=>{setSelectedSchedule(ev)}}
+                                        onChange={(ev) => {
+                                            setSelectedSchedule(ev)
+                                        }}
                                     />
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
                                     <div className={"sk-flex"}>
                                         <div>
                                             <label>Начало действия</label>
                                             <DatePicker
                                                 value={formStart}
                                                 onChange={handleSetStartSched}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
+                                                onKeyDown={(event) => {
+                                                    handleKeyDown(event, setFormStart)
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -824,11 +818,13 @@ const UserManagerExtraTools = (props)=>{
                                                 value={formEnd}
                                                 allowClear={true}
                                                 onChange={handleSetEndSched}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
+                                                onKeyDown={(event) => {
+                                                    handleKeyDown(event, setFormEnd)
+                                                }}
                                             />
                                         </div>
                                     </div>
-                                    <br />
+                                    <br/>
                                     <div className={"sk-flex"}>
                                         <Button
                                             disabled={selectedUsers.length === 0 || selectedSchedule == null ? true : false}
@@ -837,35 +833,40 @@ const UserManagerExtraTools = (props)=>{
                                             onClick={handleBindSchedules}
                                         >Привязать график</Button>
                                     </div>
-                                    <br />
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
+                                    <br/>
                                     <Link to={BASE_ROUTE + "/hr/schedules"}>Менеджер графиков</Link>
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
                                     <div>
                                         Начало действия нового графика может быть не раньше завтрашнего дня.
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
                                         Чтобы задать график бессрочно, оставьте второе поле даты пустым.
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
                                         При привязки группы:
-                                        <br />
-                                        - Если существуют группы, окончания которых пересекается с началом действия устанавливаемой группы, то дата окончания существующих
-                                        пересекаемых групп устанавливаются датой на день меньше, относительно начала устанавливаемой.
-                                        <br />
-                                        - Если существуют группы, дата начала которых равна или больше даты начала устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
+                                        <br/>
+                                        - Если существуют группы, окончания которых пересекается с началом действия
+                                        устанавливаемой группы, то дата окончания существующих
+                                        пересекаемых групп устанавливаются датой на день меньше, относительно начала
+                                        устанавливаемой.
+                                        <br/>
+                                        - Если существуют группы, дата начала которых равна или больше даты начала
+                                        устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
                                     </div>
                                 </div>
                             )}
 
                             {selectedTab === 3 && (
                                 <div style={{width: '100%'}}>
+
                                     <div className={'sk-flex-space'}>
                                         <span className={'sk-totoro'}>Правила учёта РВ</span>
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
+
                                     </div>
                                     <label>Фильтр типа правила</label>
                                     <div className={'sk-flex-space'}>
@@ -873,32 +874,40 @@ const UserManagerExtraTools = (props)=>{
                                             status="warning"
                                             style={{width: '100%'}}
                                             options={ruleTypes}
-                                            onChange={(ev)=>{setSelectedRuleType(ev)}}
+                                            onChange={(ev) => {
+                                                setSelectedRuleType(ev)
+                                            }}
                                             value={selectedRuleType}
                                         />
                                         <Button
-                                            onClick={()=>{setOpenModalRuleTypeInfo(true)}}
-                                        ><QuestionCircleOutlined /></Button>
+                                            onClick={() => {
+                                                setOpenModalRuleTypeInfo(true)
+                                            }}
+                                        ><QuestionCircleOutlined/></Button>
                                     </div>
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
                                     <label>Выберите правило учёта РВ</label>
                                     <Select
                                         status="error"
                                         style={{width: '100%'}}
                                         options={ruleList}
                                         value={selectedRule}
-                                        onChange={(ev)=>{setSelectedRule(ev)}}
+                                        onChange={(ev) => {
+                                            setSelectedRule(ev)
+                                        }}
                                     />
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
                                     <div className={"sk-flex"}>
                                         <div>
                                             <label>Начало действия</label>
                                             <DatePicker
                                                 value={formStart}
                                                 onChange={handleSetStartRule}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormStart)} }
+                                                onKeyDown={(event) => {
+                                                    handleKeyDown(event, setFormStart)
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -907,11 +916,13 @@ const UserManagerExtraTools = (props)=>{
                                                 allowClear={true}
                                                 onChange={handleSetEndRule}
                                                 value={formEnd}
-                                                onKeyDown={(event)=> {handleKeyDown(event, setFormEnd)} }
+                                                onKeyDown={(event) => {
+                                                    handleKeyDown(event, setFormEnd)
+                                                }}
                                             />
                                         </div>
                                     </div>
-                                    <br />
+                                    <br/>
                                     <div className={"sk-flex"}>
                                         <Button
                                             disabled={selectedUsers.length === 0 || selectedRule == null ? true : false}
@@ -920,25 +931,28 @@ const UserManagerExtraTools = (props)=>{
                                             onClick={handleBindRules}
                                         >Привязать правила</Button>
                                     </div>
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <Link to={BASE_ROUTE + "/hr/rules"}>Менеджер  правил учёта РВ</Link>
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <Link to={BASE_ROUTE + "/hr/rules"}>Менеджер правил учёта РВ</Link>
+                                    <br/>
+                                    <br/>
                                     <div>
                                         Начало действия нового правила может быть не раньше завтрашнего дня.
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
                                         Чтобы задать правило бессрочно, оставьте второе поле даты пустым.
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
                                         При привязки группы:
-                                        <br />
-                                        - Если существуют правила с таким же типом, окончания которых пересекается с началом действия устанавливаемого правила, то дата окончания существующих
-                                        пересекаемых правил устанавливаются датой на день меньше, относительно начала устанавливаемого правила.
-                                        <br />
-                                        - Если существуют правила, дата начала которых равна или больше даты начала устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
+                                        <br/>
+                                        - Если существуют правила с таким же типом, окончания которых пересекается с
+                                        началом действия устанавливаемого правила, то дата окончания существующих
+                                        пересекаемых правил устанавливаются датой на день меньше, относительно начала
+                                        устанавливаемого правила.
+                                        <br/>
+                                        - Если существуют правила, дата начала которых равна или больше даты начала
+                                        устанавливаемой группы, то все найденные совпадения удаляются из базы данных.
                                     </div>
                                 </div>
                             )}
@@ -946,66 +960,8 @@ const UserManagerExtraTools = (props)=>{
                     </div>
                 </Affix>
             </div>
-            ):(
-            <div
-                onClick={()=>{setOpenedConsole(true)}}
-                className={`sk-toolbox-trigger ${openedConsole ? 'opened' : 'closed'}`}
-            >
-                <ToolOutlined /> Открыть панель инструментов
-            </div>
-            )}
-            <Modal
-                title={
-                    <div
-                        style={{ width: '100%', cursor: 'move' }}
-                        onFocus={() => {}}
-                        onBlur={() => {}}
-                        // end
-                    >
-                        Типы графиков
-                    </div>
-                }
-                open={openModalSchedInfo}
-                onCancel={()=>{setOpenModalSchedInfo(false)}}
-                onOk={()=>{setOpenModalSchedInfo(false)}}
-            >
-                {props.schedTypes.map((item)=>(
-                    <div key={`schedule-type-modal-${item.id}`}
-                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}
-                    >
-                        <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
-                        <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
-                    </div>
-                ))}
-            </Modal>
-
-
-            <Modal
-                title={
-                    <div
-                        style={{ width: '100%', cursor: 'move' }}
-                        onFocus={() => {}}
-                        onBlur={() => {}}
-                        // end
-                    >
-                        Типы правил учёта рабочего времени
-                    </div>
-                }
-                open={openModalRuleTypeInfo}
-                onCancel={()=>{setOpenModalRuleTypeInfo(false)}}
-                onOk={()=>{setOpenModalRuleTypeInfo(false)}}
-            >
-                {props.ruleTypes.map((item)=>(
-                    <div key={`rule-type-modal-${item.id}`}
-                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}
-                    >
-                        <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
-                        <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
-                    </div>
-                ))}
-            </Modal>
         </div>
     );
 };
 
-export default UserManagerExtraTools;
+export default ClaimManagerTools;
