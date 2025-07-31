@@ -18,7 +18,7 @@ const UserPage = (props) => {
         color: ''
     });
 
-    const [disableSaveInfo, setdDisableSavingInfo] = useState(false);
+    const [disableSaveInfo, setDisableSavingInfo] = useState(false);
     const [savingInfo, setSavingInfo] = useState(false);
 
     const [isMounted, setIsMounted] = useState(false);
@@ -151,7 +151,7 @@ const UserPage = (props) => {
                     userFIO,
                     savingInfo,
                     onSavedInfo: () => setSavingInfo(false),
-                    onUpdateBaseInfo: (isCanSave) => setdDisableSavingInfo(!isCanSave),
+                    onUpdateBaseInfo: (isCanSave) => setDisableSavingInfo(!isCanSave),
                     onUpdateSavingInfo: (isLoading, newUserId) => {
                         setSavingInfo(isLoading);
                         if (newUserId) {
