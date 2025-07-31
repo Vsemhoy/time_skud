@@ -186,6 +186,7 @@ function RulesWorkspace(props) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userruleselects`,
                     {
+                        user_id: userIdState,
                         _token: CSRF_TOKEN
                     }
                 );
@@ -432,7 +433,7 @@ function RulesWorkspace(props) {
                                        style={{textAlign: 'left'}}>Название, описание</p>
                                 </div>
                                 <div className={`${styles.sk_rules_table_cell} ${styles.sk_rules_table_cell_header}`}>
-                                    <p className={styles.sk_schedule_table_header_p}>Время, мин.</p>
+                                    <p className={styles.sk_schedule_table_header_p}>Время, час.</p>
                                 </div>
                                 <div className={`${styles.sk_rules_table_cell} ${styles.sk_rules_table_cell_header}`}>
                                     <p className={styles.sk_schedule_table_header_p}>Начало действия</p>
