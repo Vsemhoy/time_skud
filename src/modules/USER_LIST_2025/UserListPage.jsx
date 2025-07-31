@@ -51,7 +51,7 @@ import {
   SCHEDULE_TYPE_LIST,
   USERS_MANAGER
 } from "../USER_MANAGER_2025/USER_MANAGER/mock/mock";
-import {COMPANIES, DEPARTMENTS} from "./mock/mock";
+import {CLAIMLISTS, COMPANIES, DEPARTMENTS} from "./mock/mock";
 import {getWeekDayString} from "../../components/Helpers/TextHelpers";
 import {StateContext} from "../../components/ComStateProvider25/ComStateProvider25";
 import ClaimManagerTools from "./components/ClaimManagerTools";
@@ -124,6 +124,8 @@ const UserList2 = (props)=>{
   const [usedDate, setUsedDate] = useState(dayjs());
   const navigate = useNavigate();
   const { state, setState } = useContext(StateContext);
+  const [claimlist, setClaimList] = useState([]);
+
 
   useEffect(() => {
     fetchInfo().then(() => {
@@ -164,6 +166,7 @@ const UserList2 = (props)=>{
     setIsLoading(true);
     await fetchUsers();
     await fetchFilters();
+    await fecthStateList();
     if (PRODMODE) {
       setIsLoading(false);
     } else {
@@ -267,6 +270,32 @@ const UserList2 = (props)=>{
     setUsedDate(value);
     console.log(usedDate);
     setDateInContext(usedDate);
+  }
+
+  const  fecthStateList = async () => {
+    if (PRODMODE){
+      try {
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+            {
+              data: {
+
+              },
+              _token: CSRF_TOKEN
+            });
+
+        const fillableClaims = response.data.content.filter(claim => claim.fillable === 1);
+        setClaimList(fillableClaims);
+        console.log('response data => ', response.data);
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      const fillableClaims = CLAIMLISTS.filter(claim => claim.fillable === 1);
+      setClaimList(fillableClaims);
+      console.log(fillableClaims);
+
+      console.log("CLAIMLISTS: ", CLAIMLISTS)
+    }
   }
 
   /**
@@ -930,6 +959,8 @@ const UserList2 = (props)=>{
               <Affix offsetTop={54}>
                 <div className="sk-width-container">
                   <ClaimManagerTools
+                      claimList={claimlist}
+
 
                       on_action={fetchUsers}
                   />
