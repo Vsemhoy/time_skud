@@ -146,7 +146,7 @@ const BaseInfoWorkspace = (props) => {
     };
     const isCanSave = () => {
         if (userIdState === 'new') {
-            if (company.id && surname && name && patronymic && occupy && rating && status.id) {
+            if (company.id && surname && name && patronymic && occupy && rating) {
                 onUpdateBaseInfo(true);
             } else {
                 onUpdateBaseInfo(false);
