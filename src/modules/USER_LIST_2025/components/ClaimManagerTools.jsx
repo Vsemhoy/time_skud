@@ -9,6 +9,7 @@ import { BASE_ROUTE, CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
 import {DS_RULES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS} from "../../../CONFIG/DEFAULTSTATE";
 import {StateContext} from "../../../components/ComStateProvider25/ComStateProvider25";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
+import {CLAIMLISTS} from "../mock/mock";
 
 
 const ClaimManagerTools = (props)=>{
@@ -418,9 +419,6 @@ const ClaimManagerTools = (props)=>{
 
 
 
-
-
-
     /**
      * Получение списка групп
      * @param {*} req 
@@ -718,41 +716,21 @@ const ClaimManagerTools = (props)=>{
                             <br/>
                             {selectedTab === 1 && (
                                 <div style={{width: '100%'}}>
-                                    <Button
-                                        // size={'small'}
-                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
-                                        onClick={callToSelectGroups}
-                                        block
-                                    >Командировка</Button>
-
-                                    <Button
-                                        // size={'small'}
-                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
-                                        onClick={callToSelectGroups}
-                                        block
-                                    >Отпуск</Button>
-
-                                    <Button
-                                        // size={'small'}
-                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
-                                        onClick={callToSelectGroups}
-                                        block
-                                    >Больничные</Button>
-
-
-                                    <Button
-                                        // size={'small'}
-                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
-                                        onClick={callToSelectGroups}
-                                        block
-                                    >СВО</Button>
-
-                                    <Button
-                                        // size={'small'}
-                                        // disabled={selectedUsers.length === 0 || selectedGroups.length === 0 ? true : false}
-                                        onClick={callToSelectGroups}
-                                        block
-                                    >Полный отпуск+</Button>
+                                    {props.claimList && props.claimList.map((claim, index) => {
+                                        return (
+                                            <Button
+                                                style={{
+                                                    marginBottom: 5,
+                                                    borderColor: claim.color,
+                                                }}
+                                                key={index}
+                                                // onClick={callToSelectGroups}
+                                                block
+                                            >
+                                                {claim.title}
+                                            </Button>
+                                        );
+                                    })}
                                 </div>
 
 
