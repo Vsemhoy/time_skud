@@ -204,37 +204,39 @@ const AccountingPage = (props) => {
                         <div className="sk-content-table-wrapper">
                             <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
                                 <div className="sk-content-table">
-                                    <div className={`${styles.sk_table_row_staffingschedule}`}>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>ID</p>
-                                        </div><div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>ФИО, должность</p>
+                                    <Affix offsetTop={44}>
+                                        <div className={`${styles.sk_table_row_staffingschedule}`}>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>ID</p>
+                                            </div><div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>ФИО, должность</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Оклад факт. руб.</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Оклад бух. руб.</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Отпуск %</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Бол. лист %</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Контейнер, руб.</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Нарушение, руб.</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Черный список %</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Ставка, руб.</p>
+                                            </div>
                                         </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Оклад факт. руб.</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Оклад бух. руб.</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Отпуск %</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Бол. лист %</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Контейнер, руб.</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Нарушение, руб.</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Черный список %</p>
-                                        </div>
-                                        <div className={`${styles.sk_department_table_header}`}>
-                                            <p className={`${styles.sk_department_table_header_p}`}>Ставка, руб.</p>
-                                        </div>
-                                    </div>
+                                    </Affix>
                                     {departmentsInfo.map((department, index) => (
                                         <div key={`${department.id}-${index}`}>
                                             <div className={`${styles.sk_department_header}`}
