@@ -1,16 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Affix, Button, DatePicker, Modal, Radio, Select, Tag } from "antd";
 import Search from "antd/es/transfer/search";
-import { DS_RULES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS } from "../../../../CONFIG/DEFAULTSTATE";
-import { ClearOutlined, CloseOutlined, CloseSquareOutlined, InfoOutlined, QuestionCircleFilled, QuestionCircleOutlined, QuestionCircleTwoTone, ToolOutlined } from "@ant-design/icons";
-import Checkbox from "antd/es/checkbox/Checkbox";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
-import { StateContext } from "../../../../components/ComStateProvider25/ComStateProvider25";
-import Her from "../../../../components/HybridEmbeddedRouter/Her";
 import { Link } from "react-router-dom";
-import { BASE_ROUTE, CSRF_TOKEN, PRODMODE } from "../../../../CONFIG/config";
-import { PROD_AXIOS_INSTANCE } from "../../../../API/API";
+import { BASE_ROUTE, CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import {DS_RULES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS} from "../../../CONFIG/DEFAULTSTATE";
+import {StateContext} from "../../../components/ComStateProvider25/ComStateProvider25";
+import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 
 const ClaimManagerTools = (props)=>{
@@ -67,13 +65,13 @@ const ClaimManagerTools = (props)=>{
 
     useEffect(() => {
       if (PRODMODE){
-        get_ruleList();
-        get_scheduleList();
-        get_groupList();
+          get_ruleList();
+          get_scheduleList();
+          get_groupList();
       } else {
-        setBaseRuleList(DS_RULES);
-        setBaseScheduleList(DS_SCHEDULE_LIST);
-        setBaseGroupList(DS_SKUD_GROUPS);
+          setBaseRuleList(DS_RULES);
+          setBaseScheduleList(DS_SCHEDULE_LIST);
+          setBaseGroupList(DS_SKUD_GROUPS);
       }
     }, []);
 
@@ -697,11 +695,6 @@ const ClaimManagerTools = (props)=>{
             create_links_with_rules(data);
         }
 
-
-
-
-
-
     return (
         <div>
             <div>
@@ -836,6 +829,7 @@ const ClaimManagerTools = (props)=>{
                                     <br/>
                                     <br/>
                                     <br/>
+
                                     <Link to={BASE_ROUTE + "/hr/schedules"}>Менеджер графиков</Link>
                                     <br/>
                                     <br/>

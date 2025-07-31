@@ -34,16 +34,15 @@ import {
   CrownOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
-  EditOutlined,
-  FilterOutlined, LeftOutlined,
-  PlusOutlined, RightOutlined, RollbackOutlined, StepBackwardOutlined,
+  EditOutlined, FileTextOutlined,
+  FilterOutlined, FormOutlined, LeftOutlined,
+  PlusOutlined, RightOutlined, RollbackOutlined, SendOutlined, StepBackwardOutlined,
   ToolOutlined
 } from "@ant-design/icons";
 import ClaimManagerSidebar from "../USER_LIST_2025/components/ClaimManagerSidebar";
 import {NavLink, useNavigate} from "react-router-dom";
 import SchedIcons from "../../assets/Comicon/SchedIcons";
 import RuleIcons from "../../assets/Comicon/RuleIcons";
-// import ClaimManagerTools from "../USER_LIST_2025/components/ClaimManagerTools.jsx";
 import Cookies from "js-cookie";
 import {
   GROUPS_LIST, RULE_LIST,
@@ -55,7 +54,7 @@ import {
 import {COMPANIES, DEPARTMENTS} from "./mock/mock";
 import {getWeekDayString} from "../../components/Helpers/TextHelpers";
 import {StateContext} from "../../components/ComStateProvider25/ComStateProvider25";
-// import ClaimManagerTools from "./components/ClaimManagerTools";
+import ClaimManagerTools from "./components/ClaimManagerTools";
 
 const { Header, Sider, Content } = Layout;
 
@@ -751,7 +750,7 @@ const UserList2 = (props)=>{
 
                 <Button color="default"
                         variant={isOpenTools ? 'solid' : 'outlined'}
-                        icon={<ToolOutlined/>}
+                        icon={<FileTextOutlined />}
                         style={{width: '125px'}}
                         onClick={() => setIsOpenTools(!isOpenTools)}
                 >Заявки</Button>
@@ -930,28 +929,10 @@ const UserList2 = (props)=>{
             >
               <Affix offsetTop={54}>
                 <div className="sk-width-container">
-                  {/*<ClaimManagerTools*/}
-                  {/*    // onChangeFilter={(ev) => {setFilters(ev)}}*/}
-                  {/*    // onSelectGroups={(val) => {setSelectedGroups(val)}}*/}
-                  {/*    // onCallToSelectGroups={null}*/}
-                  {/*    // onCallToClearGroups={null}*/}
-                  {/*    // selected_users={checkedUsers}*/}
-                  {/*    // onSelectAllUsers={null}*/}
-                  {/*    //*/}
-                  {/*    // companies={props.userdata?.companies}*/}
-                  {/*    // groups={groups}*/}
-                  {/*    // selectedCompany={selectedCompany}*/}
-                  {/*    //*/}
-                  {/*    // schedules={currentSchedules}*/}
-                  {/*    // schedTypes={currentScheduleTypes}*/}
-                  {/*    // onBidnSchedules={null}*/}
-                  {/*    //*/}
-                  {/*    // rules={currentRules}*/}
-                  {/*    // ruleTypes={currentRuleTypes}*/}
-                  {/*    // onBidnRules={null}*/}
+                  <ClaimManagerTools
 
-                  {/*    on_action={fetchUsers}*/}
-                  {/*/>*/}
+                      on_action={fetchUsers}
+                  />
 
                   <UserModal
                       userId={selectedUserId}
@@ -1018,3 +999,22 @@ export default UserList2;
 //
 //     </div>
 // )
+
+// onChangeFilter={(ev) => {setFilters(ev)}}
+// onSelectGroups={(val) => {setSelectedGroups(val)}}
+// onCallToSelectGroups={null}
+// onCallToClearGroups={null}
+// selected_users={checkedUsers}
+// onSelectAllUsers={null}
+//
+// companies={props.userdata?.companies}
+// groups={groups}
+// selectedCompany={selectedCompany}
+//
+// schedules={currentSchedules}
+// schedTypes={currentScheduleTypes}
+// onBidnSchedules={null}
+//
+// rules={currentRules}
+// ruleTypes={currentRuleTypes}
+// onBidnRules={null}
