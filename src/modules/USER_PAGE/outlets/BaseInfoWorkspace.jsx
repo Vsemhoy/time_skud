@@ -473,6 +473,7 @@ const BaseInfoWorkspace = (props) => {
                                     value: 'id',
                                     label: 'name',
                                 }}
+                                showSearch
                         />
                     </div>
                 </div>
