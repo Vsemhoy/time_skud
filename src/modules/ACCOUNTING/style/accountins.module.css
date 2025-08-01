@@ -35,6 +35,7 @@
     align-items: center;
     transition: .3s;
     padding: 5px;
+    background-color: #F6F6F6;
 }
 .sk_department_table_header {
     width: 100%;

@@ -232,7 +232,7 @@ const BaseInfoWorkspace = (props) => {
                 if (serverResponse.data.content) {
                     const content = serverResponse.data.content
                     setDepartments(content?.departaments);
-                    setDepartments(content?.bosses);
+                    setBosses(content?.bosses);
                 }
             } catch (error) {
                 console.error('Error fetching users base info selects:', error);
