@@ -16,7 +16,7 @@ import {
   Tag,
   Flex,
   Select,
-  DatePicker
+  DatePicker, Divider, Menu, Modal
 } from "antd";
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
@@ -30,14 +30,25 @@ import dayjs from "dayjs";
 
 import UserListSidebar from "./components/UserListSidebar";
 import {
-  ArrowLeftOutlined,
-  CrownOutlined,
+  AppleOutlined,
+  ArrowLeftOutlined, CarOutlined, CheckOutlined,
+  CrownOutlined, DollarOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
-  EditOutlined, FileTextOutlined,
-  FilterOutlined, FormOutlined, LeftOutlined,
-  PlusOutlined, RightOutlined, RollbackOutlined, SendOutlined, StepBackwardOutlined,
-  ToolOutlined
+  EditOutlined, ExclamationCircleOutlined,
+  FileTextOutlined,
+  FilterOutlined, FireOutlined,
+  FormOutlined, GoldOutlined, HeatMapOutlined, JavaOutlined,
+  LeftOutlined, LoginOutlined, LogoutOutlined, MedicineBoxOutlined,
+  MinusCircleOutlined, MoonOutlined,
+  PlusOutlined,
+  RestOutlined,
+  RightOutlined, RocketOutlined,
+  RollbackOutlined,
+  SafetyCertificateOutlined,
+  SendOutlined, SmileOutlined,
+  StepBackwardOutlined,
+  ToolOutlined, TruckOutlined, TwitterOutlined, WarningOutlined
 } from "@ant-design/icons";
 import ClaimManagerSidebar from "../USER_LIST_2025/components/ClaimManagerSidebar";
 import {NavLink, useNavigate} from "react-router-dom";
@@ -56,6 +67,7 @@ import {getWeekDayString} from "../../components/Helpers/TextHelpers";
 import {StateContext} from "../../components/ComStateProvider25/ComStateProvider25";
 import ClaimManagerTools from "./components/ClaimManagerTools";
 import {CLAIM_ACL_MOCK} from "../CHARTS/mock/mock";
+import TopSider from "./components/TopSider";
 
 const { Header, Sider, Content } = Layout;
 
@@ -134,14 +146,6 @@ const UserList2 = (props)=>{
       setIsMounted(true);
     });
   }, []);
-  // useEffect(() => {
-  //   if (isMounted) {
-  //     fetchInfo().then();
-  //   }
-  // }, [pageSize, currentPage]);
-  // useEffect(() => {
-  //   fetchUsers();
-  // }, [filterParams]);
 
   const prepareSelectOptions = (name, options) => {
     if (options && options.length > 0) {
@@ -294,6 +298,17 @@ const UserList2 = (props)=>{
     setDateInContext(usedDate);
   }
 
+  const prepareStates = (states) => {
+    return states.filter(state => state.fillable).map(state => ({
+      label: state.badge,
+      value: state.id,
+      icon: state.icon || null,
+      color: state.color,
+      name: state.name
+    }))
+  };
+
+
   const fecthStateList = async () => {
     if (PRODMODE){
       try {
@@ -306,7 +321,8 @@ const UserList2 = (props)=>{
             });
 
         const fillableClaims = response.data.content.filter(claim => claim.fillable === 1);
-        setClaimList(fillableClaims);
+        setClaimList(prepareStates(fillableClaims));
+
         console.log('response data => ', response.data);
       } catch (e) {
         console.log(e)
@@ -314,9 +330,9 @@ const UserList2 = (props)=>{
     } else {
       const fillableClaims = CLAIMLISTS.filter(claim => claim.fillable === 1);
       setClaimList(fillableClaims);
-      console.log(fillableClaims);
+      console.log(prepareStates(fillableClaims));
 
-      console.log("CLAIMLISTS: ", CLAIMLISTS)
+      console.log("CLAIMLISTS: ", prepareStates(fillableClaims))
     }
   }
 
@@ -391,14 +407,6 @@ const UserList2 = (props)=>{
     
       animateRows();
     }, [baseUserListData]);
-  
-    // useEffect(() => {
-    //   if (PRODMODE){
-    //     get_departments();
-    //   } else {
-    //      // setBaseUserListData(DS_USERLIST_USERS);
-    //   }
-    // },[])
 
     useEffect(()=>{
       setTargetDate(extFilters.date);
@@ -437,24 +445,6 @@ const UserList2 = (props)=>{
 
     
   /** ------------------ FETCHES ---------------- */
-    /**
-     * Получение списка отделов
-     * @param {*} req 
-     * @param {*} res 
-     */
-  //   const get_departments = async (req, res) => {
-  //     try {
-  //         let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
-  //         console.log('departs', response);
-  //         // setOrganizations(organizations_response.data.org_list)
-  //         // setTotal(organizations_response.data.total_count)
-  //         setDepartments(response.data.data);
-  //     } catch (e) {
-  //         console.log(e)
-  //     } finally {
-  //         // setLoadingOrgs(false)
-  //     }
-  // }
   /** ------------------ FETCHES END ---------------- */
 
 
@@ -806,22 +796,9 @@ const UserList2 = (props)=>{
                         onClick={() => setIsOpenTools(!isOpenTools)}
                 >Заявки</Button>
               </div>
-
-
             </Affix>
 
-            {/*<UserListToolbar*/}
-            {/*    // onSortBy={sortUserList}*/}
-            {/*    departments={departments}*/}
-            {/*    baseUsers={baseUserListData}*/}
-            {/*    userData={userdata}*/}
-            {/*    on_find_me={handleFindMe}*/}
-            {/*    im_exist={userListData.find((item) => item.user_id === userdata.user.id) != null}*/}
-            {/*    onChangeExternalFilters={toggleExternalFilters}*/}
-            {/*    onChangeInnerSort={toggleInnerSorts}*/}
-            {/*    onChangeInnerFilers={toggleInnerFilters}*/}
-            {/*    command={toolbarCommand}*/}
-            {/*/>*/}
+
           </Header>
           <Layout className="sk-layout-center">
             <Sider width={isOpenFilters ? "330px" : 0}
@@ -975,39 +952,72 @@ const UserList2 = (props)=>{
                 </Spin>
               </div>
             </Content>
-            <Sider width={isOpenTools ? "330px" : 0}
-                   className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}
-            >
 
-              <Affix offsetTop={54}>
-                <div className="sk-width-container">
-                  <ClaimManagerTools
-                      claimList={claimlist}
-                      aclBase={aclBase}
-                      users={baseUserListData}
+            {/*<Drawer*/}
+            {/*    title="Меню сверху"*/}
+            {/*    placement="top"*/}
+            {/*    open={isOpenTools}*/}
+            {/*    onClose={() => setIsOpenTools(false)}*/}
+            {/*    height={300}  // можно регулировать высоту*/}
+            {/*>*/}
+            {/*  Содержимое меню*/}
+            {/*</Drawer>*/}
 
-                      on_action={fetchUsers}
-                  />
+            {/*<TopSider isOpen={isOpenTools}>*/}
+            {/*  <h2>Меню сверху</h2>*/}
+            {/*  <p>Контент...</p>*/}
+            {/*</TopSider>*/}
 
-                  <UserModal
-                      userId={selectedUserId}
-                      visible={isModalVisible}
-                      onClose={() => setIsModalVisible(false)}
-                  />
-                  <UserListSidebar
-                      key="djafklsdjklfjaskl"
-                      target_user_guys={targetUserGuys}
-                      target_user_info={targetUserInfo}
-                      userdata={userdata}
-                      base_user_list_data={baseUserListData}
-                      open_user_info={openUserInfo}
-                      on_mark_user={handleMarkUser}
-                      on_close={setOpenUserInfo}
-                      target_date={targetDate}
-                  />
-                </div>
-              </Affix>
-            </Sider>
+
+
+            {/*<Sider width={isOpenTools ? "330px" : 0}*/}
+            {/*       className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}*/}
+            {/*>*/}
+
+            {/*  <Affix offsetTop={54}>*/}
+            {/*    <div className="sk-width-container">*/}
+            {/*      <ClaimManagerTools*/}
+            {/*          claimList={claimlist}*/}
+            {/*          aclBase={aclBase}*/}
+            {/*          users={baseUserListData}*/}
+
+            {/*          on_action={fetchUsers}*/}
+            {/*      />*/}
+
+            {/*      <UserModal*/}
+            {/*          userId={selectedUserId}*/}
+            {/*          visible={isModalVisible}*/}
+            {/*          onClose={() => setIsModalVisible(false)}*/}
+            {/*      />*/}
+            {/*      <UserListSidebar*/}
+            {/*          key="djafklsdjklfjaskl"*/}
+            {/*          target_user_guys={targetUserGuys}*/}
+            {/*          target_user_info={targetUserInfo}*/}
+            {/*          userdata={userdata}*/}
+            {/*          base_user_list_data={baseUserListData}*/}
+            {/*          open_user_info={openUserInfo}*/}
+            {/*          on_mark_user={handleMarkUser}*/}
+            {/*          on_close={setOpenUserInfo}*/}
+            {/*          target_date={targetDate}*/}
+            {/*      />*/}
+            {/*    </div>*/}
+            {/*  </Affix>*/}
+            {/*</Sider>*/}
+
+            {isOpenTools && (
+                <Modal
+                    width={"80%"}
+                    open={isOpenTools}
+                    onCancel={ev => setIsOpenTools(false)}
+                    footer={[]}
+                >
+                  <iframe src={"http://192.168.1.16/skud/userlist?date=1754039261"} height={"1000px"} width={"100%"}>
+
+                  </iframe>
+
+                  <div style={{width: "100hv"}}> <h1> Привет </h1></div>
+                </Modal>
+            )}
           </Layout>
         </Layout>
       </div>
