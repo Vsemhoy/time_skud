@@ -55,6 +55,7 @@ import {CLAIMLISTS, COMPANIES, DEPARTMENTS} from "./mock/mock";
 import {getWeekDayString} from "../../components/Helpers/TextHelpers";
 import {StateContext} from "../../components/ComStateProvider25/ComStateProvider25";
 import ClaimManagerTools from "./components/ClaimManagerTools";
+import {CLAIM_ACL_MOCK} from "../CHARTS/mock/mock";
 
 const { Header, Sider, Content } = Layout;
 
@@ -125,6 +126,7 @@ const UserList2 = (props)=>{
   const navigate = useNavigate();
   const { state, setState } = useContext(StateContext);
   const [claimlist, setClaimList] = useState([]);
+  const [aclBase, setAclBase] = useState({});
 
 
   useEffect(() => {
@@ -166,6 +168,7 @@ const UserList2 = (props)=>{
     setIsLoading(true);
     await fetchUsers();
     await fetchFilters();
+    await fetchAclBase();
     await fecthStateList();
     if (PRODMODE) {
       setIsLoading(false);
@@ -232,6 +235,25 @@ const UserList2 = (props)=>{
     }
   }
 
+  const fetchAclBase = async () => {
+    if (PRODMODE) {
+      try {
+
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+            {
+              data: [],
+              _token: CSRF_TOKEN
+            });
+        setAclBase(response.data.content);
+        //console.log('response data => ', response.data);
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      setAclBase(CLAIM_ACL_MOCK);
+    }
+  };
+
   const increaseDate = () => {
     setUsedDate(usedDate.add(1, 'day'));
   }
@@ -272,7 +294,7 @@ const UserList2 = (props)=>{
     setDateInContext(usedDate);
   }
 
-  const  fecthStateList = async () => {
+  const fecthStateList = async () => {
     if (PRODMODE){
       try {
         let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
@@ -956,11 +978,13 @@ const UserList2 = (props)=>{
             <Sider width={isOpenTools ? "330px" : 0}
                    className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}
             >
+
               <Affix offsetTop={54}>
                 <div className="sk-width-container">
                   <ClaimManagerTools
                       claimList={claimlist}
-
+                      aclBase={aclBase}
+                      users={baseUserListData}
 
                       on_action={fetchUsers}
                   />
