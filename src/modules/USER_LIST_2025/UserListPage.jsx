@@ -97,7 +97,7 @@ const UserList2 = (props)=>{
   const [extFilters, setExtFilters] = useState([]);
   const [innerSortByValue, setInnerSortByValue] = useState('department_asc');
   const [innerFilters, setInnerFiletrs] = useState([]);
-  
+
 
   const sortedUserRef = useRef(userListData);
   const markedUsersRef = useRef(markedUsers);
@@ -127,7 +127,7 @@ const UserList2 = (props)=>{
   };
 
   const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', false);
-  const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', true);
+  const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', false);
   const [filterParams, setFilterParams] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [bosses, setBosses] = useState([]);
@@ -355,7 +355,7 @@ const UserList2 = (props)=>{
   useEffect(() => {
     sortedUserRef.current = userListData;
   }, [userListData]);
-  
+
   useEffect(() => {
     openUserInfoRef.current = openUserInfo;
   }, [openUserInfo]);
@@ -365,7 +365,7 @@ const UserList2 = (props)=>{
       setSelectedUserId(id); // Устанавливаем выбранный ID
       setIsModalVisible(true); // Открываем модальное окно
     };
-      
+
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -386,14 +386,14 @@ const UserList2 = (props)=>{
         }
         // 2. Ждём 1 секунду после последнего
         // await sleep(1000);
-    
+
         // 3. Последовательно убираем класс с задержкой 150мс
 
       }
-    
+
       animateRows();
     }, [targetDate]);
-  
+
     useEffect(() => {
       async function animateRows() {
         const rows = document.querySelectorAll('.sk-evemonic-norcard');
@@ -404,7 +404,7 @@ const UserList2 = (props)=>{
           await sleep(1);
         }
       }
-    
+
       animateRows();
     }, [baseUserListData]);
 
@@ -443,7 +443,7 @@ const UserList2 = (props)=>{
     },[props.refresh_trigger]);
 
 
-    
+
   /** ------------------ FETCHES ---------------- */
   /** ------------------ FETCHES END ---------------- */
 
@@ -455,7 +455,7 @@ const UserList2 = (props)=>{
 
   const handleMarkUser = (user_id)=>{
     setMarkedUsers([user_id]);
-    
+
     const elementdiv = document.querySelector('#row_' + user_id);
     if (elementdiv){
       elementdiv.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -517,25 +517,25 @@ const UserList2 = (props)=>{
       if (markedUsersRef.current.length === 1) {
         const cref_id = markedUsersRef.current[0];
         let nref = null;
-        
+
         // Проверяем, что sortedUserRef.current - массив
         if (!Array.isArray(sortedUserRef.current)) {
           console.error("sortedUserRef.current is not an array!");
           return;
         }
-      
+
         // Находим текущий элемент через find
         const currentUser = sortedUserRef.current.find(
           (user) => user.user_id === cref_id
         );
-      
+
         if (!currentUser) {
           console.error("User not found!");
           return;
         }
-      
+
         const currentIndex = sortedUserRef.current.indexOf(currentUser);
-      
+
         if (event.key === "ArrowUp") {
           if (currentIndex > 0) {
             nref = sortedUserRef.current[currentIndex - 1].user_id;
@@ -554,15 +554,15 @@ const UserList2 = (props)=>{
           setToolbarCommand("sub_day");
           handleMarkUser(currentUser.user_id);
           setTargetUserInfo(currentUser);
-          
+
         } else if (event.key === "ArrowRight") {
           setToolbarCommand("add_day");
           handleMarkUser(currentUser.user_id);
           setTargetUserInfo(currentUser);
         }
 
-        
-      
+
+
         if (nref) {
           // Проверяем, что setUserListData принимает правильный формат
           setMarkedUsers([nref]);
@@ -595,10 +595,10 @@ const UserList2 = (props)=>{
   const move_boss_to_top = (arr) => {
     // Создаем копию массива для безопасности
     const newArray = [...arr];
-    
+
     // Ищем босса
     const bossIndex = newArray.findIndex(user => user?.user_id === 46);
-    
+
     // Если босс найден и не на первом месте
     if (bossIndex > 0) {
       // Извлекаем босса
@@ -606,17 +606,17 @@ const UserList2 = (props)=>{
       // Вставляем в начало
       newArray.unshift(boss);
     }
-    
+
     return newArray;
   };
-  
+
   const insertDepartmentNames = (dataArray) => {
       let newDataArray = [];
       let next = -1; // next department ID
-  
+
       for (let i = 0; i < dataArray.length; i++){
         let dep_id = dataArray[i].department_id;
-        
+
         if (dep_id != next){
           // insert custom row
           let crow = customRow(dep_id);
@@ -625,10 +625,10 @@ const UserList2 = (props)=>{
         }
         if (i < dataArray.length - 1){
           next = dep_id;
-        }; 
+        };
           newDataArray.push(dataArray[i]);
         }
-      
+
       // console.log('dataArray' + ' => ' + newDataArray);
       return newDataArray;
     }
@@ -688,36 +688,36 @@ const UserList2 = (props)=>{
               sortedData = move_boss_to_top(sortedData);
               sortedData = insertDepartmentNames(sortedData);
               break;
-  
+
           case "department_desc":
               sortedData.sort((a, b) => b.department_id - a.department_id);
               break;
-  
+
           case "name_asc":
               sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
               break;
-  
+
           case "name_desc":
               sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
               break;
-  
+
           case "surname_asc":
               sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
               break;
-  
+
           case "surname_desc":
               sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
               break;
-  
+
           case "state_asc":
               sortedData.sort((a, b) => a.current_state - b.current_state);
               break;
-  
+
           case "state_desc":
             sortedData.sort((a, b) => b.current_state - a.current_state);
           //   console.log( sortedData);
             break;
-  
+
           default:
               // Сортировка по умолчанию (например, по department ASC)
               sortedData.sort((a, b) => a.department_id - b.department_id);
@@ -725,7 +725,7 @@ const UserList2 = (props)=>{
               sortedData = insertDepartmentNames(sortedData);
               break;
       }
-    
+
       return sortedData;
     }, [baseUserListData, innerSortByValue, innerFilters]);
 
@@ -788,6 +788,7 @@ const UserList2 = (props)=>{
 
 
                 </div>
+
 
                 <Button color="default"
                         variant={isOpenTools ? 'solid' : 'outlined'}
@@ -1011,11 +1012,11 @@ const UserList2 = (props)=>{
                     onCancel={ev => setIsOpenTools(false)}
                     footer={[]}
                 >
-                  <iframe src={"http://192.168.1.16/skud/userlist?date=1754039261"} height={"1000px"} width={"100%"}>
+                  <iframe src={"http://192.168.1.16/skud/claims"} height={"1000px"} width={"100%"}>
 
                   </iframe>
 
-                  <div style={{width: "100hv"}}> <h1> Привет </h1></div>
+                  {/*<div style={{width: "100hv"}}> <h1> Привет </h1></div>*/}
                 </Modal>
             )}
           </Layout>
