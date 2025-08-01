@@ -16,7 +16,7 @@ import {
   Tag,
   Flex,
   Select,
-  DatePicker
+  DatePicker, Divider, Menu, Modal
 } from "antd";
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
@@ -30,14 +30,25 @@ import dayjs from "dayjs";
 
 import UserListSidebar from "./components/UserListSidebar";
 import {
-  ArrowLeftOutlined,
-  CrownOutlined,
+  AppleOutlined,
+  ArrowLeftOutlined, CarOutlined, CheckOutlined,
+  CrownOutlined, DollarOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
-  EditOutlined, FileTextOutlined,
-  FilterOutlined, FormOutlined, LeftOutlined,
-  PlusOutlined, RightOutlined, RollbackOutlined, SendOutlined, StepBackwardOutlined,
-  ToolOutlined
+  EditOutlined, ExclamationCircleOutlined,
+  FileTextOutlined,
+  FilterOutlined, FireOutlined,
+  FormOutlined, GoldOutlined, HeatMapOutlined, JavaOutlined,
+  LeftOutlined, LoginOutlined, LogoutOutlined, MedicineBoxOutlined,
+  MinusCircleOutlined, MoonOutlined,
+  PlusOutlined,
+  RestOutlined,
+  RightOutlined, RocketOutlined,
+  RollbackOutlined,
+  SafetyCertificateOutlined,
+  SendOutlined, SmileOutlined,
+  StepBackwardOutlined,
+  ToolOutlined, TruckOutlined, TwitterOutlined, WarningOutlined
 } from "@ant-design/icons";
 import ClaimManagerSidebar from "../USER_LIST_2025/components/ClaimManagerSidebar";
 import {NavLink, useNavigate} from "react-router-dom";
@@ -56,6 +67,7 @@ import {getWeekDayString} from "../../components/Helpers/TextHelpers";
 import {StateContext} from "../../components/ComStateProvider25/ComStateProvider25";
 import ClaimManagerTools from "./components/ClaimManagerTools";
 import {CLAIM_ACL_MOCK} from "../CHARTS/mock/mock";
+import TopSider from "./components/TopSider";
 
 const { Header, Sider, Content } = Layout;
 
@@ -85,7 +97,7 @@ const UserList2 = (props)=>{
   const [extFilters, setExtFilters] = useState([]);
   const [innerSortByValue, setInnerSortByValue] = useState('department_asc');
   const [innerFilters, setInnerFiletrs] = useState([]);
-  
+
 
   const sortedUserRef = useRef(userListData);
   const markedUsersRef = useRef(markedUsers);
@@ -115,7 +127,7 @@ const UserList2 = (props)=>{
   };
 
   const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', false);
-  const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', true);
+  const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', false);
   const [filterParams, setFilterParams] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [bosses, setBosses] = useState([]);
@@ -134,14 +146,6 @@ const UserList2 = (props)=>{
       setIsMounted(true);
     });
   }, []);
-  // useEffect(() => {
-  //   if (isMounted) {
-  //     fetchInfo().then();
-  //   }
-  // }, [pageSize, currentPage]);
-  // useEffect(() => {
-  //   fetchUsers();
-  // }, [filterParams]);
 
   const prepareSelectOptions = (name, options) => {
     if (options && options.length > 0) {
@@ -294,6 +298,17 @@ const UserList2 = (props)=>{
     setDateInContext(usedDate);
   }
 
+  const prepareStates = (states) => {
+    return states.filter(state => state.fillable).map(state => ({
+      label: state.badge,
+      value: state.id,
+      icon: state.icon || null,
+      color: state.color,
+      name: state.name
+    }))
+  };
+
+
   const fecthStateList = async () => {
     if (PRODMODE){
       try {
@@ -306,7 +321,8 @@ const UserList2 = (props)=>{
             });
 
         const fillableClaims = response.data.content.filter(claim => claim.fillable === 1);
-        setClaimList(fillableClaims);
+        setClaimList(prepareStates(fillableClaims));
+
         console.log('response data => ', response.data);
       } catch (e) {
         console.log(e)
@@ -314,9 +330,9 @@ const UserList2 = (props)=>{
     } else {
       const fillableClaims = CLAIMLISTS.filter(claim => claim.fillable === 1);
       setClaimList(fillableClaims);
-      console.log(fillableClaims);
+      console.log(prepareStates(fillableClaims));
 
-      console.log("CLAIMLISTS: ", CLAIMLISTS)
+      console.log("CLAIMLISTS: ", prepareStates(fillableClaims))
     }
   }
 
@@ -339,7 +355,7 @@ const UserList2 = (props)=>{
   useEffect(() => {
     sortedUserRef.current = userListData;
   }, [userListData]);
-  
+
   useEffect(() => {
     openUserInfoRef.current = openUserInfo;
   }, [openUserInfo]);
@@ -349,7 +365,7 @@ const UserList2 = (props)=>{
       setSelectedUserId(id); // Устанавливаем выбранный ID
       setIsModalVisible(true); // Открываем модальное окно
     };
-      
+
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -370,14 +386,14 @@ const UserList2 = (props)=>{
         }
         // 2. Ждём 1 секунду после последнего
         // await sleep(1000);
-    
+
         // 3. Последовательно убираем класс с задержкой 150мс
 
       }
-    
+
       animateRows();
     }, [targetDate]);
-  
+
     useEffect(() => {
       async function animateRows() {
         const rows = document.querySelectorAll('.sk-evemonic-norcard');
@@ -388,17 +404,9 @@ const UserList2 = (props)=>{
           await sleep(1);
         }
       }
-    
+
       animateRows();
     }, [baseUserListData]);
-  
-    // useEffect(() => {
-    //   if (PRODMODE){
-    //     get_departments();
-    //   } else {
-    //      // setBaseUserListData(DS_USERLIST_USERS);
-    //   }
-    // },[])
 
     useEffect(()=>{
       setTargetDate(extFilters.date);
@@ -435,26 +443,8 @@ const UserList2 = (props)=>{
     },[props.refresh_trigger]);
 
 
-    
+
   /** ------------------ FETCHES ---------------- */
-    /**
-     * Получение списка отделов
-     * @param {*} req 
-     * @param {*} res 
-     */
-  //   const get_departments = async (req, res) => {
-  //     try {
-  //         let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
-  //         console.log('departs', response);
-  //         // setOrganizations(organizations_response.data.org_list)
-  //         // setTotal(organizations_response.data.total_count)
-  //         setDepartments(response.data.data);
-  //     } catch (e) {
-  //         console.log(e)
-  //     } finally {
-  //         // setLoadingOrgs(false)
-  //     }
-  // }
   /** ------------------ FETCHES END ---------------- */
 
 
@@ -465,7 +455,7 @@ const UserList2 = (props)=>{
 
   const handleMarkUser = (user_id)=>{
     setMarkedUsers([user_id]);
-    
+
     const elementdiv = document.querySelector('#row_' + user_id);
     if (elementdiv){
       elementdiv.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -527,25 +517,25 @@ const UserList2 = (props)=>{
       if (markedUsersRef.current.length === 1) {
         const cref_id = markedUsersRef.current[0];
         let nref = null;
-        
+
         // Проверяем, что sortedUserRef.current - массив
         if (!Array.isArray(sortedUserRef.current)) {
           console.error("sortedUserRef.current is not an array!");
           return;
         }
-      
+
         // Находим текущий элемент через find
         const currentUser = sortedUserRef.current.find(
           (user) => user.user_id === cref_id
         );
-      
+
         if (!currentUser) {
           console.error("User not found!");
           return;
         }
-      
+
         const currentIndex = sortedUserRef.current.indexOf(currentUser);
-      
+
         if (event.key === "ArrowUp") {
           if (currentIndex > 0) {
             nref = sortedUserRef.current[currentIndex - 1].user_id;
@@ -564,15 +554,15 @@ const UserList2 = (props)=>{
           setToolbarCommand("sub_day");
           handleMarkUser(currentUser.user_id);
           setTargetUserInfo(currentUser);
-          
+
         } else if (event.key === "ArrowRight") {
           setToolbarCommand("add_day");
           handleMarkUser(currentUser.user_id);
           setTargetUserInfo(currentUser);
         }
 
-        
-      
+
+
         if (nref) {
           // Проверяем, что setUserListData принимает правильный формат
           setMarkedUsers([nref]);
@@ -605,10 +595,10 @@ const UserList2 = (props)=>{
   const move_boss_to_top = (arr) => {
     // Создаем копию массива для безопасности
     const newArray = [...arr];
-    
+
     // Ищем босса
     const bossIndex = newArray.findIndex(user => user?.user_id === 46);
-    
+
     // Если босс найден и не на первом месте
     if (bossIndex > 0) {
       // Извлекаем босса
@@ -616,17 +606,17 @@ const UserList2 = (props)=>{
       // Вставляем в начало
       newArray.unshift(boss);
     }
-    
+
     return newArray;
   };
-  
+
   const insertDepartmentNames = (dataArray) => {
       let newDataArray = [];
       let next = -1; // next department ID
-  
+
       for (let i = 0; i < dataArray.length; i++){
         let dep_id = dataArray[i].department_id;
-        
+
         if (dep_id != next){
           // insert custom row
           let crow = customRow(dep_id);
@@ -635,10 +625,10 @@ const UserList2 = (props)=>{
         }
         if (i < dataArray.length - 1){
           next = dep_id;
-        }; 
+        };
           newDataArray.push(dataArray[i]);
         }
-      
+
       // console.log('dataArray' + ' => ' + newDataArray);
       return newDataArray;
     }
@@ -698,36 +688,36 @@ const UserList2 = (props)=>{
               sortedData = move_boss_to_top(sortedData);
               sortedData = insertDepartmentNames(sortedData);
               break;
-  
+
           case "department_desc":
               sortedData.sort((a, b) => b.department_id - a.department_id);
               break;
-  
+
           case "name_asc":
               sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
               break;
-  
+
           case "name_desc":
               sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
               break;
-  
+
           case "surname_asc":
               sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
               break;
-  
+
           case "surname_desc":
               sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
               break;
-  
+
           case "state_asc":
               sortedData.sort((a, b) => a.current_state - b.current_state);
               break;
-  
+
           case "state_desc":
             sortedData.sort((a, b) => b.current_state - a.current_state);
           //   console.log( sortedData);
             break;
-  
+
           default:
               // Сортировка по умолчанию (например, по department ASC)
               sortedData.sort((a, b) => a.department_id - b.department_id);
@@ -735,7 +725,7 @@ const UserList2 = (props)=>{
               sortedData = insertDepartmentNames(sortedData);
               break;
       }
-    
+
       return sortedData;
     }, [baseUserListData, innerSortByValue, innerFilters]);
 
@@ -799,6 +789,7 @@ const UserList2 = (props)=>{
 
                 </div>
 
+
                 <Button color="default"
                         variant={isOpenTools ? 'solid' : 'outlined'}
                         icon={<FileTextOutlined />}
@@ -806,22 +797,9 @@ const UserList2 = (props)=>{
                         onClick={() => setIsOpenTools(!isOpenTools)}
                 >Заявки</Button>
               </div>
-
-
             </Affix>
 
-            {/*<UserListToolbar*/}
-            {/*    // onSortBy={sortUserList}*/}
-            {/*    departments={departments}*/}
-            {/*    baseUsers={baseUserListData}*/}
-            {/*    userData={userdata}*/}
-            {/*    on_find_me={handleFindMe}*/}
-            {/*    im_exist={userListData.find((item) => item.user_id === userdata.user.id) != null}*/}
-            {/*    onChangeExternalFilters={toggleExternalFilters}*/}
-            {/*    onChangeInnerSort={toggleInnerSorts}*/}
-            {/*    onChangeInnerFilers={toggleInnerFilters}*/}
-            {/*    command={toolbarCommand}*/}
-            {/*/>*/}
+
           </Header>
           <Layout className="sk-layout-center">
             <Sider width={isOpenFilters ? "330px" : 0}
@@ -975,39 +953,72 @@ const UserList2 = (props)=>{
                 </Spin>
               </div>
             </Content>
-            <Sider width={isOpenTools ? "330px" : 0}
-                   className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}
-            >
 
-              <Affix offsetTop={54}>
-                <div className="sk-width-container">
-                  <ClaimManagerTools
-                      claimList={claimlist}
-                      aclBase={aclBase}
-                      users={baseUserListData}
+            {/*<Drawer*/}
+            {/*    title="Меню сверху"*/}
+            {/*    placement="top"*/}
+            {/*    open={isOpenTools}*/}
+            {/*    onClose={() => setIsOpenTools(false)}*/}
+            {/*    height={300}  // можно регулировать высоту*/}
+            {/*>*/}
+            {/*  Содержимое меню*/}
+            {/*</Drawer>*/}
 
-                      on_action={fetchUsers}
-                  />
+            {/*<TopSider isOpen={isOpenTools}>*/}
+            {/*  <h2>Меню сверху</h2>*/}
+            {/*  <p>Контент...</p>*/}
+            {/*</TopSider>*/}
 
-                  <UserModal
-                      userId={selectedUserId}
-                      visible={isModalVisible}
-                      onClose={() => setIsModalVisible(false)}
-                  />
-                  <UserListSidebar
-                      key="djafklsdjklfjaskl"
-                      target_user_guys={targetUserGuys}
-                      target_user_info={targetUserInfo}
-                      userdata={userdata}
-                      base_user_list_data={baseUserListData}
-                      open_user_info={openUserInfo}
-                      on_mark_user={handleMarkUser}
-                      on_close={setOpenUserInfo}
-                      target_date={targetDate}
-                  />
-                </div>
-              </Affix>
-            </Sider>
+
+
+            {/*<Sider width={isOpenTools ? "330px" : 0}*/}
+            {/*       className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}*/}
+            {/*>*/}
+
+            {/*  <Affix offsetTop={54}>*/}
+            {/*    <div className="sk-width-container">*/}
+            {/*      <ClaimManagerTools*/}
+            {/*          claimList={claimlist}*/}
+            {/*          aclBase={aclBase}*/}
+            {/*          users={baseUserListData}*/}
+
+            {/*          on_action={fetchUsers}*/}
+            {/*      />*/}
+
+            {/*      <UserModal*/}
+            {/*          userId={selectedUserId}*/}
+            {/*          visible={isModalVisible}*/}
+            {/*          onClose={() => setIsModalVisible(false)}*/}
+            {/*      />*/}
+            {/*      <UserListSidebar*/}
+            {/*          key="djafklsdjklfjaskl"*/}
+            {/*          target_user_guys={targetUserGuys}*/}
+            {/*          target_user_info={targetUserInfo}*/}
+            {/*          userdata={userdata}*/}
+            {/*          base_user_list_data={baseUserListData}*/}
+            {/*          open_user_info={openUserInfo}*/}
+            {/*          on_mark_user={handleMarkUser}*/}
+            {/*          on_close={setOpenUserInfo}*/}
+            {/*          target_date={targetDate}*/}
+            {/*      />*/}
+            {/*    </div>*/}
+            {/*  </Affix>*/}
+            {/*</Sider>*/}
+
+            {isOpenTools && (
+                <Modal
+                    width={"80%"}
+                    open={isOpenTools}
+                    onCancel={ev => setIsOpenTools(false)}
+                    footer={[]}
+                >
+                  <iframe src={"http://192.168.1.16/skud/claims"} height={"1000px"} width={"100%"}>
+
+                  </iframe>
+
+                  {/*<div style={{width: "100hv"}}> <h1> Привет </h1></div>*/}
+                </Modal>
+            )}
           </Layout>
         </Layout>
       </div>

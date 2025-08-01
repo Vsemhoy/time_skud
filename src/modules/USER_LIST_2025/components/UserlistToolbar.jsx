@@ -11,6 +11,7 @@ import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../CONFIG/config";
 import { getMonthName, getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
+import TopSider from "./TopSider";
 
 
 const UserListToolbar = (props) => {
@@ -392,12 +393,11 @@ const UserListToolbar = (props) => {
                 open={openDrawer}
                 placement="left"
                 onClose={()=>{setOpenDrawer(false)}}
-                title=<span className={'sk-flex-space'}>Фильтры и сортировки</span>
+                title={<span className={'sk-flex-space'}>Фильтры и сортировки</span>}
                 style={{background: 'white !important'}}
                 className="sk-bg-white"
             >
             <div>
-
 
                 <div className={'sk-usermonic-drawer-row'}>
                     <div className={'sk-labed-um'}>Компания</div>
