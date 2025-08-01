@@ -474,6 +474,7 @@ const BaseInfoWorkspace = (props) => {
                                     label: 'name',
                                 }}
                                 showSearch
+                                optionFilterProp="name"
                         />
                     </div>
                 </div>

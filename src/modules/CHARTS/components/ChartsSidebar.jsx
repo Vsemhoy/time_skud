@@ -117,6 +117,8 @@ const ChartsSidebar = (props) => {
                                     <span>{option.label}</span>
                                 </Space>
                             )}
+                            showSearch
+                            optionFilterProp="label"
                     />
                 </div>
 
