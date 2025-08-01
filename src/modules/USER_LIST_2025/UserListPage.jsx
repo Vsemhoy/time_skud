@@ -978,6 +978,7 @@ const UserList2 = (props)=>{
             <Sider width={isOpenTools ? "330px" : 0}
                    className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}
             >
+
               <Affix offsetTop={54}>
                 <div className="sk-width-container">
                   <ClaimManagerTools
