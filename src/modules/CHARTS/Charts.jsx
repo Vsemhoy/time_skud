@@ -240,6 +240,7 @@ const  Charts = (props) => {
             setAclBase(CLAIM_ACL_MOCK);
         }
     };
+
     const debounceFetchUsers = () => {
         setIsLoadingChart(true);
         if (debounceTimer.current) {

@@ -10,6 +10,8 @@ import {DS_RULES, DS_SCHEDULE_LIST, DS_SKUD_GROUPS} from "../../../CONFIG/DEFAUL
 import {StateContext} from "../../../components/ComStateProvider25/ComStateProvider25";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {CLAIMLISTS} from "../mock/mock";
+import ClaimEditorDrawer from "../../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
+import {CLAIM_ACL_MOCK, USDA} from "../../CHARTS/mock/mock";
 
 
 const ClaimManagerTools = (props)=>{
@@ -63,6 +65,7 @@ const ClaimManagerTools = (props)=>{
     const [openModalSchedInfo, setOpenModalSchedInfo] = useState(false);
     const [openModalRuleTypeInfo, setOpenModalRuleTypeInfo] = useState(false);
 
+    const [openModalCreateF, setOpenModalCreate] = useState(false);
 
     useEffect(() => {
       if (PRODMODE){
@@ -469,6 +472,8 @@ const ClaimManagerTools = (props)=>{
 
 
 
+
+
     /* ------------------------- FETCH ---------------------- */
 
 
@@ -692,6 +697,145 @@ const ClaimManagerTools = (props)=>{
               };
             create_links_with_rules(data);
         }
+    const [editorMode, setEditorMode] = useState('read');
+    const [claimForDrawer, setClaimForDrawer] = useState(null);
+    const [selectedChartState, setSelectedChartState] = useState(null);
+    const [reactiveColor, setReactiveColor] = useState(null);
+    const [editorOpened, setEditorOpened] = useState(false);
+
+    const openCreateDrawer = () => {
+        setEditorMode('create');
+        setSelectedChartState(6)
+        prepareDrawer();
+    };
+
+    const prepareDrawer = (currentChart = null, user = null, start = null) => {
+        if (currentChart) {
+            setClaimForDrawer({
+                id: currentChart?.id,
+                user_id: user?.id,
+                start: currentChart?.start,
+                end: currentChart?.end,
+                is_approved: currentChart?.approved,
+                skud_current_state_id: selectedChartState,
+                info: currentChart?.info,
+                days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
+                state_color: reactiveColor,
+                usr_name: user?.name,
+                usr_surname: user?.surname,
+                usr_patronymic: user?.patronymic,
+                id_company: user?.id_company,
+                boss_id: user?.boss_id
+            });
+        } else {
+            setEditorMode('create');
+            console.log({
+                start,
+                user_id: user?.id,
+                usr_name: user?.name,
+                usr_surname: user?.surname,
+                usr_patronymic: user?.patronymic,
+                id_company: user?.id_company,
+                boss_id: user?.boss_id
+            })
+            setClaimForDrawer({
+                start: start,
+                user_id: user?.id,
+                usr_name: user?.name,
+                usr_surname: user?.surname,
+                usr_patronymic: user?.patronymic,
+                id_company: user?.id_company,
+                boss_id: user?.boss_id
+            });
+        }
+        setEditorOpened(true);
+    };
+
+    const handleCloseEditor = ()=> {
+        if (editorOpened){
+            setEditorOpened(false);
+            setEditorMode('read');
+            setTimeout(() => {
+                setClaimForDrawer(null);
+            }, 555);
+        }
+    };
+
+    const handleSaveClaim = (claim, editmode) => {
+        if (editmode === 'create'){
+            create_claim(claim).then();
+        } else if (editmode === 'update'){
+            //console.log('update claim');
+            update_claim(claim).then();
+        }
+        setEditorOpened(false);
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+    };
+
+    const create_claim = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                //console.log('response data => ', response.data);
+                // debounceFetchUsers();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+
+    const update_claim = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
+                //console.log('response data => ', response.data);
+                // debounceFetchUsers();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+
+    const handleGetBackEvent = (id)=> {
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+        setEditorOpened(false);
+        // delete_claim(id).then();
+    };
+    const handleApproveEvent = (id)=> {
+        const obj = {
+            id: id,
+            state: 1,
+        };
+        // update_claim_state(obj).then();
+        setEditorOpened(false);
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+    };
+    const handleDeclineEvent = (id)=> {
+        const obj = {
+            id: id,
+            state: 2,
+        };
+        // update_claim_state(obj).then();
+        setEditorOpened(false);
+        setTimeout(() => {
+            setClaimForDrawer(null);
+        }, 555);
+    };
+
 
     return (
         <div>
@@ -724,7 +868,7 @@ const ClaimManagerTools = (props)=>{
                                                     borderColor: claim.color,
                                                 }}
                                                 key={index}
-                                                // onClick={callToSelectGroups}
+                                                onClick={openCreateDrawer}
                                                 block
                                             >
                                                 {claim.title}
@@ -932,6 +1076,23 @@ const ClaimManagerTools = (props)=>{
                     </div>
                 </Affix>
             </div>
+            {claimForDrawer && (
+                <ClaimEditorDrawer
+                    data={claimForDrawer}
+                    mode={editorMode}
+                    acl_base={props.aclBase}
+                    user_list={props.users}
+                    opened={editorOpened}
+                    claim_type={selectedChartState}
+                    on_close={handleCloseEditor}
+                    claim_types={props.claimList}
+                    on_send={handleSaveClaim}
+                    // my_id={PRODMODE ? currentUser?.id : USDA.user.id}
+                    on_get_back={handleGetBackEvent}
+                    on_approve={handleApproveEvent}
+                    on_decline={handleDeclineEvent}
+                />
+            )}
         </div>
     );
 };
