@@ -1,0 +1,30 @@
+.sk-super-ckartch-patch .ant-slider-mark-text-active {
+    color: #ffffff !important;
+    background-color: #1677ff !important;
+}
+.sk-super-ckartch-patch .ant-slider-mark {
+    position: absolute !important;
+    margin-top: -8px !important;
+}
+
+.sk-super-ckartch-patch {
+    padding: 0 64px !important;
+    width: 100%;
+}
+
+.ant-slider-step, .ant-slider-track {
+    z-index: 999;
+}
+
+.ant-slider-dot, .ant-slider-track, .ant-slider-step, .ant-slider-rail, .ant-slider-handle {
+    height: 24px !important;
+    opacity: 0 !important;
+}
+
+
+.ant-slider-mark-text {
+    background-color: #e7e7e7;
+    display: block;
+    width: calc(100% / 12);
+    border-radius: 5px;
+}

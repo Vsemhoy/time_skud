@@ -36,6 +36,7 @@ import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
 import {ShortName} from "../../components/Helpers/TextHelpers";
+import "./style/patch.css";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -704,7 +705,7 @@ const  Charts = (props) => {
                                                 >Мои сотрудники</Button>
                                             </div>
                                         </div>
-                                        <div style={{padding: '6px 42px', width: '100%'}}>
+                                        <div className={'sk-super-ckartch-patch'}>
                                             <Slider
                                                 style={{width: '100%'}}
                                                 range marks={marks} step={null}
