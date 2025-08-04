@@ -8,7 +8,8 @@
 }
 
 .sk-super-ckartch-patch {
-    padding: 0 64px !important;
+    /*padding: 0 64px !important;*/
+    padding: 0 5px 20px 5px !important;
     width: 100%;
 }
 
