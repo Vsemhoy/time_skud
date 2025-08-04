@@ -49,7 +49,7 @@ const  Charts = (props) => {
     const [isOpenFilters, setIsOpenFilters] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(100);
     const [allUsersCount, setAllUsersCount] = useState(0);
     const [filterParams, setFilterParams] = useState(null);
 
@@ -201,6 +201,9 @@ const  Charts = (props) => {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post('/api/chart/selects',
                     {
+                        data: {
+                            filterParams
+                        },
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
@@ -284,6 +287,7 @@ const  Charts = (props) => {
                     const content = response.data.content;
                     setUsersPage(content.users);
                     setAllUsersCount(content.count);
+                    await fetchSelects();
                 }
             } catch (e) {
                 console.log(e);
@@ -396,6 +400,8 @@ const  Charts = (props) => {
                     label: option.name,
                     boss_id: option.boss_id,
                     id_company: option.id_company,
+                    count: option.count,
+                    match: option.match,
                 })
             });
         } else {
@@ -683,7 +689,7 @@ const  Charts = (props) => {
                                                     current={currentPage}
                                                     total={allUsersCount}
                                                     pageSize={pageSize}
-                                                    pageSizeOptions={[10, 20]}
+                                                    pageSizeOptions={[100, 200]}
                                                     locale={{
                                                         items_per_page: 'на странице',
                                                         jump_to: 'Перейти',
