@@ -37,6 +37,7 @@ import {USERS, DEPARTMENTS} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
 import {ShortName} from "../../components/Helpers/TextHelpers";
 import "./style/patch.css";
+import MonthsRange from "./components/MonthsRange";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -127,6 +128,20 @@ const  Charts = (props) => {
         11: 'Ноябрь',
         12: 'Декабрь',
     };
+    const marks2 = [
+        {id: 1, name: 'Январь'},
+        {id: 2, name: 'Февраль'},
+        {id: 3, name: 'Март'},
+        {id: 4, name: 'Апрель'},
+        {id: 5, name: 'Май'},
+        {id: 6, name: 'Июнь'},
+        {id: 7, name: 'Июль'},
+        {id: 8, name: 'Август'},
+        {id: 9, name: 'Сентябрь'},
+        {id: 10, name: 'Октябрь'},
+        {id: 11, name: 'Ноябрь'},
+        {id: 12, name: 'Декабрь'},
+    ];
 
     const debounceTimer = useRef(null);
 
@@ -584,6 +599,12 @@ const  Charts = (props) => {
         endMonth++;
         setRangeValues([startMonth, endMonth]);
     };
+    const handleSetActiveMonth = (monthId) => {
+        setRangeValues([monthId, monthId]);
+    };
+    const handleSetRangeValues = (arr) => {
+        setRangeValues(arr);
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -706,7 +727,13 @@ const  Charts = (props) => {
                                             </div>
                                         </div>
                                         <div className={'sk-super-ckartch-patch'}>
-                                            <Slider
+                                            <MonthsRange
+                                                range={marks2}
+                                                rangeValues={rangeValues}
+                                                setActiveMonth={handleSetActiveMonth}
+                                                setRangeValues={handleSetRangeValues}
+                                            />
+                                            {/*<Slider
                                                 style={{width: '100%'}}
                                                 range marks={marks} step={null}
                                                 value={rangeValues}
@@ -716,7 +743,7 @@ const  Charts = (props) => {
                                                     //console.log('Slider value changed:', ev);
                                                     setRangeValues(ev);
                                                 }}
-                                            />
+                                            />*/}
                                         </div>
                                     </div>
                                 </Affix>

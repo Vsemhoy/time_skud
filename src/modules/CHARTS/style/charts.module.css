@@ -108,3 +108,27 @@
 /*.user_row:last-child .chart_cell {*/
 /*    border-bottom: 1px solid rgba(0, 0, 0, 0.1);*/
 /*}*/
+
+
+.range {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.month {
+    padding: 3px 17px;
+    background-color: #e7e7e7;
+    color: rgba(0,0,0,0.45);
+    border-radius: 5px;
+    transition: .3s;
+    cursor: pointer;
+    user-select: none;
+}
+.month:hover {
+    opacity: .8;
+}
+.month.active_month {
+    color: #fff;
+    background-color: #1677ff;
+}
