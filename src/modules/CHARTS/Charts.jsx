@@ -30,13 +30,14 @@ import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
-import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK} from "./mock/mock";
+import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK, STATUSES, COMPANIES} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
 import {ShortName} from "../../components/Helpers/TextHelpers";
 import "./style/patch.css";
+import MonthsRange from "./components/MonthsRange";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -48,7 +49,7 @@ const  Charts = (props) => {
     const [isOpenFilters, setIsOpenFilters] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(100);
     const [allUsersCount, setAllUsersCount] = useState(0);
     const [filterParams, setFilterParams] = useState(null);
 
@@ -127,6 +128,20 @@ const  Charts = (props) => {
         11: 'Ноябрь',
         12: 'Декабрь',
     };
+    const marks2 = [
+        {id: 1, name: 'Январь'},
+        {id: 2, name: 'Февраль'},
+        {id: 3, name: 'Март'},
+        {id: 4, name: 'Апрель'},
+        {id: 5, name: 'Май'},
+        {id: 6, name: 'Июнь'},
+        {id: 7, name: 'Июль'},
+        {id: 8, name: 'Август'},
+        {id: 9, name: 'Сентябрь'},
+        {id: 10, name: 'Октябрь'},
+        {id: 11, name: 'Ноябрь'},
+        {id: 12, name: 'Декабрь'},
+    ];
 
     const debounceTimer = useRef(null);
 
@@ -142,7 +157,7 @@ const  Charts = (props) => {
     useEffect(() => {
         if (props.userdata) {
             if (props.userdata.companies) {
-                setCompanies(props.userdata.companies);
+                //setCompanies(props.userdata.companies);
             }
             if (props.userdata.acls) {
                 setAcls(props.userdata.acls);
@@ -186,6 +201,9 @@ const  Charts = (props) => {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post('/api/chart/selects',
                     {
+                        data: {
+                            filterParams
+                        },
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
@@ -194,6 +212,8 @@ const  Charts = (props) => {
                     setUsers(content.users);
                     setDepartments(content.departaments);
                     setGroups(content.groups);
+                    setUserStatuses(content.statuses);
+                    setCompanies(content.companies);
                 }
             } catch (e) {
                 console.log(e);
@@ -203,6 +223,8 @@ const  Charts = (props) => {
             setUsers(USERS);
             setDepartments(DEPARTMENTS);
             setGroups(GROUPS);
+            setUserStatuses(STATUSES);
+            setCompanies(COMPANIES);
         }
     };
     const fetchChartStates = async () => {
@@ -269,6 +291,7 @@ const  Charts = (props) => {
                     const content = response.data.content;
                     setUsersPage(content.users);
                     setAllUsersCount(content.count);
+                    await fetchSelects();
                 }
             } catch (e) {
                 console.log(e);
@@ -381,6 +404,8 @@ const  Charts = (props) => {
                     label: option.name,
                     boss_id: option.boss_id,
                     id_company: option.id_company,
+                    count: option.count,
+                    match: option.match,
                 })
             });
         } else {
@@ -394,8 +419,9 @@ const  Charts = (props) => {
                 name: ShortName(user.surname, user.name, user.patronymic),
                 boss_id: user.boss_id,
                 id_company: user.id_company,
+                match: user.match,
             }
-        });
+        }).sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => b.match - a.match);
     }
     const handleFilterChanged = async (filters) => {
         setFilterParams(filters);
@@ -417,7 +443,7 @@ const  Charts = (props) => {
     /* drawer */
     const openCreateDrawer = () => {
         setEditorMode('create');
-        prepareDrawer();
+        prepareDrawer(null, currentUser);
     };
     const prepareDrawer = (currentChart = null, user = null, start = null) => {
         if (currentChart) {
@@ -584,6 +610,12 @@ const  Charts = (props) => {
         endMonth++;
         setRangeValues([startMonth, endMonth]);
     };
+    const handleSetActiveMonth = (monthId) => {
+        setRangeValues([monthId, monthId]);
+    };
+    const handleSetRangeValues = (arr) => {
+        setRangeValues(arr);
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -662,7 +694,7 @@ const  Charts = (props) => {
                                                     current={currentPage}
                                                     total={allUsersCount}
                                                     pageSize={pageSize}
-                                                    pageSizeOptions={[10, 20]}
+                                                    pageSizeOptions={[100, 200]}
                                                     locale={{
                                                         items_per_page: 'на странице',
                                                         jump_to: 'Перейти',
@@ -706,7 +738,13 @@ const  Charts = (props) => {
                                             </div>
                                         </div>
                                         <div className={'sk-super-ckartch-patch'}>
-                                            <Slider
+                                            <MonthsRange
+                                                range={marks2}
+                                                rangeValues={rangeValues}
+                                                setActiveMonth={handleSetActiveMonth}
+                                                setRangeValues={handleSetRangeValues}
+                                            />
+                                            {/*<Slider
                                                 style={{width: '100%'}}
                                                 range marks={marks} step={null}
                                                 value={rangeValues}
@@ -716,7 +754,7 @@ const  Charts = (props) => {
                                                     //console.log('Slider value changed:', ev);
                                                     setRangeValues(ev);
                                                 }}
-                                            />
+                                            />*/}
                                         </div>
                                     </div>
                                 </Affix>
