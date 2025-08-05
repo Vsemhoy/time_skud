@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import styles from "../style/charts.module.css";
-import {Button, Spin, Tooltip} from "antd";
+import {Affix, Button, Spin, Tooltip} from "antd";
 import {useOutletContext} from "react-router-dom";
 import {ShortName} from "../../../components/Helpers/TextHelpers";
 import dayjs from "dayjs";
@@ -199,84 +199,86 @@ const Chart = (props) => {
         <Spin spinning={isLoadingChart}>
             {usersPage && (
                 <div className={styles.sk_chart}>
-                    <div className={styles.month_row}>
-                        <div></div>
-                        <div className={styles.month_container} style={{gridTemplateColumns: (rangeValues[1] - rangeValues[0] + 1) !== 12 ? '39px 1fr 39px' : '1fr'}}>
-                            {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
-                                <Button style={{width: '100%'}}
-                                        icon={<ArrowLeftOutlined/>}
-                                        color="default"
-                                        variant="text"
-                                        onClick={onPreviousMonth}
-                                        disabled={rangeValues.includes(1)}
-                                />
-                            )}
-                            <div className={styles.months}
-                                 style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}
-                            >
-                                {months.map((month, index) => (
-                                    <p className={styles.month_name_p}
-                                       key={`month-${month}-${index}`}
-                                       onClick={() => setRangeValues([month,month])}
-                                    >
-                                        {dayjs(`${activeYear}-${month}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${month}-01`).format('MMMM').slice(1)}
-                                    </p>
-                                ))}
+                    <Affix offsetTop={182}>
+                        <div className={styles.month_row}>
+                            <div></div>
+                            <div className={styles.month_container} style={{gridTemplateColumns: (rangeValues[1] - rangeValues[0] + 1) !== 12 ? '39px 1fr 39px' : '1fr'}}>
+                                {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
+                                    <Button style={{width: '100%'}}
+                                            icon={<ArrowLeftOutlined/>}
+                                            color="default"
+                                            variant="text"
+                                            onClick={onPreviousMonth}
+                                            disabled={rangeValues.includes(1)}
+                                    />
+                                )}
+                                <div className={styles.months}
+                                     style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}
+                                >
+                                    {months.map((month, index) => (
+                                        <p className={styles.month_name_p}
+                                           key={`month-${month}-${index}`}
+                                           onClick={() => setRangeValues([month,month])}
+                                        >
+                                            {dayjs(`${activeYear}-${month}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${month}-01`).format('MMMM').slice(1)}
+                                        </p>
+                                    ))}
+                                </div>
+                                {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
+                                    <Button style={{width: '100%'}}
+                                            icon={<ArrowRightOutlined />}
+                                            color="default"
+                                            variant="text"
+                                            onClick={onNextMonth}
+                                            disabled={rangeValues.includes(12)}
+                                    />
+                                )}
                             </div>
-                            {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
-                                <Button style={{width: '100%'}}
-                                        icon={<ArrowRightOutlined />}
-                                        color="default"
-                                        variant="text"
-                                        onClick={onNextMonth}
-                                        disabled={rangeValues.includes(12)}
-                                />
-                            )}
                         </div>
-                    </div>
-                    <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
-                        <div className={styles.user_cell}></div>
-                        {months.length <= 2 && months.map((month, monthIdx) => {                          // по дням
-                            const daysInMonth = getDaysInMonth(dayjs(`${activeYear}-${month}-01`));
+                        <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
+                            <div className={styles.user_cell}></div>
+                            {months.length <= 2 && months.map((month, monthIdx) => {                          // по дням
+                                const daysInMonth = getDaysInMonth(dayjs(`${activeYear}-${month}-01`));
 
-                            return daysInMonth.map((day, idx) => {
-                                const isWeekend = day.day() === 0 || day.day() === 6;
-                                const dayKey = `${activeYear}-${month}-${day.date()}`; // Уникальный ключ
-                                const date = day.date() + '.' + monthIdx;
+                                return daysInMonth.map((day, idx) => {
+                                    const isWeekend = day.day() === 0 || day.day() === 6;
+                                    const dayKey = `${activeYear}-${month}-${day.date()}`; // Уникальный ключ
+                                    const date = day.date() + '.' + monthIdx;
+                                    return (
+                                        <div
+                                            className={`
+                                                ${styles.chart_cell} 
+                                                ${styles.chart_header_cell} 
+                                                ${isWeekend ? styles.weekend : ''}
+                                                ${date === highlightedColumn ? styles.highlighted : ''}
+                                            `}
+                                            key={dayKey}
+                                            onMouseEnter={() => setHighlightedColumn(date)}
+                                            onMouseLeave={() => setHighlightedColumn(null)}
+                                        >
+                                            <p className={styles.chart_cell_text}>{day.date()}</p>
+                                        </div>
+                                    );
+                                });
+                            })}
+                            {months.length > 2 &&  daysOrWeeksInMonth.map((week, index) => { // по неделям
                                 return (
                                     <div
                                         className={`
                                             ${styles.chart_cell} 
-                                            ${styles.chart_header_cell} 
-                                            ${isWeekend ? styles.weekend : ''}
-                                            ${date === highlightedColumn ? styles.highlighted : ''}
+                                            ${styles.chart_header_cell}
+                                            ${index === highlightedColumn ? styles.highlighted : ''}
                                         `}
-                                        key={dayKey}
-                                        onMouseEnter={() => setHighlightedColumn(date)}
+                                        key={`we-week-${week}`}
+                                        onMouseEnter={() => setHighlightedColumn(index)}
                                         onMouseLeave={() => setHighlightedColumn(null)}
                                     >
-                                        <p className={styles.chart_cell_text}>{day.date()}</p>
+                                        <p className={styles.chart_cell_text}>{week}</p>
                                     </div>
                                 );
-                            });
-                        })}
-                        {months.length > 2 &&  daysOrWeeksInMonth.map((week, index) => { // по неделям
-                            return (
-                                <div
-                                    className={`
-                                        ${styles.chart_cell} 
-                                        ${styles.chart_header_cell}
-                                        ${index === highlightedColumn ? styles.highlighted : ''}
-                                    `}
-                                    key={`we-week-${week}`}
-                                    onMouseEnter={() => setHighlightedColumn(index)}
-                                    onMouseLeave={() => setHighlightedColumn(null)}
-                                >
-                                    <p className={styles.chart_cell_text}>{week}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
+                            })}
+                        </div>
+                    </Affix>
                     {usersPage.map((user, index) => (
                         <div className={styles.user_row} key={`user_${user.id}_${index}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
                             <div className={styles.user_cell}>
@@ -335,7 +337,6 @@ const Chart = (props) => {
                                     )
                                 })
                             ))}
-                            {/*{months.length > 2 && Array.from({ length: daysOrWeeksInMonth }).map((_, index) => { // по неделям*/}
                             {months.length > 2 && daysOrWeeksInMonth.map((week, index) => { // по неделям
                                 const currentChart = getChartsInWeekRange(user.charts, index);
                                 const fullDate = `${week} неделя, ${getStartEndOfWeek(index + 1)}`;

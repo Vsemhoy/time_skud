@@ -30,7 +30,7 @@ import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
-import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK} from "./mock/mock";
+import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK, STATUSES, COMPANIES} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
@@ -49,7 +49,7 @@ const  Charts = (props) => {
     const [isOpenFilters, setIsOpenFilters] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(100);
     const [allUsersCount, setAllUsersCount] = useState(0);
     const [filterParams, setFilterParams] = useState(null);
 
@@ -157,7 +157,7 @@ const  Charts = (props) => {
     useEffect(() => {
         if (props.userdata) {
             if (props.userdata.companies) {
-                setCompanies(props.userdata.companies);
+                //setCompanies(props.userdata.companies);
             }
             if (props.userdata.acls) {
                 setAcls(props.userdata.acls);
@@ -201,6 +201,9 @@ const  Charts = (props) => {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post('/api/chart/selects',
                     {
+                        data: {
+                            filterParams
+                        },
                         _token: CSRF_TOKEN
                     });
                 if (response.data.content) {
@@ -209,6 +212,8 @@ const  Charts = (props) => {
                     setUsers(content.users);
                     setDepartments(content.departaments);
                     setGroups(content.groups);
+                    setUserStatuses(content.statuses);
+                    setCompanies(content.companies);
                 }
             } catch (e) {
                 console.log(e);
@@ -218,6 +223,8 @@ const  Charts = (props) => {
             setUsers(USERS);
             setDepartments(DEPARTMENTS);
             setGroups(GROUPS);
+            setUserStatuses(STATUSES);
+            setCompanies(COMPANIES);
         }
     };
     const fetchChartStates = async () => {
@@ -284,6 +291,7 @@ const  Charts = (props) => {
                     const content = response.data.content;
                     setUsersPage(content.users);
                     setAllUsersCount(content.count);
+                    await fetchSelects();
                 }
             } catch (e) {
                 console.log(e);
@@ -396,6 +404,8 @@ const  Charts = (props) => {
                     label: option.name,
                     boss_id: option.boss_id,
                     id_company: option.id_company,
+                    count: option.count,
+                    match: option.match,
                 })
             });
         } else {
@@ -409,6 +419,7 @@ const  Charts = (props) => {
                 name: ShortName(user.surname, user.name, user.patronymic),
                 boss_id: user.boss_id,
                 id_company: user.id_company,
+                match: user.match,
             }
         });
     }
@@ -683,7 +694,7 @@ const  Charts = (props) => {
                                                     current={currentPage}
                                                     total={allUsersCount}
                                                     pageSize={pageSize}
-                                                    pageSizeOptions={[10, 20]}
+                                                    pageSizeOptions={[100, 200]}
                                                     locale={{
                                                         items_per_page: 'на странице',
                                                         jump_to: 'Перейти',

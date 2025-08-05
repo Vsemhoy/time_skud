@@ -588,7 +588,8 @@ export const USERS = [
         "surname": "Пультов",
         "id": 1,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Весёлая",
@@ -596,7 +597,8 @@ export const USERS = [
         "surname": "Чернышовна",
         "id": 8,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Танцующая",
@@ -604,7 +606,8 @@ export const USERS = [
         "surname": "Гуляшкина",
         "id": 9,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Елочка",
@@ -612,7 +615,8 @@ export const USERS = [
         "surname": "Мороженова",
         "id": 10,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Леночка",
@@ -620,14 +624,16 @@ export const USERS = [
         "surname": "Апельсинова",
         "id": 32,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Конфеттин",
         "patronymic": "Вафельевич",
         "surname": "Ананасов",
         "id": 33,
-        "boss_id": 73
+        "boss_id": 73,
+        "match": 1
     },
     {
         "name": "Ириска",
@@ -635,7 +641,8 @@ export const USERS = [
         "surname": "Бубликова",
         "id": 34,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Карамель",
@@ -643,7 +650,8 @@ export const USERS = [
         "surname": "Барбарисов",
         "id": 35,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Ягодка",
@@ -651,7 +659,8 @@ export const USERS = [
         "surname": "Блинникова",
         "id": 36,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Драже",
@@ -659,7 +668,8 @@ export const USERS = [
         "surname": "Булочникова",
         "id": 37,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Дима",
@@ -667,14 +677,16 @@ export const USERS = [
         "surname": "Вафлев",
         "id": 38,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Маруся",
         "patronymic": "Пончикова",
         "surname": "Вафлёва",
         "id": 39,
-        "boss_id": 133
+        "boss_id": 133,
+        "match": 1
     },
     {
         "name": "Маринка",
@@ -682,7 +694,8 @@ export const USERS = [
         "surname": "Пирожкова",
         "id": 40,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Танюшка",
@@ -690,7 +703,8 @@ export const USERS = [
         "surname": "Дрожжина",
         "id": 41,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Дениска",
@@ -698,7 +712,8 @@ export const USERS = [
         "surname": "Дынёв",
         "id": 42,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Елка",
@@ -706,7 +721,8 @@ export const USERS = [
         "surname": "Почемучкина",
         "id": 43,
         "boss_id": 46,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Серёжа",
@@ -714,14 +730,16 @@ export const USERS = [
         "surname": "Золотистый",
         "id": 44,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Лёша",
         "patronymic": "Шоколадович",
         "surname": "Зефиринов",
         "id": 45,
-        "boss_id": 161
+        "boss_id": 161,
+        "match": 1
     },
     {
         "name": "Шоколандер",
@@ -729,7 +747,8 @@ export const USERS = [
         "surname": "Кекселёв",
         "id": 46,
         "boss_id": 46,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Валюша",
@@ -737,7 +756,8 @@ export const USERS = [
         "surname": "Плюшкина",
         "id": 47,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Аннюта",
@@ -745,7 +765,8 @@ export const USERS = [
         "surname": "Лакомкина",
         "id": 48,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Мариша",
@@ -753,7 +774,8 @@ export const USERS = [
         "surname": "Сладкова",
         "id": 49,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Валера",
@@ -761,7 +783,8 @@ export const USERS = [
         "surname": "Пирожков",
         "id": 50,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Сашка",
@@ -769,7 +792,8 @@ export const USERS = [
         "surname": "Оладушкина",
         "id": 51,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Игорька",
@@ -777,7 +801,8 @@ export const USERS = [
         "surname": "Мармеладов",
         "id": 52,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Юрик",
@@ -785,7 +810,8 @@ export const USERS = [
         "surname": "Пончиков",
         "id": 53,
         "boss_id": 46,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Анатолий",
@@ -793,14 +819,16 @@ export const USERS = [
         "surname": "Морожкин",
         "id": 54,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Юра",
         "patronymic": "Пончикович",
         "surname": "Клубничкин",
         "id": 55,
-        "boss_id": 73
+        "boss_id": 73,
+        "match": 1
     },
     {
         "name": "Игорёк",
@@ -808,7 +836,8 @@ export const USERS = [
         "surname": "Тортиков",
         "id": 56,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Дима",
@@ -816,7 +845,8 @@ export const USERS = [
         "surname": "Пирожков",
         "id": 57,
         "boss_id": 46,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Васька",
@@ -824,7 +854,8 @@ export const USERS = [
         "surname": "Плюшкинов",
         "id": 58,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Димон",
@@ -832,7 +863,8 @@ export const USERS = [
         "surname": "Пончиков",
         "id": 59,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Димчик",
@@ -840,7 +872,8 @@ export const USERS = [
         "surname": "Пряничкин",
         "id": 60,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Алекс",
@@ -848,14 +881,16 @@ export const USERS = [
         "surname": "Пакетиков",
         "id": 61,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Жанна",
         "patronymic": "Пончиковна",
         "surname": "Рогаликовна",
         "id": 62,
-        "boss_id": 251
+        "boss_id": 251,
+        "match": 0
     },
     {
         "name": "Сашка",
@@ -863,7 +898,8 @@ export const USERS = [
         "surname": "Рябинов",
         "id": 63,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Леша",
@@ -871,7 +907,8 @@ export const USERS = [
         "surname": "Сахаринов",
         "id": 64,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Сережа",
@@ -879,7 +916,8 @@ export const USERS = [
         "surname": "Комаров",
         "id": 65,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Танюша",
@@ -887,7 +925,8 @@ export const USERS = [
         "surname": "Тортикова",
         "id": 66,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Ирочка",
@@ -895,7 +934,8 @@ export const USERS = [
         "surname": "Пирожкова",
         "id": 67,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Елка",
@@ -903,7 +943,8 @@ export const USERS = [
         "surname": "Пудингова",
         "id": 68,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Алёша",
@@ -911,7 +952,8 @@ export const USERS = [
         "surname": "Ульянович",
         "id": 69,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 1
     },
     {
         "name": "Юля",
@@ -919,14 +961,16 @@ export const USERS = [
         "surname": "Чекмушарова",
         "id": 70,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Оксанка",
         "patronymic": "Пирожковна",
         "surname": "Чегонина",
         "id": 71,
-        "boss_id": 73
+        "boss_id": 73,
+        "match": 1
     },
     {
         "name": "Алина",
@@ -934,7 +978,8 @@ export const USERS = [
         "surname": "Чупочкина",
         "id": 72,
         "boss_id": 0,
-        "id_company": 2
+        "id_company": 2,
+        "match": 0
     },
     {
         "name": "Наташа",
@@ -942,8 +987,9 @@ export const USERS = [
         "surname": "Юдишкина",
         "id": 73,
         "boss_id": 46,
-        "id_company": 2
-    },
+        "id_company": 2,
+        "match": 1
+    }
 ];
 export const USERS_PAGE = [
         {
@@ -1201,93 +1247,397 @@ export const USERS_PAGE = [
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }*/
             ]
-        }
+        },
+    {
+        "id": 43,
+        "name": "Улыбка",
+        "surname": "Пузырёва",
+        "patronymic": "Бубновна",
+        "charts": [
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-07-07",
+                "end": "2025-07-08",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-07-12",
+                "end": "2025-07-13",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+        ]
+    },
+    {
+        "id": 46,
+        "name": "Кександр",
+        "surname": "Пирожков",
+        "patronymic": "Тортович",
+        "charts": [
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-20",
+                "end": "2025-04-15",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }
+        ]
+    },
+    {
+        "id": 47,
+        "name": "Блинытина",
+        "surname": "Желева",
+        "patronymic": "Мармеладовна",
+        "charts": [
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-03-10",
+                "end": "2025-03-15",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-04-15",
+                "end": "2025-04-28",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-09-01",
+                "end": "2025-09-10",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }
+        ]
+    },
+    {
+        "id": 57,
+        "name": "Пельмирий",
+        "surname": "Лапшиков",
+        "patronymic": "Весёлович",
+        "charts": [
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-04",
+                "end": "2025-03-05",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-05-01",
+                "end": "2025-08-31",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-09-15",
+                "end": "2025-09-20",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }
+        ]
+    },
+    {
+        "id": 91,
+        "name": "Сыргей",
+        "surname": "Мышкин",
+        "patronymic": "Котикович",
+        "charts": [
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-04",
+                "end": "2025-03-05",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-09-25",
+                "end": "2025-09-28",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }
+        ]
+    },
+    {
+        "id": 133,
+        "name": "Вафлория",
+        "surname": "Сироповейко",
+        "patronymic": "Мёдовна",
+        "charts": [
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-11",
+                "end": "2025-03-15",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-09-25",
+                "end": "2025-10-02",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }
+        ]
+    },
+    {
+        "id": 134,
+        "name": "Барсей",
+        "surname": "Беззубов",
+        "patronymic": "Карамельевич",
+        "charts": [
+            /*{
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-04",
+                "end": "2025-03-05",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-09-25",
+                "end": "2025-09-28",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }*/
+        ]
+    },
+    {
+        "id": 180,
+        "name": "ЛеоНЛО",
+        "surname": "Апельсин",
+        "patronymic": "Мандаринович",
+        "charts": [
+            /*{
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-04",
+                "end": "2025-03-05",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-05-01",
+                "end": "2025-08-31",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-09-15",
+                "end": "2025-09-20",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }*/
+        ]
+    },
+    {
+        "id": 198,
+        "name": "Валясолнечка",
+        "surname": "Рогаликова",
+        "patronymic": "Булочковна",
+        "charts": [
+            /*{
+                "id": 72,
+                "approved": 0,
+                "start": "2025-03-10",
+                "end": "2025-03-15",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 72,
+                "approved": 0,
+                "start": "2025-04-15",
+                "end": "2025-04-28",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            },
+            {
+                "id": 71,
+                "approved": 0,
+                "start": "2025-09-01",
+                "end": "2025-09-10",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }*/
+        ]
+    },
+    {
+        "id": 226,
+        "name": "Антанасия",
+        "surname": "Плетёнова",
+        "patronymic": "Веничковна",
+        "charts": [
+            /*{
+                "id": 71,
+                "approved": 0,
+                "start": "2025-03-20",
+                "end": "2025-04-15",
+                "user_id": 43,
+                "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
+            }*/
+        ]
+    }
     ];
 export const DEPARTMENTS = [
     {
-        id: 1,
-        name: 'Администрация'
+        "id": 1,
+        "name": "Администрация",
+        "count": 3
     },
     {
-        id: 2,
-        name: 'Монтажный отдел'
-    },
-    {
-        id: 3,
-        name: 'IT отдел'
-    },
-];
-export const GROUPS = [
-    {
-        "id": 7,
-        "name": "Креативный отдел",
-        "description": "Нетакие люди",
-        "deleted": 0,
-        "id_company": 2,
-        "company_name": "Arstel",
-        "company_color": "#ff7700",
-        "users_count": 7
-    },
-    {
-        "id": 6,
-        "name": "Нестандартное время графика",
-        "description": "Все челы, у которых нестандартное время стандартного графика",
-        "deleted": 0,
-        "id_company": 2,
-        "company_name": "Arstel",
-        "company_color": "#ff7700",
-        "users_count": 3
-    },
-    {
-        "id": 5,
-        "name": "Рондовцы",
-        "description": "Rondosoundovcy zdes zhivut",
-        "deleted": 0,
-        "id_company": 3,
-        "company_name": "Rondo",
-        "company_color": "#229922",
-        "users_count": 5
-    },
-    {
-        "id": 4,
-        "name": "А это рондосаундная группа 3",
-        "description": "Емай ай нид хелпхер!",
-        "deleted": 0,
-        "id_company": 3,
-        "company_name": "Rondo",
-        "company_color": "#229922",
-        "users_count": 0
+        "id": 2,
+        "name": "Отдел персонала",
+        "count": 3
     },
     {
         "id": 3,
-        "name": "Айтишники - отдел",
-        "description": "афывафы",
-        "deleted": 0,
-        "id_company": 2,
-        "company_name": "Arstel",
-        "company_color": "#ff7700",
-        "users_count": 3
+        "name": "Бухгалтерия",
+        "count": 4
+    },
+    {
+        "id": 4,
+        "name": "Техническая группа проектного отдела",
+        "count": 1
+    },
+    {
+        "id": 5,
+        "name": "Отдел оптовых продаж",
+        "count": 13
+    },
+    {
+        "id": 7,
+        "name": "Технический отдел трансляционного звука",
+        "count": 6
+    },
+    {
+        "id": 8,
+        "name": "Проектный отдел",
+        "count": 2
+    },
+    {
+        "id": 9,
+        "name": "Склад Санкт-Петербург",
+        "count": 4
+    },
+    {
+        "id": 11,
+        "name": "Строительный отдел",
+        "count": 4
+    },
+    {
+        "id": 14,
+        "name": "Отдел информационных технологий",
+        "count": 8
+    },
+    {
+        "id": 15,
+        "name": "Отдел информации",
+        "count": 2
+    },
+    {
+        "id": 17,
+        "name": "Пулково КПП",
+        "count": 4
+    },
+    {
+        "id": 18,
+        "name": "Пулково 19",
+        "count": 5
+    },
+    {
+        "id": 19,
+        "name": "Контрагенты",
+        "count": 3
+    },
+    {
+        "id": 20,
+        "name": "Технический отдел профессионального звука",
+        "count": 3
+    },
+    {
+        "id": 21,
+        "name": "Отдел Логистики",
+        "count": 1
+    }
+];
+export const GROUPS = [
+    {
+        "id": 1,
+        "name": "Продажники",
+        "count": 0
     },
     {
         "id": 2,
         "name": "Бухгалтерия",
-        "description": "Для тестов, сюда ничего не добавлять!",
-        "deleted": 0,
-        "id_company": 2,
-        "company_name": "Arstel",
-        "company_color": "#ff7700",
-        "users_count": 3
+        "count": 0
     },
     {
-        "id": 1,
-        "name": "Продажники",
-        "description": "Группа с ординарным графиком",
-        "deleted": 0,
-        "id_company": 2,
-        "company_name": "Arstel",
-        "company_color": "#ff7700",
-        "users_count": 10
+        "id": 3,
+        "name": "Айтишники - отдел",
+        "count": 0
     },
+    {
+        "id": 4,
+        "name": "А это рондосаундная группа 3",
+        "count": 0
+    },
+    {
+        "id": 5,
+        "name": "Рондовцы",
+        "count": 0
+    },
+    {
+        "id": 6,
+        "name": "Нестандартное время графика",
+        "count": 0
+    },
+    {
+        "id": 7,
+        "name": "Креативный отдел",
+        "count": 0
+    },
+    {
+        "id": 8,
+        "name": "Инженеры",
+        "count": 0
+    },
+    {
+        "id": 9,
+        "name": "СКЛАДУ",
+        "count": 0
+    },
+    {
+        "id": 14,
+        "name": "Глинтерники",
+        "count": 0
+    }
 ];
 export const CLAIM_ACL_MOCK = {
     "2": {
@@ -1453,3 +1803,27 @@ export const CLAIM_ACL_MOCK = {
         ]
     }
 };
+export const STATUSES = [
+    {
+        "id": "0",
+        "name": "Работают",
+        "count": 66
+    },
+    {
+        "id": "1",
+        "name": "Уволенные",
+        "count": 276
+    }
+];
+export const COMPANIES = [
+    {
+        "id": 2,
+        "name": "Arstel",
+        "count": 336
+    },
+    {
+        "id": 3,
+        "name": "Rondo",
+        "count": 7
+    }
+];
