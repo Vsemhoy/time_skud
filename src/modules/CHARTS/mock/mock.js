@@ -8,9 +8,9 @@ export const CHART_STATES = [
         "need_work": 1,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 2,
@@ -21,9 +21,9 @@ export const CHART_STATES = [
         "need_work": 2,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 3,
@@ -34,9 +34,9 @@ export const CHART_STATES = [
         "need_work": 2,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 4,
@@ -47,9 +47,9 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 5,
@@ -60,87 +60,9 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
-    },
-    {
-        "id": 6,
-        "badge": "больничный",
-        "text": "Больничный",
-        "color": "#ffa8a8",
-        "icon": "MedicineBoxOutlined",
-        "need_work": 0,
-        "need_approved": 0,
-        "sort_order": 6,
-        "fillable": 1,
-        "title": "Больничные",
-        "name": "sickleave"
-    },
-    {
-        "id": 7,
-        "badge": "командировк.",
-        "text": "Длительная командировка",
-        "color": "#e2b4e9",
-        "icon": "RocketOutlined",
-        "need_work": 0,
-        "need_approved": 1,
-        "sort_order": 3,
-        "fillable": 1,
-        "title": "Командировка длительная",
-        "name": "longtrip"
-    },
-    {
-        "id": 8,
-        "badge": "местн.выезд.",
-        "text": "Кратковременная местная командировка",
-        "color": "#e3dbf1",
-        "icon": "CarOutlined",
-        "need_work": 0,
-        "need_approved": 1,
-        "sort_order": 2,
-        "fillable": 1,
-        "title": "Местная командировка",
-        "name": "shorttrip"
-    },
-    {
-        "id": 9,
-        "badge": "св.отпуск",
-        "text": "Отпуск за свой счёт",
-        "color": "#c4e8e5",
-        "icon": "MoonOutlined",
-        "need_work": 1,
-        "need_approved": 1,
-        "sort_order": 1,
-        "fillable": 1,
-        "title": "Отпуск за свой счёт",
-        "name": "shortvacation"
-    },
-    {
-        "id": 10,
-        "badge": "отпуск",
-        "text": "Плановый отпуск",
-        "color": "#7adfb8",
-        "icon": "SmileOutlined",
-        "need_work": 0,
-        "need_approved": 1,
-        "sort_order": 4,
-        "fillable": 1,
-        "title": "Очередные отпуска",
-        "name": "longvacation"
-    },
-    {
-        "id": 11,
-        "badge": "сверхурочные",
-        "text": "Работа вне установленного графиком рабочего времени",
-        "color": "#b7ff5c",
-        "icon": "DollarOutlined",
-        "need_work": 3,
-        "need_approved": 1,
-        "sort_order": 5,
-        "fillable": 1,
-        "title": "Сверхурочные",
-        "name": "overtime"
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 12,
@@ -151,22 +73,9 @@ export const CHART_STATES = [
         "need_work": 1,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
-    },
-    {
-        "id": 13,
-        "badge": "контейнеры",
-        "text": "Разгрузка контейнеров на складе",
-        "color": "#ffc107",
-        "icon": "TruckOutlined",
-        "need_work": 0,
-        "need_approved": 1,
-        "sort_order": 7,
-        "fillable": 1,
-        "title": "Разгрузка контейнеров",
-        "name": "containers"
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 14,
@@ -177,9 +86,9 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 15,
@@ -190,9 +99,9 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 16,
@@ -203,9 +112,9 @@ export const CHART_STATES = [
         "need_work": 1,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 17,
@@ -216,9 +125,9 @@ export const CHART_STATES = [
         "need_work": 1,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 18,
@@ -229,9 +138,9 @@ export const CHART_STATES = [
         "need_work": 1,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 19,
@@ -242,9 +151,9 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 20,
@@ -255,9 +164,9 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 21,
@@ -268,9 +177,9 @@ export const CHART_STATES = [
         "need_work": 0,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
     },
     {
         "id": 22,
@@ -281,9 +190,100 @@ export const CHART_STATES = [
         "need_work": null,
         "need_approved": 0,
         "sort_order": 0,
-        "fillable": 0,
         "title": null,
-        "name": null
+        "name": null,
+        "fillable": 0
+    },
+    {
+        "id": 9,
+        "badge": "св.отпуск",
+        "text": "Отпуск за свой счёт",
+        "color": "#c4e8e5",
+        "icon": "MoonOutlined",
+        "need_work": 1,
+        "need_approved": 1,
+        "sort_order": 1,
+        "title": "Отпуск за свой счёт",
+        "name": "shortvacation",
+        "fillable": 1
+    },
+    {
+        "id": 8,
+        "badge": "местн.выезд.",
+        "text": "Кратковременная местная командировка",
+        "color": "#e3dbf1",
+        "icon": "CarOutlined",
+        "need_work": 0,
+        "need_approved": 1,
+        "sort_order": 2,
+        "title": "Местная командировка",
+        "name": "shorttrip",
+        "fillable": 1
+    },
+    {
+        "id": 7,
+        "badge": "командировк.",
+        "text": "Длительная командировка",
+        "color": "#e2b4e9",
+        "icon": "RocketOutlined",
+        "need_work": 0,
+        "need_approved": 1,
+        "sort_order": 3,
+        "title": "Командировка длительная",
+        "name": "longtrip",
+        "fillable": 1
+    },
+    {
+        "id": 10,
+        "badge": "отпуск",
+        "text": "Плановый отпуск",
+        "color": "#7adfb8",
+        "icon": "SmileOutlined",
+        "need_work": 0,
+        "need_approved": 1,
+        "sort_order": 4,
+        "title": "Очередные отпуска",
+        "name": "longvacation",
+        "fillable": 1
+    },
+    {
+        "id": 11,
+        "badge": "сверхурочные",
+        "text": "Работа вне установленного графиком рабочего времени",
+        "color": "#b7ff5c",
+        "icon": "DollarOutlined",
+        "need_work": 3,
+        "need_approved": 1,
+        "sort_order": 5,
+        "title": "Сверхурочные",
+        "name": "overtime",
+        "fillable": 1
+    },
+    {
+        "id": 6,
+        "badge": "больничный",
+        "text": "Больничный",
+        "color": "#ffa8a8",
+        "icon": "MedicineBoxOutlined",
+        "need_work": 0,
+        "need_approved": 0,
+        "sort_order": 6,
+        "title": "Больничные",
+        "name": "sickleave",
+        "fillable": 1
+    },
+    {
+        "id": 13,
+        "badge": "контейнеры",
+        "text": "Разгрузка контейнеров на складе",
+        "color": "#ffc107",
+        "icon": "TruckOutlined",
+        "need_work": 0,
+        "need_approved": 1,
+        "sort_order": 7,
+        "title": "Разгрузка контейнеров",
+        "name": "containers",
+        "fillable": 1
     }
 ];
 export const USDA = {

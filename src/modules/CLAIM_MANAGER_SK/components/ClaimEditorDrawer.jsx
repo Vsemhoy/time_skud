@@ -151,7 +151,7 @@ const ClaimEditorDrawer = (props) => {
           color = q?.color;
         }
         if (props.data) {
-          console.log(props.data.start)
+          console.log(props.data.user_id)
           if (props.data.user_id) {
             setFormUsers([props.data.user_id]);
           }
@@ -205,6 +205,7 @@ const ClaimEditorDrawer = (props) => {
     }
 
     console.log(props.acl_base[userCard.id_company])
+    console.log(userCard)
 
     if (props.acl_base[userCard.id_company] &&
         props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
