@@ -421,7 +421,7 @@ const  Charts = (props) => {
                 id_company: user.id_company,
                 match: user.match,
             }
-        });
+        }).sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => b.match - a.match);
     }
     const handleFilterChanged = async (filters) => {
         setFilterParams(filters);
