@@ -30,7 +30,7 @@ import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
-import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK} from "./mock/mock";
+import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK, STATUSES, COMPANIES} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
@@ -157,7 +157,7 @@ const  Charts = (props) => {
     useEffect(() => {
         if (props.userdata) {
             if (props.userdata.companies) {
-                setCompanies(props.userdata.companies);
+                //setCompanies(props.userdata.companies);
             }
             if (props.userdata.acls) {
                 setAcls(props.userdata.acls);
@@ -212,6 +212,8 @@ const  Charts = (props) => {
                     setUsers(content.users);
                     setDepartments(content.departaments);
                     setGroups(content.groups);
+                    setUserStatuses(content.statuses);
+                    setCompanies(content.companies);
                 }
             } catch (e) {
                 console.log(e);
@@ -221,6 +223,8 @@ const  Charts = (props) => {
             setUsers(USERS);
             setDepartments(DEPARTMENTS);
             setGroups(GROUPS);
+            setUserStatuses(STATUSES);
+            setCompanies(COMPANIES);
         }
     };
     const fetchChartStates = async () => {
@@ -415,6 +419,7 @@ const  Charts = (props) => {
                 name: ShortName(user.surname, user.name, user.patronymic),
                 boss_id: user.boss_id,
                 id_company: user.id_company,
+                match: user.match,
             }
         });
     }

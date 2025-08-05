@@ -87,11 +87,12 @@ const ChartsSidebar = (props) => {
     const renderLabel = (info) => {
         return (
             <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                overflow: 'hidden'
-            }}>
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    overflow: 'hidden'
+                 }}
+            >
                 <span style={{
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
@@ -129,22 +130,27 @@ const ChartsSidebar = (props) => {
 
                 <div className={'sk-usp-filter-col-item'}>
                     <span className={'sk-usp-filter-col-label'}>Пользователи</span>
-                    <Select style={{width: '100%',maxHeight: 300, overflow: 'auto',}}
-                            placeholder={'Выберите пользователя'}
-                            value={filterUser}
-                            options={props.user_list}
-                            onChange={(ev) => {
-                                setFilterUser(ev)
-                            }}
-                            allowClear
-                            mode="multiple"
-                            optionRender={option => (
-                                <Space disabled={!option.match}>
-                                    <span>{option.label}</span>
-                                </Space>
-                            )}
-                            showSearch
-                            optionFilterProp="label"
+                    <Select
+                        style={{ width: '100%', maxHeight: 300, overflow: 'auto' }}
+                        placeholder="Выберите пользователя"
+                        value={filterUser}
+                        options={props.user_list.map(user => ({
+                            ...user,
+                            disabled: !user.match,
+                            label: (
+                                <span style={!user.match ? { opacity: 0.5 } : {}}>
+                                    {user.label}
+                                </span>
+                            )
+                        }))}
+                        onChange={setFilterUser}
+                        allowClear
+                        mode="multiple"
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            option.label.toLowerCase().includes(input.toLowerCase()) && option.match
+                        }
                     />
                 </div>
 
@@ -183,10 +189,15 @@ const ChartsSidebar = (props) => {
                         <Select style={{width: '100%'}}
                                 placeholder={'Работающие / уволенные'}
                                 value={filterUserStatus}
-                                options={props.user_statuses_list}
+                                options={props.user_statuses_list.map(dept => ({
+                                    value: dept.value,
+                                    label: (renderLabel(dept)),
+                                    name: dept.label
+                                }))}
                                 onChange={(ev) => {
                                     setFilterUserStatus(ev)
                                 }}
+                                optionLabelProp="name"
                         />
                     </div>
                 )}
