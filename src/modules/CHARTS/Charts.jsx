@@ -443,7 +443,7 @@ const  Charts = (props) => {
     /* drawer */
     const openCreateDrawer = () => {
         setEditorMode('create');
-        prepareDrawer();
+        prepareDrawer(null, currentUser);
     };
     const prepareDrawer = (currentChart = null, user = null, start = null) => {
         if (currentChart) {
