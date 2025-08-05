@@ -187,7 +187,9 @@ const ClaimEditorDrawer = (props) => {
     };
   }, [userCard, editMode]);
 
+
   const masterSetReadOptions = () => {
+      console.log(props.acl_base);
     if  (userCard.evaluated === 0 && userCard.user_id === MYID &&
         props.acl_base[userCard.id_company] &&
         props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&

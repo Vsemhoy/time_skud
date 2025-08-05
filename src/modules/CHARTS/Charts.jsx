@@ -447,22 +447,24 @@ const  Charts = (props) => {
     };
     const prepareDrawer = (currentChart = null, user = null, start = null) => {
         if (currentChart) {
-            setClaimForDrawer({
-                id: currentChart?.id,
-                user_id: user?.id,
-                start: currentChart?.start,
-                end: currentChart?.end,
-                is_approved: currentChart?.approved,
-                skud_current_state_id: selectedChartState,
-                info: currentChart?.info,
-                days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
-                state_color: reactiveColor,
-                usr_name: user?.name,
-                usr_surname: user?.surname,
-                usr_patronymic: user?.patronymic,
-                id_company: user?.id_company,
-                boss_id: user?.boss_id
-            });
+
+            // setClaimForDrawer({
+            //     id: currentChart?.id,
+            //     user_id: user?.id,
+            //     start: currentChart?.start,
+            //     end: currentChart?.end,
+            //     is_approved: currentChart?.approved,
+            //     skud_current_state_id: selectedChartState,
+            //     info: currentChart?.info,
+            //     days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
+            //     state_color: reactiveColor,
+            //     usr_name: user?.name,
+            //     usr_surname: user?.surname,
+            //     usr_patronymic: user?.patronymic,
+            //     id_company: user?.id_company,
+            //     boss_id: user?.boss_id
+            // });
+            fetch_claim(currentChart?.id);
         } else {
             setEditorMode('create');
             console.log({
@@ -486,6 +488,25 @@ const  Charts = (props) => {
         }
         setEditorOpened(true);
     };
+
+    const fetch_claim = async (claim_id) => {
+        if (PRODMODE) {
+            try {
+                let response = await PROD_AXIOS_INSTANCE.post('/api/chart/getclaimitem',
+                    {
+                        data: {
+                            claim_id
+                        },
+                        _token: CSRF_TOKEN
+                    });
+                //console.log('response data => ', response.data);
+                setClaimForDrawer(response?.data.content);
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+
     const create_claim = async (claimObj) => {
         if (PRODMODE) {
             try {
