@@ -62,7 +62,7 @@ const  Charts = (props) => {
     const [activeYear, setActiveYear] = useState(dayjs().year());
 
     const [acls, setAcls] = useState([]);
-    const [currentUser, setCurrentUser] = useState({id:0});
+    const [currentUser, setCurrentUser] = useState(PRODMODE ? {id:0} : USDA.user);
     const [years, setYears] = useState([]);
     const [users, setUsers] = useState([]);
     const [companies, setCompanies] = useState([]);
@@ -86,7 +86,7 @@ const  Charts = (props) => {
     const [editorMode, setEditorMode] = useState('read');
     const [editorOpened, setEditorOpened] = useState(false);
     const [claimForDrawer, setClaimForDrawer] = useState(null);
-    const [aclBase, setAclBase] = useState({});
+    const [aclBase, setAclBase] = useState(null);
 
     //const [rangeValues, setRangeValues] = useState([1,12]);
     const [rangeValues, setRangeValues] = useState([dayjs().month()+1,dayjs().month()+1]);
@@ -155,15 +155,17 @@ const  Charts = (props) => {
         }
     }, []);
     useEffect(() => {
-        if (props.userdata) {
-            if (props.userdata.companies) {
-                //setCompanies(props.userdata.companies);
-            }
-            if (props.userdata.acls) {
-                setAcls(props.userdata.acls);
-            }
-            if (props.userdata.user) {
-                setCurrentUser(props.userdata.user);
+        if (PRODMODE) {
+            if (props.userdata) {
+                if (props.userdata.companies) {
+                    //setCompanies(props.userdata.companies);
+                }
+                if (props.userdata.acls) {
+                    setAcls(props.userdata.acls);
+                }
+                if (props.userdata.user) {
+                    setCurrentUser(props.userdata.user);
+                }
             }
         }
     }, [props.userdata]);
@@ -443,50 +445,82 @@ const  Charts = (props) => {
     /* drawer */
     const openCreateDrawer = () => {
         setEditorMode('create');
-        prepareDrawer(null, currentUser);
+        prepareDrawer();
     };
     const prepareDrawer = async (currentChart = null, user = null, start = null) => {
         if (currentChart) {
-
-            // setClaimForDrawer({
-            //     id: currentChart?.id,
-            //     user_id: user?.id,
-            //     start: currentChart?.start,
-            //     end: currentChart?.end,
-            //     is_approved: currentChart?.approved,
-            //     skud_current_state_id: selectedChartState,
-            //     info: currentChart?.info,
-            //     days_count: currentChart ? dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') : null,
-            //     state_color: reactiveColor,
-            //     usr_name: user?.name,
-            //     usr_surname: user?.surname,
-            //     usr_patronymic: user?.patronymic,
-            //     id_company: user?.id_company,
-            //     boss_id: user?.boss_id
-            // });
             await fetch_claim(currentChart?.id);
+            setEditorOpened(true);
         } else {
-            setEditorMode('create');
-            console.log({
-                start,
-                user_id: user?.id,
-                usr_name: user?.name,
-                usr_surname: user?.surname,
-                usr_patronymic: user?.patronymic,
-                id_company: user?.id_company,
-                boss_id: user?.boss_id
-            })
-            setClaimForDrawer({
-                start: start,
-                user_id: user?.id,
-                usr_name: user?.name,
-                usr_surname: user?.surname,
-                usr_patronymic: user?.patronymic,
-                id_company: user?.id_company,
-                boss_id: user?.boss_id
-            });
+            let canCreate = false;
+            if (user && aclBase[user.id_company] &&
+                aclBase[user.id_company][selectedChartState] &&
+                aclBase[user.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE')
+            ) {
+                // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+                canCreate = true;
+            } else if (user && user.boss_id === currentUser.id &&
+                aclBase[user.id_company] &&
+                aclBase[user.id_company][selectedChartState] &&
+                aclBase[user.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE')
+            ) {
+                // Если челик мой подчиненный и у меня есть права создавать заявки
+                canCreate = true;
+            } else if (user && user.id === currentUser.id &&
+                aclBase[user.id_company] &&
+                aclBase[user.id_company][selectedChartState] &&
+                aclBase[user.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')
+            ) {
+                canCreate = true;
+            } else if (
+                aclBase[currentUser.id_company] &&
+                aclBase[currentUser.id_company][selectedChartState] &&
+                (
+                    aclBase[currentUser.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE') ||
+                    aclBase[currentUser.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE') ||
+                    aclBase[currentUser.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')
+                )
+            ) {
+                canCreate = true;
+            }
+            console.log(canCreate)
+            if (canCreate) {
+                setEditorMode('create');
+                if (user && aclBase[user.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')) {
+                    setClaimForDrawer({
+                        start: start,
+                        user_id: currentUser?.id,
+                        usr_name: currentUser?.name,
+                        usr_surname: currentUser?.surname,
+                        usr_patronymic: currentUser?.patronymic,
+                        id_company: currentUser?.id_company,
+                        boss_id: currentUser?.boss_id
+                    });
+                } else if (user) {
+                    setClaimForDrawer({
+                        start: start,
+                        user_id: user?.id,
+                        usr_name: user?.name,
+                        usr_surname: user?.surname,
+                        usr_patronymic: user?.patronymic,
+                        id_company: user?.id_company,
+                        boss_id: user?.boss_id
+                    });
+                } else {
+                    setClaimForDrawer({
+                        start: start,
+                        user_id: null,
+                        usr_name: null,
+                        usr_surname: null,
+                        usr_patronymic: null,
+                        id_company: currentUser?.id_company,
+                        boss_id: currentUser?.boss_id
+                    });
+                }
+
+                setEditorOpened(true);
+            }
         }
-        setEditorOpened(true);
     };
 
     const fetch_claim = async (claim_id) => {
@@ -641,6 +675,17 @@ const  Charts = (props) => {
     const handleSetRangeValues = (arr) => {
         setRangeValues(arr);
     };
+    const isCanCreate = () => {
+        if (aclBase && currentUser.id > 0 && selectedChartState && aclBase[currentUser.id_company] && aclBase[currentUser.id_company][selectedChartState]) {
+            console.log(currentUser)
+            console.log(aclBase[currentUser.id_company])
+            return (
+                aclBase[currentUser.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE') ||
+                aclBase[currentUser.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE') ||
+                aclBase[currentUser.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE')
+            );
+        } else return false;
+    };
 
     return (
         <Spin spinning={isLoading}>
@@ -656,12 +701,16 @@ const  Charts = (props) => {
                                         onClick={() => setIsOpenFilters(!isOpenFilters)}
                                 >Фильтры</Button>
                                 <h1 className={'page-header'}>{returnHeader()}</h1>
-                                <Button color={'primary'}
-                                        variant={'solid'}
-                                        icon={<PlusOutlined/>}
-                                        style={{ width: '140px' }}
-                                        onClick={openCreateDrawer}
-                                >Создать заявку</Button>
+                                {isCanCreate() ? (
+                                    <Button color={'primary'}
+                                         variant={'solid'}
+                                         icon={<PlusOutlined/>}
+                                         style={{width: '140px'}}
+                                         onClick={openCreateDrawer}
+                                    >Создать заявку</Button>
+                                ) : (
+                                    <div style={{width: '140px'}}></div>
+                                )}
                             </div>
                         </Affix>
                     </Header>
@@ -752,14 +801,16 @@ const  Charts = (props) => {
                                                             setMyClaims(!myClaims);
                                                         }}
                                                 >Мои заявки</Button>
-                                                <Button color={'default'}
-                                                        variant={mySubjects ? 'solid' : 'outlined'}
-                                                        style={{width: '140px'}}
-                                                        onClick={(ev) => {
-                                                            setMyClaims(false);
-                                                            setMySubjects(!mySubjects);
-                                                        }}
-                                                >Мои сотрудники</Button>
+                                                {users.find(user => +user.boss_id === +currentUser.id) && (
+                                                    <Button color={'default'}
+                                                         variant={mySubjects ? 'solid' : 'outlined'}
+                                                         style={{width: '140px'}}
+                                                         onClick={(ev) => {
+                                                             setMyClaims(false);
+                                                             setMySubjects(!mySubjects);
+                                                         }}
+                                                    >Мои сотрудники</Button>
+                                                )}
                                             </div>
                                         </div>
                                         <div className={'sk-super-ckartch-patch'}>

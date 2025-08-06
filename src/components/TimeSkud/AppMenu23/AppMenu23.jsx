@@ -197,6 +197,32 @@ const AppMenu23 = (props) => {
         },*/
     ];
 
+    useEffect(() => {
+        console.log(props.user_act)
+    }, [props.user_act]);
+
+    const getMenuItems = () => {
+        console.log(props.user_act)
+        return mainMenuItems.filter(item => {
+            const shouldShowItem = (() => {
+                switch (item.key) {
+                    case 'menu2': return props.user_act && props.user_act.user && (props.user_act.user.id_departament === 2 || props.user_act.user.super === 1);
+                    case 'menu3': return props.user_act && props.user_act.acls && props.user_act.acls.includes(82);
+                    case '/admin/aclskud': return props.user_act && props.user_act.user && props.user_act.user.super === 1;
+                    default: return true;
+                }
+            })();
+            if (shouldShowItem && item.children) {
+                item.children = item.children.filter(child => {
+                    return true;
+                });
+                if (item.children.length === 0) return false;
+            }
+
+            return shouldShowItem;
+        });
+    };
+
     return (
         <div>
             <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={'sk-main-menu'}>
@@ -204,7 +230,7 @@ const AppMenu23 = (props) => {
                     mode="horizontal"
                     style={{ background: '#00000000', flex: 1 }}
                     selectedKeys={getSelectedKeys()}
-                    items={mainMenuItems}
+                    items={getMenuItems()}
                 />
 
                 <div style={{ display: 'flex', alignItems: 'center'}}>

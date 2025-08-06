@@ -51,6 +51,7 @@ import Containers from "./modules/CHARTS/outlets/Containers";
 import Chart from "./modules/CHARTS/components/Chart";
 import NotifierDrawer from './components/Notifyer/NotifierDrawer';
 import AccountingPage from "./modules/ACCOUNTING/AccountingPage";
+import {USDA} from "./modules/CHARTS/mock/mock";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -133,28 +134,33 @@ function App() {
      * @param {*} req 
      * @param {*} res 
      */
-    const get_userdata = async (req, res) => {
-      try {
-          // setLoadingOrgs(true)
-          const format_data = {
-              CSRF_TOKEN,
-              data: {
-                  // ...filters,
-                  // created_date: get_unix_by_datearray(filters.created_date),
-                  // active_date: get_unix_by_datearray(filters.active_date)
-              }
-          }
-          let response = await PROD_AXIOS_INSTANCE.get('/usda?_token=' + CSRF_TOKEN);
-          console.log('me: ', response);
-          // setOrganizations(organizations_response.data.org_list)
-          // setTotal(organizations_response.data.total_count)
-          setUserAct(response.data);
-      } catch (e) {
-          console.log(e)
-      } finally {
-          // setLoadingOrgs(false)
-          setPageLoaded(true);
-      }
+    const get_userdata = async () => {
+        if (PRODMODE) {
+            try {
+                // setLoadingOrgs(true)
+                const format_data = {
+                    CSRF_TOKEN,
+                    data: {
+                        // ...filters,
+                        // created_date: get_unix_by_datearray(filters.created_date),
+                        // active_date: get_unix_by_datearray(filters.active_date)
+                    }
+                }
+                let response = await PROD_AXIOS_INSTANCE.get('/usda?_token=' + CSRF_TOKEN);
+                console.log('me: ', response);
+                // setOrganizations(organizations_response.data.org_list)
+                // setTotal(organizations_response.data.total_count)
+                setUserAct(response.data);
+            } catch (e) {
+                console.log(e)
+            } finally {
+                // setLoadingOrgs(false)
+                setPageLoaded(true);
+            }
+        } else {
+            setUserAct(USDA);
+            setPageLoaded(true);
+        }
   }
 
 
@@ -165,7 +171,7 @@ function App() {
 
       // EFFECTS
       useEffect(() => {
-        PRODMODE && get_userdata(setUserAct)
+        get_userdata().then();
     }, []);
 
 
