@@ -301,7 +301,7 @@ const Chart = (props) => {
                                                 <div>Длительность: {dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') + 1} дней</div>
                                                 <div>{+currentChart.state === 0 ? 'Ожидает согласования' : ''}</div>
                                                 <div>{+currentChart.state === 1 ? 'Согласовано' : ''}</div>
-                                                <div>{+currentChart.state === 2 ? 'Не согласовано' : ''}</div>
+                                                <div>{+currentChart.state === 2 ? 'Отклонено' : ''}</div>
                                                 <div>{+currentChart.state === 3 ? 'Перенесен' : ''}</div>
                                             </div>
                                         }>
@@ -356,7 +356,7 @@ const Chart = (props) => {
                                                         <div>Длительность: {dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней</div>
                                                         <div>{+chart.state === 0 ? 'Ожидает согласования' : ''}</div>
                                                         <div>{+chart.state === 1 ? 'Согласовано' : ''}</div>
-                                                        <div>{+chart.state === 2 ? 'Не согласовано' : ''}</div>
+                                                        <div>{+chart.state === 2 ? 'Отклонено' : ''}</div>
                                                         <div>{+chart.state === 3 ? 'Перенесен' : ''}</div>
                                                     </li>
                                                 ))}

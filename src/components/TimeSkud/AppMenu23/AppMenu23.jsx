@@ -182,6 +182,10 @@ const AppMenu23 = (props) => {
             ]
         },
         {
+            key: '/admin/aclskud',
+            label: <NavLink to="admin/aclskud">ACL</NavLink>,
+        },
+        /*{
             key: 'menu4',
             label: 'ACL',
             children: [
@@ -190,7 +194,7 @@ const AppMenu23 = (props) => {
                     label: <NavLink to="admin/aclskud">СКУД доступы и права</NavLink>,
                 },
             ],
-        },
+        },*/
     ];
 
     return (
