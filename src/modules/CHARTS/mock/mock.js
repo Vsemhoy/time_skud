@@ -1004,6 +1004,7 @@ export const USERS_PAGE = [
                     "start": "2025-07-07",
                     "end": "2025-07-08",
                     "user_id": 43,
+                    "state": 2,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1012,6 +1013,7 @@ export const USERS_PAGE = [
                     "start": "2025-07-12",
                     "end": "2025-07-13",
                     "user_id": 43,
+                    "state": 2,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
             ]
@@ -1028,6 +1030,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-20",
                     "end": "2025-04-15",
                     "user_id": 43,
+                    "state": 2,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
@@ -1044,6 +1047,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-10",
                     "end": "2025-03-15",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1052,6 +1056,7 @@ export const USERS_PAGE = [
                     "start": "2025-04-15",
                     "end": "2025-04-28",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1060,6 +1065,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-01",
                     "end": "2025-09-10",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
@@ -1076,6 +1082,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-04",
                     "end": "2025-03-05",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1084,6 +1091,7 @@ export const USERS_PAGE = [
                     "start": "2025-05-01",
                     "end": "2025-08-31",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1092,6 +1100,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-15",
                     "end": "2025-09-20",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
@@ -1108,6 +1117,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-04",
                     "end": "2025-03-05",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1116,6 +1126,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-25",
                     "end": "2025-09-28",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
@@ -1132,6 +1143,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-11",
                     "end": "2025-03-15",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1140,6 +1152,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-25",
                     "end": "2025-10-02",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }
             ]
@@ -1156,6 +1169,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-04",
                     "end": "2025-03-05",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1164,6 +1178,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-25",
                     "end": "2025-09-28",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }*/
             ]
@@ -1180,6 +1195,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-04",
                     "end": "2025-03-05",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1188,6 +1204,7 @@ export const USERS_PAGE = [
                     "start": "2025-05-01",
                     "end": "2025-08-31",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1196,6 +1213,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-15",
                     "end": "2025-09-20",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }*/
             ]
@@ -1212,6 +1230,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-10",
                     "end": "2025-03-15",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1220,6 +1239,7 @@ export const USERS_PAGE = [
                     "start": "2025-04-15",
                     "end": "2025-04-28",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 },
                 {
@@ -1228,6 +1248,7 @@ export const USERS_PAGE = [
                     "start": "2025-09-01",
                     "end": "2025-09-10",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }*/
             ]
@@ -1244,6 +1265,7 @@ export const USERS_PAGE = [
                     "start": "2025-03-20",
                     "end": "2025-04-15",
                     "user_id": 43,
+                    "state": 1,
                     "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
                 }*/
             ]
@@ -1260,6 +1282,7 @@ export const USERS_PAGE = [
                 "start": "2025-07-07",
                 "end": "2025-07-08",
                 "user_id": 43,
+                "state": 1,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1268,6 +1291,7 @@ export const USERS_PAGE = [
                 "start": "2025-07-12",
                 "end": "2025-07-13",
                 "user_id": 43,
+                "state": 2,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
         ]
@@ -1284,6 +1308,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-20",
                 "end": "2025-04-15",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }
         ]
@@ -1300,6 +1325,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-10",
                 "end": "2025-03-15",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1308,6 +1334,7 @@ export const USERS_PAGE = [
                 "start": "2025-04-15",
                 "end": "2025-04-28",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1316,6 +1343,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-01",
                 "end": "2025-09-10",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }
         ]
@@ -1332,6 +1360,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-04",
                 "end": "2025-03-05",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1340,6 +1369,7 @@ export const USERS_PAGE = [
                 "start": "2025-05-01",
                 "end": "2025-08-31",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1348,6 +1378,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-15",
                 "end": "2025-09-20",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }
         ]
@@ -1364,6 +1395,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-04",
                 "end": "2025-03-05",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1372,6 +1404,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-25",
                 "end": "2025-09-28",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }
         ]
@@ -1388,6 +1421,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-11",
                 "end": "2025-03-15",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1396,6 +1430,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-25",
                 "end": "2025-10-02",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }
         ]
@@ -1412,6 +1447,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-04",
                 "end": "2025-03-05",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1420,6 +1456,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-25",
                 "end": "2025-09-28",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }*/
         ]
@@ -1436,6 +1473,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-04",
                 "end": "2025-03-05",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1444,6 +1482,7 @@ export const USERS_PAGE = [
                 "start": "2025-05-01",
                 "end": "2025-08-31",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1452,6 +1491,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-15",
                 "end": "2025-09-20",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }*/
         ]
@@ -1468,6 +1508,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-10",
                 "end": "2025-03-15",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1476,6 +1517,7 @@ export const USERS_PAGE = [
                 "start": "2025-04-15",
                 "end": "2025-04-28",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             },
             {
@@ -1484,6 +1526,7 @@ export const USERS_PAGE = [
                 "start": "2025-09-01",
                 "end": "2025-09-10",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }*/
         ]
@@ -1500,6 +1543,7 @@ export const USERS_PAGE = [
                 "start": "2025-03-20",
                 "end": "2025-04-15",
                 "user_id": 43,
+                "state": 0,
                 "info": "{\"description\":\"вафыва фы а фы ва фы ва ф ывафывафы вафы\"}",
             }*/
         ]
@@ -1827,3 +1871,20 @@ export const COMPANIES = [
         "count": 7
     }
 ];
+export const CLAIM_ITEM = {
+    "user_id": 47,
+    "start": "2025-06-30T21:00:00.000000Z",
+    "end": "2025-07-04T23:02:00.000000Z",
+    "skud_current_state_id": 9,
+    "deleted": false,
+    "data": null,
+    "is_approved": 0,
+    "approved_by": 46,
+    "state": 0,
+    "need_approved": 1,
+    "usr_name": "Валентина",
+    "usr_patronymic": "Григорьевна",
+    "usr_surname": "Кошелева",
+    "info": "{\"reason\":\"GDLKJFK\"}",
+    "id_company": 2
+};

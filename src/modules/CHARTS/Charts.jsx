@@ -30,7 +30,7 @@ import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
-import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK, STATUSES, COMPANIES} from "./mock/mock";
+import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK, STATUSES, COMPANIES, CLAIM_ITEM} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USERS, DEPARTMENTS} from "./mock/mock";
@@ -445,7 +445,7 @@ const  Charts = (props) => {
         setEditorMode('create');
         prepareDrawer(null, currentUser);
     };
-    const prepareDrawer = (currentChart = null, user = null, start = null) => {
+    const prepareDrawer = async (currentChart = null, user = null, start = null) => {
         if (currentChart) {
 
             // setClaimForDrawer({
@@ -464,7 +464,7 @@ const  Charts = (props) => {
             //     id_company: user?.id_company,
             //     boss_id: user?.boss_id
             // });
-            fetch_claim(currentChart?.id);
+            await fetch_claim(currentChart?.id);
         } else {
             setEditorMode('create');
             console.log({
@@ -504,6 +504,10 @@ const  Charts = (props) => {
             } catch (e) {
                 console.log(e)
             }
+        } else {
+            const claim_item = CLAIM_ITEM;
+            claim_item.skud_current_state_id = selectedChartState;
+            setClaimForDrawer(claim_item);
         }
     };
 

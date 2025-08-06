@@ -299,7 +299,10 @@ const Chart = (props) => {
                                                 <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
                                                 <div>Конец {ruWord()}: {dayjs(currentChart.end).format('DD.MM.YYYY')}</div>
                                                 <div>Длительность: {dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') + 1} дней</div>
-                                                <div>{user.approved ? 'Согласовано' : ''}</div>
+                                                <div>{+currentChart.state === 0 ? 'Ожидает согласования' : ''}</div>
+                                                <div>{+currentChart.state === 1 ? 'Согласовано' : ''}</div>
+                                                <div>{+currentChart.state === 2 ? 'Не согласовано' : ''}</div>
+                                                <div>{+currentChart.state === 3 ? 'Перенесен' : ''}</div>
                                             </div>
                                         }>
                                             <div className={`${inter ? styles.intersection : ''}`}>
@@ -307,7 +310,7 @@ const Chart = (props) => {
                                                     ${styles.chart_cell}
                                                     ${date === highlightedColumn ? styles.highlighted : ''}
                                                 `}
-                                                     style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
+                                                     style={{backgroundColor: reactiveColor, cursor: 'pointer', opacity: currentChart.state === 2 ? '.5' : '1'}}
                                                      onClick={() => {
                                                          if (currentChart && user) {
                                                              openDrawer(currentChart, user);
@@ -346,12 +349,15 @@ const Chart = (props) => {
                                         <>
                                             <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
                                             <ol>
-                                            {currentChart.map((chart, dayIndex) => (
+                                                {currentChart.map((chart, dayIndex) => (
                                                     <li key={`week_chart_${dayIndex}`}>
                                                         <div>Начало {ruWord()}: {dayjs(chart.start).format('DD.MM.YYYY')}</div>
                                                         <div>Конец {ruWord()}: {dayjs(chart.end).format('DD.MM.YYYY')}</div>
                                                         <div>Длительность: {dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней</div>
-                                                        <div>{user.approved ? 'Согласовано' : ''}</div>
+                                                        <div>{+chart.state === 0 ? 'Ожидает согласования' : ''}</div>
+                                                        <div>{+chart.state === 1 ? 'Согласовано' : ''}</div>
+                                                        <div>{+chart.state === 2 ? 'Не согласовано' : ''}</div>
+                                                        <div>{+chart.state === 3 ? 'Перенесен' : ''}</div>
                                                     </li>
                                                 ))}
                                             </ol>
@@ -362,7 +368,7 @@ const Chart = (props) => {
                                                 ${styles.chart_cell}
                                                 ${index === highlightedColumn ? styles.highlighted : ''}
                                             `}
-                                                 style={{backgroundColor: reactiveColor, cursor: 'pointer'}}
+                                                 style={{backgroundColor: reactiveColor, cursor: 'pointer', opacity: currentChart[0].state === 2 ? '.5' : '1'}}
                                                  onClick={() => {
                                                      if (currentChart.length === 1 && user) {
                                                          openDrawer(currentChart[0], user);
