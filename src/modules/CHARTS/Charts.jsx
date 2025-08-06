@@ -309,7 +309,7 @@ const  Charts = (props) => {
     /* prepare */
     const prepareStates = (states) => {
         return states.filter(state => state.fillable).map(state => ({
-                label: state.badge,
+                label: state.title,
                 value: state.id,
                 icon: iconComponents[state.icon] || null,
                 color: state.color,

@@ -240,7 +240,9 @@ const ClaimEditorDrawer = (props) => {
             // фильтр, если есть привилегия согласовывать кому угодно
             if (userCard.state !== 1){
               setAllowApprove(true);
-              setAllowDecline(true);
+              if (userCard.state !== 2) {
+                setAllowDecline(true);
+              }
             } else {
                 let start = dayjs(userCard.start).startOf('day').unix();
                 let today = dayjs().startOf('day').unix();
@@ -256,7 +258,9 @@ const ClaimEditorDrawer = (props) => {
             // Если челик мой подчиненный и у меня есть право ему согласовывать
             if (userCard.state !== 1){
               setAllowApprove(true);
-              setAllowDecline(true);
+              if (userCard.state !== 2) {
+                setAllowDecline(true);
+              }
             } else {
                 let start = dayjs(userCard.start).startOf('day').unix();
                 let today = dayjs().startOf('day').unix();
@@ -271,7 +275,9 @@ const ClaimEditorDrawer = (props) => {
         ) {
             if (userCard.state !== 1){
               setAllowApprove(true);
-              setAllowDecline(true);
+              if (userCard.state !== 2) {
+                setAllowDecline(true);
+              }
             } else {
                 let start = dayjs(userCard.start).startOf('day').unix();
                 let today = dayjs().startOf('day').unix();
