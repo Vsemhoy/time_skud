@@ -424,7 +424,7 @@ export const USDA = {
         "name": "Антон",
         "secondname": "Бигстэнович",
         "occupy": "коммерческий директор",
-        "id_departament": 1,
+        "id_departament": 2,
         "id_role": 2,
         "email": "",
         "phone": "100",
@@ -1704,8 +1704,8 @@ export const GROUPS = [
     }
 ];
 export const CLAIM_ACL_MOCK = {
-    "2": {
-        "6": [
+    2: {
+        6: [
             "ANY_CLAIM_APPROVE",
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
@@ -1717,7 +1717,7 @@ export const CLAIM_ACL_MOCK = {
             "ANY_CLAIM_UPDATE",
             "ANY_CLAIM_APPROVE"
         ],
-        "7": [
+        7: [
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
             "PERS_CLAIM_APPROVE",
@@ -1728,7 +1728,7 @@ export const CLAIM_ACL_MOCK = {
             "ANY_CLAIM_UPDATE",
             "ANY_CLAIM_APPROVE"
         ],
-        "8": [
+        8: [
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
             "PERS_CLAIM_APPROVE",
@@ -1739,7 +1739,7 @@ export const CLAIM_ACL_MOCK = {
             "ANY_CLAIM_UPDATE",
             "ANY_CLAIM_APPROVE"
         ],
-        "9": [
+        9: [
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
             "PERS_CLAIM_APPROVE",
@@ -1750,7 +1750,7 @@ export const CLAIM_ACL_MOCK = {
             "ANY_CLAIM_UPDATE",
             "ANY_CLAIM_APPROVE"
         ],
-        "10": [
+        10: [
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
             "PERS_CLAIM_APPROVE",
@@ -1761,7 +1761,7 @@ export const CLAIM_ACL_MOCK = {
             "ANY_CLAIM_UPDATE",
             "ANY_CLAIM_APPROVE"
         ],
-        "11": [
+        11: [
             "TEAM_CLAIM_UPDATE",
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
@@ -1773,7 +1773,7 @@ export const CLAIM_ACL_MOCK = {
             "ANY_CLAIM_UPDATE",
             "ANY_CLAIM_APPROVE"
         ],
-        "13": [
+        13: [
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_CREATE",
             "PERS_CLAIM_UPDATE",
