@@ -197,6 +197,12 @@ const AppMenu23 = (props) => {
         },*/
     ];
 
+    const getMenuItems = () => {
+        return mainMenuItems.filter(item => {
+
+        });
+    };
+
     return (
         <div>
             <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={'sk-main-menu'}>

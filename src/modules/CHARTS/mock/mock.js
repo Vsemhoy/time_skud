@@ -195,6 +195,19 @@ export const CHART_STATES = [
         "fillable": 0
     },
     {
+        "id": 8,
+        "badge": "местн.команд.",
+        "text": "Кратковременная местная командировка",
+        "color": "#95bbcd",
+        "icon": "CarOutlined",
+        "need_work": 0,
+        "need_approved": 1,
+        "sort_order": 1,
+        "title": "Местная командировка",
+        "name": "shorttrip",
+        "fillable": 1
+    },
+    {
         "id": 9,
         "badge": "неопл.отпуск",
         "text": "Отпуск за свой счёт",
@@ -202,22 +215,22 @@ export const CHART_STATES = [
         "icon": "MoonOutlined",
         "need_work": 1,
         "need_approved": 1,
-        "sort_order": 1,
-        "title": "Отпуск за свой счёт",
+        "sort_order": 2,
+        "title": "Неоплачиваемый отпуск",
         "name": "shortvacation",
         "fillable": 1
     },
     {
-        "id": 8,
-        "badge": "местн.командир.",
-        "text": "Кратковременная местная командировка",
-        "color": "#95bbcd",
-        "icon": "CarOutlined",
-        "need_work": 0,
+        "id": 11,
+        "badge": "сверхурочные",
+        "text": "Работа вне установленного графиком рабочего времени",
+        "color": "#81e59b",
+        "icon": "DollarOutlined",
+        "need_work": 3,
         "need_approved": 1,
-        "sort_order": 2,
-        "title": "Местная командировка",
-        "name": "shorttrip",
+        "sort_order": 3,
+        "title": "Сверхурочные",
+        "name": "overtime",
         "fillable": 1
     },
     {
@@ -228,8 +241,8 @@ export const CHART_STATES = [
         "icon": "RocketOutlined",
         "need_work": 0,
         "need_approved": 1,
-        "sort_order": 3,
-        "title": "Командировка длительная",
+        "sort_order": 4,
+        "title": "Командировка",
         "name": "longtrip",
         "fillable": 1
     },
@@ -241,34 +254,21 @@ export const CHART_STATES = [
         "icon": "SmileOutlined",
         "need_work": 0,
         "need_approved": 1,
-        "sort_order": 4,
-        "title": "Очередные отпуска",
+        "sort_order": 5,
+        "title": "Отпуск",
         "name": "longvacation",
         "fillable": 1
     },
     {
-        "id": 11,
-        "badge": "сверхурочные",
-        "text": "Работа вне установленного графиком рабочего времени",
-        "color": "#81e59b",
-        "icon": "DollarOutlined",
-        "need_work": 3,
-        "need_approved": 1,
-        "sort_order": 5,
-        "title": "Сверхурочные",
-        "name": "overtime",
-        "fillable": 1
-    },
-    {
         "id": 6,
-        "badge": "больничный",
+        "badge": "больничнный",
         "text": "Больничный",
         "color": "#ffa8a8",
         "icon": "MedicineBoxOutlined",
         "need_work": 0,
         "need_approved": 0,
         "sort_order": 6,
-        "title": "Больничные",
+        "title": "Больничнный",
         "name": "sickleave",
         "fillable": 1
     },
@@ -276,12 +276,12 @@ export const CHART_STATES = [
         "id": 13,
         "badge": "контейнеры",
         "text": "Разгрузка контейнеров на складе",
-        "color": "#ede493",
+        "color": "#e3d97c",
         "icon": "TruckOutlined",
         "need_work": 0,
         "need_approved": 1,
         "sort_order": 7,
-        "title": "Разгрузка контейнеров",
+        "title": "Контейнеры",
         "name": "containers",
         "fillable": 1
     }
@@ -997,6 +997,7 @@ export const USERS_PAGE = [
             "name": "Улыбка",
             "surname": "Пузырёва",
             "patronymic": "Бубновна",
+            "id_company": 2,
             "charts": [
                 {
                     "id": 71,
@@ -1023,7 +1024,8 @@ export const USERS_PAGE = [
             "name": "Кександр",
             "surname": "Пирожков",
             "patronymic": "Тортович",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 {
                     "id": 71,
                     "approved": 0,
@@ -1040,7 +1042,8 @@ export const USERS_PAGE = [
             "name": "Блинытина",
             "surname": "Желева",
             "patronymic": "Мармеладовна",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 {
                     "id": 72,
                     "approved": 0,
@@ -1075,7 +1078,8 @@ export const USERS_PAGE = [
             "name": "Пельмирий",
             "surname": "Лапшиков",
             "patronymic": "Весёлович",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 {
                     "id": 71,
                     "approved": 0,
@@ -1110,7 +1114,8 @@ export const USERS_PAGE = [
             "name": "Сыргей",
             "surname": "Мышкин",
             "patronymic": "Котикович",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 {
                     "id": 71,
                     "approved": 0,
@@ -1136,7 +1141,8 @@ export const USERS_PAGE = [
             "name": "Вафлория",
             "surname": "Сироповейко",
             "patronymic": "Мёдовна",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 {
                     "id": 71,
                     "approved": 0,
@@ -1162,7 +1168,8 @@ export const USERS_PAGE = [
             "name": "Барсей",
             "surname": "Беззубов",
             "patronymic": "Карамельевич",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 /*{
                     "id": 71,
                     "approved": 0,
@@ -1188,7 +1195,8 @@ export const USERS_PAGE = [
             "name": "ЛеоНЛО",
             "surname": "Апельсин",
             "patronymic": "Мандаринович",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 /*{
                     "id": 71,
                     "approved": 0,
@@ -1223,7 +1231,8 @@ export const USERS_PAGE = [
             "name": "Валясолнечка",
             "surname": "Рогаликова",
             "patronymic": "Булочковна",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 /*{
                     "id": 72,
                     "approved": 0,
@@ -1258,7 +1267,8 @@ export const USERS_PAGE = [
             "name": "Антанасия",
             "surname": "Плетёнова",
             "patronymic": "Веничковна",
-            "charts": [
+
+   "id_company": 2,         "charts": [
                 /*{
                     "id": 71,
                     "approved": 0,
@@ -1275,6 +1285,7 @@ export const USERS_PAGE = [
         "name": "Улыбка",
         "surname": "Пузырёва",
         "patronymic": "Бубновна",
+        "id_company": 2,
         "charts": [
             {
                 "id": 71,
@@ -1301,6 +1312,7 @@ export const USERS_PAGE = [
         "name": "Кександр",
         "surname": "Пирожков",
         "patronymic": "Тортович",
+        "id_company": 2,
         "charts": [
             {
                 "id": 71,
@@ -1318,6 +1330,7 @@ export const USERS_PAGE = [
         "name": "Блинытина",
         "surname": "Желева",
         "patronymic": "Мармеладовна",
+        "id_company": 2,
         "charts": [
             {
                 "id": 72,
@@ -1353,6 +1366,7 @@ export const USERS_PAGE = [
         "name": "Пельмирий",
         "surname": "Лапшиков",
         "patronymic": "Весёлович",
+        "id_company": 2,
         "charts": [
             {
                 "id": 71,
@@ -1388,6 +1402,7 @@ export const USERS_PAGE = [
         "name": "Сыргей",
         "surname": "Мышкин",
         "patronymic": "Котикович",
+        "id_company": 2,
         "charts": [
             {
                 "id": 71,
@@ -1414,6 +1429,7 @@ export const USERS_PAGE = [
         "name": "Вафлория",
         "surname": "Сироповейко",
         "patronymic": "Мёдовна",
+        "id_company": 2,
         "charts": [
             {
                 "id": 71,
@@ -1440,6 +1456,7 @@ export const USERS_PAGE = [
         "name": "Барсей",
         "surname": "Беззубов",
         "patronymic": "Карамельевич",
+        "id_company": 2,
         "charts": [
             /*{
                 "id": 71,
@@ -1466,6 +1483,7 @@ export const USERS_PAGE = [
         "name": "ЛеоНЛО",
         "surname": "Апельсин",
         "patronymic": "Мандаринович",
+        "id_company": 2,
         "charts": [
             /*{
                 "id": 71,
@@ -1501,6 +1519,7 @@ export const USERS_PAGE = [
         "name": "Валясолнечка",
         "surname": "Рогаликова",
         "patronymic": "Булочковна",
+        "id_company": 2,
         "charts": [
             /*{
                 "id": 72,
@@ -1536,6 +1555,7 @@ export const USERS_PAGE = [
         "name": "Антанасия",
         "surname": "Плетёнова",
         "patronymic": "Веничковна",
+        "id_company": 2,
         "charts": [
             /*{
                 "id": 71,

@@ -465,28 +465,55 @@ const  Charts = (props) => {
             //     boss_id: user?.boss_id
             // });
             await fetch_claim(currentChart?.id);
+            setEditorOpened(true);
         } else {
-            setEditorMode('create');
-            console.log({
-                start,
-                user_id: user?.id,
-                usr_name: user?.name,
-                usr_surname: user?.surname,
-                usr_patronymic: user?.patronymic,
-                id_company: user?.id_company,
-                boss_id: user?.boss_id
-            })
-            setClaimForDrawer({
-                start: start,
-                user_id: user?.id,
-                usr_name: user?.name,
-                usr_surname: user?.surname,
-                usr_patronymic: user?.patronymic,
-                id_company: user?.id_company,
-                boss_id: user?.boss_id
-            });
+            let canCreate = false;
+            if (aclBase[user.id_company] &&
+                aclBase[user.id_company][selectedChartState] &&
+                aclBase[user.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE')
+            ) {
+                // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+                canCreate = true;
+            } else if (user.boss_id === currentUser.id &&
+                aclBase[user.id_company] &&
+                aclBase[user.id_company][selectedChartState] &&
+                aclBase[user.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE')
+            ) {
+                // Если челик мой подчиненный и у меня есть права создавать заявки
+                canCreate = true;
+            } else if (user.user_id === currentUser.id &&
+                aclBase[user.id_company] &&
+                aclBase[user.id_company][selectedChartState] &&
+                aclBase[user.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE')
+            ) {
+                canCreate = true;
+            } else if (aclBase[user.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')) {
+                canCreate = true;
+            }
+            console.log(canCreate)
+            if (canCreate) {
+                setEditorMode('create');
+                console.log({
+                    start,
+                    user_id: user?.id,
+                    usr_name: user?.name,
+                    usr_surname: user?.surname,
+                    usr_patronymic: user?.patronymic,
+                    id_company: user?.id_company,
+                    boss_id: user?.boss_id
+                })
+                setClaimForDrawer({
+                    start: start,
+                    user_id: user?.id,
+                    usr_name: user?.name,
+                    usr_surname: user?.surname,
+                    usr_patronymic: user?.patronymic,
+                    id_company: user?.id_company,
+                    boss_id: user?.boss_id
+                });
+                setEditorOpened(true);
+            }
         }
-        setEditorOpened(true);
     };
 
     const fetch_claim = async (claim_id) => {

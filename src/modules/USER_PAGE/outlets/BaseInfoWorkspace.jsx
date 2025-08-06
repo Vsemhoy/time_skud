@@ -213,6 +213,7 @@ const BaseInfoWorkspace = (props) => {
         setDateEnter(content.dateEnter ? dayjs(content.dateEnter, 'DD.MM.YYYY') : null);
         setRating(content?.rating);
         setStatus(content?.status);
+        setBoss(content?.boss);
         setLogin(content?.login);
         setPassword(content?.password);
         setCardNumber(content?.cardNumber);
@@ -464,7 +465,7 @@ const BaseInfoWorkspace = (props) => {
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Руководитель</p>
                         <Select placeholder="Руководитель"
-                                value={(boss.id !== undefined && boss.id !== null) ? +boss.id : null}
+                                value={(boss.id !== undefined && boss.id !== null && boss.id !== 0) ? +boss.id : null}
                                 options={bosses}
                                 onChange={(id) => setBoss(bosses.find(c => c.id === id))}
                                 style={{width: 360}}
