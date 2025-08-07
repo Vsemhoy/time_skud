@@ -4,15 +4,20 @@ import StateLongVacationIcon from "../../../assets/media/States/StateLongVacatio
 import StateSickleaveIcon from "../../../assets/media/States/StateSickleaveIcon";
 import StateContainerIcon from "../../../assets/media/States/StateContainerIcon";
 import StateSuitcaseIcon from "../../../assets/media/States/StateSuitcaseAction";
+import StateHomeIcon from "../../../assets/media/States/StateHomeIcon";
+import StopwatchPlusIcon from "../../../assets/media/States/StopwatchPlusIcon";
+import {AppstoreFilled} from "@ant-design/icons";
 
 const StateIconsController = (props) => {
     const stateIcons = {
-        8:  <StateSuitcaseIcon height={'25px'} />,
-
-        7:  <StateTrainIcon height={'25px'} />,
-        10: <StateLongVacationIcon height={'25px'} />,
-        6:  <StateSickleaveIcon height={'25px'} />,
-        13: <StateContainerIcon height={'25px'} />,
+        0:  <AppstoreFilled        style={{fontSize: '22px'}} title={'Все заявки'}/>,
+        8:  <StateSuitcaseIcon     height={'25px'}            title={'Местная командировка'}/>,
+        9:  <StateHomeIcon         height={'25px'}            title={'Неоплачиваемый отпуск'}/>,
+        11: <StopwatchPlusIcon     height={'25px'}            title={'Сверхурочные'}/>,
+        7:  <StateTrainIcon        height={'25px'}            title={'Командировка'}/>,
+        10: <StateLongVacationIcon height={'25px'}            title={'Отпуск'}/>,
+        6:  <StateSickleaveIcon    height={'25px'}            title={'Больничный'}/>,
+        13: <StateContainerIcon    height={'25px'}            title={'Контейнеры'}/>,
     };
     const icon = stateIcons[props.IdState] || null;
     return (

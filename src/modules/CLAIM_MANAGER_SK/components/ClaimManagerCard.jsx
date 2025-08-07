@@ -3,6 +3,11 @@ import { Dropdown, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import ClaimIcon from "./ClaimIcon";
 import dayjs from "dayjs";
+import StateIconsController from "../../CHARTS/components/StateIconsController";
+import StateAgreedIcon from "../../../assets/media/States/StateAgreedIcon";
+import StateForbiddenIcon from "../../../assets/media/States/StateForbiddenIcon";
+import StateAwaitedIcon from "../../../assets/media/States/StateAwaitedIcon";
+import StateTransferredIcon from "../../../assets/media/States/StateTransferredIcon";
 
 // const items = [
 //   {
@@ -64,7 +69,9 @@ const ClaimManagerCard = (props) => {
     useEffect(() => {
         setItemId(props.data?.id);
         setUserCard(props.data);
-        setJsonData( JSON.parse(props.data?.info));
+        if (props.data && props.data.info) {
+            setJsonData( JSON.parse(props.data.info));
+        }
     }, [props.data]);
 
       useEffect(() => {
@@ -235,13 +242,15 @@ const ClaimManagerCard = (props) => {
     // }
 
     const clearTimeString = (str) => {
-        let s = str.replace(' 00:00:00', '');
-        let st = s.split(' ');
-        if (st.length == 2){
-            let time = st[1].split(':');
-            return <div><span>{st[0]}</span>  <span>{time[0]}:{time[1]}</span></div> ;
-        } else {
-            return <div><span>{st[0]}</span></div> ;
+        if (str) {
+            let s = str.replace(' 00:00:00', '');
+            let st = s.split(' ');
+            if (st.length == 2){
+                let time = st[1].split(':');
+                return <div><span>{st[0]}</span>  <span>{time[0]}:{time[1]}</span></div> ;
+            } else {
+                return <div><span>{st[0]}</span></div> ;
+            }
         }
     }
 
@@ -250,133 +259,135 @@ const ClaimManagerCard = (props) => {
     return (
       <div
         onDoubleClick={handleDoubleClickOnRow}
-       className={'sk-clamen-card-wrapper'} > 
-        <div className={`sk-clamen-card ${selected ? 'sk-claimcard-selected' : ''}`}
-        // style={{ boxShadow: props.data?.state_color + 'ff -4px 3px 0px -1px' }}
-        >
-            <div style={{ background: props.data?.state_color}}>
-                <div className={'sk-align-center'} title={props.data?.id} >
-                <div className={'sk-claimicon'}>
-                    <ClaimIcon title={props.data.state_title} icon={props.data.state_icon}/>
-                </div>
-                </div>
-            </div>
-            <div className={'sk-fs-medium'}>
-                <div style={{paddingLeft: '9px', userSelect: 'none'}}>
-                    {props.data.usr_surname} {props.data.usr_name} {props.data.usr_patronymic}
-                </div>
-            </div>
-            <div>
-                {jsonData && (
-                    <div className={'sk-claiminfo'}>
-                        {jsonData.comment && (
-                            <Typography.Paragraph style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}
-                            </Typography.Paragraph>
-                        )}
-                        {jsonData.reason && (
-                            <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
-                        )}
-                        {jsonData.target_point && (
-                            <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}</Typography.Paragraph>
-                        )}
-                        {jsonData.task && (
-                            <Typography.Paragraph><i>Задача:</i> {jsonData.task}</Typography.Paragraph>
-                        )}
-                        {jsonData.result && (
-                            <Typography.Paragraph><i>Результат:</i> {jsonData.result}</Typography.Paragraph>
-                        )}
-                        {jsonData.description && (
-                            <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>
-                        )}
-                    </div>
-                )}
-            </div>
-            <div >
-                <div className={'sk-timestring-claim'}>
-                    {clearTimeString(props.data.start)}
-                </div>
-            </div>
-            <div >
-                <div className={'sk-timestring-claim'}>
-                    {clearTimeString(props.data.end)}
-                </div>
-            </div>
-
-            <div>
-                <div className={'sk-align-center sk-fs-medium'}>
-                    {props.data.days_count}
-                </div>
-            </div>
-
-
-            <div>
-                <div className={'sk-hidden-text'}>
-                    #{itemId}
-                </div>
-            </div>
-
-            <div>
-                {props.data.state === 0 && (
-                    <div className={'sk-icon-base'}
-                        title={'Ожидает согласования'}
-                    >
-                        <ClockCircleOutlined />
-                    </div>
-                )}
-                {props.data.state === 1 && (
-                    <div className={'sk-icon-success'}
-                        title={'Согласовано'}
-                    >
-                        <LikeOutlined />
-                    </div>
-                )}
-                {props.data.state === 2 && (
-                    <div className={'sk-icon-fail'}
-                        title={'Отклонено'}
-                    >
-                        <DislikeOutlined />
-                    </div>
-                )}
-            </div>
-
-            <div>
-                <div>
-                    {props.data.evaluated ? (
-                        <div className={'sk-icon-success'}
-                            title={'Исполнено'}
-                        >
-                            <CarryOutOutlined />
-                        </div>
-                    ):(
-                        <div className={'sk-icon-base'}
-                            title={'Ждет исполнения'}
-                        >
-                            {/* <ClockCircleOutlined /> */}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-
-            <div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    {menuItems && menuItems.length > 0 && (
-
-                        <Dropdown
-                            menu={{ 
-                                items: menuItems,
-                                // onClick: (info) => handleMenuClick(info)
-                            }}
-                            placement="bottomRight"
-                            className={'sk-clamen-card-trigger'}
-                        >
-                            <BarsOutlined />
-                        </Dropdown>
-                    )}
-                </div>
-            </div>
-        </div>
-        </div>
+       className={'sk-clamen-card-wrapper'} >
+          <div className={`sk-clamen-card ${selected ? 'sk-claimcard-selected' : ''}`}
+              // style={{ boxShadow: props.data?.state_color + 'ff -4px 3px 0px -1px' }}
+          >
+              <div style={{background: props.data?.state_color}}>
+                  <div className={'sk-align-center'} >  {/*title={props.data?.id}*/}
+                      <div className={'sk-claimicon'}>
+                          {/*<ClaimIcon title={props.data.state_title} icon={props.data.state_icon}/>*/}
+                          <StateIconsController IdState={props.data.skud_current_state_id}/>
+                      </div>
+                  </div>
+              </div>
+              <div className={'sk-fs-medium'}>
+                  <div style={{paddingLeft: '9px', userSelect: 'none'}}>
+                      {props.data.usr_surname} {props.data.usr_name} {props.data.usr_patronymic}
+                  </div>
+              </div>
+              <div>
+                  {props.data.state === 0 && (
+                      <div className={'sk-icon-base'}
+                           title={'Ожидает согласования'}
+                      >
+                          <StateAwaitedIcon height={'25px'}/>
+                      </div>
+                  )}
+                  {props.data.state === 1 && (
+                      <div className={'sk-icon-success'}
+                           title={'Согласовано'}
+                      >
+                          <StateAgreedIcon height={'25px'}/>
+                      </div>
+                  )}
+                  {props.data.state === 2 && (
+                      <div className={'sk-icon-fail'}
+                           title={'Отклонено'}
+                      >
+                          <StateForbiddenIcon height={'25px'}/>
+                      </div>
+                  )}
+                  {props.data.state === 3 && (
+                      <div className={'sk-icon-fail'}
+                           title={'Перенесено'}
+                      >
+                          <StateTransferredIcon height={'25px'}/>
+                      </div>
+                  )}
+              </div>
+              <div>
+                  <div className={'sk-timestring-claim'}>
+                      {clearTimeString(props.data.start)}
+                  </div>
+              </div>
+              <div>
+                  <div className={'sk-timestring-claim'}>
+                      {clearTimeString(props.data.end)}
+                  </div>
+              </div>
+              <div>
+                  <div className={'sk-align-center sk-fs-medium'}>
+                      {props.data.days_count}
+                  </div>
+              </div>
+              <div>
+                  {jsonData && (
+                      <div className={'sk-claiminfo'}>
+                          {jsonData.comment && (
+                              <Typography.Paragraph
+                                  style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}
+                              </Typography.Paragraph>
+                          )}
+                          {jsonData.reason && (
+                              <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
+                          )}
+                          {jsonData.target_point && (
+                              <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}
+                              </Typography.Paragraph>
+                          )}
+                          {jsonData.task && (
+                              <Typography.Paragraph><i>Задача:</i> {jsonData.task}</Typography.Paragraph>
+                          )}
+                          {jsonData.result && (
+                              <Typography.Paragraph><i>Результат:</i> {jsonData.result}</Typography.Paragraph>
+                          )}
+                          {jsonData.description && (
+                              <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>
+                          )}
+                      </div>
+                  )}
+              </div>
+              <div>
+                  <div className={'sk-hidden-text'}>
+                      #{itemId}
+                  </div>
+              </div>
+              <div>
+                  <div>
+                      {props.data.evaluated ? (
+                          <div className={'sk-icon-success'}
+                               title={'Исполнено'}
+                          >
+                              <CarryOutOutlined/>
+                          </div>
+                      ) : (
+                          <div className={'sk-icon-base'}
+                               title={'Ждет исполнения'}
+                          >
+                              {/* <ClockCircleOutlined /> */}
+                          </div>
+                      )}
+                  </div>
+              </div>
+              <div>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
+                      {menuItems && menuItems.length > 0 && (
+                          <Dropdown
+                              menu={{
+                                  items: menuItems,
+                                  // onClick: (info) => handleMenuClick(info)
+                              }}
+                              placement="bottomRight"
+                              className={'sk-clamen-card-trigger'}
+                          >
+                              <BarsOutlined/>
+                          </Dropdown>
+                      )}
+                  </div>
+              </div>
+          </div>
+      </div>
     )
 };
 

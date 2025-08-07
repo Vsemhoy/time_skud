@@ -143,7 +143,7 @@ export const DS_USER = {
         "id": 46,
         "name" :'Игнат' ,
         "surname": 'Крудо',
-        "patronymic": 'Мамонович',
+        "secondname": 'Мамонович',
         "occupy": "коммерческий директор",
         "passcard": null,
         "id_role": 2,

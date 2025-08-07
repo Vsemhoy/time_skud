@@ -1,30 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import {Affix, Alert, Button, ConfigProvider, Layout, Modal, Pagination, Segmented, Slider, Spin, Tag} from "antd";
-import {
-    AppleOutlined,
-    CarOutlined,
-    CheckOutlined,
-    DollarOutlined,
-    ExclamationCircleOutlined,
-    FilterOutlined,
-    FireOutlined, GoldOutlined,
-    HeatMapOutlined,
-    JavaOutlined,
-    LoginOutlined,
-    LogoutOutlined,
-    MedicineBoxOutlined,
-    MinusCircleOutlined,
-    MoonOutlined,
-    PlusOutlined,
-    RestOutlined,
-    RocketOutlined,
-    SafetyCertificateOutlined,
-    SmileOutlined,
-    TruckOutlined,
-    TwitterOutlined,
-    WarningOutlined
-} from "@ant-design/icons";
+import {Affix, Button, ConfigProvider, Layout, Pagination, Segmented, Spin, Tag} from "antd";
+import {FilterOutlined, PlusOutlined,} from "@ant-design/icons";
 import {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
@@ -38,11 +15,7 @@ import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer"
 import {ShortName} from "../../components/Helpers/TextHelpers";
 import "./style/patch.css";
 import MonthsRange from "./components/MonthsRange";
-import StateTrainIcon from "../../assets/media/States/StateTrainIcon";
-import StateLongVacationIcon from "../../assets/media/States/StateLongVacationIcon";
-import StateSickleaveIcon from "../../assets/media/States/StateSickleaveIcon";
-import StateContainerIcon from "../../assets/media/States/StateContainerIcon";
-import StateSuitcaseIcon from "../../assets/media/States/StateSuitcaseAction";
+import StateIconsController from "./components/StateIconsController";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -96,51 +69,6 @@ const  Charts = (props) => {
     //const [rangeValues, setRangeValues] = useState([1,12]);
     const [rangeValues, setRangeValues] = useState([dayjs().month()+1,dayjs().month()+1]);
 
-    const iconComponents = {
-        MinusCircleOutlined: <MinusCircleOutlined />,
-        AppleOutlined: <AppleOutlined />,
-        RestOutlined: <RestOutlined />,
-        SafetyCertificateOutlined: <SafetyCertificateOutlined />,
-        MedicineBoxOutlined: <MedicineBoxOutlined />,
-        RocketOutlined: <RocketOutlined />,
-        CarOutlined: <CarOutlined />,
-        MoonOutlined: <MoonOutlined />,
-        SmileOutlined: <SmileOutlined />,
-        DollarOutlined: <DollarOutlined />,
-        HeatMapOutlined: <HeatMapOutlined />,
-        TruckOutlined: <TruckOutlined />,
-        CheckOutlined: <CheckOutlined />,
-        LoginOutlined: <LoginOutlined />,
-        WarningOutlined: <WarningOutlined />,
-        FireOutlined: <FireOutlined />,
-        ExlamationCircleOutlined: <ExclamationCircleOutlined />,
-        Logoutoutlined: <LogoutOutlined />,
-        JavaOutlined: <JavaOutlined />,
-        TwitterOutlined: <TwitterOutlined />,
-        GoldOutlined: <GoldOutlined />,
-
-
-
-        StateTrainIcon:        <StateTrainIcon height={'25px'}/>,
-        StateLongVacationIcon: <StateLongVacationIcon height={'25px'}/>,
-        StateSickleaveIcon:    <StateSickleaveIcon height={'25px'}/>,
-        StateContainerIcon:    <StateContainerIcon height={'25px'}/>,
-        StateSuitcaseIcon:     <StateSuitcaseIcon height={'25px'}/>,
-    };
-    const marks = {
-        1: 'Январь',
-        2: 'Февраль',
-        3: 'Март',
-        4: 'Апрель',
-        5: 'Май',
-        6: 'Июнь',
-        7: 'Июль',
-        8: 'Август',
-        9: 'Сентябрь',
-        10: 'Октябрь',
-        11: 'Ноябрь',
-        12: 'Декабрь',
-    };
     const marks2 = [
         {id: 1, name: 'Январь'},
         {id: 2, name: 'Февраль'},
@@ -324,9 +252,13 @@ const  Charts = (props) => {
     /* prepare */
     const prepareStates = (states) => {
         return states.filter(state => state.fillable).map(state => ({
-                label: state.title,
+                label: (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <StateIconsController IdState={state.id} />
+                        <span>{state.title}</span>
+                    </div>
+                ),
                 value: state.id,
-                icon: iconComponents['StateTrainIcon'] || null,
                 color: state.color,
                 name: state.name
             }))
@@ -885,17 +817,6 @@ const  Charts = (props) => {
                                                 setActiveMonth={handleSetActiveMonth}
                                                 setRangeValues={handleSetRangeValues}
                                             />
-                                            {/*<Slider
-                                                style={{width: '100%'}}
-                                                range marks={marks} step={null}
-                                                value={rangeValues}
-                                                min={1}
-                                                max={12}
-                                                onChange={(ev) => {
-                                                    //console.log('Slider value changed:', ev);
-                                                    setRangeValues(ev);
-                                                }}
-                                            />*/}
                                         </div>
                                     </div>
                                 </Affix>

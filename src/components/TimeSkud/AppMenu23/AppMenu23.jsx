@@ -53,9 +53,9 @@ const AppMenu23 = (props) => {
             onClick: () => navigate('/hr/notify')
         },
         {
-            key: 'logout',
+            key: `${HTTP_ROOT}/logout`,
             icon: <LoginOutlined />,
-            label: 'Выйти',
+            label: <NavLink to={`${HTTP_ROOT}/logout`}>Выйти</NavLink>,
         },
     ];
 
@@ -80,7 +80,7 @@ const AppMenu23 = (props) => {
             children: [
                 {
                     key: '/claims',
-                    label: <NavLink to="/claims">Монитор заявок</NavLink>,
+                    label: <NavLink to="/claims">Список заявок</NavLink>,
                 },
                 {
                     key: '/charts',
@@ -246,8 +246,8 @@ const AppMenu23 = (props) => {
                         <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                             {props.user_act?.user ? (
                                 <span style={{fontWeight: 500, color: "#3d3d3d"}}>
-                  {props.user_act.user.name} {props.user_act.user.patronymic}
-                </span>
+                                  {props.user_act.user.name} {props.user_act.user.secondname}
+                                </span>
                             ) : (
                                 <span>Пользователь</span>
                             )}
