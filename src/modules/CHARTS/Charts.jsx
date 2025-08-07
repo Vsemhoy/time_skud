@@ -38,6 +38,11 @@ import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer"
 import {ShortName} from "../../components/Helpers/TextHelpers";
 import "./style/patch.css";
 import MonthsRange from "./components/MonthsRange";
+import StateTrainIcon from "../../assets/media/States/StateTrainIcon";
+import StateLongVacationIcon from "../../assets/media/States/StateLongVacationIcon";
+import StateSickleaveIcon from "../../assets/media/States/StateSickleaveIcon";
+import StateContainerIcon from "../../assets/media/States/StateContainerIcon";
+import StateSuitcaseIcon from "../../assets/media/States/StateSuitcaseAction";
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -113,6 +118,14 @@ const  Charts = (props) => {
         JavaOutlined: <JavaOutlined />,
         TwitterOutlined: <TwitterOutlined />,
         GoldOutlined: <GoldOutlined />,
+
+
+
+        StateTrainIcon:        <StateTrainIcon height={'25px'}/>,
+        StateLongVacationIcon: <StateLongVacationIcon height={'25px'}/>,
+        StateSickleaveIcon:    <StateSickleaveIcon height={'25px'}/>,
+        StateContainerIcon:    <StateContainerIcon height={'25px'}/>,
+        StateSuitcaseIcon:     <StateSuitcaseIcon height={'25px'}/>,
     };
     const marks = {
         1: 'Январь',
@@ -313,7 +326,7 @@ const  Charts = (props) => {
         return states.filter(state => state.fillable).map(state => ({
                 label: state.title,
                 value: state.id,
-                icon: iconComponents[state.icon] || null,
+                icon: iconComponents['StateTrainIcon'] || null,
                 color: state.color,
                 name: state.name
             }))
@@ -444,49 +457,109 @@ const  Charts = (props) => {
 
     /* drawer */
     const openCreateDrawer = () => {
-        setEditorMode('create');
-        prepareDrawer();
+        prepareDrawerByBtn();
     };
-    const prepareDrawer = async (currentChart = null, user = null, start = null) => {
+    const prepareDrawerByBtn = () => {
+        let canCreateByBtnAny = false;
+        let canCreateByBtnTeam = false;
+        let canCreateByBtnPers = false;
+        if (
+            aclBase[currentUser.id_company] &&
+            aclBase[currentUser.id_company][selectedChartState] &&
+            (
+                aclBase[currentUser.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')
+            )
+        ) { // случай нажатия на кнопку создать заявку, где не передается пользователь, которому создается, подставляем себя
+            canCreateByBtnPers = true;
+        } else if (
+            aclBase[currentUser.id_company] &&
+            aclBase[currentUser.id_company][selectedChartState] &&
+            (
+                aclBase[currentUser.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE')
+            )
+        ) { // случай нажатия на кнопку создать заявку, где не передается пользователь, которому создается, никого не подставляем, селект с тиммейтами
+            canCreateByBtnTeam = true;
+        } else if (
+            aclBase[currentUser.id_company] &&
+            aclBase[currentUser.id_company][selectedChartState] &&
+            (
+                aclBase[currentUser.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE')
+            )
+        ) { // случай нажатия на кнопку создать заявку, где не передается пользователь, которому создается, никого не подставляем, селект со всеми
+            canCreateByBtnAny = true;
+        }
+
+        if (canCreateByBtnPers || canCreateByBtnTeam || canCreateByBtnAny) {
+            setEditorMode('create');
+            if (canCreateByBtnPers) {
+                console.log(1)
+                setClaimForDrawer({
+                    start: null,
+                    user_id: currentUser?.id,
+                    usr_name: currentUser?.name,
+                    usr_surname: currentUser?.surname,
+                    usr_patronymic: currentUser?.patronymic,
+                    id_company: currentUser?.id_company,
+                    boss_id: currentUser?.boss_id
+                });
+            } else if (canCreateByBtnTeam) {
+                console.log(3)
+                setClaimForDrawer({
+                    start: null,
+                    user_id: null,
+                    usr_name: null,
+                    usr_surname: null,
+                    usr_patronymic: null,
+                    id_company: currentUser?.id_company,
+                    boss_id: currentUser?.boss_id
+                });
+            } else if (canCreateByBtnAny) {
+                console.log(3)
+                setClaimForDrawer({
+                    start: null,
+                    user_id: null,
+                    usr_name: null,
+                    usr_surname: null,
+                    usr_patronymic: null,
+                    id_company: currentUser?.id_company,
+                    boss_id: null
+                });
+            }
+
+            setEditorOpened(true);
+        }
+    };
+    const prepareDrawerByChart = async (currentChart = null, user = null, start = null) => {
         if (currentChart) {
             await fetch_claim(currentChart?.id);
             setEditorOpened(true);
         } else {
-            let canCreate = false;
+            let canCreateByChartAny = false;
+            let canCreateByChartTeam = false;
+            let canCreateByChartPers = false;
             if (user && aclBase[user.id_company] &&
                 aclBase[user.id_company][selectedChartState] &&
                 aclBase[user.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE')
-            ) {
-                // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
-                canCreate = true;
+            ) { //создаешь заявку для любого сотрудника выбрав себя на графике
+                canCreateByChartAny = true;
             } else if (user && user.boss_id === currentUser.id &&
                 aclBase[user.id_company] &&
                 aclBase[user.id_company][selectedChartState] &&
                 aclBase[user.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE')
-            ) {
-                // Если челик мой подчиненный и у меня есть права создавать заявки
-                canCreate = true;
+            ) { // создаешь заявку для своего сотрудника выбрав его на графике
+                canCreateByChartTeam = true;
             } else if (user && user.id === currentUser.id &&
                 aclBase[user.id_company] &&
                 aclBase[user.id_company][selectedChartState] &&
                 aclBase[user.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')
-            ) {
-                canCreate = true;
-            } else if (
-                aclBase[currentUser.id_company] &&
-                aclBase[currentUser.id_company][selectedChartState] &&
-                (
-                    aclBase[currentUser.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE') ||
-                    aclBase[currentUser.id_company][selectedChartState]?.includes('TEAM_CLAIM_CREATE') ||
-                    aclBase[currentUser.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')
-                )
-            ) {
-                canCreate = true;
+            ) { // создаешь заявку для себя выбрав себя на графике
+                canCreateByChartPers = true;
             }
-            console.log(canCreate)
-            if (canCreate) {
+
+            if (canCreateByChartAny || canCreateByChartTeam || canCreateByChartPers) {
                 setEditorMode('create');
-                if (user && aclBase[user.id_company][selectedChartState]?.includes('PERS_CLAIM_CREATE')) {
+                if (canCreateByChartPers) {
+                    console.log(1)
                     setClaimForDrawer({
                         start: start,
                         user_id: currentUser?.id,
@@ -496,7 +569,8 @@ const  Charts = (props) => {
                         id_company: currentUser?.id_company,
                         boss_id: currentUser?.boss_id
                     });
-                } else if (user) {
+                } else if (canCreateByChartAny || canCreateByChartTeam) {
+                    console.log(2)
                     setClaimForDrawer({
                         start: start,
                         user_id: user?.id,
@@ -505,16 +579,6 @@ const  Charts = (props) => {
                         usr_patronymic: user?.patronymic,
                         id_company: user?.id_company,
                         boss_id: user?.boss_id
-                    });
-                } else {
-                    setClaimForDrawer({
-                        start: start,
-                        user_id: null,
-                        usr_name: null,
-                        usr_surname: null,
-                        usr_patronymic: null,
-                        id_company: currentUser?.id_company,
-                        boss_id: currentUser?.boss_id
                     });
                 }
 
@@ -751,6 +815,7 @@ const  Charts = (props) => {
                                                         Segmented: {
                                                             itemSelectedBg: reactiveColor,
                                                             itemSelectedColor: 'black',
+                                                            height: '150px'
                                                         },
                                                     },
                                                 }}
@@ -844,7 +909,7 @@ const  Charts = (props) => {
                                 setRangeValues,
                                 activeYear,
                                 renderIntersections: filterParams?.intersections,
-                                openDrawer: (currentChart, user, start) => prepareDrawer(currentChart, user, start),
+                                openDrawer: (currentChart, user, start) => prepareDrawerByChart(currentChart, user, start),
                                 onPreviousMonth,
                                 onNextMonth,
                             }}/>

@@ -87,24 +87,24 @@ const AppMenu23 = (props) => {
                     label: 'Графики заявок',
                     children: [
                         {
-                            key: '/charts/shortvacation',
-                            label: <NavLink to="/charts/shortvacation">Неоплачиваемый отпуск</NavLink>,
-                        },
-                        {
                             key: '/charts/shorttrip',
                             label: <NavLink to="/charts/shorttrip">Местная командировка</NavLink>,
                         },
                         {
-                            key: '/charts/longtrip',
-                            label: <NavLink to="/charts/longtrip">Длительная командировка</NavLink>,
-                        },
-                        {
-                            key: '/charts/longvacation',
-                            label: <NavLink to="/charts/longvacation">Оплачиваемый отпуск</NavLink>,
+                            key: '/charts/shortvacation',
+                            label: <NavLink to="/charts/shortvacation">Неоплачиваемый отпуск</NavLink>,
                         },
                         {
                             key: '/charts/overtime',
                             label: <NavLink to="/charts/overtime">Сверхурочные</NavLink>,
+                        },
+                        {
+                            key: '/charts/longtrip',
+                            label: <NavLink to="/charts/longtrip">Командировка</NavLink>,
+                        },
+                        {
+                            key: '/charts/longvacation',
+                            label: <NavLink to="/charts/longvacation">Отпуск</NavLink>,
                         },
                         {
                             key: '/charts/sickleave',
