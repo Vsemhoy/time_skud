@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateLongVacationIcon = ({ height = '100%' }) => (
+const StateLongVacationIcon = ({ height = '100%', title }) => (
   <svg
     width="800px"
     height="800px"
@@ -14,6 +14,7 @@ const StateLongVacationIcon = ({ height = '100%' }) => (
     width={height}
     height={height}
   >
+    {title && <title>{title}</title>}
     {/* Brown container body */}
     <path 
       fill="#C1694F" 

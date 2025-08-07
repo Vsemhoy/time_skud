@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateTrainIcon = ({ height = '100%' }) => (
+const StateTrainIcon = ({ height = '100%', title }) => (
   <svg
     width="800px"
     height="800px"
@@ -14,6 +14,7 @@ const StateTrainIcon = ({ height = '100%' }) => (
     width={height}
     height={height}
   >
+    {title && <title>{title}</title>}
     {/* Train shadow effects */}
     <path 
       fill="#94989B" 

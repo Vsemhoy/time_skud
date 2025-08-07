@@ -158,7 +158,7 @@ function App() {
                 setPageLoaded(true);
             }
         } else {
-            setUserAct(USDA);
+            //setUserAct(USDA);
             setPageLoaded(true);
         }
   }

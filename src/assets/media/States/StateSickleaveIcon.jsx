@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateSickleaveIcon = ({ height = '100%' }) => (
+const StateSickleaveIcon = ({ height = '100%', title }) => (
   <svg
     version="1.1"
     id="Layer_1"
@@ -13,6 +13,7 @@ const StateSickleaveIcon = ({ height = '100%' }) => (
     width={height}
     height={height}
   >
+    {title && <title>{title}</title>}
     <g>
       {/* Dark blue document top */}
       <path 
