@@ -29,3 +29,14 @@
     width: calc(100% / 12);
     border-radius: 5px;
 }
+
+.sk-content-table-wrapper .ant-segmented-item-label {
+    display: flex !important;
+    padding: 2px 8px !important;
+}
+
+.sk-content-table-wrapper .ant-segmented-item-label .ant-segmented-item-icon {
+    display: block !important;
+    width: 25px !important;
+    height: 25px !important;
+}

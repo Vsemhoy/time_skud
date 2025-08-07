@@ -41,7 +41,7 @@ const StateTrainIcon = ({ height = '100%' }) => (
     {/* Train body base */}
     <path 
       d="M52.4 32.2H11.6V8.4C11.6 7.8 21.8 5 32 5s20.4 2.8 20.4 3.4v23.8" 
-      fill="#BA573F"
+      fill="#ff2222"
     />
     
     {/* Train roof */}
@@ -57,7 +57,7 @@ const StateTrainIcon = ({ height = '100%' }) => (
     {/* Train main body */}
     <path 
       d="M54.8 42.4H9.2v-30c0-.8 11.4-4.3 22.8-4.3s22.8 3.5 22.8 4.3v30" 
-      fill="#F14E3A"
+      fill="#ff0000"
     />
     
     {/* Train windows */}
