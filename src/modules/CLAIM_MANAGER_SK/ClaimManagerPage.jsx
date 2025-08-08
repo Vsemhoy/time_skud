@@ -763,7 +763,7 @@ const ClaimManagerPage = (props) => {
                                                         setShowOnlyMine(!showOnlyMine);
                                                     }}
                                             >Мои заявки</Button>
-                                            {userList && userData && userList.find(user => +user.boss_id === +userData.id) && (
+                                            {userList && userData && userList.find(user => +user.boss_id === +userData?.user?.id) && (
                                                 <Button color={'default'}
                                                         variant={showOnlyCrew ? 'solid' : 'outlined'}
                                                         style={{width: '140px'}}
