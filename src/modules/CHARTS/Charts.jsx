@@ -737,7 +737,7 @@ const  Charts = (props) => {
                             </Affix>
                         </Sider>
                         <Content className="content">
-                            <div className="sk-content-table-wrapper">
+                            <div className="sk-content-table-wrapper-charts">
                                 <Affix offsetTop={44}>
                                     <div style={{backgroundColor: '#f3f3f3', outline: '2px solid #f3f3f3'}}>
                                         <div style={{paddingTop: '5px'}}>
