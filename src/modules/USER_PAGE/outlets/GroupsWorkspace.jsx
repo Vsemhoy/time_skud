@@ -11,7 +11,7 @@ import TextArea from "antd/es/input/TextArea";
 
 function GroupsWorkspace(props) {
     const navigate = useNavigate();
-    const { userIdState } = useOutletContext();
+    const { userIdState, prepareAndShowAlert } = useOutletContext();
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
@@ -66,6 +66,11 @@ function GroupsWorkspace(props) {
                 }
             } catch (error) {
                 console.error('Error fetching remove user rule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setPossibleGroups(POSSIBLE_GROUPS);
@@ -153,8 +158,18 @@ function GroupsWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Группа привязана!'
+                );
             } catch (error) {
                 console.error('Error fetching add groups to user:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         }
     };
@@ -167,8 +182,18 @@ function GroupsWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Группа отвязана!'
+                );
             } catch (error) {
                 console.error('Error fetching remove groups from user:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         }
     };
@@ -180,10 +205,20 @@ function GroupsWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Группа удалена!'
+                );
                 await fetchInfo();
                 clearEditGroup();
             } catch (error) {
                 console.error('Error fetching delete groups:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();
@@ -199,10 +234,20 @@ function GroupsWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Группа обновлена!'
+                );
                 await fetchInfo();
                 clearEditGroup();
             } catch (error) {
                 console.error('Error fetching update groups:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();
@@ -218,10 +263,20 @@ function GroupsWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Группа создана!'
+                );
                 await fetchInfo();
                 clearEditGroup();
             } catch (error) {
                 console.error('Error fetching create groups:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();

@@ -16,7 +16,7 @@ import {DEF_SCHEDULE as activeRule} from "../../../CONFIG/DEFFORMS";
 
 function RulesWorkspace(props) {
     const navigate = useNavigate();
-    const { userIdState } = useOutletContext();
+    const { userIdState, prepareAndShowAlert } = useOutletContext();
 
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -173,6 +173,11 @@ function RulesWorkspace(props) {
                 }
             } catch (error) {
                 console.error('Error fetching users rules:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setRules(RULES);
@@ -197,6 +202,11 @@ function RulesWorkspace(props) {
                 }
             } catch (error) {
                 console.error('Error fetching rules select:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setRuleTypes(RULES_TYPES_SELECT);
@@ -248,9 +258,19 @@ function RulesWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Правило отвязано!'
+                );
                 await fetchInfo();
             } catch (error) {
                 console.error('Error fetching remove user rule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();
@@ -327,9 +347,19 @@ function RulesWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Правило обновлено!'
+                );
                 await fetchInfo();
             } catch (error) {
                 console.error('Error fetching update user rule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();
@@ -350,9 +380,19 @@ function RulesWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Правило назначено!'
+                );
                 await fetchInfo();
             } catch (error) {
                 console.error('Error fetching add to user rule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();

@@ -1,5 +1,5 @@
 
-import {Affix, Button, ConfigProvider, Dropdown, Layout, Pagination, Segmented, Select, Tag} from "antd";
+import {Affix, Avatar, Button, ConfigProvider, Dropdown, Layout, Pagination, Segmented, Select, Tag} from "antd";
 import React, { useEffect, useState } from "react";
 
 import './components/style/claimmanager.css';
@@ -705,12 +705,20 @@ const ClaimManagerPage = (props) => {
                                                            label: (
                                                                <div
                                                                    onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
-                                                                   style={{display: 'flex', alignItems: 'center', gap: '8px'}}
+                                                                   style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}
                                                                >
                                                                    <StateIconsController IdState={opt.value}/>
                                                                    <span>{opt.label}</span>
                                                                </div>
-                                                           )
+                                                           ),
+                                                           /*label: (
+                                                               <div style={{ padding: 4 }}
+                                                                    onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
+                                                               >
+                                                                   <Avatar style={{ backgroundColor: 'transparent', borderRadius: 0 }} icon={<StateIconsController IdState={opt.value}/>} />
+                                                                   <div>{opt.label}</div>
+                                                               </div>
+                                                           )*/
                                                        }))}
                                                        onChange={(value) => setTypeSelect(value)}
                                             />
@@ -774,7 +782,7 @@ const ClaimManagerPage = (props) => {
                             <div className={'sk-arche-stack'}
                                  style={{paddingBottom: '44vw'}}
                             >
-                                <Affix offsetTop={135}>
+                                <Affix offsetTop={165}>
                                     <div className="sk-clamen-headerrow">
                                         <div className={'sk-clamen-card'}>
                                             <div>

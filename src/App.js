@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import UserListPage from './modules/USER_LIST/UserListPage';
 import UserListPage2 from './modules/USER_LIST_2025/UserListPage';
-import {  Layout, Menu, Skeleton, Button, Badge, Alert } from 'antd';
+import {Layout, Menu, Skeleton, Button, Badge, Alert, message} from 'antd';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
 import { BASE_NAME, BASE_ROUTE, CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
@@ -72,7 +72,11 @@ const useCookieState = (key, defaultValue) => {
   return [state, setState];
 };
 
-
+message.config({
+    top: 20,
+    right: 20,
+    maxCount: 3,
+});
 
 
 
