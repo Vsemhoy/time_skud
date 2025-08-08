@@ -213,7 +213,7 @@ const ClaimManagerPage = (props) => {
                 clats.push(clat);
             }
 
-            if (allowType){
+            if (claimType.fillable === 1){
                 clabs.push({
                         value: claimType.id,
                         label: (
@@ -221,6 +221,7 @@ const ClaimManagerPage = (props) => {
                                 <span>{claimType.title}</span>
                             </div>
                         ),
+                        canCreate: allowType,
                         background: claimType.color,
                 })
             };
@@ -464,11 +465,11 @@ const ClaimManagerPage = (props) => {
 
     // ------------------ FetchWorld ----------------------
 
-    const handleSetTypeSelect = (ev, value) => {
+    const handleSetTypeSelect = (ev, value, canCreate) => {
         if (ev.button === 0){
             setTypeSelect(value);
             setReactiveColor(claimTypeOptions.find(op => +op.value === +value).background);
-        } else if (ev.button === 1 && value !== 0){
+        } else if (ev.button === 1 && value !== 0 && canCreate){
             // Средней кнопкой мыши мы открываем редактор
             ev.preventDefault();
             setFormType(value);
@@ -704,21 +705,13 @@ const ClaimManagerPage = (props) => {
                                                            ...opt,
                                                            label: (
                                                                <div
-                                                                   onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
+                                                                   onMouseDown={(e) => handleSetTypeSelect(e, opt.value, opt.canCreate)}
                                                                    style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}
                                                                >
                                                                    <StateIconsController IdState={opt.value}/>
                                                                    <span>{opt.label}</span>
                                                                </div>
                                                            ),
-                                                           /*label: (
-                                                               <div style={{ padding: 4 }}
-                                                                    onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
-                                                               >
-                                                                   <Avatar style={{ backgroundColor: 'transparent', borderRadius: 0 }} icon={<StateIconsController IdState={opt.value}/>} />
-                                                                   <div>{opt.label}</div>
-                                                               </div>
-                                                           )*/
                                                        }))}
                                                        onChange={(value) => setTypeSelect(value)}
                                             />
