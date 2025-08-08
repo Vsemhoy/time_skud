@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Link, Outlet, useLocation, useNavigate, useParams} from "react-router-dom";
-import {Affix, Button, Tag} from "antd";
+import {Affix, Alert, Button, Tag} from "antd";
 import styles from './style/user_page.module.css'
 import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
@@ -22,6 +22,11 @@ const UserPage = (props) => {
     const [savingInfo, setSavingInfo] = useState(false);
 
     const [isMounted, setIsMounted] = useState(false);
+
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertType, setAlertType] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertDescription, setAlertDescription] = useState('');
 
     const getActiveTab = () => {
         if (location.pathname.includes('schedules')) return 'schedules';
@@ -158,8 +163,31 @@ const UserPage = (props) => {
                             setUserIdState(newUserId);
                         }
                     },
+                    prepareAndShowAlert: (type, message, description) => {
+                        setIsAlertVisible(true);
+                        setAlertType(type);
+                        setAlertMessage(message);
+                        setAlertDescription(description);
+                    }
                 }}/>
             </div>
+            {isAlertVisible && (
+                <Alert
+                    message={alertMessage}
+                    description={alertDescription}
+                    type={alertType}
+                    showIcon
+                    closable
+                    style={{
+                        position: 'fixed',
+                        top: 20,
+                        right: 20,
+                        zIndex: 9999,
+                        width: 350
+                    }}
+                    onClose={() => setIsAlertVisible(false)}
+                />
+            )}
         </div>
     )
 }

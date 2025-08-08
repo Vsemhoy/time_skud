@@ -1,7 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import { useOutletContext } from 'react-router-dom';
+import {useNavigate, useOutletContext} from 'react-router-dom';
 import styles from "../style/user_page.module.css";
-import {ConfigProvider, DatePicker, Input, Select, Spin, Tooltip} from "antd";
+import {
+    Button,
+    ConfigProvider,
+    DatePicker,
+    Input,
+    Select,
+    Spin,
+    Tooltip,
+    Alert,
+    message,
+    Modal,
+    notification
+} from "antd";
 import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {
@@ -13,9 +25,15 @@ import dayjs from "dayjs";
 import {USERS} from "../../CHARTS/mock/mock";
 
 const BaseInfoWorkspace = (props) => {
-    const { currentUser, userIdState, savingInfo, onSavedInfo, onUpdateBaseInfo, onUpdateSavingInfo } = useOutletContext();
+    const navigate = useNavigate();
+    const { currentUser, userIdState, savingInfo, onSavedInfo, onUpdateBaseInfo, onUpdateSavingInfo, prepareAndShowAlert } = useOutletContext();
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertType, setAlertType] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertDescription, setAlertDescription] = useState('');
 
     const [companies, setCompanies] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -130,7 +148,9 @@ const BaseInfoWorkspace = (props) => {
             const newCompany = newCompanies.find(c => +c.id === +newCurrentUser.active_company);
             console.log('newCompany: ', newCompany)
             setCompanies(newCompanies.filter(item => item.id > 1));
-            setCompany(newCompany);
+            if (!company.id) {
+                setCompany(newCompany);
+            }
         }
         setTimeout(() => {
             console.log(companies)
@@ -175,6 +195,11 @@ const BaseInfoWorkspace = (props) => {
                     }
                 } catch (error) {
                     console.error('Error fetching user base info:', error);
+                    prepareAndShowAlert(
+                        'error',
+                        'Произошла ошибка',
+                        error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                    );
                 }
             } else {
                 setCompany(MOCK_USER.company);
@@ -237,6 +262,11 @@ const BaseInfoWorkspace = (props) => {
                 }
             } catch (error) {
                 console.error('Error fetching users base info selects:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setCompanies(COMPANIES);
@@ -268,6 +298,11 @@ const BaseInfoWorkspace = (props) => {
                 }
             } catch (e) {
                 console.log(e)
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    e.response?.data?.message || e.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setTimeout(() => {
@@ -290,26 +325,79 @@ const BaseInfoWorkspace = (props) => {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'Данные успешно обновлены!'
+                );
                 setTimeout(() => onSavedInfo(), 500);
                 if (serverResponse.data.content) {
                     setContent(serverResponse.data.content);
                 }
             } catch (e) {
-                console.log(e)
+                console.log(e);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    e.response?.data?.message || e.message || 'Неизвестная ошибка'
+                );
+                onSavedInfo();
             }
         } else {
+            prepareAndShowAlert('info',
+                'Демо-версия',
+                'Демо-версия'
+            );
             setTimeout(() => {
                 onSavedInfo();
                 onUpdateSavingInfo(false, 568);
             }, 500);
         }
     };
+    const confirmDeleteUser = () => {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+            fetchDeleteUser().then();
+        }
+    };
+    const fetchDeleteUser = async () => {
+        if (PRODMODE) {
+            try {
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/deleteuser/${userIdState}`,
+                    {
+                        _token: CSRF_TOKEN
+                    }
+                );
+                navigate(`/hr/usermanager`);
+            } catch (e) {
+                console.log(e);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    e.response?.data?.message || e.message || 'Неизвестная ошибка'
+                );
+            }
+        } else {
+            setTimeout(() => {
+                onSavedInfo();
+                //onUpdateSavingInfo(false, 568);
+                navigate(`/hr/usermanager`);
+            }, 500);
+        }
+    }
     const IsDisableAllowEntry = () => {
         console.log(userIdState === 'new')
         if (userIdState === 'new') return true;
         if (!cardNumber) return true;
         return false;
     };
+    /*const prepareAndShowAlert = (type, message, description) => {
+        setIsAlertVisible(true);
+        setAlertType(type);
+        setAlertMessage(message);
+        setAlertDescription(description);
+    };*/
+
     return (
         <Spin spinning={isLoading}>
             <div className={styles.sk_base_workspace}>
@@ -343,7 +431,6 @@ const BaseInfoWorkspace = (props) => {
                                         value: 'id',
                                         label: 'name',
                                     }}
-
                             />
                         </ConfigProvider>
                     </div>
@@ -487,66 +574,93 @@ const BaseInfoWorkspace = (props) => {
                     </Tooltip>
                 </div>
                 <div className={styles.sk_user_info_column}>
-                    <p className={styles.sk_column_header}>Настройки доступа</p>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Логин</p>
-                        <Input placeholder="Не менее пяти символов"
-                               value={login}
-                               onChange={(e) => setLogin(e.target.value)}
-                               style={{width: 360}}
-                        />
-                    </div>
-                    <Tooltip title={userIdState !== 'new' ? 'Для изменения пароля впишите новый' : 'Один пароль для старой и новой системы'}>
+                    <div style={{width:'100%'}}>
+                        <p className={styles.sk_column_header}>Настройки доступа</p>
                         <div className={styles.sk_info_line}>
-                            <p className={styles.sk_line_label}>Пароль</p>
-                            <Input placeholder="Не менее четырех символов"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                style={{width: 360}}
+                            <p className={styles.sk_line_label}>Логин</p>
+                            <Input placeholder="Не менее пяти символов"
+                                   value={login}
+                                   onChange={(e) => setLogin(e.target.value)}
+                                   style={{width: 360}}
                             />
                         </div>
-                    </Tooltip>
-                    <div className={styles.sk_info_line}>
-                        
-                        <p className={styles.sk_line_label}>Номер карточки</p>
-                        <Input placeholder="Карточка для доступа в офис"
-                               value={cardNumber}
-                               onChange={(e) => setCardNumber(e.target.value)}
-                               style={{width: 360}}
-                               />
-                               
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        
-                        <p className={styles.sk_line_label}>Условная карточка</p>
-                        <Select placeholder="Стелс / Нормальная"
-                                value={(conditionalCard.id !== undefined && conditionalCard.id !== null) ? +conditionalCard.id : null}
-                                options={conditionalCards}
-                                onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
-                                style={{width: 360}}
-                                fieldNames={{
-                                    value: 'id',
-                                    label: 'name',
-                                }}
+                        <Tooltip
+                            title={userIdState !== 'new' ? 'Для изменения пароля впишите новый' : 'Один пароль для старой и новой системы'}>
+                            <div className={styles.sk_info_line}>
+                                <p className={styles.sk_line_label}>Пароль</p>
+                                <Input placeholder="Не менее четырех символов"
+                                       value={password}
+                                       onChange={(e) => setPassword(e.target.value)}
+                                       style={{width: 360}}
                                 />
-                                
+                            </div>
+                        </Tooltip>
+                        <div className={styles.sk_info_line}>
+
+                            <p className={styles.sk_line_label}>Номер карточки</p>
+                            <Input placeholder="Карточка для доступа в офис"
+                                   value={cardNumber}
+                                   onChange={(e) => setCardNumber(e.target.value)}
+                                   style={{width: 360}}
+                            />
+
+                        </div>
+                        <div className={styles.sk_info_line}>
+
+                            <p className={styles.sk_line_label}>Условная карточка</p>
+                            <Select placeholder="Стелс / Нормальная"
+                                    value={(conditionalCard.id !== undefined && conditionalCard.id !== null) ? +conditionalCard.id : null}
+                                    options={conditionalCards}
+                                    onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
+                                    style={{width: 360}}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                            />
+
+                        </div>
+                        <div className={styles.sk_info_line}>
+                            <p className={styles.sk_line_label}>Разрешить вход</p>
+                            <Select placeholder="Да / Нет"
+                                    value={(allowEntry.id !== undefined && allowEntry.id !== null) ? +allowEntry.id : null}
+                                    options={allowEntries}
+                                    onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
+                                    style={{width: 360}}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                                    disabled={IsDisableAllowEntry()}
+                            />
+                        </div>
                     </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Разрешить вход</p>
-                        <Select placeholder="Да / Нет"
-                                value={(allowEntry.id !== undefined && allowEntry.id !== null) ? +allowEntry.id : null}
-                                options={allowEntries}
-                                onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
-                                style={{width: 360}}
-                                fieldNames={{
-                                    value: 'id',
-                                    label: 'name',
-                                }}
-                                disabled={IsDisableAllowEntry()}
-                        />
+                    <div>
+                        {currentUser?.user?.super && (<Button style={{width: '200px'}}
+                                 type="primary"
+                                 danger
+                                 onClick={confirmDeleteUser}
+                        >Удалить пользователя</Button>)}
                     </div>
                 </div>
             </div>
+            {isAlertVisible && (
+                <Alert
+                    message={alertMessage}
+                    description={alertDescription}
+                    type={alertType}
+                    showIcon
+                    closable
+                    style={{
+                        position: 'fixed',
+                        top: 20,
+                        right: 20,
+                        zIndex: 9999,
+                        width: 350
+                    }}
+                    onClose={() => setIsAlertVisible(false)}
+                />
+            )}
         </Spin>
     );
 }

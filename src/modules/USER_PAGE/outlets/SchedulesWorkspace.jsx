@@ -11,7 +11,7 @@ import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 function SchedulesWorkspace(props) {
     const navigate = useNavigate();
-    const { userIdState } = useOutletContext();
+    const { userIdState, prepareAndShowAlert } = useOutletContext();
 
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -169,6 +169,11 @@ function SchedulesWorkspace(props) {
                 }
             } catch (error) {
                 console.error('Error fetching users schedules:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setSchedules(findBreaks(SCHEDULES));
@@ -194,6 +199,11 @@ function SchedulesWorkspace(props) {
                 }
             } catch (error) {
                 console.error('Error fetching schedule selects:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             setScheduleTypes(SCHEDULES_TYPES_SELECT);
@@ -261,9 +271,19 @@ function SchedulesWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'График отвязан!'
+                );
                 await fetchInfo();
             } catch (error) {
                 console.error('Error fetching remove user schedule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();
@@ -340,9 +360,19 @@ function SchedulesWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'График обновлен!'
+                );
                 await fetchInfo();
             } catch (error) {
                 console.error('Error fetching update user schedule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();
@@ -363,9 +393,19 @@ function SchedulesWorkspace(props) {
                         _token: CSRF_TOKEN
                     }
                 );
+                prepareAndShowAlert(
+                    'success',
+                    'Успех',
+                    'График добавлен!'
+                );
                 await fetchInfo();
             } catch (error) {
                 console.error('Error fetching add to user schedule:', error);
+                prepareAndShowAlert(
+                    'error',
+                    'Произошла ошибка',
+                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
+                );
             }
         } else {
             await fetchInfo();

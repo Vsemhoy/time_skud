@@ -587,6 +587,11 @@ const toggleUsersOpen = (ev, id, dep_id) => {
 
   const toggleDoubleClickDepart = (row_id) => {
     toggleDepartsOpen({}, row_id);
+      userCollection.forEach(user => {
+          if (user.depart_id === row_id){
+              toggleUsersOpen({}, user.id, row_id);
+          }
+      });
   }
 
 
@@ -1374,6 +1379,7 @@ useEffect(() => {
                                 onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
                               ><div><span style={{ fontWeight: '500'}}>{item.id}</span></div></div>
                               <div 
+                                onClick={(ev)=>{toggleDepartsOpen(ev, item.id)}}
                                 onDoubleClick={()=>{toggleDoubleClickDepart(item.id)}}
                                 className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                 <span style={{ fontWeight: '500', color: `${count_users_in ? '#1f1f1f' : '#0000008f'}`}}>{item.name}</span>
@@ -1565,7 +1571,7 @@ useEffect(() => {
                                       /></div>
                                       <div onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}><div>{user.id}</div></div>
                                       <div 
-                                        onDoubleClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
+                                        onClick={(ev)=>{toggleUsersOpen(ev, user.id, item.id)}}
                                         className={'sk-table-aclskud-row-name'}><div className={'sk-flex-space'}>
                                         <span>{user.surname} {user.name} {user.secondname}</span>
                                         </div></div>
