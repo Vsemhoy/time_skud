@@ -116,10 +116,10 @@ const AppMenu23 = (props) => {
                         },
                     ]
                 },
-                {
+                /*{
                     key: '/calendars',
                     label: <NavLink to="/calendars">Календарь</NavLink>,
-                },
+                },*/
             ]
         },
         {

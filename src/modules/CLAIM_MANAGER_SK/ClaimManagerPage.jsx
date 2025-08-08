@@ -699,21 +699,20 @@ const ClaimManagerPage = (props) => {
                                                 },
                                             }}
                                         >
-                                            <Segmented
-                                                value={typeSelect}
-                                                options={claimTypeOptions.map(opt => ({
-                                                    ...opt,
-                                                    label: (
-                                                        <div
-                                                            onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
-                                                            style={{display: 'flex', alignItems: 'center', gap: '8px'}}
-                                                        >
-                                                            <StateIconsController IdState={opt.value}/>
-                                                            <span>{opt.label}</span>
-                                                        </div>
-                                                    )
-                                                }))}
-                                                onChange={(value) => setTypeSelect(value)}
+                                            <Segmented value={typeSelect}
+                                                       options={claimTypeOptions.map(opt => ({
+                                                           ...opt,
+                                                           label: (
+                                                               <div
+                                                                   onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
+                                                                   style={{display: 'flex', alignItems: 'center', gap: '8px'}}
+                                                               >
+                                                                   <StateIconsController IdState={opt.value}/>
+                                                                   <span>{opt.label}</span>
+                                                               </div>
+                                                           )
+                                                       }))}
+                                                       onChange={(value) => setTypeSelect(value)}
                                             />
                                         </ConfigProvider>
                                     </div>
