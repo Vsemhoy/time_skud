@@ -382,7 +382,7 @@ const UserListToolbar = (props) => {
                 onDoubleClick={()=>{setUsedDate(dayjs())}}
                 title="Выбранный день. Двойной клик скинет вас на сегодняшнюю дату."
             >
-                {getMonthName(usedDate.month())}'{usedDate.year()}, {getWeekDayString( usedDate.day())}
+                {getMonthName(usedDate.month()+1)}'{usedDate.year()}, {getWeekDayString( usedDate.day())}
             </div>
             <div></div>
         </div>
@@ -392,7 +392,7 @@ const UserListToolbar = (props) => {
                 open={openDrawer}
                 placement="left"
                 onClose={()=>{setOpenDrawer(false)}}
-                title=<span className={'sk-flex-space'}>Фильтры и сортировки</span>
+                title={<span className={'sk-flex-space'}>Фильтры и сортировки</span>}
                 style={{background: 'white !important'}}
                 className="sk-bg-white"
             >
