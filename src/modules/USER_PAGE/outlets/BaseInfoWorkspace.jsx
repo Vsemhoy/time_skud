@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styles from "../style/user_page.module.css";
-import {ConfigProvider, DatePicker, Input, Select, Spin} from "antd";
+import {ConfigProvider, DatePicker, Input, Select, Spin, Tooltip} from "antd";
 import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {
@@ -375,19 +375,21 @@ const BaseInfoWorkspace = (props) => {
                                status="warning"
                         />
                     </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Отдел</p>
-                        <Select placeholder="Отдел"
-                                value={(department.id !== undefined && department.id !== null) ? +department.id : null}
-                                options={departments}
-                                onChange={(id) => setDepartment(departments.find(c => c.id === id))}
-                                style={{width: 360}}
-                                fieldNames={{
-                                    value: 'id',
-                                    label: 'name',
-                                }}
-                        />
-                    </div>
+                    <Tooltip title={userIdState === 'new' ? 'Пользователи без отдела могут быть не видны в списках' : null}>
+                        <div className={styles.sk_info_line}>
+                            <p className={styles.sk_line_label}>Отдел</p>
+                            <Select placeholder="Отдел"
+                                    value={(department.id !== undefined && department.id !== null) ? +department.id : null}
+                                    options={departments}
+                                    onChange={(id) => setDepartment(departments.find(c => c.id === id))}
+                                    style={{width: 360}}
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                            />
+                        </div>
+                    </Tooltip>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Должность</p>
                         <Input placeholder="Должность"
@@ -439,15 +441,17 @@ const BaseInfoWorkspace = (props) => {
                                     style={{width: 360}}
                         />
                     </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Рейтинг</p>
-                        <Input placeholder="Рейтинг"
-                               value={rating}
-                               onChange={(e) => setRating(e.target.value)}
-                               style={{width: 360}}
-                               status="warning"
-                        />
-                    </div>
+                    <Tooltip title={userIdState === 'new' ? 'Рейтинг определяет порядок сортировки пользователя в списках старой системы' : null}>
+                        <div className={styles.sk_info_line}>
+                            <p className={styles.sk_line_label}>Рейтинг</p>
+                            <Input placeholder="Рейтинг"
+                                value={rating}
+                                onChange={(e) => setRating(e.target.value)}
+                                style={{width: 360}}
+                                status="warning"
+                            />
+                        </div>
+                    </Tooltip>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Статус</p>
                         <Select placeholder="Статус"
@@ -462,22 +466,25 @@ const BaseInfoWorkspace = (props) => {
                                 }}
                         />
                     </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Руководитель</p>
-                        <Select placeholder="Руководитель"
-                                value={(boss.id !== undefined && boss.id !== null && boss.id !== 0) ? +boss.id : null}
-                                options={bosses}
-                                onChange={(id) => setBoss(bosses.find(c => c.id === id))}
-                                style={{width: 360}}
-                                status="warning"
-                                fieldNames={{
-                                    value: 'id',
-                                    label: 'name',
-                                }}
-                                showSearch
-                                optionFilterProp="name"
-                        />
-                    </div>
+                    <Tooltip title={userIdState === 'new' ? 'Каждый новый пользователь должен иметь руководителя' : null}>
+                        <div className={styles.sk_info_line}>
+                            <p className={styles.sk_line_label}>Руководитель</p>
+                            <Select placeholder="Руководитель"
+                                    value={(boss.id !== undefined && boss.id !== null && boss.id !== 0) ? +boss.id : null}
+                                    options={bosses}
+                                    onChange={(id) => setBoss(bosses.find(c => c.id === id))}
+                                    style={{width: 360}}
+                                    status="warning"
+                                    fieldNames={{
+                                        value: 'id',
+                                        label: 'name',
+                                    }}
+                                    showSearch
+                                    optionFilterProp="name"
+                                    allowClear
+                            />
+                        </div>
+                    </Tooltip>
                 </div>
                 <div className={styles.sk_user_info_column}>
                     <p className={styles.sk_column_header}>Настройки доступа</p>
@@ -489,23 +496,28 @@ const BaseInfoWorkspace = (props) => {
                                style={{width: 360}}
                         />
                     </div>
+                    <Tooltip title={userIdState !== 'new' ? 'Для изменения пароля впишите новый' : 'Один пароль для старой и новой системы'}>
+                        <div className={styles.sk_info_line}>
+                            <p className={styles.sk_line_label}>Пароль</p>
+                            <Input placeholder="Не менее четырех символов"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{width: 360}}
+                            />
+                        </div>
+                    </Tooltip>
                     <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Пароль</p>
-                        <Input placeholder="Не менее четырех символов"
-                               value={password}
-                               onChange={(e) => setPassword(e.target.value)}
-                               style={{width: 360}}
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
+                        
                         <p className={styles.sk_line_label}>Номер карточки</p>
                         <Input placeholder="Карточка для доступа в офис"
                                value={cardNumber}
                                onChange={(e) => setCardNumber(e.target.value)}
                                style={{width: 360}}
-                        />
+                               />
+                               
                     </div>
                     <div className={styles.sk_info_line}>
+                        
                         <p className={styles.sk_line_label}>Условная карточка</p>
                         <Select placeholder="Стелс / Нормальная"
                                 value={(conditionalCard.id !== undefined && conditionalCard.id !== null) ? +conditionalCard.id : null}
@@ -516,7 +528,8 @@ const BaseInfoWorkspace = (props) => {
                                     value: 'id',
                                     label: 'name',
                                 }}
-                        />
+                                />
+                                
                     </div>
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Разрешить вход</p>
