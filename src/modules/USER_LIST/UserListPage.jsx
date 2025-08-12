@@ -18,6 +18,7 @@ import StateIconsController from "../CHARTS/components/StateIconsController";
 import {CHART_STATES, USDA} from "../CHARTS/mock/mock";
 import {USERS_LIST} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
+import UserListSider from "./components/UserListSider";
 
 
 const UserList = (props)=>{
@@ -161,7 +162,7 @@ const UserList = (props)=>{
       let user_id = markedUsers[0];
       handleMarkUser(user_id);
       setOpenUserInfo(true);
-      let usr = baseUserListData.find((item)=> item.user_id === user_id);
+      let usr = baseUserListData.find((item)=> item.id === user_id);
       setTargetUserInfo(usr);
     }
   }, [baseUserListData]);
@@ -183,7 +184,7 @@ const UserList = (props)=>{
   },[openUserInfo]);
 
   useEffect(()=>{
-    let guys = baseUserListData.filter((item)=> item.boss_id === targetUserInfo.user_id);
+    let guys = baseUserListData.filter((item)=> item.boss_id === targetUserInfo.id);
     setTargetUserGuys(guys ? guys : []);
   }, [targetUserInfo]);
 
@@ -221,7 +222,7 @@ const UserList = (props)=>{
 
         // Находим текущий элемент через find
         const currentUser = sortedUserRef.current.find(
-            (user) => user.user_id === cref_id
+            (user) => user.id === cref_id
         );
 
         if (!currentUser) {
@@ -233,26 +234,26 @@ const UserList = (props)=>{
 
         if (event.key === "ArrowUp") {
           if (currentIndex > 0) {
-            nref = sortedUserRef.current[currentIndex - 1].user_id;
+            nref = sortedUserRef.current[currentIndex - 1].id;
             if (nref == null){ // If DIVIDER
-              nref = sortedUserRef.current[currentIndex - 2]?.user_id;
+              nref = sortedUserRef.current[currentIndex - 2]?.id;
             }
           }
         } else if (event.key === "ArrowDown") {
           if (currentIndex < sortedUserRef.current.length - 1) {
-            nref = sortedUserRef.current[currentIndex + 1].user_id;
+            nref = sortedUserRef.current[currentIndex + 1].id;
             if (nref == null){
-              nref = sortedUserRef.current[currentIndex + 2]?.user_id;
+              nref = sortedUserRef.current[currentIndex + 2]?.id;
             }
           }
         } else if (event.key === "ArrowLeft") {
           setToolbarCommand("sub_day");
-          handleMarkUser(currentUser.user_id);
+          handleMarkUser(currentUser.id);
           setTargetUserInfo(currentUser);
 
         } else if (event.key === "ArrowRight") {
           setToolbarCommand("add_day");
-          handleMarkUser(currentUser.user_id);
+          handleMarkUser(currentUser.id);
           setTargetUserInfo(currentUser);
         }
 
@@ -350,7 +351,7 @@ const UserList = (props)=>{
     console.log('user_id', user_id)
     handleMarkUser(user_id);
     setOpenUserInfo(true);
-    let usr = baseUserListData.find((item)=> item.user_id === user_id);
+    let usr = baseUserListData.find((item)=> item.id === user_id);
     setTargetUserInfo(usr);
   }
   const openUserInfoCallbackRef = useRef(handleShowUserInfo);
@@ -370,7 +371,7 @@ const UserList = (props)=>{
     const newArray = [...arr];
     
     // Ищем босса
-    const bossIndex = newArray.findIndex(user => user?.user_id === 46);
+    const bossIndex = newArray.findIndex(user => user?.id === 46);
     
     // Если босс найден и не на первом месте
     if (bossIndex > 0) {
@@ -791,7 +792,7 @@ const UserList = (props)=>{
                   baseUsers={baseUserListData}
                   userData={userdata}
                   on_find_me={handleFindMe}
-                  im_exist={userListData.find((item)=>  item.user_id === userdata.user.id) != null}
+                  im_exist={userListData.find((item)=>  item.id === userdata.user.id) != null}
                   onChangeExternalFilters={toggleExternalFilters}
                   onChangeInnerSort={toggleInnerSorts}
                   onChangeInnerFilers={toggleInnerFilters}
@@ -807,10 +808,11 @@ const UserList = (props)=>{
             <Layout className="sk-layout-center">
               <Sider width={isOpenFilters ? "330px" : 0}
                      className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
+                     style={{paddingTop: '0'}}
               >
                 <Affix offsetTop={100}>
                   <div className="sk-width-container">
-                    <div className="sk-usp-filter-col">
+                    <div className="sk-usp-filter-col" style={{height: 'calc(100vh - 46px - 115px)'}}>
 
                     </div>
                   </div>
@@ -903,11 +905,11 @@ const UserList = (props)=>{
                               {filteredUsers.map((arche, index)=>
                               (
                                   <UserMonitorListCard
-                                      key={`usmcard_${arche.user_id !== undefined ? arche.user_id : arche.key}`} // так как строки сеператоры не имеют айди
+                                      key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`} // так как строки сеператоры не имеют айди
                                       data={arche}
                                       on_mark_user={handleMarkUser}
                                       marked_users={markedUsers}
-                                      its_me={userdata.user.id === arche.user_id}
+                                      its_me={userdata.user.id === arche.id}
                                       on_double_click={handleShowUserInfo}
                                       selected_columns={selectedColumns}
 
@@ -918,6 +920,25 @@ const UserList = (props)=>{
                     )}
                 </div>
               </Content>
+              <Sider width={openUserInfo ? "330px" : 0}
+                     className={`sider ${openUserInfo ? '' : 'sider-hidden'} pl15`}
+                     style={{paddingTop: '0'}}
+              >
+                <Affix offsetTop={100}>
+                  <div className="sk-width-container" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 115px)'}}>
+                      <UserListSider
+                          target_user_guys={targetUserGuys}
+                          target_user_info={targetUserInfo}
+                          userdata={userdata}
+                          base_user_list_data={baseUserListData}
+                          open_user_info={openUserInfo}
+                          on_mark_user={handleMarkUser}
+                          on_close={setOpenUserInfo}
+                          target_date={targetDate}
+                      />
+                  </div>
+                </Affix>
+              </Sider>
             </Layout>
           </Layout>
 
@@ -928,9 +949,7 @@ const UserList = (props)=>{
           />
           {/* // if sortBy == undefined || null || department_desc - insert custom row with depart name before show belongs rows */}
 
-
-          <UserListSidebar
-              key="djafklsdjklfjaskl"
+          {/*<UserListSidebar
               target_user_guys={targetUserGuys}
               target_user_info={targetUserInfo}
               userdata={userdata}
@@ -939,7 +958,7 @@ const UserList = (props)=>{
               on_mark_user={handleMarkUser}
               on_close={setOpenUserInfo}
               target_date={targetDate}
-          />
+          />*/}
 
           <ClaimEditorDrawer
               data={editedClaim}

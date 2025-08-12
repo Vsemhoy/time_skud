@@ -151,9 +151,9 @@ const ClaimEditorDrawer = (props) => {
           color = q?.color;
         }
         if (props.data) {
-          console.log(props.data.user_id)
-          if (props.data.user_id) {
-            setFormUsers([props.data.user_id]);
+          console.log(props.data.id)
+          if (props.data.id) {
+            setFormUsers([props.data.id]);
           }
           if (props.data.start) {
             setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
@@ -190,7 +190,7 @@ const ClaimEditorDrawer = (props) => {
 
   const masterSetReadOptions = () => {
       console.log(props.acl_base);
-    if  (userCard.evaluated === 0 && userCard.user_id === MYID &&
+    if  (userCard.evaluated === 0 && userCard.id === MYID &&
         props.acl_base[userCard.id_company] &&
         props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
         props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_CREATE')
@@ -222,7 +222,7 @@ const ClaimEditorDrawer = (props) => {
     ) {
         // Если челик мой подчиненный и у меня есть права добавлять подчиненным
         setAllowEdit(true);
-    } else if (userCard.user_id === MYID &&
+    } else if (userCard.id === MYID &&
         props.acl_base[userCard.id_company] &&
         props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
         props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')
@@ -268,7 +268,7 @@ const ClaimEditorDrawer = (props) => {
                   setAllowDecline(true);
                 }
             }
-        } else if (userCard.user_id === MYID &&
+        } else if (userCard.id === MYID &&
             props.acl_base[userCard.id_company] &&
             props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
             props.acl_base[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_APPROVE')

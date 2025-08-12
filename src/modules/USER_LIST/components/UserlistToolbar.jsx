@@ -7,7 +7,8 @@ import dayjs from "dayjs";
 
 import '../../../assets/timeskud.css'
 import {
-    BranchesOutlined,
+    ArrowLeftOutlined, ArrowRightOutlined,
+    BranchesOutlined, CaretLeftOutlined, CaretRightOutlined,
     CrownOutlined, DiffOutlined,
     DoubleLeftOutlined,
     DoubleRightOutlined,
@@ -346,7 +347,13 @@ const UserListToolbar = (props) => {
                     >Фильтры</Button>
                 </div>
                 <div className="sk-flex">
-                    <DoubleLeftOutlined
+                    {/*<DoubleLeftOutlined
+                        title="На предыдущий день"
+                        onClick={decreaseDate}
+                        className={'sk-usermonic-filter-bacon'}
+                    />*/}
+
+                    <CaretLeftOutlined
                         title="На предыдущий день"
                         onClick={decreaseDate}
                         className={'sk-usermonic-filter-bacon'}
@@ -363,11 +370,17 @@ const UserListToolbar = (props) => {
                         title={getWeekDayString(usedDate.day())}
                     />
 
-                    <DoubleRightOutlined
+                    <CaretRightOutlined
                         onClick={increaseDate}
                         className={'sk-usermonic-filter-bacon'}
                         title="На следующий день"
                     />
+
+                    {/*<DoubleRightOutlined
+                        onClick={increaseDate}
+                        className={'sk-usermonic-filter-bacon'}
+                        title="На следующий день"
+                    />*/}
 
                 </div>
                 <div className={'sk-flex-space'}>
