@@ -161,224 +161,215 @@ const UserListSidebar = (props) => {
 
     return (
 
-        <Drawer title=<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.user_id}</Tag></span>
-        mask={false}
-        onClose={()=>{handleClose()}} 
-        open={openUserInfo}
-        className={"sk-ant-no-padding sk-drawer-transparent"}
-        style={{background: 'white'}}
+        <Drawer title={<span className={'sk-flex-space'}>Информация о сотруднике  <Tag>{targetUserInfo?.id}</Tag></span>}
+                mask={false}
+                onClose={()=>{handleClose()}}
+                open={openUserInfo}
+                className={"sk-ant-no-padding sk-drawer-transparent"}
+                style={{background: 'white'}}
         >
-        {openUserInfo && (
-          <div>
-
-          {badger && (
-            <>
-            
-            <div className="">
-            <div className="sk-state-intgra-card-backdrop">
-            <div style={{background: badger.color + 99}}
-            className="sk-state-intgra-card ">
-              <span style={{textAlign: 'center' , paddingLeft: '4px'}}>{badger.icon}</span> <span>{badger.title}</span> 
-              <div onClick={()=>{setOpenStateInfoSection(!openStateInfoSection)}}>
-                  {openStateInfoSection ? (
-                    <span><UpOutlined /></span>
-                  ) : (
-                    <span><DownOutlined /></span>
-                  )}
-                </div>
-            </div>
-            </div>
-            {openStateInfoSection ? (
+            {openUserInfo && (
               <div>
-              {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
-                <UserlistEventDumpCard data={targetUserInfo.event_dump} />
-              ) : (
-                <>{ targetUserInfo.state_data != null ? (
-                  <div className={'sk-w-padding-18 sk-umsmi-card'}>
-                  <table className="sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
-                      <tbody>
-                        <tr>
-                          <td style={{textAlign: 'left'}}>Дата и время начала</td>
-                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.start).format("DD-MM-YYYY")}   {
-                            dayjs(targetUserInfo.state_data.start).format('HH:mm') != '00:00' && (
-                              <span>{dayjs(targetUserInfo.state_data.start).format('HH:mm')}</span>
-                            )
-                          }</td>
-                        </tr>
-                        <tr>
-                          <td style={{textAlign: 'left'}}>Дата и время завершения</td>
-                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).format("DD-MM-YYYY")}   {
-                            dayjs(targetUserInfo.state_data.end).format('HH:mm') != '23:59' && (
-                              <span>{dayjs(targetUserInfo.state_data.end).format('HH:mm')}</span>
-                            )
-                          }</td>
-                        </tr>
-                        <tr>
-                          <td style={{textAlign: 'left'}}>Количество дней всего</td>
-                          <td style={{textAlign: 'left'}}>{targetUserInfo.state_data.days_count}</td>
-                        </tr>
-                        <tr>
-                          <td style={{textAlign: 'left'}}>Количество дней осталось</td>
-                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') > 0 ? dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') : ""}</td>
-                        </tr>
-                          </tbody>
-                      </table>
+                  {badger && (
+                    <>
+
+                    <div className="">
+                    <div className="sk-state-intgra-card-backdrop">
+                    <div style={{background: badger.color + 99}}
+                    className="sk-state-intgra-card ">
+                      <span style={{textAlign: 'center' , paddingLeft: '4px'}}>{badger.icon}</span> <span>{badger.title}</span>
+                      <div onClick={()=>{setOpenStateInfoSection(!openStateInfoSection)}}>
+                          {openStateInfoSection ? (
+                            <span><UpOutlined /></span>
+                          ) : (
+                            <span><DownOutlined /></span>
+                          )}
+                        </div>
+                    </div>
+                    </div>
+                    {openStateInfoSection ? (
+                      <div>
+                      {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
+                        <UserlistEventDumpCard data={targetUserInfo.event_dump} />
+                      ) : (
+                        <>{ targetUserInfo.state_data != null ? (
+                          <div className={'sk-w-padding-18 sk-umsmi-card'}>
+                          <table className="sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
+                              <tbody>
+                                <tr>
+                                  <td style={{textAlign: 'left'}}>Дата и время начала</td>
+                                  <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.start).format("DD-MM-YYYY")}   {
+                                    dayjs(targetUserInfo.state_data.start).format('HH:mm') != '00:00' && (
+                                      <span>{dayjs(targetUserInfo.state_data.start).format('HH:mm')}</span>
+                                    )
+                                  }</td>
+                                </tr>
+                                <tr>
+                                  <td style={{textAlign: 'left'}}>Дата и время завершения</td>
+                                  <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).format("DD-MM-YYYY")}   {
+                                    dayjs(targetUserInfo.state_data.end).format('HH:mm') != '23:59' && (
+                                      <span>{dayjs(targetUserInfo.state_data.end).format('HH:mm')}</span>
+                                    )
+                                  }</td>
+                                </tr>
+                                <tr>
+                                  <td style={{textAlign: 'left'}}>Количество дней всего</td>
+                                  <td style={{textAlign: 'left'}}>{targetUserInfo.state_data.days_count}</td>
+                                </tr>
+                                <tr>
+                                  <td style={{textAlign: 'left'}}>Количество дней осталось</td>
+                                  <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') > 0 ? dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') : ""}</td>
+                                </tr>
+                                  </tbody>
+                              </table>
+                              </div>
+                      ) : (
+                        <div style={{padding: '18px'}}>...</div>
+                        )}</>)}
                       </div>
-              ) : (
-                <div style={{padding: '18px'}}>...</div>
-                )}</>)}
+                    ) : ("")}
+                    <br />
+                    </div>
+                    </>
+                  )}
+
+                  <div className="sk-w-padding-18">
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Должность</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.user_occupy ? capitalize(targetUserInfo.user_occupy) : '-'}</div>
+                      </div>
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Отдел</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
+                      </div>
+
+                      {/* <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Фамилия</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : '-'}</div>
+                      </div>
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Имя</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.user_name ? targetUserInfo.user_name : '-'}</div>
+                      </div>
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Отчество</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : '-'}</div>
+                      </div> */}
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Фамилия Имя Отчество</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : ''}  {targetUserInfo.user_name ? targetUserInfo.user_name : ''}  {targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : ''}
+                        </div>
+                      </div>
+
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Внутренний телефон</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
+                      </div>
+
+                      {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
+                        <div className={'sk-usermonic-drawer-row'}>
+                          <div className={'sk-labed-um'}>Работает с</div>
+                          <div className={'sk-contend-um'}>{targetUserInfo.recrut ? dayjs.unix(targetUserInfo.recrut).format("DD-MM-YYYY") : ""}</div>
+                        </div>
+                      ): ""}
+
+
+                      {targetUserInfo.email && targetUserInfo.email != 0 && (
+                        <div className={'sk-usermonic-drawer-row'}>
+                          <div className={'sk-labed-um'}>E-mail</div>
+                          <div className={'sk-contend-um'}>{targetUserInfo.email}</div>
+                        </div>
+                      )}
+
+                      {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
+                        <div className={'sk-usermonic-drawer-row'}>
+                          <div className={'sk-labed-um'}>Компания</div>
+                          <div className={'sk-contend-um'}>
+                            <span className={'sk-usermonic-comround'}
+                            style={{background: `${userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.color}`
+                            }}>
+                              {targetUserInfo.id_company}
+                            </span>
+                          {userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.name}</div>
+                        </div>
+                      )}
+                  </div>
+
+
+                  {baseSchedules && baseSchedules.length > 0 && (
+                    <div>
+                      {baseSchedules.map((item, index)=> (
+                        <UmScheduleMiniCard
+                          data={item}
+                          key={`umscard_${item.id}`}
+                          />
+                      ))}
+                      <br />
+                      <br />
+                    </div>
+                  )}
+
+
+                  {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
+                    <div className="sk-boss-wrapper-sf sk-w-padding-18">
+                      <div style={{
+                          fontSize: 'large',
+                          fontWeight:'bolder',
+                          borderBottom: '1px solid gray'
+                      }}><span
+                        onClick={()=>{
+                          setTargetUserInfo(props.base_user_list_data.find((item)=> item.user_id === targetUserInfo.boss_id),
+                          props.on_mark_user(targetUserInfo.boss_id));}}
+                        className={'sk-usermonic-drawer-rukop-title'}
+                      >Руководитель</span> <span
+                      ></span></div>
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Должность</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
+                      </div>
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Фио</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
+                      </div>
+
+                      <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Внутренний телефон</div>
+                        <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
+                      </div>
+                    </div>
+                  ): ""}
+
+
+
+                  {targetUserGuys && targetUserGuys.length > 0 && (
+                    <>
+                    <br />
+                      <div className="sk-boss-wrapper-sf sk-w-padding-18">
+                        <div style={{
+                                fontSize: 'large',
+                                fontWeight:'bolder',
+                                borderBottom: '1px solid gray'
+                            }}><span>Сотрудники</span></div>
+                        { targetUserGuys.map((item, index)=>(
+                          <div className={'sk-boss-guy-card'}
+                          key={`taurkey_${index}`}
+                          onClick={()=>{
+                            setTargetUserInfo(props.base_user_list_data.find((user)=> user.user_id === item.user_id),
+                            props.on_mark_user(item.user_id));}}
+                          >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
+                        ))}
+
+                      </div>
+                    </>
+                  )}
               </div>
-            ) : ("")}
-            <br />
-            </div>
-            </>
-          )}
-
-          <div className="sk-w-padding-18">
-          <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Должность</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.user_occupy ? capitalize(targetUserInfo.user_occupy) : '-'}</div>
-          </div>
-
-          <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Отдел</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
-          </div>
-
-          {/* <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Фамилия</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : '-'}</div>
-          </div>
-
-          <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Имя</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.user_name ? targetUserInfo.user_name : '-'}</div>
-          </div>
-
-          <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Отчество</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : '-'}</div>
-          </div> */}
-
-          <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Фамилия Имя Отчество</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : ''}  {targetUserInfo.user_name ? targetUserInfo.user_name : ''}  {targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : ''} 
-            </div>
-          </div>
-
-
-          <div className={'sk-usermonic-drawer-row'}>
-            <div className={'sk-labed-um'}>Внутренний телефон</div>
-            <div className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
-          </div>
-
-          {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
-            <div className={'sk-usermonic-drawer-row'}>
-              <div className={'sk-labed-um'}>Работает с</div>
-              <div className={'sk-contend-um'}>{targetUserInfo.recrut ? dayjs.unix(targetUserInfo.recrut).format("DD-MM-YYYY") : ""}</div>
-            </div>
-          ): ""}
-
-
-          {targetUserInfo.email && targetUserInfo.email != 0 && (
-            <div className={'sk-usermonic-drawer-row'}>
-              <div className={'sk-labed-um'}>E-mail</div>
-              <div className={'sk-contend-um'}>{targetUserInfo.email}</div>
-            </div>
-          )}
-
-          {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
-            <div className={'sk-usermonic-drawer-row'}>
-              <div className={'sk-labed-um'}>Компания</div>
-              <div className={'sk-contend-um'}>
-                <span className={'sk-usermonic-comround'}
-                style={{background: `${userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.color}`
-                }}>
-                  {targetUserInfo.id_company}
-                </span>
-              {userdata.companies.find((item)=> item.id === targetUserInfo.id_company)?.name}</div>
-            </div>
-          )}
-          
-          </div>
-          
-
-          {baseSchedules && baseSchedules.length > 0 && (
-            <div>
-              {baseSchedules.map((item, index)=> (
-                <UmScheduleMiniCard 
-                  data={item}
-                  key={`umscard_${item.id}`}
-                  />
-              ))}
-              <br />
-              <br />
-            </div>
-          )}
-
-
-          {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
-            <div className="sk-boss-wrapper-sf sk-w-padding-18">  
-              <div style={{fontSize: 'large',
-                fontSize: 'initial', fontWeight:'bolder',
-                borderBottom: '1px solid gray'
-              }}><span
-                onClick={()=>{
-                  setTargetUserInfo(props.base_user_list_data.find((item)=> item.user_id === targetUserInfo.boss_id),
-                  props.on_mark_user(targetUserInfo.boss_id));}}
-                className={'sk-usermonic-drawer-rukop-title'}
-              >Руководитель</span> <span
-              ></span></div>
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Должность</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Фио</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
-              </div>
-
-              <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Внутренний телефон</div>
-                <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
-              </div>
-            </div>
-
-          ): ""}
-
-          
-          
-          {targetUserGuys && targetUserGuys.length > 0 && (
-            <>
-            <br />
-              <div className="sk-boss-wrapper-sf sk-w-padding-18">
-                <div style={{fontSize: 'large',
-                      fontSize: 'initial', fontWeight:'bolder',
-                      borderBottom: '1px solid gray'
-                    }}><span>Сотрудники</span></div>
-                { targetUserGuys.map((item, index)=>(
-                  <div className={'sk-boss-guy-card'}
-                  key={`taurkey_${index}`}
-                  onClick={()=>{
-                    setTargetUserInfo(props.base_user_list_data.find((user)=> user.user_id === item.user_id),
-                    props.on_mark_user(item.user_id));}}
-                  >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
-                ))}
-
-              </div>
-            </>
-          )}
-
-
-
-
-
-        
-
-
-          </div>
-          )}
+            )}
         </Drawer>
     )
 }

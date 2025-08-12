@@ -91,7 +91,7 @@ const UserMonitorListCard = (props) => {
     },[props.its_me]);
 
     useEffect(()=> {
-        if (content.user_id !== undefined && props.marked_users && props.marked_users.includes(content.user_id)){
+        if (content.id !== undefined && props.marked_users && props.marked_users.includes(content.id)){
             setMarkedCard(true);
         } else {
             setMarkedCard(false);
@@ -111,9 +111,9 @@ const UserMonitorListCard = (props) => {
     }
 
     const handleDoubleClickOnRow = ()=>{
-        if (content.user_id){
+        if (content.id){
             if (props.on_double_click){
-                props.on_double_click(content.user_id);
+                props.on_double_click(content.id);
             }
         }
     }
@@ -131,7 +131,7 @@ const UserMonitorListCard = (props) => {
     return (
         <div 
             onMouseOver={handleMOuseOver}
-            id={`row_${content.user_id}`}
+            id={`row_${content.id}`}
             onDoubleClick={handleDoubleClickOnRow}
             className={`sk-usermonic-cardrow-ou ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
             ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
