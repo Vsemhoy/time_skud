@@ -162,13 +162,13 @@ const UserMonitorListCard = (props) => {
                 <div >
                 <div className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
                 style={{paddingLeft: '6px', textAlign: 'center'}}>
-                    {content.user_id}
+                    {content.id}
                 </div>
                 </div>
 
                 <div title={content.user_occupy}>
                     <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
-                    {content.user_surname} {content.user_name} {content.user_patronymic}</div>
+                    {content.surname} {content.name} {content.patronymic}</div>
                 </div>
 
                     <div style={{overflow: 'hidden', textAlign: 'center'}}>

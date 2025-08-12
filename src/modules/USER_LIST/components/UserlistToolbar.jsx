@@ -1,4 +1,4 @@
-import { Button, Collapse, DatePicker, Drawer, Select } from "antd";
+import {Button, Collapse, DatePicker, Drawer, Dropdown, Select} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -6,7 +6,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from "dayjs";
 
 import '../../../assets/timeskud.css'
-import { BranchesOutlined, CrownOutlined, DoubleLeftOutlined, DoubleRightOutlined, RightOutlined, RightSquareOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
+import {
+    BranchesOutlined,
+    CrownOutlined, DiffOutlined,
+    DoubleLeftOutlined,
+    DoubleRightOutlined,
+    FilterOutlined, PlusOutlined,
+    RightOutlined,
+    RightSquareOutlined,
+    StepBackwardOutlined,
+    StepForwardOutlined
+} from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../CONFIG/config";
 import { getMonthName, getWeekDayString } from "../../../components/Helpers/TextHelpers";
@@ -308,87 +318,98 @@ const UserListToolbar = (props) => {
         }
     }
 
+    const handleEditorOpen = (value) => {
+        if (value && value.key){
+            let key = parseInt(value.key.replace('clt_', ''));
+            props.handleEditorOpenCreate(key);
+        }
+    }
+
 
     return (
         <div style={{width: '100%'}}>
-
-
-        
-            <div className={"sk-flex sk-flex-space sk-sermonic-tolbar-bar"}
-            style={{width: '100%', padding: '6px 14px', alignItems: 'center'}}
-
-            >
-            <div className={'sk-flex-space'}>
-
-                <RightSquareOutlined
-                    
-                    className={`sk-usermonic-filter-bacon ${(usedCompany !== 0 &&  parseInt(usedCompany) > 1 )
-                        || (usedDepartment !== 0 && parseInt(usedDepartment) > 0)  || (usedSort !== 0 && usedSort != 'department_asc') ? 'sk-fried-bacon' : ''}`}
-                    onClick={()=>{setOpenDrawer(true)}}
-                    title="Фильтры и сотрировки"
-                    />
-                {/* {usedDepartment} {usedCompany} {usedSort} */}
-
-            </div>
-
-
-
-            <div className="sk-flex">
-                <DoubleLeftOutlined
-                    title="На предыдущий день"
-                    onClick={decreaseDate}
-                    className={'sk-usermonic-filter-bacon'}
+            <div className={'sk-header-container'}>
+                <div className={'sk-flex-space'}>
+                    {/*<RightSquareOutlined
+                        className={`sk-usermonic-filter-bacon ${(usedCompany !== 0 && parseInt(usedCompany) > 1)
+                        || (usedDepartment !== 0 && parseInt(usedDepartment) > 0) || (usedSort !== 0 && usedSort != 'department_asc') ? 'sk-fried-bacon' : ''}`}
+                        onClick={() => {
+                            setOpenDrawer(true)
+                        }}
+                        title="Фильтры и сотрировки"
+                    />*/}
+                    <Button color={'default'}
+                            variant={props.isOpenFilters ? 'solid' : 'outlined'}
+                            icon={<FilterOutlined />}
+                            style={{ width: '140px' }}
+                            onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
+                    >Фильтры</Button>
+                </div>
+                <div className="sk-flex">
+                    <DoubleLeftOutlined
+                        title="На предыдущий день"
+                        onClick={decreaseDate}
+                        className={'sk-usermonic-filter-bacon'}
                     />
 
 
-                <DatePicker 
-                    // defaultValue={usedDate}
-                    value={usedDate}
-                    onChange={handleUsedDateChange}
-                    format={"DD-MM-YYYY"}
-                    variant="borderless"
-                    size="large"
-                    title={getWeekDayString( usedDate.day())}
+                    <DatePicker
+                        // defaultValue={usedDate}
+                        value={usedDate}
+                        onChange={handleUsedDateChange}
+                        format={"DD-MM-YYYY"}
+                        variant="borderless"
+                        size="large"
+                        title={getWeekDayString(usedDate.day())}
                     />
 
                     <DoubleRightOutlined
-                    onClick={increaseDate}
-                    className={'sk-usermonic-filter-bacon'}
-                    title="На следующий день"
-                    />
-            
-
-            </div>
-
-            <div>
-                {imExist ? (
-                    <CrownOutlined 
-                        title="Найти себя в списке"
-                        onClick={handleFindMyself}
+                        onClick={increaseDate}
                         className={'sk-usermonic-filter-bacon'}
+                        title="На следующий день"
                     />
-                   
-                ):(
-                    <div style={{minWidth: '34px'}}></div>
-                )}
 
+                </div>
+                <div className={'sk-flex-space'}>
+                    {props.menuProps.items.length > 0 ? (
+                        <Dropdown
+                            menu={props.menuProps}
+                            onClick={handleEditorOpen}
+                            style={{ width: '140px' }}
+                        >
+                            <Button
+                                icon={<DiffOutlined/>}
+                                type={'primary'}
+                            >
+                                Создать заявку
+                            </Button>
+                        </Dropdown>
+                    ) : (
+                        <div style={{ width: '140px' }}></div>
+                    )}
+                </div>
             </div>
+            <div className={'sk-userlist-toolbar-currentdate'}>
+                <div className={'sk-userlist-toolbar-xtext'}
+                     onDoubleClick={() => {
+                         setUsedDate(dayjs())
+                     }}
+                     title="Выбранный день. Двойной клик скинет вас на сегодняшнюю дату."
+                >
+                    {getMonthName(usedDate.month() + 1)}'{usedDate.year()}, {getWeekDayString(usedDate.day())}
+                </div>
+                <div style={{display: 'flex'}}>
+                    {imExist && (
+                        <Button color={'default'}
+                                variant={'outlined'}
+                                icon={<CrownOutlined />}
 
-
-        </div>
-
-        <div className={'sk-usermonic-after-toolbar'}>
-            <div className={'sk-usermonic-toolbar-xtext'}
-                onDoubleClick={()=>{setUsedDate(dayjs())}}
-                title="Выбранный день. Двойной клик скинет вас на сегодняшнюю дату."
-            >
-                {getMonthName(usedDate.month()+1)}'{usedDate.year()}, {getWeekDayString( usedDate.day())}
+                                onClick={handleFindMyself}
+                        >Найти себя в списке</Button>
+                    )}
+                </div>
             </div>
-            <div></div>
-        </div>
-        
-                <br />
-            <Drawer
+            {/*<Drawer
                 open={openDrawer}
                 placement="left"
                 onClose={()=>{setOpenDrawer(false)}}
@@ -461,7 +482,7 @@ const UserListToolbar = (props) => {
                     
                 </div>
 
-            </Drawer>
+            </Drawer>*/}
         </div>
     );
 }
