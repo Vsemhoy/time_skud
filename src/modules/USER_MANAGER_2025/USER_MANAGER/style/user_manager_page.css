@@ -57,16 +57,21 @@ aside .ant-layout .ant-layout-sider {
     overflow: hidden;
 }
 
-.content {
+.sk-layout-center .content {
     padding-bottom: 40vh;
+}
+
+.sk-layout-center .content.no-pb {
+    padding-bottom: 0;
 }
 
 .sk-userlist-toolbar-currentdate {
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: auto 1fr auto;
     grid-gap: 10px;
     align-items: center;
     background-color: #f3f3f3;
+    padding: 0 5px;
 }
 .sk-userlist-toolbar-xtext {
     font-size: x-large;

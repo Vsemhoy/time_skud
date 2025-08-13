@@ -990,7 +990,7 @@ const UserList2 = (props)=>{
             {/*          visible={isModalVisible}*/}
             {/*          onClose={() => setIsModalVisible(false)}*/}
             {/*      />*/}
-            {/*      <UserListSidebar*/}
+            {/*      <UserListSidebarDrawer*/}
             {/*          key="djafklsdjklfjaskl"*/}
             {/*          target_user_guys={targetUserGuys}*/}
             {/*          target_user_info={targetUserInfo}*/}
