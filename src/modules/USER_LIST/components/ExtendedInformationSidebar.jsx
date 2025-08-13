@@ -8,8 +8,9 @@ import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import { LIST_SCHED_N_RULES_RESPONSE } from "../../../CONFIG/DEFAULTSTATE";
 import UmScheduleMiniCard from "./UmScheduleMiniCard";
-import { DownOutlined, UpOutlined,
-    BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
+import {
+    DownOutlined, UpOutlined,
+    BarChartOutlined, IssuesCloseOutlined, RobotOutlined,
     MinusCircleOutlined,
     AppleOutlined,
     RestOutlined,
@@ -21,7 +22,7 @@ import { DownOutlined, UpOutlined,
     MoonOutlined,
     SmileOutlined,
     DollarOutlined,
-    HeatMapOutlined
+    HeatMapOutlined, CloseOutlined
 } from "@ant-design/icons";
 
 const iconMap = {
@@ -46,9 +47,10 @@ const DynamicIcon = ({ iconName, ...props }) => {
 
 
 
-const UserListSider = (props) => {
+const ExtendedInformationSidebar = (props) => {
 
     const userdata = props.userdata;
+    const [isMounted, setIsMounted] = useState(false);
     const [targetUserGuys, setTargetUserGuys] = useState([]);
     const [openUserInfo, setOpenUserInfo] = useState(false);
     const [targetUserInfo, setTargetUserInfo] = useState(null);
@@ -157,7 +159,9 @@ const UserListSider = (props) => {
         }
     },[props.target_date]);
 
-
+    const closeSider = () => {
+        props.on_close(false);
+    };
 
     return (
         <div>
@@ -169,7 +173,8 @@ const UserListSider = (props) => {
                     <div onClick={() => {
                         setOpenStateInfoSection(!openStateInfoSection)
                     }}>
-                        <Tag>{targetUserInfo?.id}</Tag>
+                       {/* <Tag>{targetUserInfo?.id}</Tag>*/}
+                        <CloseOutlined onClick={closeSider}/>
                     </div>
                 </div>
             </div>
@@ -372,4 +377,4 @@ const UserListSider = (props) => {
     )
 }
 
-export default UserListSider;
+export default ExtendedInformationSidebar;

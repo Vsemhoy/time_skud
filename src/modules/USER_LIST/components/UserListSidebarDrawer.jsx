@@ -46,7 +46,7 @@ const DynamicIcon = ({ iconName, ...props }) => {
 
 
 
-const UserListSidebar = (props) => {
+const UserListSidebarDrawer = (props) => {
 
     const userdata = props.userdata;
     const [targetUserGuys, setTargetUserGuys] = useState([]);
@@ -374,4 +374,4 @@ const UserListSidebar = (props) => {
     )
 }
 
-export default UserListSidebar;
+export default UserListSidebarDrawer;

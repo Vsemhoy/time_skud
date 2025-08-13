@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import UserListToolbar from "./components/UserlistToolbar";
-import {Affix, Badge, Drawer, Empty, Layout, message, Spin, Table, Tag} from "antd";
+import {Affix, Badge, Drawer, Empty, Layout, message, Modal, Spin, Table, Tag} from "antd";
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
@@ -10,7 +10,7 @@ import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
 
-import UserListSidebar from "./components/UserListSidebar";
+import UserListSidebarDrawer from "./components/UserListSidebarDrawer";
 import {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import {CLAIM_ACL_MOCK, CLAIMS_MOCKS} from "../CLAIM_MANAGER_SK/CLAIM_MOCK";
@@ -18,7 +18,10 @@ import StateIconsController from "../CHARTS/components/StateIconsController";
 import {CHART_STATES, USDA} from "../CHARTS/mock/mock";
 import {USERS_LIST} from "./mock/mock";
 import ClaimEditorDrawer from "../CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
-import UserListSider from "./components/UserListSider";
+import ExtendedInformationSidebar from "./components/ExtendedInformationSidebar";
+import FiltersSidebar from "./components/FiltersSidebar";
+import ClaimListModal from "./components/ClaimListModal";
+import BillListModal from "./components/BillListModal";
 
 
 const UserList = (props)=>{
@@ -367,21 +370,15 @@ const UserList = (props)=>{
   };
 
   const move_boss_to_top = (arr) => {
-    // Создаем копию массива для безопасности
-    const newArray = [...arr];
-    
-    // Ищем босса
+    /*const newArray = [...arr];
     const bossIndex = newArray.findIndex(user => user?.id === 46);
-    
-    // Если босс найден и не на первом месте
     if (bossIndex > 0) {
-      // Извлекаем босса
       const [boss] = newArray.splice(bossIndex, 1);
-      // Вставляем в начало
       newArray.unshift(boss);
     }
     
-    return newArray;
+    return newArray;*/
+    return arr;
   };
 
   const insertDepartmentNames = (dataArray) => {
@@ -468,19 +465,19 @@ const UserList = (props)=>{
               break;
 
           case "name_asc":
-              sortedData.sort((a, b) => a.user_name.localeCompare(b.user_name));
+              sortedData.sort((a, b) => a.name.localeCompare(b.name));
               break;
 
           case "name_desc":
-              sortedData.sort((a, b) => b.user_name.localeCompare(a.user_name));
+              sortedData.sort((a, b) => b.name.localeCompare(a.name));
               break;
 
           case "surname_asc":
-              sortedData.sort((a, b) => a.user_surname.localeCompare(b.user_surname));
+              sortedData.sort((a, b) => a.surname.localeCompare(b.surname));
               break;
 
           case "surname_desc":
-              sortedData.sort((a, b) => b.user_surname.localeCompare(a.user_surname));
+              sortedData.sort((a, b) => b.surname.localeCompare(a.surname));
               break;
 
           case "state_asc":
@@ -726,7 +723,6 @@ const UserList = (props)=>{
     update_claim_state(obj)
     setEditorOpened(false);
     setTimeout(() => {
-      setSelectedClaimId(0);
       console.log(888888333333);
     }, 555);
   };
@@ -739,14 +735,12 @@ const UserList = (props)=>{
     update_claim_state(obj);
     setEditorOpened(false);
     setTimeout(() => {
-      setSelectedClaimId(0);
       console.log(555555555555);
     }, 555);
   };
 
   const handleGetBackEvent = (id)=> {
     setTimeout(() => {
-      setSelectedClaimId(0);
       console.log(1111111111111);
     }, 555);
     setEditorOpened(false);
@@ -781,203 +775,261 @@ const UserList = (props)=>{
     }
   };
 
-    return (
-        <div className={'mega-layout'}>
-          <Layout className={'layout'}>
-            <Header className={'header-user-list'}>
-              <Affix>
-                <UserListToolbar
-                  // onSortBy={sortUserList}
-                  departments={departments}
-                  baseUsers={baseUserListData}
-                  userData={userdata}
-                  on_find_me={handleFindMe}
-                  im_exist={userListData.find((item)=>  item.id === userdata.user.id) != null}
-                  onChangeExternalFilters={toggleExternalFilters}
-                  onChangeInnerSort={toggleInnerSorts}
-                  onChangeInnerFilers={toggleInnerFilters}
-                  command={toolbarCommand}
+  /*---BILL LIST-------------------------------------------------------------------------------------------------------------------*/
 
-                  isOpenFilters={isOpenFilters}
-                  setIsOpenFilters={(value) => setIsOpenFilters(value)}
-                  handleEditorOpenCreate={handleEditorOpenCreate}
-                  menuProps={menuProps}
-                />
-              </Affix>
-            </Header>
-            <Layout className="sk-layout-center">
-              <Sider width={isOpenFilters ? "330px" : 0}
-                     className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
-                     style={{paddingTop: '0'}}
-              >
-                <Affix offsetTop={100}>
-                  <div className="sk-width-container">
-                    <div className="sk-usp-filter-col" style={{height: 'calc(100vh - 46px - 115px)'}}>
+  const [isOpenBillListModal, setIsOpenBillListModal] = useState(false);
+  const handleOpenBillListModal = () => {
+    setIsOpenBillListModal(true);
+  };
 
-                    </div>
+  const handleCloseBillListModal = () => {
+    setIsOpenBillListModal(false);
+  };
+
+  /*---CLAIMS-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenClaimsModal, setIsOpenClaimsModal] = useState(false);
+  const handleOpenClaimsModal = () => {
+    setIsOpenClaimsModal(true);
+  };
+
+  const handleCloseClaimModal = () => {
+    setIsOpenClaimsModal(false);
+  };
+
+  const handleOpenInfo = (id, obj) => {
+    let type = obj.skud_current_state_id;
+    setEditedClaim(obj);
+    setFormType(type);
+    setEditorMode('read');
+    setEditorOpened(true);
+  };
+
+  const handleEditEvent = (id, obj)=> {
+    let type = obj.skud_current_state_id;
+    setEditedClaim(obj);
+    setFormType(type);
+    setEditorMode('update');
+    setEditorOpened(true);
+  };
+
+  return (
+      <div className={'mega-layout'}>
+        <Layout className={'layout'}>
+          <Header className={'header-user-list'}>
+            <Affix>
+              <UserListToolbar
+                // onSortBy={sortUserList}
+                departments={departments}
+                baseUsers={baseUserListData}
+                userData={userdata}
+                on_find_me={handleFindMe}
+                im_exist={userListData.find((item)=>  item.id === userdata.user.id) != null}
+                onChangeExternalFilters={toggleExternalFilters}
+                onChangeInnerSort={toggleInnerSorts}
+                onChangeInnerFilers={toggleInnerFilters}
+                command={toolbarCommand}
+
+                isOpenFilters={isOpenFilters}
+                setIsOpenFilters={(value) => setIsOpenFilters(value)}
+                handleEditorOpenCreate={handleEditorOpenCreate}
+                menuProps={menuProps}
+
+                openClaimsModal={handleOpenClaimsModal}
+                openBillListModal={handleOpenBillListModal}
+              />
+            </Affix>
+          </Header>
+          <Layout className="sk-layout-center">
+            <Sider width={isOpenFilters ? "330px" : 0}
+                   className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
+                   style={{paddingTop: '0'}}
+            >
+              <Affix offsetTop={100}>
+                <div className="sk-width-container">
+                  <div className="sk-usp-filter-col" style={{height: 'calc(100vh - 46px - 115px)', padding: '10px'}}>
+                    <FiltersSidebar onChangeInnerSort={toggleInnerSorts}
+                                    onChangeInnerFilers={toggleInnerFilters}
+                    />
                   </div>
-                </Affix>
-              </Sider>
-              <Content className="content">
-                <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
-                    {userListData.length === 0 ? (
-                        <Empty />
-                    ):(
-                        <div>
-                        <Affix offsetTop={100}>
-                        <div className={`sk-usermonic-cardrow-ou sk-usermonic-headerrow`}>
-                            <div
-                              onClick={()=>{toggleSelectedColumn(1)}}
-                            ><div
-                            style={{paddingLeft: '9px'}}
-                            className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
-                            >id</div></div>
-                            <div
-                              onClick={()=>{toggleSelectedColumn(2)}}
-                            >
-                            <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
-                            Имя сотрудника
-                            </div>
-                            </div>
-                            <div
-                              onClick={()=>{toggleSelectedColumn(3)}}
-                            >
-                            <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
-                              Тел.
-                            </div>
-                            </div>
-                            <div className="sk-flex-space">
-                              <div></div>
-                              <div className="sk-usermonic-micro-row">
-                                <div
-                                  className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}
-                                  onClick={()=>{toggleSelectedColumn(10)}}
-                                >
-                                  Вход
-                                </div>
-                                <div
-                                className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(11)}}
-                                >Выход</div>
-                                <div
-                                className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(12)}}
-                                  title={'Всего рабочее время'}
-                                >РВ</div>
-                                <div
-                                className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(13)}}
-                                title={'Общее время на предприятии'}
-                                >ОВ</div>
-                                <div
-                                className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(14)}}
-                                title={'Время выходов'}
-                                >ВВ</div>
-                                <div
-                                className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(15)}}
-                                title={'Врямя для отработки'}
-                                >ОТ</div>
-                                <div
-                                className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(16)}}
-                                title={'Потерянное время'}
-                                >ПВ</div>
-                              </div>
-                              <div></div>
-                            </div>
-                            <div title='График работ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                              Гр.
-                            </div>
-                            <div title='Правила учёта РВ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                              Пр.
-                            </div>
-                            <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                              За.
-                            </div>
-
-                            <div><div>Рук</div></div>
-                            <div><div>Место</div></div>
-                        </div>
-                        </Affix>
-                          <Spin spinning={isLoading}>
-                              {filteredUsers.map((arche, index)=>
-                              (
-                                  <UserMonitorListCard
-                                      key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`} // так как строки сеператоры не имеют айди
-                                      data={arche}
-                                      on_mark_user={handleMarkUser}
-                                      marked_users={markedUsers}
-                                      its_me={userdata.user.id === arche.id}
-                                      on_double_click={handleShowUserInfo}
-                                      selected_columns={selectedColumns}
-
-                                  />
-                              ))}
-                          </Spin>
-                        </div>
-                    )}
                 </div>
-              </Content>
-              <Sider width={openUserInfo ? "330px" : 0}
-                     className={`sider ${openUserInfo ? '' : 'sider-hidden'} pl15`}
-                     style={{paddingTop: '0'}}
-              >
-                <Affix offsetTop={100}>
-                  <div className="sk-width-container" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 115px)'}}>
-                      <UserListSider
-                          target_user_guys={targetUserGuys}
-                          target_user_info={targetUserInfo}
-                          userdata={userdata}
-                          base_user_list_data={baseUserListData}
-                          open_user_info={openUserInfo}
-                          on_mark_user={handleMarkUser}
-                          on_close={setOpenUserInfo}
-                          target_date={targetDate}
-                      />
-                  </div>
-                </Affix>
-              </Sider>
-            </Layout>
+              </Affix>
+            </Sider>
+            <Content className="content no-pb">
+              <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
+                  {userListData.length === 0 ? (
+                      <Empty />
+                  ):(
+                      <div>
+                      <Affix offsetTop={100}>
+                      <div className={`sk-usermonic-cardrow-ou sk-usermonic-headerrow`}>
+                          <div
+                            onClick={()=>{toggleSelectedColumn(1)}}
+                          ><div
+                          style={{paddingLeft: '9px'}}
+                          className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
+                          >id</div></div>
+                          <div
+                            onClick={()=>{toggleSelectedColumn(2)}}
+                          >
+                          <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
+                          Имя сотрудника
+                          </div>
+                          </div>
+                          <div
+                            onClick={()=>{toggleSelectedColumn(3)}}
+                          >
+                          <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
+                            Тел.
+                          </div>
+                          </div>
+                          <div className="sk-flex-space">
+                            <div></div>
+                            <div className="sk-usermonic-micro-row">
+                              <div
+                                className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}
+                                onClick={()=>{toggleSelectedColumn(10)}}
+                              >
+                                Вход
+                              </div>
+                              <div
+                              className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}
+                              onClick={()=>{toggleSelectedColumn(11)}}
+                              >Выход</div>
+                              <div
+                              className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}
+                              onClick={()=>{toggleSelectedColumn(12)}}
+                                title={'Всего рабочее время'}
+                              >РВ</div>
+                              <div
+                              className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}
+                              onClick={()=>{toggleSelectedColumn(13)}}
+                              title={'Общее время на предприятии'}
+                              >ОВ</div>
+                              <div
+                              className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}
+                              onClick={()=>{toggleSelectedColumn(14)}}
+                              title={'Время выходов'}
+                              >ВВ</div>
+                              <div
+                              className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}
+                              onClick={()=>{toggleSelectedColumn(15)}}
+                              title={'Врямя для отработки'}
+                              >ОТ</div>
+                              <div
+                              className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}
+                              onClick={()=>{toggleSelectedColumn(16)}}
+                              title={'Потерянное время'}
+                              >ПВ</div>
+                            </div>
+                            <div></div>
+                          </div>
+                          <div title='График работ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                            Гр.
+                          </div>
+                          <div title='Правила учёта РВ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                            Пр.
+                          </div>
+                          <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                            За.
+                          </div>
+
+                          <div><div>Рук</div></div>
+                          <div><div>Место</div></div>
+                      </div>
+                      </Affix>
+                        <Spin spinning={isLoading}>
+                            {filteredUsers.map((arche, index)=>
+                            (
+                                <UserMonitorListCard
+                                    key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`} // так как строки сеператоры не имеют айди
+                                    data={arche}
+                                    on_mark_user={handleMarkUser}
+                                    marked_users={markedUsers}
+                                    its_me={userdata.user.id === arche.id}
+                                    on_double_click={handleShowUserInfo}
+                                    selected_columns={selectedColumns}
+
+                                />
+                            ))}
+                        </Spin>
+                      </div>
+                  )}
+              </div>
+            </Content>
+            <Sider width={openUserInfo ? "330px" : 0}
+                   className={`sider ${openUserInfo ? '' : 'sider-hidden'} pl15`}
+                   style={{paddingTop: '0'}}
+            >
+              <Affix offsetTop={100}>
+                <div className="sk-width-container" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 115px)'}}>
+                    <ExtendedInformationSidebar
+                        target_user_guys={targetUserGuys}
+                        target_user_info={targetUserInfo}
+                        userdata={userdata}
+                        base_user_list_data={baseUserListData}
+                        open_user_info={openUserInfo}
+                        on_mark_user={handleMarkUser}
+                        on_close={(bool) => setOpenUserInfo(bool)}
+                        target_date={targetDate}
+                    />
+                </div>
+              </Affix>
+            </Sider>
           </Layout>
+        </Layout>
 
-          <UserModal
-            userId={selectedUserId}
-            visible={isModalVisible}
-            onClose={() => setIsModalVisible(false)}
-          />
-          {/* // if sortBy == undefined || null || department_desc - insert custom row with depart name before show belongs rows */}
+        <UserModal
+          userId={selectedUserId}
+          visible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+        />
 
-          {/*<UserListSidebar
-              target_user_guys={targetUserGuys}
-              target_user_info={targetUserInfo}
-              userdata={userdata}
-              base_user_list_data={baseUserListData}
-              open_user_info={openUserInfo}
-              on_mark_user={handleMarkUser}
-              on_close={setOpenUserInfo}
-              target_date={targetDate}
-          />*/}
+        <ClaimEditorDrawer
+            data={editedClaim}
+            mode={editorMode}
+            acl_base={aclBase}
+            user_list={baseUserListData}
+            opened={editorOpened}
+            claim_type={formType}
+            on_close={handleCloseEditor}
 
-          <ClaimEditorDrawer
-              data={editedClaim}
-              mode={editorMode}
-              acl_base={aclBase}
-              user_list={baseUserListData}
-              opened={editorOpened}
-              claim_type={formType}
-              on_close={handleCloseEditor}
+            claim_types={claimTypes}
+            on_send={handleSaveClaim}
+            my_id={userData?.user?.id}
+            on_get_back={handleGetBackEvent}
+            on_approve={handleApproveEvent}
+            on_decline={handleDeclineEvent}
+        />
 
-              claim_types={claimTypes}
-              on_send={handleSaveClaim}
-              my_id={userData?.user?.id}
-              on_get_back={handleGetBackEvent}
-              on_approve={handleApproveEvent}
-              on_decline={handleDeclineEvent}
-          />
-        </div>
-    )
+        {isOpenBillListModal && (
+            <BillListModal isOpenBillListModal={isOpenBillListModal}
+                           handleCloseBillListModal={handleCloseBillListModal}
+            />
+        )}
+        {isOpenClaimsModal && (
+            <ClaimListModal isOpenClaimsModal={isOpenClaimsModal}
+                            handleCloseClaimModal={handleCloseClaimModal}
+                            userData={userData}
+                            on_click={handleOpenInfo}
+                            on_approve={handleApproveEvent}
+                            on_decline={handleDeclineEvent}
+                            on_edit={handleEditEvent}
+                            on_get_back={handleGetBackEvent}
+            />
+        )}
+        {/*<UserListSidebarDrawer
+            target_user_guys={targetUserGuys}
+            target_user_info={targetUserInfo}
+            userdata={userdata}
+            base_user_list_data={baseUserListData}
+            open_user_info={openUserInfo}
+            on_mark_user={handleMarkUser}
+            on_close={setOpenUserInfo}
+            target_date={targetDate}
+        />*/}
+      </div>
+  )
 }
 
 

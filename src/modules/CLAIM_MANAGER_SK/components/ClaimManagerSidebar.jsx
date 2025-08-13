@@ -338,7 +338,6 @@ const ClaimManagerSidebar = (props) => {
             <br />
             <div className={'sk-usp-filter-col-item'} >
             <Button
-            danger
             block
             onClick={setInitialState}
             >

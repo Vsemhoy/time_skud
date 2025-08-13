@@ -7,21 +7,22 @@ import dayjs from "dayjs";
 
 import '../../../assets/timeskud.css'
 import {
-    ArrowLeftOutlined, ArrowRightOutlined,
+    ArrowLeftOutlined, ArrowRightOutlined, BarsOutlined,
     BranchesOutlined, CaretLeftOutlined, CaretRightOutlined,
     CrownOutlined, DiffOutlined,
     DoubleLeftOutlined,
-    DoubleRightOutlined,
-    FilterOutlined, PlusOutlined,
+    DoubleRightOutlined, ExportOutlined,
+    FilterOutlined, OrderedListOutlined, PlusOutlined,
     RightOutlined,
-    RightSquareOutlined,
+    RightSquareOutlined, ScheduleOutlined,
     StepBackwardOutlined,
-    StepForwardOutlined
+    StepForwardOutlined, UnorderedListOutlined
 } from "@ant-design/icons";
 import { DS_DEPARTMENTS, DS_USER } from "../../../CONFIG/DEFAULTSTATE";
 import { CSRF_TOKEN } from "../../../CONFIG/config";
 import { getMonthName, getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
+import {ArrowTopRightOnSquareIcon} from "@heroicons/react/16/solid";
 
 
 const UserListToolbar = (props) => {
@@ -29,7 +30,7 @@ const UserListToolbar = (props) => {
     const {onChange, userData} = props;
     const location = useLocation();
     const navigate = useNavigate();
-    const [companies, setCompanies] = useState([
+    /*const [companies, setCompanies] = useState([
         { key: 'nullCompany', value: 0, label: 'Все компании' },
         ...DS_USER.companies.filter(item => item.id !== 1).map((com) => ({
             key: com.id,
@@ -39,13 +40,13 @@ const UserListToolbar = (props) => {
     ]);
     const [baseUserListData, setBaseUserListData] = useState(props.baseUsers);
     const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
-    const [usedSort, setUsedSort] = useState(0);
+    const [usedSort, setUsedSort] = useState(0);*/
     const [imExist, setImExist] = useState(false);
-    const [extFilters, setExtFilters] = useState([{date: dayjs()}]);
+    /*const [extFilters, setExtFilters] = useState([{date: dayjs()}]);*/
 
 
 
-    const [openDrawer, setOpenDrawer] = useState(false);
+    /*const [openDrawer, setOpenDrawer] = useState(false);
 
 
     const [sortByValues, setSortByValues] = useState([
@@ -94,13 +95,13 @@ const UserListToolbar = (props) => {
             value:'lost_time_asc',
             label:"Потерянное время"
         },
-    ])
+    ])*/
 
-    useEffect(()=>{
+    /*useEffect(()=>{
         setBaseUserListData(props.baseUsers);
-    },[props.baseUsers]);
+    },[props.baseUsers]);*/
 
-    const [departments, setDepartments]  = useState([
+    /*const [departments, setDepartments]  = useState([
         { key: 'dep_25345', value: 0, label: 'Все отделы' },
         ...DS_DEPARTMENTS.map((dep)=>
             ({
@@ -110,7 +111,7 @@ const UserListToolbar = (props) => {
         })
     )
     ]);
-    const [usedDepartment, setUsedDepartment] = useState(0);
+    const [usedDepartment, setUsedDepartment] = useState(0);*/
 
     const today = () => {
         const currentTimestamp = Date.now(); // e.g., 1736425982143
@@ -127,7 +128,7 @@ const UserListToolbar = (props) => {
         setImExist(props.im_exist);
     }, [props.im_exist])
 
-    useEffect(()=>{
+    /*useEffect(()=>{
 
         let deps = [{ key: 0, value: 0, label: 'Все отделы' },
                   { key: 'dep_634567', value: userData?.user?.id_departament, label: 'Мой отдел'},
@@ -139,7 +140,7 @@ const UserListToolbar = (props) => {
                   })
               )];
         setDepartments(deps);
-    }, [props.departments]);
+    }, [props.departments]);*/
 
 
 
@@ -150,7 +151,7 @@ const UserListToolbar = (props) => {
      * Ловим в адресной строке переданные параметры:
      * Компания, департамент, дата
      */
-    useEffect(() => {
+    /*useEffect(() => {
         const params = new URLSearchParams(location.search);
         const targetCompanyValue = params.get('tgc'); 
         const targetDepartmentValue = params.get('dep');
@@ -165,7 +166,7 @@ const UserListToolbar = (props) => {
         if (targetDateValue){
             setUsedDate(dayjs.unix(Number(targetDateValue)));
         }
-    }, [location.search]); // Dependency array ensures this runs when location.search changes
+    }, [location.search]);*/ // Dependency array ensures this runs when location.search changes
 
 
 
@@ -184,7 +185,7 @@ const UserListToolbar = (props) => {
     }, [usedDate])
 
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (props.onChangeInnerSort)
         {
             // let userList = JSON.parse(JSON.stringify(baseUserListData));
@@ -210,10 +211,10 @@ const UserListToolbar = (props) => {
                 props.onChangeInnerFilers(filters);
         }
 
-    }, [usedCompany, usedDepartment]);
+    }, [usedCompany, usedDepartment]);*/
 
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (userData.companies){
             setCompanies([
                 { key: 'nullCompany', value: 0, label: 'Все компании' },
@@ -222,19 +223,19 @@ const UserListToolbar = (props) => {
                     value: Number(com.id),
                     label: com.name,
                 }))]
-            )}},[userData]);
+            )}},[userData]);*/
 
 
 
 
-    const handleUsedCompanyChange = (value) => {
+    /*const handleUsedCompanyChange = (value) => {
         setUsedCompany(value);
         // changeAddressBarParam('tgc',value,[0]);
     };
     const handleUsedDepartmentChange = (value) => {
         setUsedDepartment(value);
         // changeAddressBarParam('dep',value,[0]);
-    };
+    };*/
     const handleUsedDateChange = (value) => {
         if (value == null){
             value = dayjs();
@@ -259,9 +260,9 @@ const UserListToolbar = (props) => {
         setUsedDate(usedDate.add(-1, 'day'));
     }
 
-    const handleSortByChange = (value) => {
+    /*const handleSortByChange = (value) => {
         setUsedSort(value);
-    }
+    }*/
 
 
     const setDateInContext = (value) => {
@@ -326,69 +327,53 @@ const UserListToolbar = (props) => {
         }
     }
 
+    const openClaimsModal = () => {
+        props.openClaimsModal();
+    };
+
+    const openBillListModal = () => {
+        props.openBillListModal();
+    };
+
 
     return (
         <div style={{width: '100%'}}>
             <div className={'sk-header-container'}>
                 <div className={'sk-flex-space'}>
-                    {/*<RightSquareOutlined
-                        className={`sk-usermonic-filter-bacon ${(usedCompany !== 0 && parseInt(usedCompany) > 1)
-                        || (usedDepartment !== 0 && parseInt(usedDepartment) > 0) || (usedSort !== 0 && usedSort != 'department_asc') ? 'sk-fried-bacon' : ''}`}
-                        onClick={() => {
-                            setOpenDrawer(true)
-                        }}
-                        title="Фильтры и сотрировки"
-                    />*/}
                     <Button color={'default'}
                             variant={props.isOpenFilters ? 'solid' : 'outlined'}
                             icon={<FilterOutlined />}
-                            style={{ width: '140px' }}
+                            style={{ width: '150px' }}
                             onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
                     >Фильтры</Button>
                 </div>
                 <div className="sk-flex">
-                    {/*<DoubleLeftOutlined
-                        title="На предыдущий день"
-                        onClick={decreaseDate}
-                        className={'sk-usermonic-filter-bacon'}
-                    />*/}
-
                     <CaretLeftOutlined
                         title="На предыдущий день"
                         onClick={decreaseDate}
                         className={'sk-usermonic-filter-bacon'}
                     />
-
-
                     <DatePicker
-                        // defaultValue={usedDate}
                         value={usedDate}
                         onChange={handleUsedDateChange}
                         format={"DD-MM-YYYY"}
                         variant="borderless"
                         size="large"
                         title={getWeekDayString(usedDate.day())}
+                        allowClear={false}
                     />
-
                     <CaretRightOutlined
                         onClick={increaseDate}
                         className={'sk-usermonic-filter-bacon'}
                         title="На следующий день"
                     />
-
-                    {/*<DoubleRightOutlined
-                        onClick={increaseDate}
-                        className={'sk-usermonic-filter-bacon'}
-                        title="На следующий день"
-                    />*/}
-
                 </div>
                 <div className={'sk-flex-space'}>
                     {props.menuProps.items.length > 0 ? (
                         <Dropdown
                             menu={props.menuProps}
                             onClick={handleEditorOpen}
-                            style={{ width: '140px' }}
+                            style={{ width: '150px' }}
                         >
                             <Button
                                 icon={<DiffOutlined/>}
@@ -421,6 +406,19 @@ const UserListToolbar = (props) => {
                         >Найти себя в списке</Button>
                     )}
                 </div>
+                <div style={{display: 'flex', gap: '10px'}}>
+                    <Button color={'default'}
+                            variant={'outlined'}
+                            icon={<ScheduleOutlined />}
+                            onClick={openBillListModal}
+                    >Расчетный лист офис</Button>
+                    <Button color={'default'}
+                            variant={'outlined'}
+                            icon={<UnorderedListOutlined />}
+                            style={{ width: '150px' }}
+                            onClick={openClaimsModal}
+                    >Список заявок</Button>
+                </div>
             </div>
             {/*<Drawer
                 open={openDrawer}
@@ -430,27 +428,21 @@ const UserListToolbar = (props) => {
                 style={{background: 'white !important'}}
                 className="sk-bg-white"
             >
-            <div>
-
-
-                <div className={'sk-usermonic-drawer-row'}>
-                    <div className={'sk-labed-um'}>Компания</div>
-                    {companies.length > 1 ? (
-                    <Select 
-                        variant={'borderless'}
-                        style={{ width: '100%' }}
-                        options={companies}
-                        value={usedCompany} // Use value instead of defaultValue for controlled component
-                        onChange={handleUsedCompanyChange}
-                    />
-                    ) : ''}
-                </div>
-
-
-
-
-                <div className={'sk-usermonic-drawer-row'}>
-                <div className={'sk-labed-um'}>Отдел</div>
+                <div>
+                    <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Компания</div>
+                        {companies.length > 1 ? (
+                        <Select
+                            variant={'borderless'}
+                            style={{ width: '100%' }}
+                            options={companies}
+                            value={usedCompany} // Use value instead of defaultValue for controlled component
+                            onChange={handleUsedCompanyChange}
+                        />
+                        ) : ''}
+                    </div>
+                    <div className={'sk-usermonic-drawer-row'}>
+                        <div className={'sk-labed-um'}>Отдел</div>
                         <Select 
                             variant={'borderless'}
                             style={{ width: '100%' }}
@@ -466,8 +458,8 @@ const UserListToolbar = (props) => {
                 <div className={'sk-usermonic-drawer-row'}>
                 <div className={'sk-labed-um'}>Сортировка</div>
                 <Select
-                                            variant={'borderless'}
-                                            style={{ width: '100%' }}
+                    variant={'borderless'}
+                    style={{ width: '100%' }}
                     placeholder={'Упорядочить по'}
                     options={sortByValues}
                     value={usedSort == 0 ? null : usedSort}
@@ -492,9 +484,7 @@ const UserListToolbar = (props) => {
                             </Button>
                         </div>
                     ): ""}
-                    
                 </div>
-
             </Drawer>*/}
         </div>
     );
