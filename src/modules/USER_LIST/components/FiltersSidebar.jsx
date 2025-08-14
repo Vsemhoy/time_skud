@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Select} from "antd";
+import {Button, Checkbox, Select} from "antd";
 import {DS_DEPARTMENTS, DS_USER} from "../../../CONFIG/DEFAULTSTATE";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
@@ -174,7 +174,20 @@ const FiltersSidebar = (props) => {
                 />
                 <br/>
             </div>
-
+            <br/>
+            {(
+                <div>
+                    <Checkbox checked={props?.extendedInfo}
+                              onChange={() => props.isShowExtended(!props?.extendedInfo)}
+                              style={{
+                                  marginBottom: '6px',
+                                  color: 'gray'
+                              }}
+                    >
+                        Показать расширенную информацию
+                    </Checkbox>
+                </div>
+            )}
 
             <div>
                 <div>

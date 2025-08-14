@@ -245,7 +245,7 @@ const ClaimManagerCard = (props) => {
         if (str) {
             let s = str.replace(' 00:00:00', '');
             let st = s.split(' ');
-            if (st.length == 2){
+            if (st.length === 2 && props.data.skud_current_state_id !== 7 && props.data.skud_current_state_id !== 6 && props.data.skud_current_state_id !== 10 && props.data.skud_current_state_id !== 13 && props.data.skud_current_state_id !== 11){
                 let time = st[1].split(':');
                 return <div><span>{st[0]}</span>  <span>{time[0]}:{time[1]}</span></div> ;
             } else {

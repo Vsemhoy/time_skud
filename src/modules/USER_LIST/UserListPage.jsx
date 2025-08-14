@@ -27,9 +27,368 @@ import BillListModal from "./components/BillListModal";
 const UserList = (props)=>{
   const { userdata } = props;
 
-  const [isLoading, setIsLoading] = useState(false);
+  /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
+  const [isOpenFilters, setIsOpenFilters] = useState(false);
+  const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
+  const [editorMode, setEditorMode] = useState('create');
+  const [editorOpened, setEditorOpened] = useState(false);
+  const [formType, setFormType] = useState(null);
+  const [baseClaimTypes, setBaseClaimTypes] = useState([]);
+  const [claimTypes, setClaimTypes] = useState([]);
+  const [claimTypeOptions, setClaimTypeOptions] = useState([]);
+  const [aclBase, setAclBase] = useState({});
+  const [userData, setUserData] = useState(null);
+  const [selectedClaimId, setSelectedClaimId] = useState(0);
+  const [editedClaim, setEditedClaim] = useState(null);
+  const [doUpdateModal, setDoUpdateModal] = useState(0);
 
-  const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
+  const handleEditorOpenCreate = (key) => {
+    setEditorMode('create');
+    setEditorOpened(true);
+    setFormType(key);
+  }
+
+  const handleEditorOpen = (value) => {
+    if (value && value.key){
+      let key = parseInt(value.key.replace('clt_', ''));
+      setEditorMode('create');
+      setEditorOpened(true);
+      setFormType(key);
+    }
+  }
+
+  const menuProps = {
+    items: claimTypes,
+    onClick: handleEditorOpen,
+  };
+
+  useEffect(() => {
+    fetchInfo().then();
+  }, []);
+
+  useEffect(()=>{
+    setUserData(props.userdata);
+  },[props.userdata]);
+
+  useEffect(() => {
+    let clats = [];
+    let clabs = [
+      {
+        value: 0,
+        label: (
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+              <span>Все заявки</span>
+            </div>
+        ),
+        background: '#c3c3c3',
+        creatable: false
+      }
+    ];
+    const MYID = userData?.user?.id;
+    console.log(MYID)
+    if (!MYID) {
+      return;
+    }
+
+    // Фильтруем кнопки разных типов, чтоыбы не выводить запрещенные пользователю
+    for (let i = 0; i < baseClaimTypes.length; i++) {
+      const claimType = baseClaimTypes[i];
+      const formType  = claimType.id;
+      let allowType = false;
+      //for (let n = 0; n < baseClaimTypes.length; n++) {
+      //const userCard = baseClaimTypes[n];
+      if (aclBase[userData?.user?.id_company] && aclBase[userData?.user?.id_company][formType] && aclBase[userData?.user?.id_company][formType]?.includes('ANY_CLAIM_CREATE')){
+        // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
+        allowType = true;
+      } else if (userData?.user?.boss_id === MYID && aclBase[userData?.user?.id_company] && aclBase[userData?.user?.id_company][formType] && aclBase[userData?.user?.id_company][formType]?.includes('TEAM_CLAIM_CREATE')){
+        // Если челик мой подчиненный и у меня есть права добавлять подчиненным
+        allowType = true;
+      } else if (userData?.user?.id === MYID && aclBase[userData?.user?.id_company] && aclBase[userData?.user?.id_company][formType] && aclBase[userData?.user?.id_company][formType]?.includes('PERS_CLAIM_CREATE')){
+        allowType = true;
+      }
+      //}
+
+      let clat = {
+            key: `clt_${claimType.id}`,
+            value: claimType.id,
+            label: claimType.text,
+            color: claimType.color,
+            icon: <StateIconsController IdState={claimType.id}/>
+          }
+      ;
+      if (allowType && claimType.fillable === 1) {
+        clats.push(clat);
+      }
+
+      clabs.push({
+        value: claimType.id,
+        label: (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>{claimType.title}</span>
+            </div>
+        ),
+        canCreate: allowType,
+        background: claimType.color,
+      })
+
+    }
+    console.log(clats)
+    setClaimTypes(clats);
+    setClaimTypeOptions(clabs);
+  }, [baseClaimTypes, aclBase, userData]);
+
+  /*useEffect(() => {
+    if (claimTypes && claimTypes.length > 0 && userListData && userListData.length > 0) {
+      const users = JSON.parse(JSON.stringify(userListData));
+      users.forEach((user, idx) => {
+        const global = claimTypes.find(claimType => claimType.value === user.global_state);
+        users[idx].globalState = global;
+      });
+      console.log(baseUserListData)
+      console.log(users)
+      setUserListData(users);
+      //setBaseUserListData(users);
+    }
+  }, [claimTypes]);*/
+
+  const fetchInfo = async () => {
+    await fetchUsersSkudACLs();
+    await fetchClaimTypes();
+  };
+
+  const fetchUsersSkudACLs = async () => {
+    if (PRODMODE) {
+      try {
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+            {
+              _token: CSRF_TOKEN
+            });
+        setAclBase(response.data.content);
+        console.log('response data => ', response.data);
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      setAclBase(CLAIM_ACL_MOCK);
+      setUserData(USDA);
+    }
+  };
+
+  const fetchClaimTypes = async () => {
+    if (PRODMODE) {
+      try {
+        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+            {
+              _token: CSRF_TOKEN
+            });
+        setBaseClaimTypes(response.data.content);
+        console.log('response data => ', response.data);
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      setBaseClaimTypes(CHART_STATES);
+    }
+  };
+
+  const handleCloseEditor = ()=> {
+    if (editorOpened){
+      setEditorOpened(false);
+      setEditorMode('read');
+
+      setTimeout(() => {
+        console.log(2222222222222222);
+        setSelectedClaimId(0);
+      }, 555);
+    }
+  };
+
+  const handleSaveClaim = (claim, editmode) => {
+    if (editmode === 'create'){
+      create_claim(claim);
+    } else if (editmode === 'update'){
+      console.log('update claim');
+      update_claim(claim);
+    }
+    setEditorOpened(false);
+    setTimeout(() => {
+      setSelectedClaimId(0);
+      console.log(999999999);
+    }, 555);
+  };
+
+  const create_claim = async (claimObj) => {
+    try {
+      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+          {
+            data: claimObj,
+            _token: CSRF_TOKEN
+          });
+      console.log('response data => ', response.data);
+      setDoUpdateModal(dayjs().unix());
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  const update_claim = async (claimObj) => {
+    try {
+      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+          {
+            data: claimObj,
+            _token: CSRF_TOKEN
+          });
+      console.log('response data => ', response.data);
+      setDoUpdateModal(dayjs().unix());
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  const handleApproveEvent = (id, type)=> {
+    const obj = {
+      id: id,
+      state: 1,
+    };
+    update_claim_state(obj)
+    setEditorOpened(false);
+    setTimeout(() => {
+      console.log(888888333333);
+    }, 555);
+  };
+
+  const handleDeclineEvent = (id, type)=> {
+    const obj = {
+      id: id,
+      state: 2,
+    };
+    update_claim_state(obj);
+    setEditorOpened(false);
+    setTimeout(() => {
+      console.log(555555555555);
+    }, 555);
+  };
+
+  const handleGetBackEvent = (id)=> {
+    setTimeout(() => {
+      console.log(1111111111111);
+    }, 555);
+    setEditorOpened(false);
+    delete_claim(id);
+  };
+
+  const update_claim_state = async (claimObj) => {
+    try {
+      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
+          {
+            data: claimObj,
+            _token: CSRF_TOKEN
+          });
+      console.log('response data => ', response.data);
+      setDoUpdateModal(dayjs().unix());
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  const delete_claim = async (claim_id) => {
+    try {
+      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
+          {
+            data: {id: claim_id},
+            _token: CSRF_TOKEN
+          });
+      console.log('response data => ', response.data);
+      setDoUpdateModal(dayjs().unix());
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  /*---SCHEDULE KPP-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenScheduleKPPModal, setIsOpenScheduleKPPModal] = useState(false);
+  const handleOpenScheduleKPPModal = () => {
+    setIsOpenScheduleKPPModal(true);
+  };
+
+  const handleCloseScheduleKPPModal = () => {
+    setIsOpenScheduleKPPModal(false);
+  };
+
+  /*---BILL LIST KPP-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenBillListKPPModal, setIsOpenBillListKPPModal] = useState(false);
+  const handleOpenBillListKPPModal = () => {
+    setIsOpenBillListKPPModal(true);
+  };
+
+  const handleCloseBillListKPPModal = () => {
+    setIsOpenBillListKPPModal(false);
+  };
+
+  /*---SCHEDULE BUILDERS-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenScheduleBuildersModal, setIsOpenScheduleBuildersModal] = useState(false);
+  const handleOpenScheduleBuildersModal = () => {
+    setIsOpenScheduleBuildersModal(true);
+  };
+
+  const handleCloseScheduleBuildersModal = () => {
+    setIsOpenScheduleBuildersModal(false);
+  };
+
+  /*---BILL LIST BUILDERS-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenBillListBuildersModal, setIsOpenBillListBuildersModal] = useState(false);
+  const handleOpenBillListBuildersModal = () => {
+    setIsOpenBillListBuildersModal(true);
+  };
+
+  const handleCloseBillListBuildersModal = () => {
+    setIsOpenBillListBuildersModal(false);
+  };
+
+  /*---BILL LIST-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenBillListModal, setIsOpenBillListModal] = useState(false);
+  const handleOpenBillListModal = () => {
+    setIsOpenBillListModal(true);
+  };
+
+  const handleCloseBillListModal = () => {
+    setIsOpenBillListModal(false);
+  };
+
+  /*--- CLAIMS LIST -------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenClaimsModal, setIsOpenClaimsModal] = useState(false);
+  const handleOpenClaimsModal = () => {
+    setIsOpenClaimsModal(true);
+  };
+
+  const handleCloseClaimModal = () => {
+    setIsOpenClaimsModal(false);
+  };
+
+  const handleOpenInfo = (id, obj) => {
+    let type = obj.skud_current_state_id;
+    setEditedClaim(obj);
+    setFormType(type);
+    setEditorMode('read');
+    setEditorOpened(true);
+  };
+
+  const handleEditEvent = (id, obj)=> {
+    let type = obj.skud_current_state_id;
+    setEditedClaim(obj);
+    setFormType(type);
+    setEditorMode('update');
+    setEditorOpened(true);
+  };
+/*-------------------------------------------------------------------------------------------------------------------------------*/
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [baseUserListData, setBaseUserListData] = useState([]);
   const [userListData, setUserListData] = useState([]);
@@ -93,9 +452,21 @@ const UserList = (props)=>{
 
   useEffect(()=>{
     if (baseUserListData) {
-      setUserListData(baseUserListData.sort((a, b) => b.department - a.department));
+      const baseUsers = JSON.parse(JSON.stringify(baseUserListData));
+      baseUsers.sort((a, b) => b.department - a.department);
+      if (claimTypes && claimTypes.length > 0) {
+        const users = baseUsers;
+        users.forEach((user, idx) => {
+          const global = claimTypes.find(claimType => claimType.value === user.global_state);
+          users[idx].globalState = global;
+        });
+        console.log(baseUserListData)
+        console.log(users)
+        setUserListData(users);
+      }
+      setUserListData(baseUsers);
     }
-  }, [baseUserListData]);
+  }, [baseUserListData, claimTypes]);
 
   useEffect(() => {
     async function animateRows() {
@@ -150,6 +521,7 @@ const UserList = (props)=>{
         return () => clearTimeout(debounceTimer);
     } else {
       //setBaseUserListData(DS_USERLIST_USERS);
+      console.log(123)
       setBaseUserListData(USERS_LIST);
       setTimeout(() => {
         setIsLoading(false);
@@ -168,6 +540,7 @@ const UserList = (props)=>{
       let usr = baseUserListData.find((item)=> item.id === user_id);
       setTargetUserInfo(usr);
     }
+    console.log(1)
   }, [baseUserListData]);
 
 
@@ -345,11 +718,6 @@ const UserList = (props)=>{
     }
   }
 
-
-  // const SortFilterChanged = (userList) => {
-  //   setUserListData(userList);
-  // }
-
   const handleShowUserInfo = (user_id)=>{
     console.log('user_id', user_id)
     handleMarkUser(user_id);
@@ -439,8 +807,8 @@ const UserList = (props)=>{
   }
 
   const filteredUsers = useMemo(() => {
-      if (!baseUserListData) return [];
-      let userList = JSON.parse(JSON.stringify(baseUserListData));
+      if (!userListData || userListData.length === 0) return [];
+      let userList = JSON.parse(JSON.stringify(userListData));
 
       let companyFilter = innerFilters.find((item)=> item.key === 'id_company');
       if (companyFilter) {
@@ -455,8 +823,12 @@ const UserList = (props)=>{
       let sortedData = userList ?? [];
       switch (innerSortByValue) {
           case "department_asc":
-              sortedData.sort((a, b) => a.department_id - b.department_id);
-              sortedData = move_boss_to_top(sortedData);
+              sortedData.sort((a, b) => {
+                if (a.department_id === b.department_id) {
+                  return b.rang - a.rang;
+                }
+                return a.department_id - b.department_id;
+              });
               sortedData = insertDepartmentNames(sortedData);
               break;
 
@@ -489,16 +861,21 @@ const UserList = (props)=>{
           //   console.log( sortedData);
             break;
 
-          default:
-              // Сортировка по умолчанию (например, по department ASC)
-              sortedData.sort((a, b) => a.department_id - b.department_id);
-              sortedData = move_boss_to_top(sortedData);
-              sortedData = insertDepartmentNames(sortedData);
-              break;
+        default:
+          sortedData.sort((a, b) => {
+            if (a.department_id === b.department_id) {
+              return b.rang - a.rang;
+            }
+            return a.department_id - b.department_id;
+          });
+          sortedData = insertDepartmentNames(sortedData);
+          break;
       }
 
+
+    console.log('sorted', sortedData)
       return sortedData;
-  }, [baseUserListData, innerSortByValue, innerFilters]);
+  }, [userListData, innerSortByValue, innerFilters]);
 
   const toggleInnerSorts = (value) => {
     setInnerSortByValue(value);
@@ -513,305 +890,7 @@ const UserList = (props)=>{
     setExtFilters(filters);
 
   }
-/*------- CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
-  const [isOpenFilters, setIsOpenFilters] = useState(false);
-  const [editorMode, setEditorMode] = useState('create');
-  const [editorOpened, setEditorOpened] = useState(false);
-  const [formType, setFormType] = useState(null);
-  const [baseClaimTypes, setBaseClaimTypes] = useState([]);
-  const [claimTypes, setClaimTypes] = useState([]);
-  const [claimTypeOptions, setClaimTypeOptions] = useState([]);
-  const [aclBase, setAclBase] = useState({});
-  const [userData, setUserData] = useState(null);
-  const [selectedClaimId, setSelectedClaimId] = useState(0);
-  const [editedClaim, setEditedClaim] = useState(null);
 
-  const handleEditorOpenCreate = (key) => {
-    setEditorMode('create');
-    setEditorOpened(true);
-    setFormType(key);
-  }
-
-  const handleEditorOpen = (value) => {
-    if (value && value.key){
-      let key = parseInt(value.key.replace('clt_', ''));
-      setEditorMode('create');
-      setEditorOpened(true);
-      setFormType(key);
-    }
-  }
-
-  const menuProps = {
-    items: claimTypes,
-    onClick: handleEditorOpen,
-  };
-
-  useEffect(() => {
-    fetchInfo().then();
-  }, []);
-
-  useEffect(()=>{
-    setUserData(props.userdata);
-  },[props.userdata]);
-
-  useEffect(() => {
-    let clats = [];
-    let clabs = [
-      {
-        value: 0,
-        label: (
-            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-              <span>Все заявки</span>
-            </div>
-        ),
-        background: '#c3c3c3',
-        creatable: false
-      }
-    ];
-    const MYID = userData?.user?.id;
-    console.log(MYID)
-    if (!MYID) {
-      return;
-    }
-
-    // Фильтруем кнопки разных типов, чтоыбы не выводить запрещенные пользователю
-    for (let i = 0; i < baseClaimTypes.length; i++) {
-      const claimType = baseClaimTypes[i];
-      const formType  = claimType.id;
-      let allowType = false;
-      //for (let n = 0; n < baseClaimTypes.length; n++) {
-        //const userCard = baseClaimTypes[n];
-        if (aclBase[userData?.user?.id_company] && aclBase[userData?.user?.id_company][formType] && aclBase[userData?.user?.id_company][formType]?.includes('ANY_CLAIM_CREATE')){
-          // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
-          allowType = true;
-        } else if (userData?.user?.boss_id === MYID && aclBase[userData?.user?.id_company] && aclBase[userData?.user?.id_company][formType] && aclBase[userData?.user?.id_company][formType]?.includes('TEAM_CLAIM_CREATE')){
-          // Если челик мой подчиненный и у меня есть права добавлять подчиненным
-          allowType = true;
-        } else if (userData?.user?.id === MYID && aclBase[userData?.user?.id_company] && aclBase[userData?.user?.id_company][formType] && aclBase[userData?.user?.id_company][formType]?.includes('PERS_CLAIM_CREATE')){
-          allowType = true;
-        }
-      //}
-
-      let clat = {
-            key: `clt_${claimType.id}`,
-            value: claimType.id,
-            label: claimType.text,
-            color: claimType.color,
-            icon: <StateIconsController IdState={claimType.id}/>
-          }
-      ;
-      if (allowType && claimType.fillable === 1) {
-        clats.push(clat);
-      }
-
-      clabs.push({
-        value: claimType.id,
-        label: (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>{claimType.title}</span>
-            </div>
-        ),
-        canCreate: allowType,
-        background: claimType.color,
-      })
-
-    }
-    console.log(clats)
-    setClaimTypes(clats);
-    setClaimTypeOptions(clabs);
-  }, [baseClaimTypes, aclBase, userData]);
-
-  const fetchInfo = async () => {
-    await fetchUsersSkudACLs();
-    await fetchClaimTypes();
-  };
-
-  const fetchUsersSkudACLs = async () => {
-    if (PRODMODE) {
-      try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
-            {
-              _token: CSRF_TOKEN
-            });
-        setAclBase(response.data.content);
-        console.log('response data => ', response.data);
-      } catch (e) {
-        console.log(e)
-      }
-    } else {
-      setAclBase(CLAIM_ACL_MOCK);
-      setUserData(USDA);
-    }
-  };
-
-  const fetchClaimTypes = async () => {
-    if (PRODMODE) {
-      try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
-            {
-              _token: CSRF_TOKEN
-            });
-        setBaseClaimTypes(response.data.content);
-        console.log('response data => ', response.data);
-      } catch (e) {
-        console.log(e)
-      }
-    } else {
-      setBaseClaimTypes(CHART_STATES);
-    }
-  };
-
-  const handleCloseEditor = ()=> {
-    if (editorOpened){
-      setEditorOpened(false);
-      setEditorMode('read');
-
-      setTimeout(() => {
-        console.log(2222222222222222);
-        setSelectedClaimId(0);
-      }, 555);
-    }
-  };
-
-  const handleSaveClaim = (claim, editmode) => {
-    if (editmode === 'create'){
-      create_claim(claim);
-    } else if (editmode === 'update'){
-      console.log('update claim');
-      update_claim(claim);
-    }
-    setEditorOpened(false);
-    setTimeout(() => {
-      setSelectedClaimId(0);
-      console.log(999999999);
-    }, 555);
-  };
-
-  const create_claim = async (claimObj) => {
-    try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
-          {
-            data: claimObj,
-            _token: CSRF_TOKEN
-          });
-      console.log('response data => ', response.data);
-      //get_claimList(filterPack);
-    } catch (e) {
-      console.log(e)
-    }
-  };
-
-  const update_claim = async (claimObj) => {
-    try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
-          {
-            data: claimObj,
-            _token: CSRF_TOKEN
-          });
-      console.log('response data => ', response.data);
-      //get_claimList(filterPack);
-    } catch (e) {
-      console.log(e)
-    }
-  };
-
-  const handleApproveEvent = (id, type)=> {
-    const obj = {
-      id: id,
-      state: 1,
-    };
-    update_claim_state(obj)
-    setEditorOpened(false);
-    setTimeout(() => {
-      console.log(888888333333);
-    }, 555);
-  };
-
-  const handleDeclineEvent = (id, type)=> {
-    const obj = {
-      id: id,
-      state: 2,
-    };
-    update_claim_state(obj);
-    setEditorOpened(false);
-    setTimeout(() => {
-      console.log(555555555555);
-    }, 555);
-  };
-
-  const handleGetBackEvent = (id)=> {
-    setTimeout(() => {
-      console.log(1111111111111);
-    }, 555);
-    setEditorOpened(false);
-    delete_claim(id);
-  };
-
-  const update_claim_state = async (claimObj, req, res) => {
-    try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
-          {
-            data: claimObj,
-            _token: CSRF_TOKEN
-          });
-      console.log('response data => ', response.data);
-      //get_claimList(filterPack);
-    } catch (e) {
-      console.log(e)
-    }
-  };
-
-  const delete_claim = async (claim_id, req, res) => {
-    try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
-          {
-            data: {id: claim_id},
-            _token: CSRF_TOKEN
-          });
-      console.log('response data => ', response.data);
-      //get_claimList(filterPack);
-    } catch (e) {
-      console.log(e)
-    }
-  };
-
-  /*---BILL LIST-------------------------------------------------------------------------------------------------------------------*/
-
-  const [isOpenBillListModal, setIsOpenBillListModal] = useState(false);
-  const handleOpenBillListModal = () => {
-    setIsOpenBillListModal(true);
-  };
-
-  const handleCloseBillListModal = () => {
-    setIsOpenBillListModal(false);
-  };
-
-  /*---CLAIMS-------------------------------------------------------------------------------------------------------------------*/
-
-  const [isOpenClaimsModal, setIsOpenClaimsModal] = useState(false);
-  const handleOpenClaimsModal = () => {
-    setIsOpenClaimsModal(true);
-  };
-
-  const handleCloseClaimModal = () => {
-    setIsOpenClaimsModal(false);
-  };
-
-  const handleOpenInfo = (id, obj) => {
-    let type = obj.skud_current_state_id;
-    setEditedClaim(obj);
-    setFormType(type);
-    setEditorMode('read');
-    setEditorOpened(true);
-  };
-
-  const handleEditEvent = (id, obj)=> {
-    let type = obj.skud_current_state_id;
-    setEditedClaim(obj);
-    setFormType(type);
-    setEditorMode('update');
-    setEditorOpened(true);
-  };
 
   return (
       <div className={'mega-layout'}>
@@ -835,6 +914,10 @@ const UserList = (props)=>{
                 handleEditorOpenCreate={handleEditorOpenCreate}
                 menuProps={menuProps}
 
+                openScheduleKPPModal={handleOpenScheduleKPPModal}
+                openBillListKPPModal={handleOpenBillListKPPModal}
+                openScheduleBuildersModal={handleOpenScheduleBuildersModal}
+                openBillListBuildersModal={handleOpenBillListBuildersModal}
                 openClaimsModal={handleOpenClaimsModal}
                 openBillListModal={handleOpenBillListModal}
               />
@@ -850,6 +933,8 @@ const UserList = (props)=>{
                   <div className="sk-usp-filter-col" style={{height: 'calc(100vh - 46px - 115px)', padding: '10px'}}>
                     <FiltersSidebar onChangeInnerSort={toggleInnerSorts}
                                     onChangeInnerFilers={toggleInnerFilters}
+                                    extendedInfo={isShowExtendedInfo}
+                                    isShowExtended={(value) => setIsShowExtendedInfo(value)}
                     />
                   </div>
                 </div>
@@ -861,95 +946,148 @@ const UserList = (props)=>{
                       <Empty />
                   ):(
                       <div>
-                      <Affix offsetTop={100}>
-                      <div className={`sk-usermonic-cardrow-ou sk-usermonic-headerrow`}>
+                        <Affix offsetTop={100}>
                           <div
-                            onClick={()=>{toggleSelectedColumn(1)}}
-                          ><div
-                          style={{paddingLeft: '9px'}}
-                          className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
-                          >id</div></div>
-                          <div
-                            onClick={()=>{toggleSelectedColumn(2)}}
-                          >
-                          <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
-                          Имя сотрудника
-                          </div>
-                          </div>
-                          <div
-                            onClick={()=>{toggleSelectedColumn(3)}}
-                          >
-                          <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
-                            Тел.
-                          </div>
-                          </div>
-                          <div className="sk-flex-space">
-                            <div></div>
-                            <div className="sk-usermonic-micro-row">
-                              <div
-                                className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}
-                                onClick={()=>{toggleSelectedColumn(10)}}
-                              >
-                                Вход
-                              </div>
-                              <div
-                              className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}
-                              onClick={()=>{toggleSelectedColumn(11)}}
-                              >Выход</div>
-                              <div
-                              className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}
-                              onClick={()=>{toggleSelectedColumn(12)}}
-                                title={'Всего рабочее время'}
-                              >РВ</div>
-                              <div
-                              className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}
-                              onClick={()=>{toggleSelectedColumn(13)}}
-                              title={'Общее время на предприятии'}
-                              >ОВ</div>
-                              <div
-                              className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}
-                              onClick={()=>{toggleSelectedColumn(14)}}
-                              title={'Время выходов'}
-                              >ВВ</div>
-                              <div
-                              className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}
-                              onClick={()=>{toggleSelectedColumn(15)}}
-                              title={'Врямя для отработки'}
-                              >ОТ</div>
-                              <div
-                              className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}
-                              onClick={()=>{toggleSelectedColumn(16)}}
-                              title={'Потерянное время'}
-                              >ПВ</div>
-                            </div>
-                            <div></div>
-                          </div>
-                          <div title='График работ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                            Гр.
-                          </div>
-                          <div title='Правила учёта РВ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                            Пр.
-                          </div>
-                          <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                            За.
-                          </div>
+                              className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''}`}>
 
-                          <div><div>Рук</div></div>
-                          <div><div>Место</div></div>
-                      </div>
-                      </Affix>
+                            <div onClick={() => {
+                              toggleSelectedColumn(1)
+                            }}>
+                              <div style={{paddingLeft: '9px'}}
+                                   className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
+                              >id
+                              </div>
+                            </div>
+
+                            <div onClick={() => {
+                              toggleSelectedColumn(2)
+                            }}>
+                              <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}
+                                   style={{textAlign: 'left'}}>
+                                Имя сотрудника
+                              </div>
+                            </div>
+
+                            <div onClick={() => {
+                              toggleSelectedColumn(3)
+                            }}>
+                              <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`}>
+                                Телефон
+                              </div>
+                            </div>
+
+                            <div
+                                className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}
+                                onClick={() => {
+                                  toggleSelectedColumn(10)
+                                }}
+                            >Вход
+                            </div>
+
+                            <div
+                                className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}
+                                onClick={() => {
+                                  toggleSelectedColumn(11)
+                                }}
+                            >Выход
+                            </div>
+
+                            <div
+                                className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
+                                onClick={() => {
+                                  toggleSelectedColumn(22)
+                                }}
+                                title={'Обед'}
+                            >Обед
+                            </div>
+
+                            <div
+                                className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
+                                onClick={() => {
+                                  toggleSelectedColumn(14)
+                                }}
+                                title={'Кратковременные перерывы'}
+                            >Крат. перерывы
+                            </div>
+
+                            {isShowExtendedInfo && (
+                                <div
+                                    className={`${selectedColumns.includes(12) ? "sk-col-selected" : ""}`}
+                                    onClick={() => {
+                                      toggleSelectedColumn(12)
+                                    }}
+                                    title={'Всего рабочее время'}
+                                >Рабочее время</div>
+                            )}
+                            {isShowExtendedInfo && (
+                                <div
+                                    className={`${selectedColumns.includes(13) ? "sk-col-selected" : ""}`}
+                                    onClick={() => {
+                                      toggleSelectedColumn(13)
+                                    }}
+                                    title={'Общее время на предприятии'}
+                                >Время на предприятии</div>
+                            )}
+                            {isShowExtendedInfo && (
+                                <div
+                                    className={`${selectedColumns.includes(15) ? "sk-col-selected" : ""}`}
+                                    onClick={() => {
+                                      toggleSelectedColumn(15)
+                                    }}
+                                    title={'Врямя для отработки'}
+                                >Врямя для отработки</div>
+                            )}
+
+                            <div
+                                className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
+                                onClick={() => {
+                                  toggleSelectedColumn(16)
+                                }}
+                                title={'Потерянное время'}
+                            >Потерянное время
+                            </div>
+
+                            {isShowExtendedInfo && (
+                                <div title='График работ'
+                                     className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
+                                >График работ
+                                </div>
+                            )}
+
+                            {isShowExtendedInfo && (
+                                <div title='Правила учёта РВ'
+                                     className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
+                                >Правила учёта РВ
+                                </div>
+                            )}
+
+                            {isShowExtendedInfo && (
+                                <div>
+                                  <div>Руководитель</div>
+                                </div>
+                            )}
+
+                            <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
+                            >Заявки
+                            </div>
+
+                            <div>
+                              <div>Место</div>
+                            </div>
+                          </div>
+                        </Affix>
                         <Spin spinning={isLoading}>
-                            {filteredUsers.map((arche, index)=>
-                            (
-                                <UserMonitorListCard
-                                    key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`} // так как строки сеператоры не имеют айди
-                                    data={arche}
-                                    on_mark_user={handleMarkUser}
+                          {filteredUsers.map((arche, index) =>
+                              (
+                                  <UserMonitorListCard
+                                      key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
+                                      data={arche}
+                                      on_mark_user={handleMarkUser}
                                     marked_users={markedUsers}
                                     its_me={userdata.user.id === arche.id}
                                     on_double_click={handleShowUserInfo}
                                     selected_columns={selectedColumns}
-
+                                    extendedInfo={isShowExtendedInfo}
                                 />
                             ))}
                         </Spin>
@@ -1002,10 +1140,84 @@ const UserList = (props)=>{
             on_decline={handleDeclineEvent}
         />
 
+
+        {isOpenScheduleKPPModal && (
+            <Modal
+                title="График КПП"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenScheduleKPPModal}
+                onCancel={handleCloseScheduleKPPModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+        {isOpenBillListKPPModal && (
+            <Modal
+                title="Расчетный лист КПП"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenBillListKPPModal}
+                onCancel={handleCloseBillListKPPModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+        {isOpenScheduleBuildersModal && (
+            <Modal
+                title="График строителей"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenScheduleBuildersModal}
+                onCancel={handleCloseScheduleBuildersModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+        {isOpenBillListBuildersModal && (
+            <Modal
+                title="Расчетный лист строителей"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenBillListBuildersModal}
+                onCancel={handleCloseBillListBuildersModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+
         {isOpenBillListModal && (
-            <BillListModal isOpenBillListModal={isOpenBillListModal}
-                           handleCloseBillListModal={handleCloseBillListModal}
-            />
+          <BillListModal isOpenBillListModal={isOpenBillListModal}
+                         handleCloseBillListModal={handleCloseBillListModal}
+          />
         )}
         {isOpenClaimsModal && (
             <ClaimListModal isOpenClaimsModal={isOpenClaimsModal}
@@ -1016,6 +1228,7 @@ const UserList = (props)=>{
                             on_decline={handleDeclineEvent}
                             on_edit={handleEditEvent}
                             on_get_back={handleGetBackEvent}
+                            doUpdateModal={doUpdateModal}
             />
         )}
         {/*<UserListSidebarDrawer

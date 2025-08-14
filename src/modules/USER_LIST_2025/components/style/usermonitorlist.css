@@ -99,7 +99,11 @@
 }
 .sk-usermonic-micro-row {
     display: grid;
-    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px;
+    /*grid-template-columns: 50px 50px 50px 50px 50px 50px 50px;*/
+    grid-template-columns: 50px 50px 50px 1fr 50px;
+}
+.sk-usermonic-micro-row.extended {
+    grid-template-columns: 50px 50px 50px 1fr 50px 50px 50px 50px;
 }
 .ant-drawer-header {
     background-color: #00000017;

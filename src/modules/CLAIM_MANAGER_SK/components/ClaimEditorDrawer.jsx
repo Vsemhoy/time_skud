@@ -564,6 +564,7 @@ const ClaimEditorDrawer = (props) => {
                   style={{ width: '100%' }}
                   value={formDateRange[0]}
                   onChange={(date)=>{setFormDateRange([date, date.clone().endOf('day')])}}
+                  format="DD.MM.YYYY"
                 />
                 </>
               )}
