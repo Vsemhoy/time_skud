@@ -14,7 +14,7 @@ import {
     DoubleRightOutlined, ExportOutlined,
     FilterOutlined, OrderedListOutlined, PlusOutlined,
     RightOutlined,
-    RightSquareOutlined, ScheduleOutlined,
+    RightSquareOutlined, ScheduleOutlined, SearchOutlined,
     StepBackwardOutlined,
     StepForwardOutlined, UnorderedListOutlined
 } from "@ant-design/icons";
@@ -400,8 +400,7 @@ const UserListToolbar = (props) => {
                     {imExist && (
                         <Button color={'default'}
                                 variant={'outlined'}
-                                icon={<CrownOutlined />}
-
+                                icon={<SearchOutlined />}
                                 onClick={handleFindMyself}
                         >Найти себя в списке</Button>
                     )}

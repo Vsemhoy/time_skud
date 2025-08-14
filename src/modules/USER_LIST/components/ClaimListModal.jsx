@@ -200,139 +200,133 @@ const ClaimListModal = (props) => {
         >
             <div style={{width: '100%', height: '100%'}}>
                 <Spin spinning={isLoading}>
-                    <Affix offsetTop={0}>
-                        <div className={'sk-content-table-wrapper-claims-modal'} style={{outline: '2px solid #f3f3f3', backgroundColor: '#f3f3f3'}}>
-                            <div style={{paddingTop: '5px'}}>
-                                <ConfigProvider
-                                    theme={{
-                                        components: {
-                                            Segmented: {
-                                                itemSelectedBg: reactiveColor,
-                                                itemSelectedColor: 'black',
-                                                height: '150px'
-                                            },
+                    <div className={'sk-content-table-wrapper-claims-modal affix-in-modal'} style={{outline: '2px solid #f3f3f3', backgroundColor: '#f3f3f3'}}>
+                        <div style={{paddingTop: '5px', backgroundColor: '#f3f3f3'}}>
+                            <ConfigProvider
+                                theme={{
+                                    components: {
+                                        Segmented: {
+                                            itemSelectedBg: reactiveColor,
+                                            itemSelectedColor: 'black',
+                                            height: '150px'
                                         },
+                                    },
+                                }}
+                            >
+                                <Segmented
+                                    value={selectedChartState}
+                                    options={chartStates}
+                                    onChange={value => setSelectedChartState(value)}
+                                />
+                            </ConfigProvider>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#f3f3f3'}}>
+                            <div className="sk-pagination-container">
+                                <Pagination
+                                    current={currentPage}
+                                    total={allClaimsCount}
+                                    pageSize={pageSize}
+                                    pageSizeOptions={[10, 20, 30]}
+                                    locale={{
+                                        items_per_page: 'на странице',
+                                        jump_to: 'Перейти',
+                                        jump_to_confirm: 'OK',
+                                        page: 'Страница'
                                     }}
-                                >
-                                    <Segmented
-                                        value={selectedChartState}
-                                        options={chartStates}
-                                        onChange={value => setSelectedChartState(value)}
-                                    />
-                                </ConfigProvider>
-                            </div>
-                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                                <div className="sk-pagination-container">
-                                    <Pagination
-                                        current={currentPage}
-                                        total={allClaimsCount}
-                                        pageSize={pageSize}
-                                        pageSizeOptions={[10, 20, 30]}
-                                        locale={{
-                                            items_per_page: 'на странице',
-                                            jump_to: 'Перейти',
-                                            jump_to_confirm: 'OK',
-                                            page: 'Страница'
-                                        }}
-                                        onShowSizeChange={(current, newSize) => setPageSize(newSize)}
-                                        onChange={(page) => setCurrentPage(page)}
-                                    />
+                                    onShowSizeChange={(current, newSize) => setPageSize(newSize)}
+                                    onChange={(page) => setCurrentPage(page)}
+                                />
 
-                                    <Tag
-                                        style={{
-                                            width: '160px',
-                                            height: '30px',
-                                            lineHeight: '27px',
-                                            textAlign: 'center',
-                                            color: '#868686',
-                                            fontSize: '14px',
-                                            backgroundColor: '#ededed',
-                                            borderColor: '#ededed',
+                                <Tag
+                                    style={{
+                                        width: '160px',
+                                        height: '30px',
+                                        lineHeight: '27px',
+                                        textAlign: 'center',
+                                        color: '#868686',
+                                        fontSize: '14px',
+                                        backgroundColor: '#ededed',
+                                        borderColor: '#ededed',
+                                    }}
+                                >Всего найдено: {allClaimsCount}</Tag>
+                            </div>
+                            <div className="sk-pagination-container">
+                                <Button color={'default'}
+                                        variant={myClaims ? 'solid' : 'outlined'}
+                                        style={{width: '140px'}}
+                                        onClick={(ev) => {
+                                            setMySubjects(false);
+                                            setMyClaims(!myClaims);
                                         }}
-                                    >Всего найдено: {allClaimsCount}</Tag>
-                                </div>
-                                <div className="sk-pagination-container">
-                                    <Button color={'default'}
-                                            variant={myClaims ? 'solid' : 'outlined'}
-                                            style={{width: '140px'}}
-                                            onClick={(ev) => {
-                                                setMySubjects(false);
-                                                setMyClaims(!myClaims);
-                                            }}
-                                    >Мои заявки</Button>
-                                    <Button color={'default'}
-                                            variant={mySubjects ? 'solid' : 'outlined'}
-                                            style={{width: '140px'}}
-                                            onClick={(ev) => {
-                                                setMyClaims(false);
-                                                setMySubjects(!mySubjects);
-                                            }}
-                                    >Мои сотрудники</Button>
-                                </div>
+                                >Мои заявки</Button>
+                                <Button color={'default'}
+                                        variant={mySubjects ? 'solid' : 'outlined'}
+                                        style={{width: '140px'}}
+                                        onClick={(ev) => {
+                                            setMyClaims(false);
+                                            setMySubjects(!mySubjects);
+                                        }}
+                                >Мои сотрудники</Button>
                             </div>
                         </div>
-                    </Affix>
+                    </div>
                     <div className="sk-usp-content-col">
-                        <div className={'sk-arche-stack'}
-                             style={{paddingBottom: '44vw'}}
-                        >
-                            <Affix offsetTop={0}>
-                                <div className="sk-clamen-headerrow">
-                                    <div className={'sk-clamen-card'}>
+                        <div className={'sk-arche-stack'}>
+                            <div className="sk-clamen-headerrow affix-in-modal" style={{top: '93px'}}>
+                                <div className={'sk-clamen-card'}>
+                                    <div>
                                         <div>
-                                            <div>
-                                                Тип
-                                            </div>
+                                            Тип
                                         </div>
-                                        <div>
-                                            <div>
-                                                Пользователь
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                Статус
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                Начало
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                Конец
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div title="количество дней в заявке">
-                                                Дней
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                Информация
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                id
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                Исп
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div>
-
-                                            </div>
-                                        </div>
-
                                     </div>
+                                    <div>
+                                        <div>
+                                            Пользователь
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            Статус
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            Начало
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            Конец
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div title="количество дней в заявке">
+                                            Дней
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            Информация
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            id
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            Исп
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+
+                                        </div>
+                                    </div>
+
                                 </div>
-                            </Affix>
+                            </div>
                             {claimsPage && claimsPage.map((claim, idx) => (
                                 <ClaimManagerCard
                                     key={`${claim.id}-ClaimManagerCard-${idx}`}

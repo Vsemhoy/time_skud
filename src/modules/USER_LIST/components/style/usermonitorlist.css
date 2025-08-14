@@ -49,7 +49,10 @@
 
 .sk-usermonic-badger {
     width: 100%;
+    height: 22px;
     box-shadow: 1px 1px 3px #00000021;
+    display: flex !important;
+    gap: 7px;
 }
 .sk-usermonic-badger > span:last-child {
     color: gray;
@@ -99,7 +102,11 @@
 }
 .sk-usermonic-micro-row {
     display: grid;
-    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px;
+    /*grid-template-columns: 50px 50px 50px 50px 50px 50px 50px;*/
+    grid-template-columns: 50px 50px 50px 1fr 50px;
+}
+.sk-usermonic-micro-row.extended {
+    grid-template-columns: 50px 50px 50px 1fr 50px 50px 50px 50px;
 }
 .ant-drawer-header {
     background-color: #00000017;
@@ -331,4 +338,32 @@
     border-radius: 6px;
     padding: 6px;
     color: #838383;
+}
+
+.sk-time-info {
+    width: 100%;
+}
+
+.sk-usermonic-cardrow-ou-test {
+    display: grid;
+    grid-template-columns: 42px  2.5fr repeat(9, 1fr) 120px;
+    border: 1px solid #80808061;
+    border-top: none;
+    background: var(--row-main-bg-color);
+    transition: all ease 0.2s;
+    /*transition: all 0.9s;*/
+}
+.sk-usermonic-cardrow-ou-test.extended {
+    grid-template-columns: 42px  3fr repeat(12, 1fr) 120px;
+}
+.sk-usermonic-cardrow-ou-test:not(.sk-usermonic-crd-divider):hover > div {
+    background: var(--row-hovered-bg-color);
+}
+.sk-usermonic-cardrow-ou-test > div {
+    text-align: center;
+    border-right: 1px solid #80808061;
+    padding: 4px;
+}
+.sk-usermonic-cardrow-ou-test > div:last-child {
+    border-right: none;
 }

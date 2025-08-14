@@ -67,3 +67,22 @@
 .ant-dropdown-menu-item {
     grid-gap: 8px !important;
 }
+
+.affix-in-modal {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+:root {
+    --ant-z-index-modal: 1000;     /* Стандартное значение Modal */
+    --ant-z-index-drawer: 1100;    /* Drawer должен быть выше */
+}
+
+/* Или для старых версий Ant Design (без CSS-переменных) */
+.ant-modal {
+    z-index: 1000 !important;
+}
+.ant-drawer {
+    z-index: 1100 !important;
+}
