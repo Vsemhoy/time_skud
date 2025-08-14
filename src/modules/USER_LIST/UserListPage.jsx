@@ -40,6 +40,7 @@ const UserList = (props)=>{
   const [userData, setUserData] = useState(null);
   const [selectedClaimId, setSelectedClaimId] = useState(0);
   const [editedClaim, setEditedClaim] = useState(null);
+  const [doUpdateModal, setDoUpdateModal] = useState(0);
 
   const handleEditorOpenCreate = (key) => {
     setEditorMode('create');
@@ -136,8 +137,8 @@ const UserList = (props)=>{
     setClaimTypeOptions(clabs);
   }, [baseClaimTypes, aclBase, userData]);
 
-  useEffect(() => {
-    if (claimTypes && claimTypes.length > 0) {
+  /*useEffect(() => {
+    if (claimTypes && claimTypes.length > 0 && userListData && userListData.length > 0) {
       const users = JSON.parse(JSON.stringify(userListData));
       users.forEach((user, idx) => {
         const global = claimTypes.find(claimType => claimType.value === user.global_state);
@@ -146,9 +147,9 @@ const UserList = (props)=>{
       console.log(baseUserListData)
       console.log(users)
       setUserListData(users);
-      setBaseUserListData(users);
+      //setBaseUserListData(users);
     }
-  }, [claimTypes]);
+  }, [claimTypes]);*/
 
   const fetchInfo = async () => {
     await fetchUsersSkudACLs();
@@ -224,7 +225,7 @@ const UserList = (props)=>{
             _token: CSRF_TOKEN
           });
       console.log('response data => ', response.data);
-      //get_claimList(filterPack);
+      setDoUpdateModal(dayjs().unix());
     } catch (e) {
       console.log(e)
     }
@@ -238,7 +239,7 @@ const UserList = (props)=>{
             _token: CSRF_TOKEN
           });
       console.log('response data => ', response.data);
-      //get_claimList(filterPack);
+      setDoUpdateModal(dayjs().unix());
     } catch (e) {
       console.log(e)
     }
@@ -276,7 +277,7 @@ const UserList = (props)=>{
     delete_claim(id);
   };
 
-  const update_claim_state = async (claimObj, req, res) => {
+  const update_claim_state = async (claimObj) => {
     try {
       let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
           {
@@ -284,13 +285,13 @@ const UserList = (props)=>{
             _token: CSRF_TOKEN
           });
       console.log('response data => ', response.data);
-      //get_claimList(filterPack);
+      setDoUpdateModal(dayjs().unix());
     } catch (e) {
       console.log(e)
     }
   };
 
-  const delete_claim = async (claim_id, req, res) => {
+  const delete_claim = async (claim_id) => {
     try {
       let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
           {
@@ -298,10 +299,54 @@ const UserList = (props)=>{
             _token: CSRF_TOKEN
           });
       console.log('response data => ', response.data);
-      //get_claimList(filterPack);
+      setDoUpdateModal(dayjs().unix());
     } catch (e) {
       console.log(e)
     }
+  };
+
+  /*---SCHEDULE KPP-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenScheduleKPPModal, setIsOpenScheduleKPPModal] = useState(false);
+  const handleOpenScheduleKPPModal = () => {
+    setIsOpenScheduleKPPModal(true);
+  };
+
+  const handleCloseScheduleKPPModal = () => {
+    setIsOpenScheduleKPPModal(false);
+  };
+
+  /*---BILL LIST KPP-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenBillListKPPModal, setIsOpenBillListKPPModal] = useState(false);
+  const handleOpenBillListKPPModal = () => {
+    setIsOpenBillListKPPModal(true);
+  };
+
+  const handleCloseBillListKPPModal = () => {
+    setIsOpenBillListKPPModal(false);
+  };
+
+  /*---SCHEDULE BUILDERS-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenScheduleBuildersModal, setIsOpenScheduleBuildersModal] = useState(false);
+  const handleOpenScheduleBuildersModal = () => {
+    setIsOpenScheduleBuildersModal(true);
+  };
+
+  const handleCloseScheduleBuildersModal = () => {
+    setIsOpenScheduleBuildersModal(false);
+  };
+
+  /*---BILL LIST BUILDERS-------------------------------------------------------------------------------------------------------------------*/
+
+  const [isOpenBillListBuildersModal, setIsOpenBillListBuildersModal] = useState(false);
+  const handleOpenBillListBuildersModal = () => {
+    setIsOpenBillListBuildersModal(true);
+  };
+
+  const handleCloseBillListBuildersModal = () => {
+    setIsOpenBillListBuildersModal(false);
   };
 
   /*---BILL LIST-------------------------------------------------------------------------------------------------------------------*/
@@ -344,8 +389,6 @@ const UserList = (props)=>{
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
 
   const [baseUserListData, setBaseUserListData] = useState([]);
   const [userListData, setUserListData] = useState([]);
@@ -411,10 +454,19 @@ const UserList = (props)=>{
     if (baseUserListData) {
       const baseUsers = JSON.parse(JSON.stringify(baseUserListData));
       baseUsers.sort((a, b) => b.department - a.department);
-      //setBaseUserListData(baseUsers);
+      if (claimTypes && claimTypes.length > 0) {
+        const users = baseUsers;
+        users.forEach((user, idx) => {
+          const global = claimTypes.find(claimType => claimType.value === user.global_state);
+          users[idx].globalState = global;
+        });
+        console.log(baseUserListData)
+        console.log(users)
+        setUserListData(users);
+      }
       setUserListData(baseUsers);
     }
-  }, [baseUserListData]);
+  }, [baseUserListData, claimTypes]);
 
   useEffect(() => {
     async function animateRows() {
@@ -480,14 +532,14 @@ const UserList = (props)=>{
 
 
   useEffect(() => {
-    /*console.log(baseUserListData)
+    console.log(baseUserListData)
     if (openUserInfo && markedUsers[0]){
       let user_id = markedUsers[0];
       handleMarkUser(user_id);
       setOpenUserInfo(true);
       let usr = baseUserListData.find((item)=> item.id === user_id);
       setTargetUserInfo(usr);
-    }*/
+    }
     console.log(1)
   }, [baseUserListData]);
 
@@ -666,11 +718,6 @@ const UserList = (props)=>{
     }
   }
 
-
-  // const SortFilterChanged = (userList) => {
-  //   setUserListData(userList);
-  // }
-
   const handleShowUserInfo = (user_id)=>{
     console.log('user_id', user_id)
     handleMarkUser(user_id);
@@ -760,8 +807,8 @@ const UserList = (props)=>{
   }
 
   const filteredUsers = useMemo(() => {
-      if (!baseUserListData) return [];
-      let userList = JSON.parse(JSON.stringify(baseUserListData));
+      if (!userListData || userListData.length === 0) return [];
+      let userList = JSON.parse(JSON.stringify(userListData));
 
       let companyFilter = innerFilters.find((item)=> item.key === 'id_company');
       if (companyFilter) {
@@ -776,8 +823,12 @@ const UserList = (props)=>{
       let sortedData = userList ?? [];
       switch (innerSortByValue) {
           case "department_asc":
-              sortedData.sort((a, b) => a.department_id - b.department_id);
-              sortedData = move_boss_to_top(sortedData);
+              sortedData.sort((a, b) => {
+                if (a.department_id === b.department_id) {
+                  return b.rang - a.rang;
+                }
+                return a.department_id - b.department_id;
+              });
               sortedData = insertDepartmentNames(sortedData);
               break;
 
@@ -810,18 +861,21 @@ const UserList = (props)=>{
           //   console.log( sortedData);
             break;
 
-          default:
-              // Сортировка по умолчанию (например, по department ASC)
-              sortedData.sort((a, b) => a.department_id - b.department_id);
-              sortedData = move_boss_to_top(sortedData);
-              sortedData = insertDepartmentNames(sortedData);
-              break;
+        default:
+          sortedData.sort((a, b) => {
+            if (a.department_id === b.department_id) {
+              return b.rang - a.rang;
+            }
+            return a.department_id - b.department_id;
+          });
+          sortedData = insertDepartmentNames(sortedData);
+          break;
       }
 
 
     console.log('sorted', sortedData)
       return sortedData;
-  }, [baseUserListData, innerSortByValue, innerFilters]);
+  }, [userListData, innerSortByValue, innerFilters]);
 
   const toggleInnerSorts = (value) => {
     setInnerSortByValue(value);
@@ -860,6 +914,10 @@ const UserList = (props)=>{
                 handleEditorOpenCreate={handleEditorOpenCreate}
                 menuProps={menuProps}
 
+                openScheduleKPPModal={handleOpenScheduleKPPModal}
+                openBillListKPPModal={handleOpenBillListKPPModal}
+                openScheduleBuildersModal={handleOpenScheduleBuildersModal}
+                openBillListBuildersModal={handleOpenBillListBuildersModal}
                 openClaimsModal={handleOpenClaimsModal}
                 openBillListModal={handleOpenBillListModal}
               />
@@ -888,116 +946,6 @@ const UserList = (props)=>{
                       <Empty />
                   ):(
                       <div>
-                        {/*<Affix offsetTop={100}>*/}
-                        {/*  <div className={`sk-usermonic-cardrow-ou sk-usermonic-headerrow`}>*/}
-
-                        {/*    <div onClick={()=>{toggleSelectedColumn(1)}}>*/}
-                        {/*      <div style={{paddingLeft: '9px'}}*/}
-                        {/*           className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}*/}
-                        {/*      >id</div>*/}
-                        {/*    </div>*/}
-
-                        {/*    <div onClick={()=>{toggleSelectedColumn(2)}}>*/}
-                        {/*      <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>*/}
-                        {/*        Имя сотрудника*/}
-                        {/*      </div>*/}
-                        {/*    </div>*/}
-
-                        {/*    <div onClick={()=>{toggleSelectedColumn(3)}}>*/}
-                        {/*      <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>*/}
-                        {/*        Тел.*/}
-                        {/*      </div>*/}
-                        {/*    </div>*/}
-
-                        {/*    <div className="sk-time-info">*/}
-
-                        {/*      <div className={`sk-usermonic-micro-row ${isShowExtendedInfo ? 'extended' : ''}`}>*/}
-
-                        {/*        <div*/}
-                        {/*            className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}*/}
-                        {/*            onClick={() => {*/}
-                        {/*              toggleSelectedColumn(10)*/}
-                        {/*            }}*/}
-                        {/*        >Вход</div>*/}
-
-                        {/*        <div*/}
-                        {/*            className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}*/}
-                        {/*            onClick={() => {*/}
-                        {/*              toggleSelectedColumn(11)*/}
-                        {/*            }}*/}
-                        {/*        >Выход</div>*/}
-
-                        {/*        <div*/}
-                        {/*            className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}*/}
-                        {/*            onClick={() => {*/}
-                        {/*              toggleSelectedColumn(14)*/}
-                        {/*            }}*/}
-                        {/*            title={'Время выходов'}*/}
-                        {/*        >Выходы</div>*/}
-
-                        {/*        <div></div>*/}
-
-                        {/*        {isShowExtendedInfo && (*/}
-                        {/*            <div*/}
-                        {/*                className={`${selectedColumns.includes(12) ? "sk-col-selected" : ""}`}*/}
-                        {/*                onClick={() => {*/}
-                        {/*                  toggleSelectedColumn(12)*/}
-                        {/*                }}*/}
-                        {/*                title={'Всего рабочее время'}*/}
-                        {/*            >РВ</div>*/}
-                        {/*        )}*/}
-                        {/*        {isShowExtendedInfo && (*/}
-                        {/*            <div*/}
-                        {/*                className={`${selectedColumns.includes(13) ? "sk-col-selected" : ""}`}*/}
-                        {/*                onClick={() => {*/}
-                        {/*                  toggleSelectedColumn(13)*/}
-                        {/*                }}*/}
-                        {/*                title={'Общее время на предприятии'}*/}
-                        {/*            >ОВ</div>*/}
-                        {/*        )}*/}
-                        {/*        {isShowExtendedInfo && (*/}
-                        {/*          <div*/}
-                        {/*              className={`${selectedColumns.includes(15) ? "sk-col-selected" : ""}`}*/}
-                        {/*              onClick={() => {*/}
-                        {/*                toggleSelectedColumn(15)*/}
-                        {/*              }}*/}
-                        {/*              title={'Врямя для отработки'}*/}
-                        {/*          >ОТ</div>*/}
-                        {/*        )}*/}
-
-                        {/*        <div*/}
-                        {/*            className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}*/}
-                        {/*            onClick={() => {*/}
-                        {/*              toggleSelectedColumn(16)*/}
-                        {/*            }}*/}
-                        {/*            title={'Потерянное время'}*/}
-                        {/*        >ПВ</div>*/}
-
-                        {/*      </div>*/}
-
-                        {/*    </div>*/}
-
-                        {/*    <div title='График работ'*/}
-                        {/*         className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}*/}
-                        {/*    >*/}
-                        {/*      Гр.*/}
-                        {/*    </div>*/}
-
-                        {/*    <div title='Правила учёта РВ' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}*/}
-                        {/*    >*/}
-                        {/*      Пр.*/}
-                        {/*    </div>*/}
-
-                        {/*    <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}*/}
-                        {/*    >*/}
-                        {/*      За.*/}
-                        {/*    </div>*/}
-
-                        {/*    <div><div>Рук</div></div>*/}
-
-                        {/*    <div><div>Место</div></div>*/}
-                        {/*  </div>*/}
-                        {/*</Affix>*/}
                         <Affix offsetTop={100}>
                           <div
                               className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''}`}>
@@ -1047,10 +995,19 @@ const UserList = (props)=>{
                             <div
                                 className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
+                                  toggleSelectedColumn(22)
+                                }}
+                                title={'Обед'}
+                            >Обед
+                            </div>
+
+                            <div
+                                className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
+                                onClick={() => {
                                   toggleSelectedColumn(14)
                                 }}
-                                title={'Время выходов'}
-                            >Выходы
+                                title={'Кратковременные перерывы'}
+                            >Крат. перерывы
                             </div>
 
                             {isShowExtendedInfo && (
@@ -1090,22 +1047,29 @@ const UserList = (props)=>{
                             >Потерянное время
                             </div>
 
-                            <div title='График работ'
-                                 className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
-                            >График работ
-                            </div>
+                            {isShowExtendedInfo && (
+                                <div title='График работ'
+                                     className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
+                                >График работ
+                                </div>
+                            )}
 
-                            <div title='Правила учёта РВ'
-                                 className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
-                            >Правила учёта РВ
-                            </div>
+                            {isShowExtendedInfo && (
+                                <div title='Правила учёта РВ'
+                                     className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
+                                >Правила учёта РВ
+                                </div>
+                            )}
 
-                            <div>
-                              <div>Руководитель</div>
-                            </div>
+                            {isShowExtendedInfo && (
+                                <div>
+                                  <div>Руководитель</div>
+                                </div>
+                            )}
 
                             <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
-                            >Заявки</div>
+                            >Заявки
+                            </div>
 
                             <div>
                               <div>Место</div>
@@ -1113,12 +1077,12 @@ const UserList = (props)=>{
                           </div>
                         </Affix>
                         <Spin spinning={isLoading}>
-                          {filteredUsers.map((arche, index)=>
-                            (
-                                <UserMonitorListCard
-                                    key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
-                                    data={arche}
-                                    on_mark_user={handleMarkUser}
+                          {filteredUsers.map((arche, index) =>
+                              (
+                                  <UserMonitorListCard
+                                      key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
+                                      data={arche}
+                                      on_mark_user={handleMarkUser}
                                     marked_users={markedUsers}
                                     its_me={userdata.user.id === arche.id}
                                     on_double_click={handleShowUserInfo}
@@ -1176,10 +1140,84 @@ const UserList = (props)=>{
             on_decline={handleDeclineEvent}
         />
 
+
+        {isOpenScheduleKPPModal && (
+            <Modal
+                title="График КПП"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenScheduleKPPModal}
+                onCancel={handleCloseScheduleKPPModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+        {isOpenBillListKPPModal && (
+            <Modal
+                title="Расчетный лист КПП"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenBillListKPPModal}
+                onCancel={handleCloseBillListKPPModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+        {isOpenScheduleBuildersModal && (
+            <Modal
+                title="График строителей"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenScheduleBuildersModal}
+                onCancel={handleCloseScheduleBuildersModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+        {isOpenBillListBuildersModal && (
+            <Modal
+                title="Расчетный лист строителей"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                footer={null}
+                open={isOpenBillListBuildersModal}
+                onCancel={handleCloseBillListBuildersModal}
+                width={'90vw'}
+                styles={{
+                  body: {
+                    height: "70vh",
+                    overflowY: "auto"
+                  }
+                }}
+            >
+              <div></div>
+            </Modal>
+        )}
+
         {isOpenBillListModal && (
-            <BillListModal isOpenBillListModal={isOpenBillListModal}
-                           handleCloseBillListModal={handleCloseBillListModal}
-            />
+          <BillListModal isOpenBillListModal={isOpenBillListModal}
+                         handleCloseBillListModal={handleCloseBillListModal}
+          />
         )}
         {isOpenClaimsModal && (
             <ClaimListModal isOpenClaimsModal={isOpenClaimsModal}
@@ -1190,6 +1228,7 @@ const UserList = (props)=>{
                             on_decline={handleDeclineEvent}
                             on_edit={handleEditEvent}
                             on_get_back={handleGetBackEvent}
+                            doUpdateModal={doUpdateModal}
             />
         )}
         {/*<UserListSidebarDrawer

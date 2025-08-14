@@ -112,7 +112,7 @@ const UserMonitorListCard = (props) => {
     }
 
     const handleDoubleClickOnRow = ()=>{
-        if (content.id){
+        if (content.type !== 'header'){
             if (props.on_double_click){
                 props.on_double_click(content.id);
             }
@@ -316,6 +316,10 @@ const UserMonitorListCard = (props) => {
                         {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
                     </div>
 
+                    <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}> {/*обед*/}
+                        {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
+                    </div>
+
                     <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
                         {content.exit_time_count && secondsToTime(content.exit_time_count)}
                     </div>
@@ -342,38 +346,47 @@ const UserMonitorListCard = (props) => {
                         {content.lost_time_count && secondsToTime(content.lost_time_count)}
                     </div>
 
-                    <div>
-                        {content.schedule && (
-                            <div style={{textAlign: 'center'}}>
-                                <Tooltip title={JSON.stringify(content.schedule.skud_schedule)}>
-                                    <CalendarOutlined/>
-                                </Tooltip>
-                            </div>
-                        )}
-                    </div>
-                    <div>
-                        {content.rules && content.rules.length > 0 && (
-                            <div style={{textAlign: 'center'}} title={JSON.stringify(content.rules)}>
-                                <Tooltip title={JSON.stringify(content.rules)}>
-                                    <FlagOutlined/>
-                                </Tooltip>
-                            </div>
-                        )}
-                    </div>
-                    <div>
-                        {content.boss_id > 0 && (
-                            <Tooltip placement="left"
-                                     title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`}
-                                     arrow={mergedArrow}
-                            >
-                                <div style={{textAlign: 'center', cursor: 'pointer'}}
-                                     onClick={handleMarkUser}
-                                >
-                                    <RobotOutlined className={'sk-usermonic-boss-trigger'}/>
+                    {props?.extendedInfo && (
+                        <div>
+                            {content.schedule && (
+                                <div style={{textAlign: 'center'}}>
+                                    <Tooltip title={JSON.stringify(content.schedule.skud_schedule)}>
+                                        <CalendarOutlined/>
+                                    </Tooltip>
                                 </div>
-                            </Tooltip>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    )}
+
+                    {props?.extendedInfo && (
+                        <div>
+                            {content.rules && content.rules.length > 0 && (
+                                <div style={{textAlign: 'center'}}>
+                                    <Tooltip title={JSON.stringify(content.rules)}>
+                                        <FlagOutlined/>
+                                    </Tooltip>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {props?.extendedInfo && (
+                        <div>
+                            {content.boss_id > 0 && (
+                                <Tooltip placement="left"
+                                         title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`}
+                                         arrow={mergedArrow}
+                                >
+                                    <div style={{textAlign: 'center', cursor: 'pointer'}}
+                                         onClick={handleMarkUser}
+                                    >
+                                        <RobotOutlined className={'sk-usermonic-boss-trigger'}/>
+                                    </div>
+                                </Tooltip>
+                            )}
+                        </div>
+                    )}
+
                     <div style={{textAlign: 'center'}}>
                         <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
                             {/*{content.claims && content.claims.length > 0 && (

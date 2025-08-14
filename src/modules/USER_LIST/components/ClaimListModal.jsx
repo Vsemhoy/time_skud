@@ -38,6 +38,11 @@ const ClaimListModal = (props) => {
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
+        fetchClaims().then();
+    }, [props.doUpdateModal]);
+
+    useEffect(() => {
         if (chartStates && chartStates.length > 0) {
             setReactiveColor((chartStates.find(item => item.value === selectedChartState))?.color)
         }
