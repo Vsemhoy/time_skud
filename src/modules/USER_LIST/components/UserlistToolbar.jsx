@@ -212,36 +212,40 @@ const UserListToolbar = (props) => {
                     )}
                 </div>
                 <div style={{display: 'flex', gap: '10px'}}>
-                    {props.userData.acls.find(acl => acl === 95) && (
+                    {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 95) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<CarryOutOutlined/>}
                                  onClick={openScheduleKPPModal}
-                        >График КПП</Button>
+                                 title={'График КПП'}
+                        >КПП</Button>
                     )}
 
-                    {props.userData.acls.find(acl => acl === 95) && (
+                    {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 95) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<ScheduleOutlined/>}
                                  onClick={openBillListKPPModal}
-                        >Расчетный лист КПП</Button>
+                                 title={'Расчетный лист КПП'}
+                        >КПП</Button>
                     )}
 
-                    {props.userData.acls.find(acl => acl === 96) && (
+                    {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 96) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<CarryOutOutlined/>}
                                  onClick={openScheduleBuildersModal}
-                        >График строителей</Button>
+                                 title={'График строителей'}
+                        >Строители</Button>
                     )}
 
-                    {props.userData.acls.find(acl => acl === 107) && (
+                    {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 107) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<ScheduleOutlined/>}
                                  onClick={openBillListBuildersModal}
-                        >Расчетный лист строителей</Button>
+                                 title={'Расчетный лист строителей'}
+                        >Строители</Button>
                     )}
 
                     <Button color={'default'}
