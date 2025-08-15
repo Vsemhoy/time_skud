@@ -935,6 +935,7 @@ const UserList = (props)=>{
                                     onChangeInnerFilers={toggleInnerFilters}
                                     extendedInfo={isShowExtendedInfo}
                                     isShowExtended={(value) => setIsShowExtendedInfo(value)}
+                                    activeCompany={(userData && userData.user && !userData.user.super) ? userData.user.active_company : 0}
                     />
                   </div>
                 </div>

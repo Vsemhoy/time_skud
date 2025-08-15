@@ -104,7 +104,7 @@ export const WordDayNumerate = (value) => {
 
 export const secondsToTime = (seconds) => {
     // Рассчитываем часы и минуты
-   
+    if (+seconds === 0) return '';
     if (seconds > 86400){
         seconds = seconds % 86400;
     }

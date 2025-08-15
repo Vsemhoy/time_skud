@@ -21,6 +21,8 @@ const FiltersSidebar = (props) => {
     const [usedDate, setUsedDate] = useState(dayjs());
     const [usedDepartment, setUsedDepartment] = useState(0);
 
+    const [activeCompany, setActiveCompany] = useState(0);
+
     const [departments, setDepartments]  = useState([
         { key: 'dep_25345', value: 0, label: 'Все отделы' },
         ...DS_DEPARTMENTS.map((dep)=>
@@ -107,6 +109,13 @@ const FiltersSidebar = (props) => {
         }
 
     }, [usedSort]);
+
+    useEffect(() => {
+        if (props.activeCompany) {
+            setActiveCompany(props.activeCompany);
+            setUsedCompany(props.activeCompany);
+        }
+    }, [props.activeCompany]);
 
     const setDateInContext = (value) => {
         const params = new URLSearchParams(window.location.search);
