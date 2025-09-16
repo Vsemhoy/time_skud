@@ -492,6 +492,7 @@ const BaseInfoWorkspace = (props) => {
                                value={innerPhone}
                                onChange={(e) => setInnerPhone(e.target.value)}
                                style={{width: 360}}
+                               status="warning"
                         />
                     </div>
                     <div className={styles.sk_info_line}>
