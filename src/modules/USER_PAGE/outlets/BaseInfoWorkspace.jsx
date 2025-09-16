@@ -637,11 +637,13 @@ const BaseInfoWorkspace = (props) => {
                         </div>
                     </div>
                     <div>
-                        {currentUser?.user?.super && (<Button style={{width: '200px'}}
+                        {currentUser?.user?.super && userIdState !== 'new' && (
+                            <Button style={{width: '200px'}}
                                  type="primary"
                                  danger
                                  onClick={confirmDeleteUser}
-                        >Удалить пользователя</Button>)}
+                            >Удалить пользователя</Button>
+                        )}
                     </div>
                 </div>
             </div>
