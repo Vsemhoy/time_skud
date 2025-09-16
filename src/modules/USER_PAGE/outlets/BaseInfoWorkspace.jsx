@@ -86,7 +86,7 @@ const BaseInfoWorkspace = (props) => {
         name: '',
     });
     const [occupy, setOccupy] = useState('');
-    const [innerPhone, setInnerPhone] = useState('');
+    const [innerPhone, setInnerPhone] = useState(0);
     const [telegramID, setTelegramID] = useState('');
     const [email, setEmail] = useState('');
     const [dateLeave, setDateLeave] = useState('');
