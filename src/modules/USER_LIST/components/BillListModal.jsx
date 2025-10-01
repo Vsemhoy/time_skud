@@ -89,8 +89,8 @@ const BillListModal = (props) => {
     ]);
 
     const [selectedUser, setSelectedUser] = useState(null);
-    const [selectedMonth, setSelectedMonth] = useState(null);
-    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(dayjs().month());
+    const [selectedYear, setSelectedYear] = useState(dayjs().year());
 
     const [billListInfo, setBillListInfo] = useState(null);
 
@@ -126,11 +126,7 @@ const BillListModal = (props) => {
                 );
                 if (response.data.content) {
                     const filters = response.data.content.filters;
-
                     setUsersOptions(filters.users);
-
-                    setSelectedMonth(dayjs().month());
-                    setSelectedYear(dayjs().year());
                 }
                 setIsLoadingFilters(false);
             } catch (e) {
@@ -139,7 +135,6 @@ const BillListModal = (props) => {
             }
         } else {
             setIsLoadingFilters(true);
-
             setUsersOptions([
                 {
                     id: 46,
@@ -154,10 +149,6 @@ const BillListModal = (props) => {
                     name: 'Мистичный Мэн'
                 },
             ]);
-
-            setSelectedMonth(dayjs().month());
-            setSelectedYear(dayjs().year());
-
             setTimeout(() => setIsLoadingFilters(false), 500);
         }
     };
