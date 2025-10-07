@@ -238,6 +238,7 @@ const BillListModal = (props) => {
                       size={'large'}
                 >
                     <div className={'bill-list-modal-body'}>
+
                         <div className={'table-by-days'}>
                             <div className={'table-by-days-header'}>События по датам</div>
                             <div className={'table-by-days-row'}>
