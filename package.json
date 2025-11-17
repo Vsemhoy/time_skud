@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "^5.6.0",
+    "@ant-design/icons": "^6.1.0",
     "@heroicons/react": "^2.2.0",
     "@uiw/react-md-editor": "^4.0.5",
     "antd": "^5.23.0",
-    "axios": "^1.7.9",
+    "axios": "^1.10.0",
     "chart.js": "^4.4.9",
+    "corp-chat-library-antd-react-socket": "^1.2.4",
     "cra-template": "1.2.0",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
@@ -26,7 +27,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "push-all-changes": "git add . && git commit -m\"update\" && git push origin",
+    "push-all-bogdan": "git add . && git commit -m\"update\" && git push origin master:bogdan",
+    "fetch-all": "git fetch origin && git merge origin/master"
   },
   "eslintConfig": {
     "extends": [

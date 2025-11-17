@@ -255,7 +255,7 @@ const RuleManagerPage = (props) => {
     }
 
     return (
-        <Layout className={'layout'}>
+        <Layout className={'rule-layout'}>
             <Header className={'header'}>
                 <Affix>
                     <div className={'sk-header-container'}>

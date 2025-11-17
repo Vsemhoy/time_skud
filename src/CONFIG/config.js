@@ -8,5 +8,6 @@ export const HOST_COMPONENT_ROOT = !PRODMODE ? '' : '/com/skud';
 export const BASE_NAME = PRODMODE ? '/skud' : '/';
 export const BASE_ROUTE = PRODMODE ? '/skud' : '';
 
-
+// Websocket backend-for-frontend PORT
+export const BFF_PORT = 5003;
 // console.log('HTTP ROOT', HTTP_ROOT);
