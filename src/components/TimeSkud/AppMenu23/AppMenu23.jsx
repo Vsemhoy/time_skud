@@ -1,10 +1,11 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
-import { HTTP_ROOT } from '../../../CONFIG/config';
+import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE} from '../../../CONFIG/config';
 import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
+import Chat from "corp-chat-library-antd-react-socket";
 
 const AppMenu23 = (props) => {
     const { state, setState } = useContext(StateContext);
@@ -234,7 +235,31 @@ const AppMenu23 = (props) => {
                 />
 
                 <div style={{ display: 'flex', alignItems: 'center'}}>
-                    <div onClick={showNotyBar} style={{ cursor: "pointer", marginRight: '24px'}}>
+
+                    <Chat userdata={props.user_act}
+                          httpParams={{
+                              HTTP_HOST: HTTP_HOST,
+                              BFF_PORT: BFF_PORT,
+                              CSRF_TOKEN: CSRF_TOKEN,
+                              PRODMODE: PRODMODE,
+                              PROD_AXIOS_INSTANCE: null,
+                          }}
+                          fetchParams={{
+                              fetchChatsListPath: `/api/sms`,
+                              fetchChatMessagesPath: `/api/sms`,
+                              sendSmsPath: '/api/sms/create/sms',
+                              markMessagesAsReadPath: `/api/sms/read`,
+                          }}
+                          socketSubscribe={{
+                              subscribeToChat: 'subscribeToChat'
+                          }}
+                          socketActions={{
+                              newSms: 'new:sms',
+                              updateSms: 'update:sms',
+                          }}
+                    />
+
+                    <div onClick={showNotyBar} style={{ cursor: "pointer", width: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         <Badge count={countOfNotifications} offset={[4, 32]}>
                             <Avatar style={{ backgroundColor: '#33333300' }}>
                                 <NotificationOutlined style={{ fontSize: '36px', color: '#3d3d3d' }} />
