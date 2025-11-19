@@ -10,7 +10,7 @@
     "axios": "^1.10.0",
     "chart.js": "^4.4.9",
     "corp-chat-library-antd-react-socket": "^1.2.5",
-    "corp-notificator-library-antd-react-socket": "^0.0.2",
+    "corp-notificator-library-antd-react-socket": "^0.0.12",
     "cra-template": "1.2.0",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
