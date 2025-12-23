@@ -18,7 +18,13 @@ const EventMonitorListCard = (props) => {
                     <RobotOutlined />
                 )}
             </div>
-            <div>
+            <div
+                onDoubleClick={()=>{
+                    if (props.setUserToSearch){
+                        props.setUserToSearch(`${props.data.user_surname} ${props.data.user_name} ${props.data.user_patronymic}`);
+                    }
+                }}
+            >
                 {props.data.user_surname} {props.data.user_name} {props.data.user_patronymic}
             </div>
             <div>

@@ -68,6 +68,12 @@ const EventMonitorToolbar = (props)=>
         }
     ];
 
+    useEffect(() => {
+      if (props.user_to_search){
+        setTargetString(props.user_to_search);
+      }
+    }, [props.user_to_search]);
+
     useEffect(()=>{
         setPaginatorTotal(props.pagination_total);
     },[props.pagination_total]);
