@@ -19,6 +19,8 @@ const EventMonitorPage = (props) => {
         end: dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
     });
 
+    const [userToSearch, setUserToSearch] = useState(null);
+
     const [totalRowsInQuery, setTotalRowsInQuery] = useState(0);
 
 
@@ -64,6 +66,8 @@ const EventMonitorPage = (props) => {
     }
 
 
+    
+
 return (
     <div className={'sk-mw-1400'} style={{padding: '12px'}}>
     <br/>
@@ -73,6 +77,7 @@ return (
         on_chang_query_params={(data)=>{setQueryParams(data)}}
         pagination_total={totalRowsInQuery}
         on_create_event={handleCustomEventCreation}
+        user_to_search={userToSearch}
     />
     
     <div className={'sk-arche-stack'}>
@@ -92,6 +97,7 @@ return (
                 {baseArchEvents.map((arche)=>(
                     <EventMonitorListCard
                         data={arche}
+                        setUserToSearch={(name)=>{setUserToSearch(name)}}
                     />
                 ))}
             </>
