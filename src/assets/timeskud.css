@@ -216,6 +216,149 @@ td:first-child {
     /* box-shadow: 0px 20px 0px white; */
 }
 
+.sk-main-menu .sk-home-menu-item .ant-menu-item-icon {
+    margin-inline-end: 0 !important;
+}
+
+.sk-main-menu .sk-home-menu-item .ant-menu-title-content {
+    display: none;
+}
+
+.sk-userlist-toolbar-top {
+    height: auto;
+    min-height: 44px;
+    gap: 10px;
+    align-items: center;
+}
+
+.sk-userlist-toolbar-top-left,
+.sk-userlist-toolbar-top-right {
+    display: flex;
+    align-items: center;
+}
+
+.sk-userlist-toolbar-top-center {
+    align-items: center;
+}
+
+.sk-userlist-toolbar-currentdate--employees {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 0 5px;
+    background-color: #f3f3f3;
+    gap: 10px;
+}
+
+.sk-userlist-toolbar-findme {
+    display: flex;
+    align-items: center;
+}
+
+.sk-userlist-toolbar-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.sk-userlist-toolbar-currentdate--employees .ant-btn {
+    max-width: 100%;
+}
+
+@media screen and (max-width: 1300px) {
+    .sk-userlist-toolbar-top {
+        flex-wrap: nowrap;
+        padding: 4px 5px;
+        gap: 6px;
+    }
+
+    .sk-userlist-toolbar-top-left,
+    .sk-userlist-toolbar-top-right {
+        flex: 0 0 auto;
+    }
+
+    .sk-userlist-toolbar-top-right {
+        justify-content: flex-end;
+    }
+
+    .sk-userlist-toolbar-top-center {
+        order: initial;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .sk-userlist-toolbar-currentdate--employees {
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        flex-wrap: nowrap;
+        align-items: center;
+        padding: 4px 5px;
+        gap: 6px;
+    }
+
+    .sk-userlist-toolbar-currentdate--employees .sk-userlist-toolbar-xtext {
+        flex: initial;
+        font-size: 20px;
+        white-space: nowrap;
+    }
+
+    .sk-userlist-toolbar-findme {
+        flex: initial;
+    }
+
+    .sk-userlist-toolbar-actions {
+        flex: initial;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .sk-userlist-toolbar-currentdate--employees .ant-btn.sk-userlist-compact-btn {
+        width: auto !important;
+        min-width: 34px !important;
+        padding-inline: 8px !important;
+        height: 30px !important;
+    }
+
+    .sk-userlist-toolbar-currentdate--employees .ant-btn.sk-userlist-compact-btn .sk-userlist-btn-label,
+    .sk-userlist-toolbar-top .ant-btn.sk-userlist-compact-btn .sk-userlist-btn-label {
+        display: none;
+    }
+
+    .sk-userlist-toolbar-currentdate--employees .ant-btn.sk-userlist-compact-btn .anticon,
+    .sk-userlist-toolbar-top .ant-btn.sk-userlist-compact-btn .anticon {
+        margin-inline-end: 0 !important;
+    }
+
+    .sk-userlist-toolbar-top .sk-userlist-toolbar-top-left .ant-btn.sk-userlist-compact-btn,
+    .sk-userlist-toolbar-top .sk-userlist-toolbar-top-right .ant-btn.sk-userlist-compact-btn {
+        width: auto !important;
+        min-width: 34px !important;
+        padding-inline: 8px !important;
+        height: 30px !important;
+    }
+}
+
+@media screen and (max-width: 1150px) {
+    .sk-userlist-toolbar-currentdate--employees .sk-userlist-toolbar-xtext {
+        font-size: 16px;
+    }
+
+    .sk-userlist-toolbar-currentdate--employees .ant-btn.sk-userlist-compact-btn,
+    .sk-userlist-toolbar-top .ant-btn.sk-userlist-compact-btn {
+        min-width: 30px !important;
+        padding-inline: 6px !important;
+        height: 28px !important;
+    }
+
+    .sk-userlist-toolbar-top-center .ant-picker {
+        width: 132px;
+    }
+}
+
 .sk-mw-800 {
     max-width: 800px;
     margin: auto;

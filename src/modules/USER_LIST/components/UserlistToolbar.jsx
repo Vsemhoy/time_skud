@@ -143,16 +143,18 @@ const UserListToolbar = (props) => {
 
     return (
         <div style={{width: '100%'}}>
-            <div className={'sk-header-container'}>
-                <div className={'sk-flex-space'}>
+            <div className={'sk-header-container sk-userlist-toolbar-top'}>
+                <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
                     <Button color={'default'}
                             variant={props.isOpenFilters ? 'solid' : 'outlined'}
                             icon={<FilterOutlined />}
+                            className={'sk-userlist-compact-btn'}
                             style={{ width: '150px' }}
+                            title={'Фильтры'}
                             onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
-                    >Фильтры</Button>
+                    ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
                 </div>
-                <div className="sk-flex">
+                <div className="sk-flex sk-userlist-toolbar-top-center">
                     <CaretLeftOutlined
                         title="На предыдущий день"
                         onClick={decreaseDate}
@@ -173,7 +175,7 @@ const UserListToolbar = (props) => {
                         title="На следующий день"
                     />
                 </div>
-                <div className={'sk-flex-space'}>
+                <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
                     {props.menuProps.items.length > 0 ? (
                         <Dropdown
                             menu={props.menuProps}
@@ -183,8 +185,10 @@ const UserListToolbar = (props) => {
                             <Button
                                 icon={<DiffOutlined/>}
                                 type={'primary'}
+                                className={'sk-userlist-compact-btn'}
+                                title={'Создать заявку'}
                             >
-                                Создать заявку
+                                <span className={'sk-userlist-btn-label'}>Создать заявку</span>
                             </Button>
                         </Dropdown>
                     ) : (
@@ -192,7 +196,7 @@ const UserListToolbar = (props) => {
                     )}
                 </div>
             </div>
-            <div className={'sk-userlist-toolbar-currentdate'}>
+            <div className={'sk-userlist-toolbar-currentdate sk-userlist-toolbar-currentdate--employees'}>
                 <div className={'sk-userlist-toolbar-xtext'}
                      onDoubleClick={() => {
                          setUsedDate(dayjs())
@@ -202,64 +206,74 @@ const UserListToolbar = (props) => {
                     {/*{getMonthName(usedDate.month() + 1)}, {getWeekDayString(usedDate.day())}*/}
                     {usedDate.date()} {months[usedDate.month()]}, {getWeekDayString(usedDate.day())}
                 </div>
-                <div style={{display: 'flex'}}>
+                <div className={'sk-userlist-toolbar-findme'}>
                     {imExist && (
                         <Button color={'default'}
                                 variant={'outlined'}
                                 icon={<SearchOutlined />}
+                                className={'sk-userlist-compact-btn'}
+                                title={'Найти себя в списке'}
                                 onClick={handleFindMyself}
-                        >Найти себя в списке</Button>
+                        ><span className={'sk-userlist-btn-label'}>Найти себя в списке</span></Button>
                     )}
                 </div>
-                <div style={{display: 'flex', gap: '10px'}}>
+                <div className={'sk-userlist-toolbar-actions'}>
                     {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 95) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<CarryOutOutlined/>}
+                                 className={'sk-userlist-compact-btn'}
                                  onClick={openScheduleKPPModal}
                                  title={'График КПП'}
-                        >КПП</Button>
+                        ><span className={'sk-userlist-btn-label'}>КПП</span></Button>
                     )}
 
                     {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 95) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<ScheduleOutlined/>}
+                                 className={'sk-userlist-compact-btn'}
                                  onClick={openBillListKPPModal}
                                  title={'Расчетный лист КПП'}
-                        >КПП</Button>
+                        ><span className={'sk-userlist-btn-label'}>КПП</span></Button>
                     )}
 
                     {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 96) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<CarryOutOutlined/>}
+                                 className={'sk-userlist-compact-btn'}
                                  onClick={openScheduleBuildersModal}
                                  title={'График строителей'}
-                        >Строители</Button>
+                        ><span className={'sk-userlist-btn-label'}>Строители</span></Button>
                     )}
 
                     {props.userData && props.userData.acls && props.userData.acls.find(acl => acl === 107) && (
                         <Button  color={'default'}
                                  variant={'outlined'}
                                  icon={<ScheduleOutlined/>}
+                                 className={'sk-userlist-compact-btn'}
                                  onClick={openBillListBuildersModal}
                                  title={'Расчетный лист строителей'}
-                        >Строители</Button>
+                        ><span className={'sk-userlist-btn-label'}>Строители</span></Button>
                     )}
 
                     <Button color={'default'}
                             variant={'outlined'}
                             icon={<ScheduleOutlined />}
+                            className={'sk-userlist-compact-btn'}
+                            title={'Расчетный лист офис'}
                             onClick={openBillListModal}
-                    >Расчетный лист офис</Button>
+                    ><span className={'sk-userlist-btn-label'}>Расчетный лист офис</span></Button>
 
                     <Button color={'default'}
                             variant={'outlined'}
                             icon={<UnorderedListOutlined />}
+                            className={'sk-userlist-compact-btn'}
                             style={{ width: '150px' }}
+                            title={'Список заявок'}
                             onClick={openClaimsModal}
-                    >Список заявок</Button>
+                    ><span className={'sk-userlist-btn-label'}>Список заявок</span></Button>
                 </div>
             </div>
         </div>

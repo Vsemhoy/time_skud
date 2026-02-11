@@ -65,8 +65,12 @@ const AppMenu23 = (props) => {
     const mainMenuItems = [
         {
             key: 'home',
+            className: 'sk-home-menu-item',
             icon: <HomeOutlined style={{ fontSize: '20px', color: '#3b3b3b' }} />,
-            label: <a href={HTTP_ROOT}></a>,
+            label: null,
+            onClick: () => {
+                window.location.assign(HTTP_ROOT || '/');
+            },
         },
         {
             key: '/',
