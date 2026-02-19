@@ -80,7 +80,7 @@ const ClaimEditorDrawer = (props) => {
     }
     let title = "";
     let color = "#999999";
-    if (editMode === 'update' || editMode === 'read' && props.data){
+    if ((editMode === 'update' || editMode === 'read') && props.data){
       setUserCard(props.data);
       let res2 = JSON.parse(props.data.info);
       if (res2) {

@@ -52,6 +52,7 @@ import Chart from "./modules/CHARTS/components/Chart";
 import NotifierDrawer from './components/Notifyer/NotifierDrawer';
 import AccountingPage from "./modules/ACCOUNTING/AccountingPage";
 import {USDA} from "./modules/CHARTS/mock/mock";
+import ClaimSettingsPage from "./modules/CLAIM_SETTINGS/ClaimSettingsPage";
 const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
@@ -238,6 +239,7 @@ function App() {
             <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/my'} element={<AccountPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/claims/settings'} element={<ClaimSettingsPage />} />
             <Route path={BASE_ROUTE + '/hr/charts'} element={<Charts userdata={userAct}/>}>
                 <Route path={'sickleave'} element={<SickLeave />} />
                 <Route path={'longtrip'} element={<LongTrip />} />
@@ -275,6 +277,7 @@ function App() {
 
 
             <Route path={'/claims'} element={<ClaimManagerPage userdata={userAct}/>} />
+            <Route path={'/claims/settings'} element={<ClaimSettingsPage />} />
             <Route path={'/charts'} element={<Charts userdata={userAct}/>}>
                 <Route path={'sickleave'} element={<Chart />} />
                 <Route path={'longtrip'} element={<Chart />} />
@@ -325,6 +328,5 @@ function App() {
 }
 
 export default App;
-
 
 

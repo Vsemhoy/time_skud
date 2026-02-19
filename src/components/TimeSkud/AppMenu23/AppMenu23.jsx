@@ -89,6 +89,10 @@ const AppMenu23 = (props) => {
                     label: <NavLink to="/claims">Список заявок</NavLink>,
                 },
                 {
+                    key: '/claims/settings',
+                    label: <NavLink to="/claims/settings">Настройка командировок</NavLink>,
+                },
+                {
                     key: '/charts',
                     label: 'Графики заявок',
                     children: [

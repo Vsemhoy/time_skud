@@ -91,7 +91,7 @@
 } */
 .sk-clamen-card {
     display: grid;
-        grid-template-columns: 40px 2fr 50px 100px 100px 55px 3fr 50px 38px 36px;
+        grid-template-columns: 40px 2fr 55px 100px 100px 55px 3fr 50px 38px 36px 36px 55px;
         /* border: 1px solid #80808061; */
         border-top: none;
         background: var(--row-main-bg-color);
@@ -181,6 +181,62 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 .sk-claimcard-selected {
     background-color: var(--row-selected-color) !important;
+}
+
+.sk_transport_price_icon {
+    display: none;
+}
+
+@media screen and (max-width: 1500px) {
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-open {
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-open .sk_transport_price_header,
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-open .sk_transport_price_label_container {
+        display: none;
+    }
+
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-open .sk_transport_price_icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #4f4f4f;
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed {
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed .sk_transport_price_header,
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed .sk_transport_price_label_container {
+        display: none;
+    }
+
+    .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed .sk_transport_price_icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #4f4f4f;
+    }
 }
 
 /* input[readonly], textarea[readonly], .ant-input-textarea-affix-wrapper  {

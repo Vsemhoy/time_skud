@@ -1,5 +1,18 @@
 
-import {Affix, Avatar, Button, ConfigProvider, Dropdown, Layout, Pagination, Segmented, Select, Tag} from "antd";
+import {
+    Affix,
+    Avatar,
+    Button,
+    ConfigProvider,
+    Dropdown,
+    Layout, Modal,
+    Pagination,
+    Segmented,
+    Select,
+    Spin,
+    Tag,
+    Tooltip
+} from "antd";
 import React, { useEffect, useState } from "react";
 
 import './components/style/claimmanager.css';
@@ -39,6 +52,7 @@ import StateIconsController from "../CHARTS/components/StateIconsController";
 import {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import styles from "../CHARTS/style/charts.module.css";
+import TransportPriceModal from "./components/TransportPriceModal";
 
 
 const iconMap = {
@@ -105,6 +119,12 @@ const ClaimManagerPage = (props) => {
     const [editorMode, setEditorMode] = useState('create');
     const [editedClaim, setEditedClaim] = useState(null);
 
+    const [upPrice, setUpPrice] = useState(0);
+    const [downPrice, setDownPrice] = useState(0);
+
+    const [isOpenTransportPopup, setIsOpenTransportPopup] = useState(false);
+    const [claimsLoading, setClaimsLoading] = useState(false);
+
     const [selectedClaimId, setSelectedClaimId] = useState(0);
 
     const onShowSizeChange = (current, pageSize) => {
@@ -146,6 +166,7 @@ const ClaimManagerPage = (props) => {
             get_userList();
             get_approverList();
             get_claimList([]);
+            get_transport_price();
         } else {
             //mock data
             setAclBase(CLAIM_ACL_MOCK);
@@ -270,7 +291,8 @@ const ClaimManagerPage = (props) => {
 
     // ------------------ FetchWorld ----------------------
 
-    const get_claimList = async (filters, req, res) => {
+    const get_claimList = async (filters) => {
+        setClaimsLoading(true);
         if (PRODMODE) {
             try {
                 if (showOnlyCrew){
@@ -291,14 +313,16 @@ const ClaimManagerPage = (props) => {
             } catch (e) {
                 console.log(e)
             } finally {
+                setClaimsLoading(false);
             }
         } else {
             setBaseClaimList(CLAIMS_MOCKS);
             setTotal(CHART_STATES.length);
+            setClaimsLoading(false);
         }
     }
 
-    const get_aclbase = async (req, res) => {
+    const get_aclbase = async () => {
         try {
             
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
@@ -310,11 +334,10 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
-    const get_userList = async (req, res) => {
+    const get_userList = async () => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getusers', 
                 {
@@ -327,12 +350,11 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
 
-    const get_approverList = async (req, res) => {
+    const get_approverList = async () => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getapprovers', 
                 {
@@ -345,12 +367,11 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
 
-    const get_stateList = async (req, res) => {
+    const get_stateList = async () => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates', 
                 {
@@ -363,11 +384,10 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
-    const get_departlist = async (req, res) => {
+    const get_departlist = async () => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getdepartments', 
                 {
@@ -380,12 +400,11 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
 
-    const set_claimStatus = async (req, res) => {
+    const set_claimStatus = async () => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/setclaimstatus', 
                 {
@@ -397,12 +416,11 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
 
-    const create_claim = async (claimObj, req, res) => {
+    const create_claim = async (claimObj) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim', 
                 {
@@ -413,11 +431,10 @@ const ClaimManagerPage = (props) => {
                 get_claimList(filterPack);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
-    const update_claim = async (claimObj, req, res) => {
+    const update_claim = async (claimObj) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim', 
                 {
@@ -428,11 +445,10 @@ const ClaimManagerPage = (props) => {
                 get_claimList(filterPack);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
-    const update_claim_state = async (claimObj, req, res) => {
+    const update_claim_state = async (claimObj) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate', 
                 {
@@ -443,11 +459,10 @@ const ClaimManagerPage = (props) => {
                 get_claimList(filterPack);
         } catch (e) {
             console.log(e)
-        } finally {
         }
     }
 
-    const delete_claim = async (claim_id, req, res) => {
+    const delete_claim = async (claim_id) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim', 
                 {
@@ -458,7 +473,18 @@ const ClaimManagerPage = (props) => {
                 get_claimList(filterPack);
         } catch (e) {
             console.log(e)
-        } finally {
+        }
+    }
+
+    const get_transport_price = async () => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.get('/api/transport/price', {});
+            if (response.data.content) {
+                setUpPrice(response.data.content?.up?.price);
+                setDownPrice(response.data.content?.down?.price);
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -569,6 +595,20 @@ const ClaimManagerPage = (props) => {
         setPage(ev);
     }
 
+    const canUpdatePrices = () => {
+        return userData && userData.user && userData.acls &&
+            (userData.user.super || userData.user.is_admin || userData.acls.find(acl => +acl === 151));
+    };
+
+    const transportPriceTooltipTitle = (
+        <div>
+            <div style={{fontWeight: 600}}>Текущая стоимость проезда</div>
+            <div>Наземный: {upPrice ?? '-'}</div>
+            <div>Подземный: {downPrice ?? '-'}</div>
+            {canUpdatePrices() && <div style={{marginTop: '4px', opacity: 0.85}}>Нажмите, чтобы изменить</div>}
+        </div>
+    );
+
     return (
         <div className={'mega-layout'}>
             {/*<div className={'sk-content-table-wrapper'}>
@@ -648,22 +688,23 @@ const ClaimManagerPage = (props) => {
                             >Фильтры</Button>
                             {/*<h1 className={'page-header'}>Менеджер пользовательских заявок</h1>*/}
                             <h1 className={'page-header'}>Список заявок</h1>
-                            {claimTypes.length > 0 ? (
-                                <Dropdown
-                                    menu={menuProps}
-                                    onClick={handleEditorOpen}
-                                    style={{ width: '140px' }}
-                                >
-                                    <Button
-                                        icon={<PlusOutlined/>}
-                                        type={'primary'}
+
+                                {claimTypes.length > 0 ? (
+                                    <Dropdown
+                                        menu={menuProps}
+                                        onClick={handleEditorOpen}
+                                        style={{ width: '140px' }}
                                     >
-                                        Создать заявку
-                                    </Button>
-                                </Dropdown>
-                            ) : (
-                                <div style={{ width: '140px' }}></div>
-                            )}
+                                        <Button
+                                            icon={<PlusOutlined/>}
+                                            type={'primary'}
+                                        >
+                                            Создать заявку
+                                        </Button>
+                                    </Dropdown>
+                                ) : (
+                                    <div style={{ width: '140px' }}></div>
+                                )}
                         </div>
                     </Affix>
                 </Header>
@@ -688,7 +729,7 @@ const ClaimManagerPage = (props) => {
                         <div className="sk-content-table-wrapper-claims">
                             <Affix offsetTop={44}>
                                 <div style={{backgroundColor: '#f3f3f3', outline: '2px solid #f3f3f3'}}>
-                                    <div style={{paddingTop: '5px'}}>
+                                    <div style={{paddingTop: '5px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <ConfigProvider
                                             theme={{
                                                 components: {
@@ -716,6 +757,27 @@ const ClaimManagerPage = (props) => {
                                                        onChange={(value) => setTypeSelect(value)}
                                             />
                                         </ConfigProvider>
+
+                                        <Tooltip title={transportPriceTooltipTitle}>
+                                            <div
+                                                className={`sk_transport_price_wrapper ${isOpenFilters ? 'sk_transport_price_wrapper--filters-open' : 'sk_transport_price_wrapper--filters-closed'}`}
+                                                onClick={() => {
+                                                    if (canUpdatePrices) {
+                                                        setIsOpenTransportPopup(true);
+                                                    }
+                                                }}
+                                            >
+                                                <div className={'sk_transport_price_icon'}>
+                                                    <DollarOutlined />
+                                                </div>
+                                                <p className={'sk_transport_price_header'}>Текущая стоимость проезда</p>
+                                                <div className={'sk_transport_price_label_container'}>
+                                                    <p className={'sk_transport_price_label'}>Наземный :  <span className={'sk_transport_price'}>{upPrice}</span></p>
+                                                    <p className={'sk_transport_price_label'}>Подземный: <span className={'sk_transport_price'}>{downPrice}</span></p>
+                                                </div>
+                                            </div>
+                                        </Tooltip>
+
                                     </div>
                                     <div className={styles.sk_pagination_wrapper}>
                                         <div className="sk-pagination-container">
@@ -771,87 +833,101 @@ const ClaimManagerPage = (props) => {
                                 </div>
                             </Affix>
                         </div>
-                        <div className="sk-usp-content-col">
-                            <div className={'sk-arche-stack'}
-                                 style={{paddingBottom: '44vw'}}
-                            >
-                                <Affix offsetTop={165}>
-                                    <div className="sk-clamen-headerrow">
-                                        <div className={'sk-clamen-card'}>
-                                            <div>
+                        <Spin spinning={claimsLoading} size="large">
+                            <div className="sk-usp-content-col">
+                                <div className={'sk-arche-stack'}
+                                     style={{paddingBottom: '44vw'}}
+                                >
+                                    <Affix offsetTop={165}>
+                                        <div className="sk-clamen-headerrow">
+                                            <div className={'sk-clamen-card'}>
                                                 <div>
-                                                    Тип
+                                                    <div>
+                                                        Тип
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    Пользователь
+                                                    <div>
+                                                        Пользователь
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    Статус
+                                                    <div>
+                                                        Статус
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    Начало
+                                                    <div>
+                                                        Начало
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    Конец
+                                                    <div>
+                                                        Конец
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <div title="количество дней в заявке">
-                                                    Дней
-                                                </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    Информация
+                                                    <div title="количество дней в заявке">
+                                                        Дней
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    id
+                                                    <div>
+                                                        Информация
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
-                                                    Исп
+                                                    <div>
+                                                        id
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
                                                 <div>
+                                                    <div>
+                                                        Исп
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <Tooltip title={"Количество наземных поездок"}>
+                                                        <div style={{textAlign: 'center'}}>
+                                                            🚎
+                                                        </div>
+                                                    </Tooltip>
+                                                </div>
+                                                <div>
+                                                    <Tooltip title={"Количество подземных поездок"}>
+                                                        <div style={{textAlign: 'center'}}>
+                                                            Ⓜ️
+                                                        </div>
+                                                    </Tooltip>
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        Сумма
+                                                    </div>
+                                                </div>
 
-                                                </div>
                                             </div>
+
 
                                         </div>
-
-
-                                    </div>
-                                </Affix>
-                                {claimList.map((claim, idx) => (
-                                    <ClaimManagerCard
-                                        key={`${claim.id}-ClaimManagerCard-${idx}`}
-                                        data={claim}
-                                        my_id={userData?.user?.id}
-                                        on_click={handleOpenInfo}
-                                        acl_base={aclBase}
-                                        selected={claim.id === selectedClaimId}
-                                        on_approve={handleApproveEvent}
-                                        on_decline={handleDeclineEvent}
-                                        on_edit={handleEditEvent}
-                                        on_get_back={handleGetBackEvent}
-                                    />
-                                ))}
-
-
+                                    </Affix>
+                                    {claimList.map((claim, idx) => (
+                                        <ClaimManagerCard
+                                            key={`${claim.id}-ClaimManagerCard-${idx}`}
+                                            data={claim}
+                                            my_id={userData?.user?.id}
+                                            on_click={handleOpenInfo}
+                                            acl_base={aclBase}
+                                            selected={claim.id === selectedClaimId}
+                                            on_approve={handleApproveEvent}
+                                            on_decline={handleDeclineEvent}
+                                            on_edit={handleEditEvent}
+                                            on_get_back={handleGetBackEvent}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        </Spin>
                     </Content>
                 </Layout>
             </Layout>
@@ -1057,7 +1133,12 @@ const ClaimManagerPage = (props) => {
                 on_decline={handleDeclineEvent}
             />
 
-
+            {canUpdatePrices() && (
+                <TransportPriceModal isOpenTransportPopup={isOpenTransportPopup}
+                                     setIsOpenTransportPopup={setIsOpenTransportPopup}
+                                     updateCurrentPrices={get_transport_price}
+                />
+            )}
         </div>
     )
 }

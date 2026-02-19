@@ -1685,5 +1685,58 @@ export const CLAIM_BASE_CLAIM_TYPES = [
         "fillable": 1,
         "title": "Разгрузка контейнеров"
     }
-]
+];
 
+
+export const OLD_UP_TRANSPORT_PRICES = [
+    {
+        "id": 8,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+    {
+        "id": 18,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+    {
+        "id": 28,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+    {
+        "id": 38,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+    {
+        "id": 58,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+];
+export const OLD_DOWN_TRANSPORT_PRICES = [
+    {
+        "id": 98,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+    {
+        "id": 88,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+    {
+        "id": 78,
+        "price": 108,
+        "start": 'date',
+        "end": 'date',
+    },
+];

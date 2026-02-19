@@ -252,7 +252,7 @@ const ClaimManagerCard = (props) => {
                 return <div><span>{st[0]}</span></div> ;
             }
         }
-    }
+    };
 
 
 
@@ -370,7 +370,7 @@ const ClaimManagerCard = (props) => {
                       )}
                   </div>
               </div>
-              <div>
+              {/*<div>
                   <div style={{display: 'flex', alignItems: 'center'}}>
                       {menuItems && menuItems.length > 0 && (
                           <Dropdown
@@ -384,6 +384,21 @@ const ClaimManagerCard = (props) => {
                               <BarsOutlined/>
                           </Dropdown>
                       )}
+                  </div>
+              </div>*/}
+              <div>
+                  <div className={'sk-align-center sk-fs-medium'}>
+                      {jsonData.bus_count ?? '-'}
+                  </div>
+              </div>
+              <div>
+                  <div className={'sk-align-center sk-fs-medium'}>
+                      {jsonData.subway_count ?? '-'}
+                  </div>
+              </div>
+              <div>
+                  <div className={'sk-align-center sk-fs-medium'}>
+                      {jsonData.total_price ?? '-'}
                   </div>
               </div>
           </div>
