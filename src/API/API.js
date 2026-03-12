@@ -1,10 +1,10 @@
 import axios from "axios";
-import { HTTP_HOST } from "../CONFIG/config";
+import {HTTP_ROOT, HTTP_HOST} from "../CONFIG/config";
 
 //const PROD_API_URL = 'http://89.104.68.50'
 // export const PROD_API_URL = 'https://pulse-retail.ru'
-export const PROD_API_URL = HTTP_HOST
+axios.defaults.withCredentials = true;
 export const PROD_AXIOS_INSTANCE = axios.create({
-    baseURL: PROD_API_URL,
+    baseURL: HTTP_ROOT,
     timeout: 10000,
 });
