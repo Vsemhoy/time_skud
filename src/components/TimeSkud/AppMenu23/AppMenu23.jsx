@@ -254,10 +254,10 @@ const AppMenu23 = (props) => {
                               PROD_AXIOS_INSTANCE: null,
                           }}
                           fetchParams={{
-                              fetchChatsListPath: `/api/sms`,
-                              fetchChatMessagesPath: `/api/sms`,
-                              sendSmsPath: '/api/sms/create/sms',
-                              markMessagesAsReadPath: `/api/sms/read`,
+                              fetchChatsListPath: `${HTTP_HOST}/api/sms`,
+                              fetchChatMessagesPath: `${HTTP_HOST}/api/sms`,
+                              sendSmsPath: `${HTTP_HOST}/api/sms/create/sms`,
+                              markMessagesAsReadPath: `${HTTP_HOST}/api/sms/read`,
                           }}
                           socketSubscribe={{
                               subscribeToChat: 'subscribeToChat'
