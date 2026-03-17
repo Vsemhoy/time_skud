@@ -1,6 +1,6 @@
 import { Button, Drawer } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { CSRF_TOKEN, PRODMODE } from '../../CONFIG/config';
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from '../../CONFIG/config'
 import { PROD_AXIOS_INSTANCE } from '../../API/API';
 import NotiCard from './NotiCard';
 import { MOCK_NOTICES } from './mock/NoticeMock';
@@ -71,7 +71,7 @@ const NotifierDrawer = (props) => {
 
     const markNoteRead = async (note_id, req, res) => {
     try {
-              let response = await PROD_AXIOS_INSTANCE.put('/api/notice/read/' + note_id + '?_token=' + CSRF_TOKEN,
+              let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/notice/read/` + note_id + '?_token=' + CSRF_TOKEN,
                   {   
                       data: note_id, 
                       _token: CSRF_TOKEN
@@ -96,7 +96,7 @@ const NotifierDrawer = (props) => {
             data: {
             }
         }
-        let response = await PROD_AXIOS_INSTANCE.get('/api/notice/fresh' + '?_token=' + CSRF_TOKEN);
+        let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/notice/fresh` + '?_token=' + CSRF_TOKEN);
         
         setNotifications(response.data.data);
         let ignore = [];
@@ -117,7 +117,7 @@ const NotifierDrawer = (props) => {
 
     const getOldNotices = async ()=> {
       try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/notice/old?_token=' + CSRF_TOKEN, 
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/notice/old?_token=` + CSRF_TOKEN, 
           {   
             page: noticePage,
             ignore: noticeIgnore,

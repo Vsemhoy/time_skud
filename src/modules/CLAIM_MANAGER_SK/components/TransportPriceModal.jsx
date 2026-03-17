@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, DatePicker, Input, Modal, Select} from "antd";
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {OLD_DOWN_TRANSPORT_PRICES, OLD_UP_TRANSPORT_PRICES} from "../CLAIM_MOCK";
 
@@ -14,7 +14,7 @@ const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, upd
     const getInfo = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.get('/api/transport/price/history',
+                let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/transport/price/history`,
                     {
                         data: {},
                         _token: CSRF_TOKEN
@@ -37,7 +37,7 @@ const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, upd
         const startDate = newDate ? newDate.format('DD.MM.YYYY') : null;
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/transport/price',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/transport/price`,
                     {
                         data: {
                             price: +newPrice,

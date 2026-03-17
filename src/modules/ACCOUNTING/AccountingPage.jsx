@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import Sider from "antd/es/layout/Sider";
 import FiltersSidebar from "./components/FiltersSidebar";
 import dayjs from "dayjs";
-import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config";
 import {DEPARTMENTS, USERS} from "../CHARTS/mock/mock";
 import {ShortName} from "../../components/Helpers/TextHelpers";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
@@ -78,7 +78,7 @@ const AccountingPage = (props) => {
     const fetchSelects = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/accounting/selects',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/accounting/selects`,
                     {
                         _token: CSRF_TOKEN
                     });
@@ -98,7 +98,7 @@ const AccountingPage = (props) => {
     const fetchUsersInfo = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/accounting/getstaffingschedule',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/accounting/getstaffingschedule`,
                     {
                         data: {
                             filterParams

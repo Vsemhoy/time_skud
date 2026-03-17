@@ -5,7 +5,7 @@ import styles from "../style/user_page.module.css";
 import {ClearOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
 import TableTransfer from "../components/TableTransfer";
 import {POSSIBLE_GROUPS, USER_GROUPS} from "../mock/mock";
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import TextArea from "antd/es/input/TextArea";
 
@@ -54,7 +54,7 @@ function GroupsWorkspace(props) {
     const fetchGroupsInfo = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroups/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroups/${userIdState}`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -152,7 +152,7 @@ function GroupsWorkspace(props) {
     const fetchAddGroups = async (moveKeys) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupsadd/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupsadd/${userIdState}`,
                     {
                         data: { addGroups: moveKeys },
                         _token: CSRF_TOKEN
@@ -176,7 +176,7 @@ function GroupsWorkspace(props) {
     const fetchRemoveGroups = async (moveKeys) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupsremove/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupsremove/${userIdState}`,
                     {
                         data: { removeGroups: moveKeys },
                         _token: CSRF_TOKEN
@@ -200,7 +200,7 @@ function GroupsWorkspace(props) {
     const deleteGroup = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/usergroupsdelete/${editGroupId}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/hr/usergroupsdelete/${editGroupId}`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -228,7 +228,7 @@ function GroupsWorkspace(props) {
     const updateGroup = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupsupdate/${editGroupId}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupsupdate/${editGroupId}`,
                     {
                         data: {name: editGroupName, description: editGroupDescription},
                         _token: CSRF_TOKEN
@@ -257,7 +257,7 @@ function GroupsWorkspace(props) {
     const createGroup = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usergroupscreate`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupscreate`,
                     {
                         data: {name: editGroupName, description: editGroupDescription},
                         _token: CSRF_TOKEN

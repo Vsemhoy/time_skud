@@ -4,7 +4,7 @@ import { Badge, Button, Empty, Flex, Modal, Tag, Transfer } from "antd";
 import { Space, Typography } from 'antd';
 
 import './style/schedmodalusers.css';
-import { CSRF_TOKEN } from "../../../CONFIG/config";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import { ShortName } from "../../../components/Helpers/TextHelpers";
 
@@ -117,7 +117,7 @@ const SchedModalUsers = (props)=>{
     // Функция для получения данных с API
     const getScheduleItem = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedules/schedules_get/' + targetId, {
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedules/schedules_get/` + targetId, {
                 data: {},
                 _token: CSRF_TOKEN
             });

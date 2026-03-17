@@ -11,7 +11,7 @@ import TextArea from "antd/es/input/TextArea";
 import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined, UnderlineOutlined } from "@ant-design/icons";
 import SchedCalendar from "./SchedCalendar";
 import Panel from "antd/es/splitter/Panel";
-import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import SchedModalSection1 from "./SchedModalSection1";
 import { DEF_SCHEDULE, OPENMODE } from "../../../CONFIG/DEFFORMS";
@@ -195,7 +195,7 @@ const SchedModalEditor = (props)=>{
       // console.log(item_id);
       if (!item_id){ return ; }
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get/' + item_id, 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedule/schedule_get/` + item_id, 
                 {
                     data: {},
                     _token: CSRF_TOKEN

@@ -3,7 +3,7 @@ import './components/style/aclskud2.css';
 import { BarsOutlined, BuildOutlined, CheckCircleOutlined, CheckOutlined, ClearOutlined, CloseCircleOutlined, CloseOutlined, ClusterOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DiffOutlined, DownSquareOutlined, EditOutlined, EyeOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 import { Affix, Checkbox, Dropdown, Radio, Select, Tabs } from 'antd';
-import { CSRF_TOKEN, PRODMODE } from '../../../CONFIG/config';
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
 import { DS_DEPARTMENTS, DS_USERLIST_USERS } from '../../../CONFIG/DEFAULTSTATE';
 import AclSkudCardRow from './components/AclSkudCardRow';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
@@ -212,7 +212,7 @@ const AclSkudPage2 = (props) => {
 
         const get_departs2 = async (filters, req, res) => {
           try {
-              let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdeparts2', 
+              let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getdeparts2`,
                   {
                       data: {
                           id_company: visibleCompany
@@ -232,7 +232,7 @@ const AclSkudPage2 = (props) => {
 
         const get_states = async ( req, res) => {
           try {
-              let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getstates', 
+              let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getstates`,
                   {
                       data: {
                           id_company: visibleCompany
@@ -252,7 +252,7 @@ const AclSkudPage2 = (props) => {
 
       const get_columns = async ( req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getcolumns', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getcolumns`,
                 {
                     data: {
                         id_company: visibleCompany
@@ -272,7 +272,7 @@ const AclSkudPage2 = (props) => {
 
   const get_users = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getdepartusers', 
+          let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getdepartusers`,
               {
                   data: {
                       id_company: visibleCompany
@@ -291,7 +291,7 @@ const AclSkudPage2 = (props) => {
 
   const get_temlate_acls = async (items, callbackFn = null, callbackData = null) => {
       try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getaclentits', 
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getaclentits`,
           {
               data: {
                 departs: items,
@@ -326,7 +326,7 @@ const AclSkudPage2 = (props) => {
 
     const get_users_acls = async (users, callbackFn = null, callbackData = null) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getaclentits', 
+          let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getaclentits`,
               {
                   data: {
                     users: users,
@@ -363,7 +363,7 @@ const AclSkudPage2 = (props) => {
 
   const set_acl_templates = async (dataset, itemToUpdate = [], req, res) => {
     try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/setacls', 
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/setacls`,
             {
                 data: dataset,
                 _token: CSRF_TOKEN
@@ -384,7 +384,7 @@ const AclSkudPage2 = (props) => {
 
       const set_acl_users = async (dataset, usersToUpdate = [], req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/setacls', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/setacls`,
                 {
                     data: dataset,
                     _token: CSRF_TOKEN
@@ -406,7 +406,7 @@ const AclSkudPage2 = (props) => {
 
     const set_mass_acl_users = async (dataset, usersToUpdate = [], req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/setmassuseracls', 
+          let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/setmassuseracls`,
               {
                   data: dataset,
                   _token: CSRF_TOKEN

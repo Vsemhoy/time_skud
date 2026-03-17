@@ -9,7 +9,7 @@ import {
     RULES_TYPES_SELECT,
 } from "../mock/mock";
 import dayjs from "dayjs";
-import {CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import RuleIcons from "../../../assets/Comicon/RuleIcons";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {DEF_SCHEDULE as activeRule} from "../../../CONFIG/DEFFORMS";
@@ -154,7 +154,7 @@ function RulesWorkspace(props) {
     const fetchRulesInfo = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userrules/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userrules/${userIdState}`,
                     {
                         data: {
                             ruleTypeFilter,
@@ -189,7 +189,7 @@ function RulesWorkspace(props) {
     const fetchRulesTypesSelect = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userruleselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userruleselects`,
                     {
                         user_id: userIdState,
                         _token: CSRF_TOKEN
@@ -253,7 +253,7 @@ function RulesWorkspace(props) {
     const fetchRemoveRule = async (id) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/userruleremove/${id}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/hr/userruleremove/${id}`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -334,7 +334,7 @@ function RulesWorkspace(props) {
     const fetchUpdateRule = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userupdaterules/${editedRule.id}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userupdaterules/${editedRule.id}`,
                     {
                         data: {
                             userId: userIdState,
@@ -368,7 +368,7 @@ function RulesWorkspace(props) {
     const fetchAddRule = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/useraddrule`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/useraddrule`,
                     {
                         data: {
                             userId: userIdState,

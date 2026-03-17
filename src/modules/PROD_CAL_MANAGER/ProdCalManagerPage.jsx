@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import { DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import ProdCalItemCard from "./components/ProdCalItemCard";
 import ProdCalModal from "./components/ProdCalModal";
@@ -93,7 +93,7 @@ const ProdCalManagerPage = (props) => {
         if (PRODMODE) {
             try {
                 setFiltersState(filterParams);
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars_get`,
                     {
                         data: {filterParams, pageSize, currentPage},
                         _token: CSRF_TOKEN
@@ -125,7 +125,7 @@ const ProdCalManagerPage = (props) => {
     const fetchFilters = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/prodcalendar/filterselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/prodcalendar/filterselects`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -151,7 +151,7 @@ const ProdCalManagerPage = (props) => {
     const fetchDeleteCalendar = async (body) => {
         console.log('body',body);
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/prodcalendar/prodcalendars/' + body.id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars/` + body.id + '?_token=' + CSRF_TOKEN,
                 {
                     data: body,
                     _token: CSRF_TOKEN
@@ -170,7 +170,7 @@ const ProdCalManagerPage = (props) => {
     const fetchUpdateCalendar  = async (body) => {
         console.log('body',body);
         try {
-            let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/prodcalendar/prodcalendars/' + body.id,
+            let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars/` + body.id,
                 {
                     data: body,
                     _token: CSRF_TOKEN
@@ -185,7 +185,7 @@ const ProdCalManagerPage = (props) => {
 
     const fetchCreateCalendar = async (body) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars`,
                 {
                     data: body,
                     _token: CSRF_TOKEN
@@ -199,7 +199,7 @@ const ProdCalManagerPage = (props) => {
 
     const fetchGetCalendarItem = async (item_id) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get/' + item_id,
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars_get/` + item_id,
                 {
                     data: {},
                     _token: CSRF_TOKEN

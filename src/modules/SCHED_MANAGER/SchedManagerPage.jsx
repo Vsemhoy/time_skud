@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import dayjs from "dayjs";
 
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import ClaimManagerSidebar from "../SCHED_MANAGER/components/ClaimManagerSidebar";
 import SchedListRow from "./components/SchedListRow";
 import SchedModalEditor from "./components/SchedModalEditor";
@@ -94,7 +94,7 @@ const SchedManagerPage = (props) => {
     const fetchFilters = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/schedule/filterselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/schedule/filterselects`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -118,7 +118,7 @@ const SchedManagerPage = (props) => {
         if (PRODMODE) {
             try {
                 setFiltersState(filterParams);
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedule/schedule_get`,
                     {
                         data: {filterParams, pageSize, currentPage},
                         _token: CSRF_TOKEN
@@ -140,7 +140,7 @@ const SchedManagerPage = (props) => {
     const fetchProdCalendars = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/prodcalendars_get',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars_get`,
                     {
                         data: {},
                         _token: CSRF_TOKEN
@@ -156,7 +156,7 @@ const SchedManagerPage = (props) => {
 
     const fetchCreateSchedule = async (body) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedule/schedule`,
                 {
                     data: body,
                     _token: CSRF_TOKEN
@@ -185,7 +185,7 @@ const SchedManagerPage = (props) => {
     const fetchUpdateSchedule = async (body) => {
         console.log('body',body);
         try {
-            let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/schedule/schedule/' + body.id,
+            let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/schedule/schedule/` + body.id,
                 {
                     data: body,
                     _token: CSRF_TOKEN
@@ -216,7 +216,7 @@ const SchedManagerPage = (props) => {
     const fetchUpdateScheduleHistory = async (body) => {
         console.log('body',body);
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedulehistory/schedulehistory',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedulehistory/schedulehistory`,
                 {
                     data: body,
                     _token: CSRF_TOKEN

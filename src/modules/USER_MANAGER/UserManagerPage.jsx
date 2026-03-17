@@ -7,7 +7,7 @@ import './components/style/usermanager.css';
 import { Affix, Button, Checkbox, Empty, Radio, Select, Tabs } from "antd";
 
 import UserManagerToolbar from "./components/UserManagerToolbar";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import UserManagerCard from "./components/UserManagerCard";
 import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ScheduleManagerModal from "./components/schedulemanagermodal";
@@ -128,7 +128,7 @@ const UserManagerPage = (props) => {
      */
         const get_ruleList = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/rulelist', 
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/rulelist`, 
                   {
                       data: {
                         id_company: null
@@ -151,7 +151,7 @@ const UserManagerPage = (props) => {
      */
         const get_schedule_types = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/schedtyplist?_token=' + CSRF_TOKEN);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/schedtyplist?_token=` + CSRF_TOKEN);
             console.log('users', response);
             setScheduleTypes(response.data.content);
         } catch (e) {
@@ -168,7 +168,7 @@ const UserManagerPage = (props) => {
      */
     const get_scheduleList = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/schedulelist?_token=' + CSRF_TOKEN);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/schedulelist?_token=` + CSRF_TOKEN);
             console.log('departs', response.data);
             // setOrganizations(organizations_response.data.org_list)
             // setTotal(organizations_response.data.total_count)
@@ -187,7 +187,7 @@ const UserManagerPage = (props) => {
      */
     const get_ruleTypes = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/ruletyplist', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/ruletyplist`, 
               {
                   data: {
                     deleted: 0
@@ -211,7 +211,7 @@ const UserManagerPage = (props) => {
      */
         const get_userList = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/users', 
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/users`, 
                     {
                         data: {
                         id_company: null,
@@ -236,7 +236,7 @@ const UserManagerPage = (props) => {
      */
     const get_groupList = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/grouplist', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/grouplist`, 
                 {
                     data: {
                     id_company: null
@@ -260,7 +260,7 @@ const UserManagerPage = (props) => {
      */
     const bind_groups_to_users = async (users, groups, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindgroups', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/bindgroups`, 
                 {
                     data: {
                         users: users,
@@ -284,7 +284,7 @@ const UserManagerPage = (props) => {
      */
     const unlink_groups_for_users = async (users, groups, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/unlinkgroups', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/unlinkgroups`, 
                 {
                     data: {
                         users: users,
@@ -310,7 +310,7 @@ const UserManagerPage = (props) => {
           const create_links_with_schedules = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindschedules',
+                  let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/bindschedules`,
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
@@ -337,7 +337,7 @@ const UserManagerPage = (props) => {
             const create_links_with_rules = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/usermanager/bindrules',
+                    let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/usermanager/bindrules`,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
-import { CSRF_TOKEN } from '../../../CONFIG/config';
+import {CSRF_TOKEN, ROUTE_PREFIX} from '../../../CONFIG/config'
 
 const { TextArea } = Input;
 
@@ -70,7 +70,7 @@ const GroupEditorModal = (props) => {
      */
     const get_groupItem = async (item_id, req, res ) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups/' + item_id, 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/groups/groups/` + item_id, 
                 {
                     data: {},
                     _token: CSRF_TOKEN

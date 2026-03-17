@@ -5,7 +5,7 @@ import {Affix, Badge, Drawer, Empty, Layout, message, Modal, Spin, Table, Tag} f
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
@@ -159,7 +159,7 @@ const UserList = (props)=>{
   const fetchUsersSkudACLs = async () => {
     if (PRODMODE) {
       try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`,
             {
               _token: CSRF_TOKEN
             });
@@ -177,7 +177,7 @@ const UserList = (props)=>{
   const fetchClaimTypes = async () => {
     if (PRODMODE) {
       try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
             {
               _token: CSRF_TOKEN
             });
@@ -219,7 +219,7 @@ const UserList = (props)=>{
 
   const create_claim = async (claimObj) => {
     try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+      let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`,
           {
             data: claimObj,
             _token: CSRF_TOKEN
@@ -233,7 +233,7 @@ const UserList = (props)=>{
 
   const update_claim = async (claimObj) => {
     try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+      let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updateclaim`,
           {
             data: claimObj,
             _token: CSRF_TOKEN
@@ -279,7 +279,7 @@ const UserList = (props)=>{
 
   const update_claim_state = async (claimObj) => {
     try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
+      let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updatestate`,
           {
             data: claimObj,
             _token: CSRF_TOKEN
@@ -293,7 +293,7 @@ const UserList = (props)=>{
 
   const delete_claim = async (claim_id) => {
     try {
-      let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
+      let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/deleteclaim`,
           {
             data: {id: claim_id},
             _token: CSRF_TOKEN
@@ -660,7 +660,7 @@ const UserList = (props)=>{
      */
   const get_departments = async () => {
     try {
-        let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
+        let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/timeskud/departaments/departaments?_token=` + CSRF_TOKEN);
         console.log('departs', response);
         // setOrganizations(organizations_response.data.org_list)
         // setTotal(organizations_response.data.total_count)
@@ -679,7 +679,7 @@ const UserList = (props)=>{
     const get_users = async (filters) => {
         setIsLoading(true);
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getusers', {
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/getusers`, {
                 data: filters,
                 _token: CSRF_TOKEN
             });

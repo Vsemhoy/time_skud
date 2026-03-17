@@ -14,7 +14,7 @@ import {
     Modal,
     notification
 } from "antd";
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {
     MOCK_USER,
@@ -185,7 +185,7 @@ const BaseInfoWorkspace = (props) => {
         if (userIdState !== 'new') {
             if (PRODMODE) {
                 try {
-                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfo/${userIdState}`,
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userbaseinfo/${userIdState}`,
                         {
                             _token: CSRF_TOKEN
                         }
@@ -250,7 +250,7 @@ const BaseInfoWorkspace = (props) => {
     const fetchSelects = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userbaseinfoselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userbaseinfoselects`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -286,7 +286,7 @@ const BaseInfoWorkspace = (props) => {
                     id: userIdState,
                     info
                 }
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/createuser`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/createuser`,
                     {
                         data,
                         _token: CSRF_TOKEN
@@ -319,7 +319,7 @@ const BaseInfoWorkspace = (props) => {
                     innerPhone, telegramID, email, dateLeave, dateEnter,
                     rating, status, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/updateuserbaseinfo/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/updateuserbaseinfo/${userIdState}`,
                     {
                         data,
                         _token: CSRF_TOKEN
@@ -363,7 +363,7 @@ const BaseInfoWorkspace = (props) => {
     const fetchDeleteUser = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/deleteuser/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/deleteuser/${userIdState}`,
                     {
                         _token: CSRF_TOKEN
                     }

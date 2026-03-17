@@ -3,7 +3,7 @@ import styles from "../style/user_page.module.css";
 import {useNavigate, useOutletContext} from "react-router-dom";
 import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
 import {ClearOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE} from "../../../CONFIG/config";
+import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {SCHEDULES, SCHEDULES_NAMES_SELECTS, SCHEDULES_TYPES_SELECT} from "../mock/mock";
 import dayjs from "dayjs";
 import SchedIcons from "../../../assets/Comicon/SchedIcons";
@@ -146,7 +146,7 @@ function SchedulesWorkspace(props) {
     const fetchSchedulesInfo = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userschedules/${userIdState}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userschedules/${userIdState}`,
                     {
                         data: {
                             scheduleTypeFilter,
@@ -186,7 +186,7 @@ function SchedulesWorkspace(props) {
     const fetchScheduleTypesSelect = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userscheduleselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userscheduleselects`,
                     {
                         user_id: userIdState,
                         _token: CSRF_TOKEN
@@ -266,7 +266,7 @@ function SchedulesWorkspace(props) {
     const fetchRemoveSchedule = async (id) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`/api/hr/userscheduleremove/${id}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/hr/userscheduleremove/${id}`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -347,7 +347,7 @@ function SchedulesWorkspace(props) {
     const fetchUpdateSchedule = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/userupdateschedules/${editedSchedule.id}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userupdateschedules/${editedSchedule.id}`,
                     {
                         data: {
                             userId: userIdState,
@@ -381,7 +381,7 @@ function SchedulesWorkspace(props) {
     const fetchAddSchedule = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/useraddschedules`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/useraddschedules`,
                     {
                         data: {
                             userId: userIdState,

@@ -8,7 +8,7 @@ import GroupUserCardItem from "./components/groupusercarditem";
 import { DS_DEFAULT_USERS, DS_GROUP_USERS, DS_RULE_TYPES, DS_RULES, DS_SCHED_TYPES, DS_SCHED_TYPES_DB, DS_SCHEDULE_LIST, DS_SKUD_GROUPS, DS_USER } from "../../CONFIG/DEFAULTSTATE";
 import GroupEditorModal from "./components/groupeditormodal";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import ScheduleManagerModal from "./components/schedulemanagermodal";
 import RulesManagerModal from "./components/rulesmanagermodal";
 import UserManagerModal from "./components/usermanagermodal";
@@ -149,7 +149,7 @@ const GroupManagerPage = (props)=>{
      */
         const get_ruleList = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get', 
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/rules/rules_get`, 
                   {
                       data: {
                         id_company: null
@@ -172,7 +172,7 @@ const GroupManagerPage = (props)=>{
      */
         const get_schedule_types = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/scheduletype/scheduletypes_get?_token=' + CSRF_TOKEN);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/scheduletype/scheduletypes_get?_token=` + CSRF_TOKEN);
             console.log('users', response);
             setScheduleTypes(response.data.data);
         } catch (e) {
@@ -189,7 +189,7 @@ const GroupManagerPage = (props)=>{
      */
     const get_schedules = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedule/schedule_get?_token=' + CSRF_TOKEN);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedule/schedule_get?_token=` + CSRF_TOKEN);
             console.log('departs', response.data);
             // setOrganizations(organizations_response.data.org_list)
             // setTotal(organizations_response.data.total_count)
@@ -208,7 +208,7 @@ const GroupManagerPage = (props)=>{
      */
     const get_ruleTypes = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/types_get', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/rules/types_get`, 
               {
                   data: {
                     deleted: 0
@@ -232,7 +232,7 @@ const GroupManagerPage = (props)=>{
      */
     const get_userList = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/users_get', 
+          let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/groups/users_get`, 
             {
                 data: {
                     status: 0,
@@ -258,7 +258,7 @@ const GroupManagerPage = (props)=>{
      */
         const get_groupList = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups_get', 
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/groups/groups_get`, 
                   {
                       data: {
                         id_company: null
@@ -281,7 +281,7 @@ const GroupManagerPage = (props)=>{
     //  */
     //     const get_groupItem = async (item_id, req, res ) => {
     //         try {
-    //             let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/group/groups_get/' + item_id, 
+    //             let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/group/groups_get/` + item_id, 
     //                 {
     //                     data: {},
     //                     _token: CSRF_TOKEN
@@ -303,7 +303,7 @@ const GroupManagerPage = (props)=>{
        */
         const create_group = async (body, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/groups',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/groups/groups`,
                 {
                     data: body, 
                     _token: CSRF_TOKEN
@@ -325,7 +325,7 @@ const GroupManagerPage = (props)=>{
         const update_group = async (body, req, res) => {
             // console.log('body',body);
             try {
-                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/groups/' + body.id,
+                let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/groups/groups/` + body.id,
                     {   
                         data: body, 
                         _token: CSRF_TOKEN
@@ -353,7 +353,7 @@ const GroupManagerPage = (props)=>{
             const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/links/' + body.group_id,
+                    let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/groups/links/` + body.group_id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -380,7 +380,7 @@ const GroupManagerPage = (props)=>{
     const delete_group = async (group_id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/groups/' + group_id,
+            let response = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/timeskud/groups/groups/` + group_id,
                 {   
                     data: { "id" : group_id}, 
                     _token: CSRF_TOKEN

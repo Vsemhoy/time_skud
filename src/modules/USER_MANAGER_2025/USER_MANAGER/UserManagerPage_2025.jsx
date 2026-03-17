@@ -17,7 +17,7 @@ import {
     SCHEDULE_TYPE_LIST,
     USERS_MANAGER
 } from "./mock/mock";
-import {CSRF_TOKEN, HTTP_ROOT, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
@@ -105,7 +105,7 @@ const UserManagerPage_2025 = (props) => {
     const fetchUsers = async () => {
          if (PRODMODE) {
              try {
-                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/users`,
+                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/users`,
                      {
                           data: {filterParams, currentPage, pageSize},
                          _token: CSRF_TOKEN
@@ -131,7 +131,7 @@ const UserManagerPage_2025 = (props) => {
     const fetchFilters = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/filterselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/filterselects`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -301,7 +301,7 @@ const UserManagerPage_2025 = (props) => {
     const fetchRemoveGroup = async (groupLinkId) => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/usermanagerremovegroup/${groupLinkId}`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usermanagerremovegroup/${groupLinkId}`,
                     {
                         _token: CSRF_TOKEN
                     }

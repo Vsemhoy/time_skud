@@ -4,7 +4,7 @@ import {Affix, Drawer, Empty, Tag} from "antd";
 
 import dayjs from "dayjs";
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
-import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import { LIST_SCHED_N_RULES_RESPONSE } from "../../../CONFIG/DEFAULTSTATE";
 import UmScheduleMiniCard from "./UmScheduleMiniCard";
@@ -131,7 +131,7 @@ const ExtendedInformationSidebar = (props) => {
      */
     const get_user_schedule_and_rules = async (data, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getuserschedrules',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/getuserschedrules`,
                 {
                     data: data,
                     _token: CSRF_TOKEN

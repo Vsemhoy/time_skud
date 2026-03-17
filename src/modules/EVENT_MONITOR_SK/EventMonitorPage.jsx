@@ -6,7 +6,7 @@ import { data } from 'react-router-dom';
 
 import './components/style/eventmonitor.css';
 import { PROD_AXIOS_INSTANCE } from '../../API/API';
-import { CSRF_TOKEN } from '../../CONFIG/config';
+import {CSRF_TOKEN, ROUTE_PREFIX} from '../../CONFIG/config'
 import EventMonitorListCard from './components/EventMonitorListCard';
 
 const EventMonitorPage = (props) => {
@@ -42,7 +42,7 @@ const EventMonitorPage = (props) => {
      */
     const get_arch_events = async (data, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/eventmonitor/getevents', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/eventmonitor/getevents`, 
                 {
                     data: data,
                     _token: CSRF_TOKEN
