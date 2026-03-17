@@ -55,9 +55,9 @@ const AppMenu23 = (props) => {
             onClick: () => navigate('/hr/notify')
         },
         {
-            key: `${HTTP_ROOT}/logout`,
+            key: `${HTTP_HOST}/logout`,
             icon: <LoginOutlined />,
-            label: <NavLink to={`${HTTP_ROOT}/logout`}>Выйти</NavLink>,
+            label: <NavLink to={`${HTTP_HOST}/logout`}>Выйти</NavLink>,
         },
     ];
 
