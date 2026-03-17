@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import RuleEditorModal from "./components/ruleeditormodal";
 import "./style/rule_manager_page.css";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
@@ -135,7 +135,7 @@ const RuleManagerPage = (props) => {
         if (PRODMODE) {
             try {
                 setFiltersState(filterParams);
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/rules`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/rule/rules`,
                     {
                         data: {filterParams, pageSize, currentPage},
                         _token: CSRF_TOKEN
@@ -158,7 +158,7 @@ const RuleManagerPage = (props) => {
         if (PRODMODE) {
             try {
                 setFiltersState(filterParams);
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/users`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/rule/users`,
                     {
                         data: {filterParams},
                         _token: CSRF_TOKEN
@@ -181,7 +181,7 @@ const RuleManagerPage = (props) => {
     const fetchFilters = async () => {
         if (PRODMODE) {
             try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/v2/rule/filterselects`,
+                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/rule/filterselects`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -205,7 +205,7 @@ const RuleManagerPage = (props) => {
     const fetchCreateRule = async (body) => {
         if (PRODMODE){
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/rules/rules`,
                     {
                         data: body,
                         _token: CSRF_TOKEN
@@ -224,7 +224,7 @@ const RuleManagerPage = (props) => {
     const fetchUpdateRule = async (body) => {
         if (PRODMODE){
             try {
-                let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/rules/' + body.id,
+                let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/rules/rules/` + body.id,
                     {
                         data: body,
                         _token: CSRF_TOKEN

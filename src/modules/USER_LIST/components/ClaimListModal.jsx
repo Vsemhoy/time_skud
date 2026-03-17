@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Affix, Button, ConfigProvider, Modal, Pagination, Segmented, Spin, Tag} from "antd";
 import styles from "../../CHARTS/style/charts.module.css";
 import MonthsRange from "../../CHARTS/components/MonthsRange";
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {CHART_STATES, USERS_PAGE} from "../../CHARTS/mock/mock";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
@@ -55,7 +55,7 @@ const ClaimListModal = (props) => {
 
     const fetchAclBase = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`,
                 {
                     data: [],
                     _token: CSRF_TOKEN
@@ -71,7 +71,7 @@ const ClaimListModal = (props) => {
     const fetchChartStates = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
                     {
                         _token: CSRF_TOKEN
                     });
@@ -131,7 +131,7 @@ const ClaimListModal = (props) => {
                     filters.boss_id = props?.userData?.user?.id;
                     filters.user_id = props?.userData?.user?.id;
                 }
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`,
                     {
                         data: filters,
                         _token: CSRF_TOKEN

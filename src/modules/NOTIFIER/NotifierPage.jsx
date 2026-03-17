@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import NotiCard from "./components/NotiCard";
 import dayjs from "dayjs";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import { DS_DEFAULT_USERS } from "../../CONFIG/DEFAULTSTATE";
 import MDEditor from "@uiw/react-md-editor";
 
@@ -45,7 +45,7 @@ const NotifierPage = (props) => {
        */
       const get_types = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.get('/api/notice/types?_token=' + CSRF_TOKEN);
+            let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/notice/types?_token=` + CSRF_TOKEN);
             console.log('users', response);
             setNoteTypes(response.data.types);
         } catch (e) {
@@ -63,7 +63,7 @@ const NotifierPage = (props) => {
        */
           const get_users = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/users/users?_token=' + CSRF_TOKEN);
+                let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/timeskud/users/users?_token=` + CSRF_TOKEN);
                 console.log('users', response);
                 setBaseUserListData(response.data.data.sort((a,b)=>{
                     if (a.surname.toLowerCase() < b.surname.toLowerCase()) {
@@ -88,7 +88,7 @@ const NotifierPage = (props) => {
        */
         const sendNotes = async (body, req, res) => {
         try {
-                    let response = await PROD_AXIOS_INSTANCE.post('/api/notice/create',
+                    let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/notice/create`,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN

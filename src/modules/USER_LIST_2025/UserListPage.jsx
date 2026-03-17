@@ -21,7 +21,7 @@ import {
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
@@ -186,7 +186,7 @@ const UserList2 = (props)=>{
   const fetchFilters = async () => {
     if (PRODMODE) {
       try {
-        const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/filterselects`,
+        const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/filterselects`,
             {
               _token: CSRF_TOKEN
             }
@@ -221,7 +221,7 @@ const UserList2 = (props)=>{
     if (PRODMODE) {
       try {
         // setFiltersState(filters);
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/getusers',
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/getusers`,
             {
               data: filters,
               _token: CSRF_TOKEN
@@ -243,7 +243,7 @@ const UserList2 = (props)=>{
     if (PRODMODE) {
       try {
 
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`,
             {
               data: [],
               _token: CSRF_TOKEN
@@ -312,7 +312,7 @@ const UserList2 = (props)=>{
   const fecthStateList = async () => {
     if (PRODMODE){
       try {
-        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
             {
               data: {
 

@@ -6,7 +6,7 @@ import isLeapYear from 'dayjs/plugin/isLeapYear';
 import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import { generateYearOptions, getMonthName } from "../../../components/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { months } from "moment";
 import { ClockCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 
@@ -407,7 +407,7 @@ const ProdCalModal = ({ is_open, onClose, onSave, data, userData, allow_delete, 
     const loadOfficialPublicCalendar = async (ev) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/prodcalendar/getjsoncalendar',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/getjsoncalendar`,
                 {
                     data: {year:selectedYear},
                     _token: CSRF_TOKEN

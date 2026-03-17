@@ -6,7 +6,7 @@ import {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
 import styles from "./style/charts.module.css"
-import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config";
 import {CHART_STATES, GROUPS, USDA, USERS_PAGE, CLAIM_ACL_MOCK, STATUSES, COMPANIES, CLAIM_ITEM} from "./mock/mock";
 import dayjs from "dayjs";
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
@@ -142,7 +142,7 @@ const  Charts = (props) => {
     const fetchSelects = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/chart/selects',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/chart/selects`,
                     {
                         data: {
                             filterParams
@@ -173,7 +173,7 @@ const  Charts = (props) => {
     const fetchChartStates = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
                     {
                         _token: CSRF_TOKEN
                     });
@@ -191,7 +191,7 @@ const  Charts = (props) => {
         if (PRODMODE) {
             try {
 
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`,
                     {
                         data: [],
                         _token: CSRF_TOKEN
@@ -219,7 +219,7 @@ const  Charts = (props) => {
     const fetchUsers = async () => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/chart/users',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/chart/users`,
                     {
                         data: {
                             filterParams,
@@ -522,7 +522,7 @@ const  Charts = (props) => {
     const fetch_claim = async (claim_id) => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/chart/getclaimitem',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/chart/getclaimitem`,
                     {
                         data: {
                             claim_id
@@ -544,7 +544,7 @@ const  Charts = (props) => {
     const create_claim = async (claimObj) => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`,
                     {
                         data: claimObj,
                         _token: CSRF_TOKEN
@@ -559,7 +559,7 @@ const  Charts = (props) => {
     const update_claim = async (claimObj) => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updateclaim`,
                     {
                         data: claimObj,
                         _token: CSRF_TOKEN
@@ -574,7 +574,7 @@ const  Charts = (props) => {
     const delete_claim = async (claim_id) => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/deleteclaim`,
                     {
                         data: {id: claim_id},
                         _token: CSRF_TOKEN
@@ -589,7 +589,7 @@ const  Charts = (props) => {
     const update_claim_state = async (claimObj) => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updatestate`,
                     {
                         data: claimObj,
                         _token: CSRF_TOKEN

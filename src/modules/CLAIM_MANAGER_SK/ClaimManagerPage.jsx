@@ -20,7 +20,7 @@ import ClaimManagerCard from "./components/ClaimManagerCard";
 import ClaimEditorDrawer from "./components/ClaimEditorDrawer";
 import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CLAIM_ACL_MOCK, CLAIM_BASE_CLAIM_TYPES, CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS, CLAIMS_MOCKS } from "./CLAIM_MOCK";
 import "../CHARTS/style/patch.css";
@@ -302,7 +302,7 @@ const ClaimManagerPage = (props) => {
                     filters.user_id = userData?.user.id;
                 };
 
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getclaims',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`,
                     {
                         data: filters,
                         _token: CSRF_TOKEN
@@ -325,7 +325,7 @@ const ClaimManagerPage = (props) => {
     const get_aclbase = async () => {
         try {
             
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/aclskud/getMyAcls',
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`,
                 {
                     data: [],
                     _token: CSRF_TOKEN
@@ -339,7 +339,7 @@ const ClaimManagerPage = (props) => {
 
     const get_userList = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getusers', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getusers`,
                 {
                     data: {
                     
@@ -356,7 +356,7 @@ const ClaimManagerPage = (props) => {
 
     const get_approverList = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getapprovers', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getapprovers`,
                 {
                     data: {
                     
@@ -373,7 +373,7 @@ const ClaimManagerPage = (props) => {
 
     const get_stateList = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getstates', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
                 {
                     data: {
                     
@@ -389,7 +389,7 @@ const ClaimManagerPage = (props) => {
 
     const get_departlist = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/getdepartments', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getdepartments`,
                 {
                     data: {
                     
@@ -406,7 +406,7 @@ const ClaimManagerPage = (props) => {
 
     const set_claimStatus = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/setclaimstatus', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/setclaimstatus`,
                 {
                     data: {
                     
@@ -422,7 +422,7 @@ const ClaimManagerPage = (props) => {
 
     const create_claim = async (claimObj) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/createclaim', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`,
                 {
                     data: claimObj,
                     _token: CSRF_TOKEN
@@ -436,7 +436,7 @@ const ClaimManagerPage = (props) => {
 
     const update_claim = async (claimObj) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updateclaim', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updateclaim`,
                 {
                     data: claimObj,
                     _token: CSRF_TOKEN
@@ -450,7 +450,7 @@ const ClaimManagerPage = (props) => {
 
     const update_claim_state = async (claimObj) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/updatestate', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updatestate`,
                 {
                     data: claimObj,
                     _token: CSRF_TOKEN
@@ -464,7 +464,7 @@ const ClaimManagerPage = (props) => {
 
     const delete_claim = async (claim_id) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/claims/deleteclaim', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/deleteclaim`,
                 {
                     data: {id: claim_id},
                     _token: CSRF_TOKEN
@@ -478,7 +478,7 @@ const ClaimManagerPage = (props) => {
 
     const get_transport_price = async () => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.get('/api/transport/price', {});
+            let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/transport/price`, {});
             if (response.data.content) {
                 setUpPrice(response.data.content?.up?.price);
                 setDownPrice(response.data.content?.down?.price);

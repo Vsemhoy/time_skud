@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, DatePicker, Flex, Modal, Select, message } from 'antd';
 
 
-import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
+import {CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config'
 import { DS_RULES, DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -295,7 +295,7 @@ const RulesManagerModal= (props) => {
      */
     const get_links = async (req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get/' + props.target_id, 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/rules/rules_get/` + props.target_id, 
               {   
                 data: {
                   page: page_num,
@@ -374,7 +374,7 @@ const RulesManagerModal= (props) => {
           const create_links = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/links',
+                  let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/rules/links`,
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
@@ -423,7 +423,7 @@ const RulesManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/rules/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/rules/` + body.id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -459,7 +459,7 @@ const RulesManagerModal= (props) => {
     const delete_link = async (body, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/rules/links/' + body.id + "?_token=" + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/timeskud/rules/links/` + body.id + "?_token=" + CSRF_TOKEN,
                 {   
                     data: { "id" : body.id}, 
                     _token: CSRF_TOKEN

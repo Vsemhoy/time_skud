@@ -11,7 +11,7 @@ import TextArea from "antd/es/input/TextArea";
 import { CalendarOutlined, CheckCircleOutlined, CheckOutlined, ClockCircleOutlined, LoadingOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, FileTextOutlined, FontColorsOutlined, MinusOutlined, RadarChartOutlined, UnderlineOutlined } from "@ant-design/icons";
 import SchedCalendar from "./SchedCalendar";
 import Panel from "antd/es/splitter/Panel";
-import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 
 const { Text, Link } = Typography;
@@ -114,7 +114,7 @@ const SchedModalSection1 = (props) => {
                     schedule_id: props.schedule_id
                 }
             }
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedulehistory/schedulehistory_get_by_id?_token=' + CSRF_TOKEN, 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedulehistory/schedulehistory_get_by_id?_token=` + CSRF_TOKEN, 
               format_data
             );
             setHistory(response.data.data);
@@ -132,7 +132,7 @@ const SchedModalSection1 = (props) => {
                     id: item_id
                 }
             }
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/schedulehistory/schedulehistory/' + item_id, 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedulehistory/schedulehistory/` + item_id, 
               format_data
             );
             if (response.data.status === 0){

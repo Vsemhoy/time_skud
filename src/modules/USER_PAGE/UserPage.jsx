@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Link, Outlet, useLocation, useNavigate, useParams} from "react-router-dom";
 import {Affix, Alert, Button, Tag} from "antd";
 import styles from './style/user_page.module.css'
-import {CSRF_TOKEN, PRODMODE} from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USDA} from "./mock/mock";
 import {RollbackOutlined} from "@ant-design/icons";
@@ -61,7 +61,7 @@ const UserPage = (props) => {
         } else {
             if (PRODMODE) {
                 try {
-                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`/api/hr/selecteduserinfosmall/${userIdState}`,
+                    const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/selecteduserinfosmall/${userIdState}`,
                         {
                             _token: CSRF_TOKEN
                         }

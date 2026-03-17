@@ -6,7 +6,7 @@ import SchedFlexSVG from "../../../media/schedule-flex.svg";
 import SchedFreeSVG from "../../../media/schedule-free.svg";
 import SchedShiftSVG from "../../../media/schedule-shift.svg";
 import SchedSumSVG from "../../../media/schedule-sum.svg";
-import { CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE } from '../../../CONFIG/config';
+import {CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config'
 import { DS_SCHEDULE_LIST } from '../../../CONFIG/DEFAULTSTATE';
 import { CloseOutlined, CloseSquareOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, LockOutlined, PlusSquareOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -302,7 +302,7 @@ const ScheduleManagerModal= (props) => {
    */
   const get_links = async (req, res) => {
       try {
-          let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules_get/' + props.target_id, 
+          let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/groups/schedules_get/` + props.target_id, 
             {   
               data: {
                 page: page_num,
@@ -378,7 +378,7 @@ const ScheduleManagerModal= (props) => {
           const create_links = async (body, req, res) => {
               console.log('body',body);
               try {
-                  let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/groups/schedules',
+                  let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/groups/schedules`,
                       {   
                           data: body, 
                           _token: CSRF_TOKEN
@@ -423,7 +423,7 @@ const ScheduleManagerModal= (props) => {
               const update_links = async (body, req, res) => {
                 console.log('body',body);
                 try {
-                    let response = await PROD_AXIOS_INSTANCE.put('/api/timeskud/groups/schedules/' + body.id,
+                    let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/groups/schedules/` + body.id,
                         {   
                             data: body, 
                             _token: CSRF_TOKEN
@@ -460,7 +460,7 @@ const ScheduleManagerModal= (props) => {
     const delete_link = async (id, req, res) => {
 
         try {
-            let response = await PROD_AXIOS_INSTANCE.delete('/api/timeskud/groups/schedules/' + id + '?_token=' + CSRF_TOKEN,
+            let response = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/timeskud/groups/schedules/` + id + '?_token=' + CSRF_TOKEN,
               {   
                   data: id, 
                   _token: CSRF_TOKEN

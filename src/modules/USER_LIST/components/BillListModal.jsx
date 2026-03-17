@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Modal, Select, Spin, Tag, Tooltip} from "antd";
 import './style/bill_list_modal.css'
-import {CSRF_TOKEN, PRODMODE} from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
 
@@ -119,7 +119,7 @@ const BillListModal = (props) => {
         if (PRODMODE) {
             try {
                 setIsLoadingFilters(true);
-                let response = await PROD_AXIOS_INSTANCE.post('',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
                     {
                         _token: CSRF_TOKEN
                     }
@@ -156,7 +156,7 @@ const BillListModal = (props) => {
         if (PRODMODE) {
             try {
                 setIsLoadingBillList(true);
-                let response = await PROD_AXIOS_INSTANCE.post('',
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
                     {
                         data: {
                             user: selectedUser,

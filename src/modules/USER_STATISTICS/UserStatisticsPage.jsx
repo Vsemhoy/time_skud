@@ -5,7 +5,7 @@ import DemoChart from "./components/style/DemoChart";
 import {  Button, DatePicker, Drawer, Pagination, Select } from "antd";
 import dayjs from "dayjs";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
-import { CSRF_TOKEN, PRODMODE } from "../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS } from "../../CONFIG/DEFAULTSTATE";
 
 
@@ -196,7 +196,7 @@ const UserStatisticsPage = (props)=>{
          */
         const get_arch_users = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/eventmonitor/getusers', 
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/eventmonitor/getusers`, 
                     {
                         data: [],
                         _token: CSRF_TOKEN
@@ -219,7 +219,7 @@ const UserStatisticsPage = (props)=>{
         //      */
         //     const get_departments = async (req, res) => {
         //       try {
-        //           let response = await PROD_AXIOS_INSTANCE.get('/api/timeskud/departaments/departaments?_token=' + CSRF_TOKEN);
+        //           let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/timeskud/departaments/departaments?_token=` + CSRF_TOKEN);
         //           console.log('departs', response);
         //           // setOrganizations(organizations_response.data.org_list)
         //           // setTotal(organizations_response.data.total_count)
@@ -239,7 +239,7 @@ const UserStatisticsPage = (props)=>{
      */
         const get_stats = async (filters, req, res) => {
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/userlist/statistic', 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/statistic`, 
                 {
                     data: filters,
                     _token: CSRF_TOKEN

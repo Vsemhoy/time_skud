@@ -12,7 +12,7 @@ import UserListPage2 from './modules/USER_LIST_2025/UserListPage';
 import {Layout, Menu, Skeleton, Button, Badge, Alert, message} from 'antd';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
-import { BASE_NAME, BASE_ROUTE, CSRF_TOKEN, HTTP_ROOT, PRODMODE } from './CONFIG/config';
+import {BASE_NAME, BASE_ROUTE, CSRF_TOKEN, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from './CONFIG/config';
 import RuleManagerPage from './modules/RULE_MANAGER/RuleManagerPage';
 import SchedManagerPage from './modules/SCHED_MANAGER/SchedManagerPage';
 import ProdCalManagerPage from './modules/PROD_CAL_MANAGER/ProdCalManagerPage';
@@ -151,7 +151,7 @@ function App() {
                         // active_date: get_unix_by_datearray(filters.active_date)
                     }
                 }
-                let response = await PROD_AXIOS_INSTANCE.get('/usda?_token=' + CSRF_TOKEN);
+                let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/usda?_token=` + CSRF_TOKEN);
                 console.log('me: ', response);
                 // setOrganizations(organizations_response.data.org_list)
                 // setTotal(organizations_response.data.total_count)

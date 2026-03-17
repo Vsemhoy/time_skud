@@ -5,7 +5,7 @@ import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
 import dayjs from "dayjs";
 import React, { useState, useEffect } from "react";
-import { CSRF_TOKEN, PRODMODE } from "../../../CONFIG/config";
+import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { DS_DEFAULT_USERS } from "../../../CONFIG/DEFAULTSTATE";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 
@@ -241,7 +241,7 @@ const EventMonitorToolbar = (props)=>
          */
         const get_arch_users = async (req, res) => {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/eventmonitor/getusers', 
+                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/eventmonitor/getusers`, 
                     {
                         data: [],
                         _token: CSRF_TOKEN
@@ -263,7 +263,7 @@ const EventMonitorToolbar = (props)=>
          */
                 const write_user_action = async (data, req, res) => {
                     try {
-                        let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/eventmonitor/makeevent', 
+                        let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/eventmonitor/makeevent`, 
                             {
                                 data: data,
                                 _token: CSRF_TOKEN

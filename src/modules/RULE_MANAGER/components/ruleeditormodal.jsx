@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, Select, Switch } from 'antd';
 import dayjs from 'dayjs';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
-import { CSRF_TOKEN } from '../../../CONFIG/config';
+import {CSRF_TOKEN, ROUTE_PREFIX} from '../../../CONFIG/config'
 
 const { TextArea } = Input;
 
@@ -88,7 +88,7 @@ const RuleEditorModal = (props) => {
     const get_ruleItem = async (item_id, req, res ) => {
       if (!item_id){ return ; }
         try {
-            let response = await PROD_AXIOS_INSTANCE.post('/api/timeskud/rules/rules_get/' + item_id, 
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/rules/rules_get/` + item_id, 
                 {
                     data: {},
                     _token: CSRF_TOKEN

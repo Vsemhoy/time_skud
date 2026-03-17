@@ -1,6 +1,6 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
-import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE} from '../../../CONFIG/config';
+import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
 import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
@@ -254,10 +254,10 @@ const AppMenu23 = (props) => {
                               PROD_AXIOS_INSTANCE: null,
                           }}
                           fetchParams={{
-                              fetchChatsListPath: `${HTTP_HOST}/api/sms`,
-                              fetchChatMessagesPath: `${HTTP_HOST}/api/sms`,
-                              sendSmsPath: `${HTTP_HOST}/api/sms/create/sms`,
-                              markMessagesAsReadPath: `${HTTP_HOST}/api/sms/read`,
+                              fetchChatsListPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms`,
+                              fetchChatMessagesPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms`,
+                              sendSmsPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms/create/sms`,
+                              markMessagesAsReadPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms/read`,
                           }}
                           socketSubscribe={{
                               subscribeToChat: 'subscribeToChat'
