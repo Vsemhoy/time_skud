@@ -69,7 +69,7 @@ const AppMenu23 = (props) => {
             icon: <HomeOutlined style={{ fontSize: '20px', color: '#3b3b3b' }} />,
             label: null,
             onClick: () => {
-                window.location.assign(HTTP_ROOT || '/');
+                window.location.assign(`${HTTP_HOST}`);
             },
         },
         {
