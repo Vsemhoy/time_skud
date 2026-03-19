@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { HTTP_HOST } from './config';
+import { HTTP_HOST } from '../CONFIG/config';
 
 axios.defaults.withCredentials = true;
 
