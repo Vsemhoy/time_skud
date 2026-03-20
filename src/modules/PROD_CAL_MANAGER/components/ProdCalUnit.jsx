@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTSTATE";
 import './style/prodcalunit.css';
-import { months } from "moment";
 import { Tooltip } from "antd";
 import { getMonthName } from "../../../components/Helpers/TextHelpers";
 

@@ -7,7 +7,6 @@ import { DS_PROD_CALENDAR, DS_YEARMONTHS_SELECT } from "../../../CONFIG/DEFAULTS
 import { generateYearOptions, getMonthName } from "../../../components/Helpers/TextHelpers";
 import ProdCalUnit from "./ProdCalUnit";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
-import { months } from "moment";
 import { ClockCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 
 import {DEFAULT_SCHED} from "../mock/mock";
