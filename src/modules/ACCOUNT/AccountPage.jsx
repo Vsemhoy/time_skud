@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DatePicker, Radio, Space, Tabs } from 'antd';
-import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography, TabsProps } from "antd";
+import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography } from "antd";
 import dayjs from "dayjs";
  import "./components/style/accountpage.css";
 import AccPageSideBar from "./components/accpagesidebar";

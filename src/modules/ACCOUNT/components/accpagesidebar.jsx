@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Collapse, DatePicker, Radio, Space, Tabs } from 'antd';
-import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography, TabsProps } from "antd";
+import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography } from "antd";
 import dayjs from "dayjs";
 
 
