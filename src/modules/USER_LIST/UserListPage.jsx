@@ -157,7 +157,7 @@ const UserList = (props)=>{
   };
 
   const fetchUsersSkudACLs = async () => {
-    if (PRODMODE) {
+    //if (PRODMODE) {
       try {
         let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`,
             {
@@ -168,14 +168,14 @@ const UserList = (props)=>{
       } catch (e) {
         console.log(e)
       }
-    } else {
+    /*} else {
       setAclBase(CLAIM_ACL_MOCK);
       setUserData(USDA);
-    }
+    }*/
   };
 
   const fetchClaimTypes = async () => {
-    if (PRODMODE) {
+    //if (PRODMODE) {
       try {
         let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
             {
@@ -186,9 +186,9 @@ const UserList = (props)=>{
       } catch (e) {
         console.log(e)
       }
-    } else {
+    /*} else {
       setBaseClaimTypes(CHART_STATES);
-    }
+    }*/
   };
 
   const handleCloseEditor = ()=> {
@@ -501,32 +501,32 @@ const UserList = (props)=>{
   }, [baseUserListData]);
 
   useEffect(() => {
-    if (PRODMODE){
+    //if (PRODMODE){
       get_departments();
       // get_users();
-    } else {
+    /*} else {
       setDepartments(DS_DEPARTMENTS);
       // setBaseUserListData(DS_USERLIST_USERS);
-    }
+    }*/
   },[])
 
   useEffect(()=>{
     setTargetDate(extFilters.date);
     setIsLoading(true);
-    if (PRODMODE){
+    //if (PRODMODE){
       const debounceTimer = setTimeout(() => {
 
         get_users(extFilters);
         }, 500);
         return () => clearTimeout(debounceTimer);
-    } else {
+    /*} else {
       //setBaseUserListData(DS_USERLIST_USERS);
       console.log(123)
       setBaseUserListData(USERS_LIST);
       setTimeout(() => {
         setIsLoading(false);
       }, 500);
-    }
+    }*/
 
   },[extFilters]);
 

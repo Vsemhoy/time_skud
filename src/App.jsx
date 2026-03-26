@@ -95,7 +95,7 @@ function App() {
 
   const [alertNotShowDate, setAlertNotShowDate] = useCookieState('skud_alert_notshow_date', "");
 
-  const [userAct, setUserAct] = useState(!PRODMODE ? DS_USER : []);
+  const [userAct, setUserAct] = useState([]); //!PRODMODE ? DS_USER : []
   const [pageLoaded, setPageLoaded] = useState(false);
 
 
@@ -140,7 +140,7 @@ function App() {
      * @param {*} res 
      */
     const get_userdata = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 // setLoadingOrgs(true)
                 const format_data = {
@@ -162,10 +162,10 @@ function App() {
                 // setLoadingOrgs(false)
                 setPageLoaded(true);
             }
-        } else {
+        /*} else {
             //setUserAct(USDA);
             setPageLoaded(true);
-        }
+        }*/
   }
 
 
