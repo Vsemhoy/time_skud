@@ -31,7 +31,7 @@
     "push-all-changes": "git add . && git commit -m\"update\" && git push origin",
     "push-all-bogdan": "git add . && git commit -m\"update\" && git push origin master:bogdan",
     "fetch-all": "git fetch origin && git merge origin/master",
-    "update": "git fetch origin && git reset --hard origin/main"
+    "update": "git fetch origin && git reset --hard origin/master"
   },
   "eslintConfig": {
     "extends": [
