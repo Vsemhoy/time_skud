@@ -245,7 +245,7 @@ const AppMenu23 = (props) => {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
 
-                    <Chat userdata={props.user_act}
+                    {/*<Chat userdata={props.user_act}
                           httpParams={{
                               HTTP_HOST: HTTP_HOST,
                               BFF_PORT: BFF_PORT,
@@ -283,7 +283,7 @@ const AppMenu23 = (props) => {
                                      newNotification: 'new:notification',
                                      readNotification: 'read:notification',
                                  }}
-                    />
+                    />*/}
 
                     {/*<div onClick={showNotyBar} style={{ cursor: "pointer", width: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         <Badge count={countOfNotifications} offset={[4, 32]}>
