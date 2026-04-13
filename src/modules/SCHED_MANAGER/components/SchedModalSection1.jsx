@@ -103,10 +103,10 @@ const SchedModalSection1 = (props) => {
        * @param {*} res
        */
       const get_schedule_history = async (req, res) => {
-        if (!PRODMODE){
+        /*if (!PRODMODE){
           setHistory(SKUD_SCHED_HISTORY);
           return;
-        }
+        }*/
         try {
             const format_data = {
                 CSRF_TOKEN,

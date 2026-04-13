@@ -80,17 +80,17 @@ const ProdCalManagerPage = (props) => {
         setIsLoading(true);
         await fetchCalendars(filterParams);
         await fetchFilters();
-        if (PRODMODE) {
+        //if (PRODMODE) {
             setIsLoading(false);
-        } else {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 300);
-        }
+        // } else {
+        //     setTimeout(() => {
+        //         setIsLoading(false);
+        //     }, 300);
+        // }
     };
 
     const fetchCalendars = async (filterParams) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 setFiltersState(filterParams);
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars_get`,
@@ -117,13 +117,13 @@ const ProdCalManagerPage = (props) => {
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
-        } else {
-            setCalendarList(PROD_CALENDARS);
-        }
+        //} else {
+        //    setCalendarList(PROD_CALENDARS);
+        //}
     }
 
     const fetchFilters = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/prodcalendar/filterselects`,
                     {
@@ -140,12 +140,12 @@ const ProdCalManagerPage = (props) => {
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
-        } else {
-            setCompanies(COMPANIES);
-            setYears(YEARS);
-
-            console.log("XKHJGBKFJDHS", YEARS);
-        }
+        //} else {
+        //    setCompanies(COMPANIES);
+        //    setYears(YEARS);
+        //
+        //    console.log("XKHJGBKFJDHS", YEARS);
+        //}
     };
 
     const fetchDeleteCalendar = async (body) => {
@@ -249,13 +249,13 @@ const ProdCalManagerPage = (props) => {
             return;
         }
 
-        if (!PRODMODE){
-            let item = PROD_CALENDARS.find((el)=>el.id === item_id);
-            setEditedItem(item);
-            setCallToOpen(true);
-        } else {
+        //if (!PRODMODE){
+        //    let item = PROD_CALENDARS.find((el)=>el.id === item_id);
+        //    setEditedItem(item);
+        //    setCallToOpen(true);
+        //} else {
             fetchGetCalendarItem(item_id);
-        }
+        //}
 
         // setIsModalOpen(true);
         // console.log('Opened');
@@ -328,7 +328,7 @@ const ProdCalManagerPage = (props) => {
                                         variant={'outlined'}
                                         icon={<PlusOutlined/>}
                                         style={{ width: '125px' }}
-                                        onClick={openModal}
+                                        onClick={() => openModal()}
                                 >Создать</Button>
                             </div>
                         </Affix>

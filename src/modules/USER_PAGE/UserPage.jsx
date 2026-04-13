@@ -59,7 +59,7 @@ const UserPage = (props) => {
         if (userIdState === 'new') {
             setUserFIO('Новый сотрудник');
         } else {
-            if (PRODMODE) {
+            //if (PRODMODE) {
                 try {
                     const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/selecteduserinfosmall/${userIdState}`,
                         {
@@ -73,14 +73,14 @@ const UserPage = (props) => {
                 } catch (error) {
                     console.error('Error fetching user fio:', error);
                 }
-            } else {
-                setUserFIO('Арчи Гавриил Дессус');
-                setUserCompanyState({
-                    id: 2,
-                    name: 'Arstel',
-                    color: 'rgb(255, 119, 0)'
-                })
-            }
+            //} else {
+            //    setUserFIO('Арчи Гавриил Дессус');
+            //    setUserCompanyState({
+            //        id: 2,
+            //        name: 'Arstel',
+            //        color: 'rgb(255, 119, 0)'
+            //    })
+            //}
         }
     };
     const btnHeader = () => {
@@ -150,7 +150,7 @@ const UserPage = (props) => {
             </Affix>
             <div className={styles.sk_workspace}>
                 <Outlet context={{
-                    currentUser: PRODMODE ? props.userdata : USDA,
+                    currentUser: props.userdata, //PRODMODE ? props.userdata : USDA,
                     userIdState,
                     userCompanyState,
                     userFIO,
