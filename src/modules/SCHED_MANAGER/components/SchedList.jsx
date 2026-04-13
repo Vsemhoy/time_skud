@@ -15,7 +15,6 @@ const SchedList = (props)=>{
 
     useEffect(()=>{
         setScheduleList(dataSchedules);
-        console.log(dataSchedules);
     }, [dataSchedules])
 
 
