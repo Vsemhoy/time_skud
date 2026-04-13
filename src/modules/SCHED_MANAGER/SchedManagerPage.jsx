@@ -82,17 +82,17 @@ const SchedManagerPage = (props) => {
         await fetchProdCalendars();
         // await fetchScheduleTypes();
         // await fetchUsers();
-        if (PRODMODE) {
+        //if (PRODMODE) {
             setIsLoading(false);
-        } else {
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 300);
-        }
+        //} else {
+        //    setTimeout(() => {
+        //        setIsLoading(false);
+        //    }, 300);
+        //}
     };
 
     const fetchFilters = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/v2/schedule/filterselects`,
                     {
@@ -108,14 +108,14 @@ const SchedManagerPage = (props) => {
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
-        } else {
-            setCompanies(COMPANIES);
-            setScheduleTypes(SCHED_TYPES);
-        }
+        //} else {
+        //    setCompanies(COMPANIES);
+        //    setScheduleTypes(SCHED_TYPES);
+        //}
     };
 
     const fetchSchedules = async (filterParams) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 setFiltersState(filterParams);
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedule/schedule_get`,
@@ -131,14 +131,14 @@ const SchedManagerPage = (props) => {
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
-        } else {
-            setScheduleList(SCHEDULE_LIST);
-            setTotalCount(5);
-        }
+        //} else {
+        //    setScheduleList(SCHEDULE_LIST);
+        //    setTotalCount(5);
+        //}
     }
 
     const fetchProdCalendars = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/prodcalendar/prodcalendars_get`,
                     {
@@ -149,9 +149,9 @@ const SchedManagerPage = (props) => {
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
-        } else {
-            setBaseProdCalendars(PROD_CALENDARS);
-        }
+        //} else {
+        //    setBaseProdCalendars(PROD_CALENDARS);
+        //}
     }
 
     const fetchCreateSchedule = async (body) => {

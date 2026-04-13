@@ -77,17 +77,17 @@ const UserListSidebarDrawer = (props) => {
                   setBadger(USER_STATE_PLACES[0]);
               }
 
-            if (PRODMODE){
+            //if (PRODMODE){
               let data = {
                 date: props.target_date, 
                 user_id: props.target_user_info.user_id,
               };
               get_user_schedule_and_rules(data);
-            }
-            else {
-              setBaseSchedules(LIST_SCHED_N_RULES_RESPONSE.schedules);
-              setBaseRules(LIST_SCHED_N_RULES_RESPONSE.rules);
-            }
+            // }
+            // else {
+            //   setBaseSchedules(LIST_SCHED_N_RULES_RESPONSE.schedules);
+            //   setBaseRules(LIST_SCHED_N_RULES_RESPONSE.rules);
+            // }
         }
     }, [props.target_user_info])
 
@@ -124,10 +124,8 @@ const UserListSidebarDrawer = (props) => {
 
       /**
        * Получение актуального на выбранную дату графика и правил для этого юзера
-       * @param {*} req 
-       * @param {*} res 
        */
-      const get_user_schedule_and_rules = async (data, req, res) => {
+      const get_user_schedule_and_rules = async (data) => {
         try {
             let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/getuserschedrules`, 
                 {

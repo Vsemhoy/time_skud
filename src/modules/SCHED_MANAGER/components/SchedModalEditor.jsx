@@ -161,7 +161,7 @@ const SchedModalEditor = (props)=>{
     useEffect(()=>{
       if (idCompany){
         setProdCalendar(props.prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === (idCompany ? idCompany : userData.id_company) )}));
-        setCompanyName(userData.companies.find((el)=>{return el.id === idCompany}).name);
+        setCompanyName(userData.companies.find((el)=>{return el.id === idCompany})?.name);
 
       }
 

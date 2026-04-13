@@ -152,7 +152,7 @@ function RulesWorkspace(props) {
         setTimeout(() => setIsLoading(false), 500);
     };
     const fetchRulesInfo = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userrules/${userIdState}`,
                     {
@@ -179,15 +179,15 @@ function RulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setRules(RULES);
-            setCurrentPage(1);
-            setPageSize(20);
-            setAllRulesCount(228);
-        }
+        // } else {
+        //     setRules(RULES);
+        //     setCurrentPage(1);
+        //     setPageSize(20);
+        //     setAllRulesCount(228);
+        // }
     };
     const fetchRulesTypesSelect = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userruleselects`,
                     {
@@ -208,10 +208,10 @@ function RulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setRuleTypes(RULES_TYPES_SELECT);
-            setRuleNames(RULES_NAMES_SELECT);
-        }
+        // } else {
+        //     setRuleTypes(RULES_TYPES_SELECT);
+        //     setRuleNames(RULES_NAMES_SELECT);
+        // }
     };
     const findActiveRules = () => {
         const now = dayjs();
@@ -251,7 +251,7 @@ function RulesWorkspace(props) {
         }
     };
     const fetchRemoveRule = async (id) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/hr/userruleremove/${id}`,
                     {
@@ -272,9 +272,9 @@ function RulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-        }
+        // } else {
+        //     await fetchInfo();
+        // }
     };
 
     const toEditRule = (id) => {
@@ -332,7 +332,7 @@ function RulesWorkspace(props) {
         clearEdit();
     };
     const fetchUpdateRule = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userupdaterules/${editedRule.id}`,
                     {
@@ -361,12 +361,12 @@ function RulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-        }
+        // } else {
+        //     await fetchInfo();
+        // }
     };
     const fetchAddRule = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/useraddrule`,
                     {
@@ -394,9 +394,9 @@ function RulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-        }
+        // } else {
+        //     await fetchInfo();
+        // }
     };
 
     const timeString = (totalSeconds, mod = null) => {

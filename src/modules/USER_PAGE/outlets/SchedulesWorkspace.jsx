@@ -144,7 +144,7 @@ function SchedulesWorkspace(props) {
         setTimeout(() => setIsLoading(false), 500);
     };
     const fetchSchedulesInfo = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userschedules/${userIdState}`,
                     {
@@ -175,16 +175,16 @@ function SchedulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setSchedules(findBreaks(SCHEDULES));
-            console.log(findBreaks(SCHEDULES))
-            setCurrentPage(1);
-            setPageSize(20);
-            setAllSchedulesCount(228);
-        }
+        // } else {
+        //     setSchedules(findBreaks(SCHEDULES));
+        //     console.log(findBreaks(SCHEDULES))
+        //     setCurrentPage(1);
+        //     setPageSize(20);
+        //     setAllSchedulesCount(228);
+        // }
     };
     const fetchScheduleTypesSelect = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userscheduleselects`,
                     {
@@ -205,10 +205,10 @@ function SchedulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setScheduleTypes(SCHEDULES_TYPES_SELECT);
-            setScheduleNames(SCHEDULES_NAMES_SELECTS);
-        }
+        // } else {
+        //     setScheduleTypes(SCHEDULES_TYPES_SELECT);
+        //     setScheduleNames(SCHEDULES_NAMES_SELECTS);
+        // }
     };
     const findBreaks = (schedules) => {
         const result = [...schedules];
@@ -264,7 +264,7 @@ function SchedulesWorkspace(props) {
         }
     };
     const fetchRemoveSchedule = async (id) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/hr/userscheduleremove/${id}`,
                     {
@@ -285,9 +285,9 @@ function SchedulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-        }
+        // } else {
+        //     await fetchInfo();
+        // }
     };
 
     const toEditSchedule = (id) => {
@@ -345,7 +345,7 @@ function SchedulesWorkspace(props) {
         clearEdit();
     };
     const fetchUpdateSchedule = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userupdateschedules/${editedSchedule.id}`,
                     {
@@ -374,12 +374,12 @@ function SchedulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-        }
+        // } else {
+        //     await fetchInfo();
+        // }
     }
     const fetchAddSchedule = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/useraddschedules`,
                     {
@@ -407,9 +407,9 @@ function SchedulesWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-        }
+        // } else {
+        //     await fetchInfo();
+        // }
     }
 
     const timeString = (totalSeconds, mod = null) => {

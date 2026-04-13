@@ -183,7 +183,7 @@ const BaseInfoWorkspace = (props) => {
     };
     const fetchBaseInfo = async () => {
         if (userIdState !== 'new') {
-            if (PRODMODE) {
+            //if (PRODMODE) {
                 try {
                     const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userbaseinfo/${userIdState}`,
                         {
@@ -201,27 +201,27 @@ const BaseInfoWorkspace = (props) => {
                         error.response?.data?.message || error.message || 'Неизвестная ошибка'
                     );
                 }
-            } else {
-                setCompany(MOCK_USER.company);
-                setSurname(MOCK_USER.surname);
-                setName(MOCK_USER.name);
-                setPatronymic(MOCK_USER.patronymic);
-                setDepartment(MOCK_USER.department);
-                setOccupy(MOCK_USER.occupy);
-                setInnerPhone(MOCK_USER.innerPhone);
-                setTelegramID(MOCK_USER.telegramID);
-                setEmail(MOCK_USER.email);
-                setDateLeave(MOCK_USER.dateLeave ? dayjs(MOCK_USER.dateLeave, 'DD.MM.YYYY') : null);
-                setDateEnter(MOCK_USER.dateEnter ? dayjs(MOCK_USER.dateEnter, 'DD.MM.YYYY') : null);
-                setRating(MOCK_USER.rating);
-                setStatus(MOCK_USER.status);
-                setBoss(MOCK_USER.boss);
-                setLogin(MOCK_USER.login);
-                setPassword(MOCK_USER.password);
-                setCardNumber(MOCK_USER.cardNumber);
-                setConditionalCard(MOCK_USER.conditionalCard);
-                setAllowEntry(MOCK_USER.allowEntry);
-            }
+            // } else {
+            //     setCompany(MOCK_USER.company);
+            //     setSurname(MOCK_USER.surname);
+            //     setName(MOCK_USER.name);
+            //     setPatronymic(MOCK_USER.patronymic);
+            //     setDepartment(MOCK_USER.department);
+            //     setOccupy(MOCK_USER.occupy);
+            //     setInnerPhone(MOCK_USER.innerPhone);
+            //     setTelegramID(MOCK_USER.telegramID);
+            //     setEmail(MOCK_USER.email);
+            //     setDateLeave(MOCK_USER.dateLeave ? dayjs(MOCK_USER.dateLeave, 'DD.MM.YYYY') : null);
+            //     setDateEnter(MOCK_USER.dateEnter ? dayjs(MOCK_USER.dateEnter, 'DD.MM.YYYY') : null);
+            //     setRating(MOCK_USER.rating);
+            //     setStatus(MOCK_USER.status);
+            //     setBoss(MOCK_USER.boss);
+            //     setLogin(MOCK_USER.login);
+            //     setPassword(MOCK_USER.password);
+            //     setCardNumber(MOCK_USER.cardNumber);
+            //     setConditionalCard(MOCK_USER.conditionalCard);
+            //     setAllowEntry(MOCK_USER.allowEntry);
+            // }
         }
     };
     const setContent = (content) => {
@@ -248,7 +248,7 @@ const BaseInfoWorkspace = (props) => {
         }
     };
     const fetchSelects = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userbaseinfoselects`,
                     {
@@ -268,14 +268,14 @@ const BaseInfoWorkspace = (props) => {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setCompanies(COMPANIES);
-            setDepartments(DEPARTMENTS);
-            setBosses(USERS);
-        }
+        // } else {
+        //     setCompanies(COMPANIES);
+        //     setDepartments(DEPARTMENTS);
+        //     setBosses(USERS);
+        // }
     };
     const createUser = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const info = {
                     company, surname, name, patronymic, department, occupy,
@@ -304,15 +304,15 @@ const BaseInfoWorkspace = (props) => {
                     e.response?.data?.message || e.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setTimeout(() => {
-                onSavedInfo();
-                onUpdateSavingInfo(false, 568);
-            }, 500);
-        }
+        // } else {
+        //     setTimeout(() => {
+        //         onSavedInfo();
+        //         onUpdateSavingInfo(false, 568);
+        //     }, 500);
+        // }
     };
     const sendUpdatedInfo = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const data = {
                     company, surname, name, patronymic, department, occupy,
@@ -343,16 +343,16 @@ const BaseInfoWorkspace = (props) => {
                 );
                 onSavedInfo();
             }
-        } else {
-            prepareAndShowAlert('info',
-                'Демо-версия',
-                'Демо-версия'
-            );
-            setTimeout(() => {
-                onSavedInfo();
-                onUpdateSavingInfo(false, 568);
-            }, 500);
-        }
+        // } else {
+        //     prepareAndShowAlert('info',
+        //         'Демо-версия',
+        //         'Демо-версия'
+        //     );
+        //     setTimeout(() => {
+        //         onSavedInfo();
+        //         onUpdateSavingInfo(false, 568);
+        //     }, 500);
+        // }
     };
     const confirmDeleteUser = () => {
         // eslint-disable-next-line no-restricted-globals
@@ -361,7 +361,7 @@ const BaseInfoWorkspace = (props) => {
         }
     };
     const fetchDeleteUser = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/deleteuser/${userIdState}`,
                     {
@@ -377,13 +377,13 @@ const BaseInfoWorkspace = (props) => {
                     e.response?.data?.message || e.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setTimeout(() => {
-                onSavedInfo();
-                //onUpdateSavingInfo(false, 568);
-                navigate(`/hr/usermanager`);
-            }, 500);
-        }
+        // } else {
+        //     setTimeout(() => {
+        //         onSavedInfo();
+        //         //onUpdateSavingInfo(false, 568);
+        //         navigate(`/hr/usermanager`);
+        //     }, 500);
+        // }
     }
     const IsDisableAllowEntry = () => {
         console.log(userIdState === 'new')

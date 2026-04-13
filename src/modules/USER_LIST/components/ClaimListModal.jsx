@@ -69,7 +69,7 @@ const ClaimListModal = (props) => {
     }
 
     const fetchChartStates = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
                     {
@@ -96,28 +96,28 @@ const ClaimListModal = (props) => {
             } catch (e) {
                 console.log(e)
             }
-        } else {
-            setChartStates(prepareStates([
-                {
-                    "id": 0,
-                    "badge": "все",
-                    "text": "Все заявки",
-                    "color": "#c3c3c3",
-                    "icon": "SmileOutlined",
-                    "need_work": 0,
-                    "need_approved": 0,
-                    "sort_order": 0,
-                    "title": "Все заявки",
-                    "name": "Все заявки",
-                    "fillable": 1
-                },
-                ...CHART_STATES
-            ]));
-        }
+        // } else {
+        //     setChartStates(prepareStates([
+        //         {
+        //             "id": 0,
+        //             "badge": "все",
+        //             "text": "Все заявки",
+        //             "color": "#c3c3c3",
+        //             "icon": "SmileOutlined",
+        //             "need_work": 0,
+        //             "need_approved": 0,
+        //             "sort_order": 0,
+        //             "title": "Все заявки",
+        //             "name": "Все заявки",
+        //             "fillable": 1
+        //         },
+        //         ...CHART_STATES
+        //     ]));
+        // }
     };
 
     const fetchClaims = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const filters = {};
                 filters.type = selectedChartState;
@@ -142,11 +142,11 @@ const ClaimListModal = (props) => {
             } catch (e) {
                 console.log(e);
             }
-        } else {
-            setClaimsPage(CLAIMS_MOCKS);
-            setAllClaimsCount(80);
-            setTimeout(() => setIsLoading(false), 500);
-        }
+        // } else {
+        //     setClaimsPage(CLAIMS_MOCKS);
+        //     setAllClaimsCount(80);
+        //     setTimeout(() => setIsLoading(false), 500);
+        // }
     };
 
     const prepareStates = (states) => {

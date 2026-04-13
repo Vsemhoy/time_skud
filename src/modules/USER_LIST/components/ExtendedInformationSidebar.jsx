@@ -79,17 +79,17 @@ const ExtendedInformationSidebar = (props) => {
                 setBadger(USER_STATE_PLACES[0]);
             }
 
-            if (PRODMODE){
+            //if (PRODMODE){
                 let data = {
                     date: props.target_date,
-                    user_id: props.target_user_info.user_id,
+                    user_id: props.target_user_info.id,
                 };
                 get_user_schedule_and_rules(data);
-            }
-            else {
-                setBaseSchedules(LIST_SCHED_N_RULES_RESPONSE.schedules);
-                setBaseRules(LIST_SCHED_N_RULES_RESPONSE.rules);
-            }
+            //}
+            // else {
+            //     setBaseSchedules(LIST_SCHED_N_RULES_RESPONSE.schedules);
+            //     setBaseRules(LIST_SCHED_N_RULES_RESPONSE.rules);
+            // }
         }
     }, [props.target_user_info])
 
@@ -365,7 +365,7 @@ const ExtendedInformationSidebar = (props) => {
                                              setTargetUserInfo(props.base_user_list_data.find((user) => user.user_id === item.user_id),
                                                  props.on_mark_user(item.user_id));
                                          }}
-                                    >{index + 1} - {item.user_surname} {item.user_name} {item.user_patronymic}</div>
+                                    >{index + 1} - {item.surname} {item.name} {item.patronymic}</div>
                                 ))}
 
                             </div>

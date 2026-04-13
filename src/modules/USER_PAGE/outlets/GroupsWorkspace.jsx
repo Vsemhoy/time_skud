@@ -52,7 +52,7 @@ function GroupsWorkspace(props) {
     }
 
     const fetchGroupsInfo = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroups/${userIdState}`,
                     {
@@ -72,10 +72,10 @@ function GroupsWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            setPossibleGroups(POSSIBLE_GROUPS);
-            setUserGroups(USER_GROUPS);
-        }
+        // } else {
+        //     setPossibleGroups(POSSIBLE_GROUPS);
+        //     setUserGroups(USER_GROUPS);
+        // }
     };
 
     const toEditGroup = (group) => {
@@ -150,7 +150,7 @@ function GroupsWorkspace(props) {
         }
     };
     const fetchAddGroups = async (moveKeys) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupsadd/${userIdState}`,
                     {
@@ -171,10 +171,10 @@ function GroupsWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        }
+        //}
     };
     const fetchRemoveGroups = async (moveKeys) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupsremove/${userIdState}`,
                     {
@@ -195,10 +195,10 @@ function GroupsWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        }
+        //}
     };
     const deleteGroup = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.delete(`${ROUTE_PREFIX}/hr/usergroupsdelete/${editGroupId}`,
                     {
@@ -220,13 +220,13 @@ function GroupsWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-            clearEditGroup();
-        }
+        // } else {
+        //     await fetchInfo();
+        //     clearEditGroup();
+        // }
     };
     const updateGroup = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupsupdate/${editGroupId}`,
                     {
@@ -249,13 +249,13 @@ function GroupsWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-            clearEditGroup();
-        }
+        // } else {
+        //     await fetchInfo();
+        //     clearEditGroup();
+        // }
     };
     const createGroup = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usergroupscreate`,
                     {
@@ -278,10 +278,10 @@ function GroupsWorkspace(props) {
                     error.response?.data?.message || error.message || 'Неизвестная ошибка'
                 );
             }
-        } else {
-            await fetchInfo();
-            clearEditGroup();
-        }
+        // } else {
+        //     await fetchInfo();
+        //     clearEditGroup();
+        // }
     };
     const clearEditGroup = () => {
         setEditGroupId(0);

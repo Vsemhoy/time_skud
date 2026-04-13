@@ -564,6 +564,10 @@ const UserList = (props)=>{
     setTargetUserGuys(guys ? guys : []);
   }, [targetUserInfo]);
 
+    useEffect(() => {
+        console.log('targetUserGuys', targetUserGuys);
+    }, [targetUserGuys]);
+
   useEffect(() => {
     openUserInfoCallbackRef.current = handleShowUserInfo;
   }, [markedUsers]);

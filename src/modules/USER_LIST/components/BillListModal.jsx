@@ -116,7 +116,7 @@ const BillListModal = (props) => {
     }, [props.userdata]);
 
     const fetchFiltersOptions = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 setIsLoadingFilters(true);
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
@@ -133,27 +133,27 @@ const BillListModal = (props) => {
                 console.log(e);
                 setIsLoadingFilters(false);
             }
-        } else {
-            setIsLoadingFilters(true);
-            setUsersOptions([
-                {
-                    id: 46,
-                    name: 'Коваленко Оллолошка'
-                },
-                {
-                    id: 47,
-                    name: 'Додиков Валера'
-                },
-                {
-                    id: 48,
-                    name: 'Мистичный Мэн'
-                },
-            ]);
-            setTimeout(() => setIsLoadingFilters(false), 500);
-        }
+        // } else {
+        //     setIsLoadingFilters(true);
+        //     setUsersOptions([
+        //         {
+        //             id: 46,
+        //             name: 'Коваленко Оллолошка'
+        //         },
+        //         {
+        //             id: 47,
+        //             name: 'Додиков Валера'
+        //         },
+        //         {
+        //             id: 48,
+        //             name: 'Мистичный Мэн'
+        //         },
+        //     ]);
+        //     setTimeout(() => setIsLoadingFilters(false), 500);
+        // }
     };
     const fetchBillListInfo = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 setIsLoadingBillList(true);
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
@@ -174,11 +174,11 @@ const BillListModal = (props) => {
                 console.log(e);
                 setIsLoadingBillList(false);
             }
-        } else {
-            setIsLoadingBillList(true);
-            setBillListInfo(null);
-            setTimeout(() => setIsLoadingBillList(false), 500);
-        }
+        // } else {
+        //     setIsLoadingBillList(true);
+        //     setBillListInfo(null);
+        //     setTimeout(() => setIsLoadingBillList(false), 500);
+        // }
     };
 
     const prepareOptions = (options) => {
