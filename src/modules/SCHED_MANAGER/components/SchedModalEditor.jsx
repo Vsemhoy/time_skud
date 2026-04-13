@@ -21,9 +21,6 @@ const { Text, Link } = Typography;
 
 
 const SchedModalEditor = (props)=>{
-  
-  console.log("MODAL PROPS", props);
-
   const [open, setOpen] = useState(false);
   const [item_id, setItem_id] = useState(null);
 
@@ -65,30 +62,31 @@ const SchedModalEditor = (props)=>{
     if (props.userData) {
       setIdCompany(props.userData.user.id_company);
       setUserData(props.userData);
-        console.log("MODAL PROPS 2 ", props);
     }
 
   }, [props.userData]);
 
 
-    useEffect(()=>{
+    useEffect(() => {
         setOpen(props.open);
-        if (props.open && !open){
-          setOpen(true);
-          if (props.target_id === null){
-           setItem_id(null);
-           setOpenMode(OPENMODE.CREATE);
-           setFormData(DEF_SCHEDULE);
-          } else {
-            setOpenMode(OPENMODE.READ);
-            setItem_id(props.target_id);
-            get_schedItem(props.target_id);
-          }
-        } else {
-          setOpen(false);
+    }, [props.open]);
+
+    useEffect(() => {
+        if (!props.open) {
+          return;
         }
-        console.log('props.prodCalendars', props.prodCalendars)
-    },[props]);
+
+        if (props.target_id === null) {
+          setItem_id(null);
+          setOpenMode(OPENMODE.CREATE);
+          setFormData(props.data ?? DEF_SCHEDULE);
+          return;
+        }
+
+        setOpenMode(OPENMODE.READ);
+        setItem_id(props.target_id);
+        get_schedItem(props.target_id);
+    }, [props.open, props.target_id, props.data]);
 
 
     // useEffect(()=>{
@@ -104,11 +102,10 @@ const SchedModalEditor = (props)=>{
 
 
     const setFormData = (sourceData) => {
-      console.log(" SET FORM DATA ");
-      console.log(sourceData);
         setIdSkudScheduleType(sourceData.skud_schedule_type_id);
         setCtrlKey(props.ctrl_key);
-        let COM_ID = sourceData && sourceData.id_company ? sourceData.id_company : userData.companies.reverse()[0].id;
+        const fallbackCompanyId = userData?.companies?.[0]?.id ?? null;
+        let COM_ID = sourceData && sourceData.id_company ? sourceData.id_company : fallbackCompanyId;
         setIdCompany(COM_ID);
 
         setCreatorId(sourceData.creator_id ? sourceData.creator_id : userData.id_company);
@@ -151,8 +148,6 @@ const SchedModalEditor = (props)=>{
         // console.log(props.schedTypes);
         setUsedSchedType(props.schedTypes.find((el)=> el.value === sourceData.skud_schedule_type_id));
 
-        let edittcom = sourceData && sourceData.id_company ? sourceData.id_company : userData.id_company;
-        console.log(edittcom);
         // setProdCalendar(prodCalendars.find((cal)=>{return (parseInt(cal.year) === dayjs().year() && cal.id_company === edittcom)}));
         setProdCalendar(item);
     }
@@ -169,20 +164,15 @@ const SchedModalEditor = (props)=>{
 
 
     useEffect(()=>{
-      console.log("CREATED AT");
       let a = dayjs.unix(createdAt).add(1,'day').unix();
       let b = dayjs().startOf('day').unix();
-      console.log('item time', a, b, 'today time');
       if (item_id && a > b )
       {
-        console.log("edited", deleted);
         setOpenMode(OPENMODE.EDIT);
       } else if (item_id === null) {
-        console.log("created", deleted);
         setOpenMode(OPENMODE.CREATE);
       }
       else {
-        console.log("deleted", deleted);
         setOpenMode(deleted ? OPENMODE.READ : OPENMODE.SHORTEDIT);
       }
     },[createdAt]);
@@ -426,7 +416,7 @@ const SchedModalEditor = (props)=>{
           <div className={'sk-w-60'}>
             { openMode === OPENMODE.CREATE ? (
                           <Select 
-                  options={userData.companies.reverse().map((el)=>(
+                  options={userData.companies.map((el)=>(
                     {
                       key: el.id,
                       value: el.id,

@@ -19,10 +19,6 @@ const { Header, Sider, Content } = Layout;
 const SchedManagerPage = (props) => {
     const { userdata } = props;
 
-    useEffect(() => {
-      console.log("PROPS", props);
-    }, [props]);
-
     const prepareSelectOptions = (name, options) => {
         return options.map((option) => {
             return ({
@@ -127,7 +123,6 @@ const SchedManagerPage = (props) => {
 
                 setScheduleList(response.data.content.schedules);
                 setTotalCount(response.data.content.count);
-                console.log('Response data as JSON:', JSON.stringify(response.data.content, null, 2));
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
@@ -162,7 +157,6 @@ const SchedManagerPage = (props) => {
                     _token: CSRF_TOKEN
                 },
             );
-            console.log('response', response);
             if (response.data.data){
                 if (body.skud_schedule_type_id < 3){
                     let data = {};
@@ -183,7 +177,6 @@ const SchedManagerPage = (props) => {
     }
 
     const fetchUpdateSchedule = async (body) => {
-        console.log('body',body);
         try {
             let response = await PROD_AXIOS_INSTANCE.put(`${ROUTE_PREFIX}/timeskud/schedule/schedule/` + body.id,
                 {
@@ -191,30 +184,27 @@ const SchedManagerPage = (props) => {
                     _token: CSRF_TOKEN
                 }
             );
-            console.log('users', response);
-
             if (body.skud_schedule_type_id < 3 &&
                 response.data ){
-                console.log("I UPDATE HISTORY!!!");
                 let data = {};
                 data.start_time = body.schedule[1];
                 data.end_time = body.schedule[2];
                 data.enabled_at = body.schedule[0];
                 data.skud_schedule_id = response.data.id;
                 data.skud_schedule_type_id = body.skud_schedule_type_id;
-                console.log(data, body);
                 await fetchUpdateScheduleHistory(data);
             }
-            setTimeout(fetchSchedules(filtersState), 200);
-
-            console.log(filtersState);
+            setEditorModalOpen(false);
+            setCtrlKey(false);
+            setTimeout(() => {
+                fetchSchedules(filtersState);
+            }, 200);
         } catch (e) {
             console.log(e)
         }
     }
 
     const fetchUpdateScheduleHistory = async (body) => {
-        console.log('body',body);
         try {
             let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/schedulehistory/schedulehistory`,
                 {
@@ -284,7 +274,6 @@ const SchedManagerPage = (props) => {
     }
 
     const saveScheduleForm = (item)=>{
-        console.log(item);
         if (item.id){
             fetchUpdateSchedule(item);
         } else {
@@ -372,6 +361,7 @@ const SchedManagerPage = (props) => {
                                     <SchedListRow key={index} data={item}
                                         onOpenEditorModal={openEditorModal}
                                         users_count={item.users_count}
+                                        prodCalendars={baseProdCalendars}
                                     />
                                 ))}
                             </div>

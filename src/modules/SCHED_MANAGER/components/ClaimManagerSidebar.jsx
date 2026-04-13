@@ -36,12 +36,10 @@ const ClaimManagerSidebar = (props) => {
 
     useEffect(() => {
         setCompanies(props.company_list);
-        console.log(props.company_list)
     }, [props.company_list]);
 
     useEffect(() => {
         setRules(props.schedules_types_list);
-        console.log(props.schedules_types_list)
     }, [props.schedules_types_list]);
 
     return (
@@ -91,7 +89,6 @@ const ClaimManagerSidebar = (props) => {
 
                         const rulType = rules.find(type => type.value === currentRule);
                         if (rulType) {
-                            console.log(rulType)
                             description = rulType.description;
                         }
                         return (
