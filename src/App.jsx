@@ -29,7 +29,6 @@ import dayjs from 'dayjs';
 import UserStatisticsPage from './modules/USER_STATISTICS/UserStatisticsPage';
 import ClaimManagerPage from './modules/CLAIM_MANAGER_SK/ClaimManagerPage';
 
-import useWebSocket from 'react-use-websocket';
 import AppMenu23 from './components/TimeSkud/AppMenu23/AppMenu23';
 
 import AclSkudPage2 from './modules/ADMIN/ACLSKUD/AclSkudPage2';
@@ -53,12 +52,8 @@ import NotifierDrawer from './components/Notifyer/NotifierDrawer';
 import AccountingPage from "./modules/ACCOUNTING/AccountingPage";
 import {USDA} from "./modules/CHARTS/mock/mock";
 import ClaimSettingsPage from "./modules/CLAIM_SETTINGS/ClaimSettingsPage";
-const WS_URL = 'ws://192.168.1.16:5002';
 
 const { Header, Content, Footer } = Layout;
-
-
-
 
 const useCookieState = (key, defaultValue) => {
   const [state, setState] = useState(() => {
@@ -67,7 +62,7 @@ const useCookieState = (key, defaultValue) => {
   });
 
   useEffect(() => {
-    Cookies.set(key, JSON.stringify(state), { expires: 365 }); // Храним год
+    Cookies.set(key, JSON.stringify(state), { expires: 365 });
   }, [key, state]);
 
   return [state, setState];
@@ -79,113 +74,54 @@ message.config({
     maxCount: 3,
 });
 
-
-
-
-
 function App() {
 
   const [notificatorOpened, setNotificatorOpened] = useState(false);
   const [countOfNotifications, setCountOfNotifications] = useState(0);
   const { state, setState } = useContext(StateContext);
 
-  //console.log('state', state)
-
-  
-
   const [alertNotShowDate, setAlertNotShowDate] = useCookieState('skud_alert_notshow_date', "");
 
-  const [userAct, setUserAct] = useState([]); //!PRODMODE ? DS_USER : []
+  const [userAct, setUserAct] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
-
-
-  // const [historyStack, setHistoryStack] = useState([]);
-  
-
-  const { sendMessage, lastMessage } = useWebSocket(WS_URL, {
-    onOpen: () => console.log('Соединение открыто'),
-    shouldReconnect: () => true,
-  });
 
   const [actionUpdateEvents, setActionUpdateEvents] = useState(null);
 
-
-
-
-
-
-  useEffect(() => {
-    if (lastMessage && lastMessage.data) {
-      let msData = JSON.parse(lastMessage.data);
-      console.log('Получено сообщение:', msData);
-      // Trig на обновление списков пользователей
-      if (msData.action === 'UPDATE_EVENTS'){
-        setActionUpdateEvents(dayjs().unix());
-        console.log('Update triggers', msData);
-      }
-    }
-  }, [lastMessage]);
-
-
-
-
-
-
-
-  
 /** ------------------ FETCHES ---------------- */
     /**
-     * Получение списка отделов
+     * РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РѕС‚РґРµР»РѕРІ
      * @param {*} req 
      * @param {*} res 
      */
     const get_userdata = async () => {
-        //if (PRODMODE) {
-            try {
-                // setLoadingOrgs(true)
-                const format_data = {
-                    CSRF_TOKEN,
-                    data: {
-                        // ...filters,
-                        // created_date: get_unix_by_datearray(filters.created_date),
-                        // active_date: get_unix_by_datearray(filters.active_date)
-                    }
-                }
-                let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/usda?_token=` + CSRF_TOKEN);
-                console.log('me: ', response);
-                // setOrganizations(organizations_response.data.org_list)
-                // setTotal(organizations_response.data.total_count)
-                setUserAct(response.data);
-            } catch (e) {
-                console.log(e)
-            } finally {
-                // setLoadingOrgs(false)
-                setPageLoaded(true);
+        try {
+            const format_data = {
+                CSRF_TOKEN,
+                data: {}
             }
-        /*} else {
-            //setUserAct(USDA);
+            let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/usda?_token=` + CSRF_TOKEN);
+            console.log('me: ', response);
+            setUserAct(response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
             setPageLoaded(true);
-        }*/
+        }
   }
-
-
-
 
   /** ------------------ FETCHES END ---------------- */
 
+  useEffect(() => {
+    get_userdata().then();
+  }, []);
 
-      // EFFECTS
-      useEffect(() => {
-        get_userdata().then();
-    }, []);
+  const handleNotificatorOpened = () => {
+    setNotificatorOpened(true);
+  }
 
-
-    const handleNotificatorOpened = () => {
-      setNotificatorOpened(true);
-    }
-    const handleNotificatorClosed = () => {
-      setNotificatorOpened(false);
-    }
+  const handleNotificatorClosed = () => {
+    setNotificatorOpened(false);
+  }
     
 
   return (
@@ -203,7 +139,7 @@ function App() {
       {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
           message={<div className='sk-flex-space'>
-          <span>"Возможно Вы забыли приложить карту при входе в офис"</span>
+          <span>"Р’РѕР·РјРѕР¶РЅРѕ Р’С‹ Р·Р°Р±С‹Р»Рё РїСЂРёР»РѕР¶РёС‚СЊ РєР°СЂС‚Сѓ РїСЂРё РІС…РѕРґРµ РІ РѕС„РёСЃ"</span>
           <Button
             style={{marginRight: '12px'}}
             size={'small'}
@@ -212,7 +148,7 @@ function App() {
               setAlertNotShowDate(dayjs().format("YYYY-MM-DD"));
             }}
           >
-            Не показывать сегодня
+            РќРµ РїРѕРєР°Р·С‹РІР°С‚СЊ СЃРµРіРѕРґРЅСЏ
           </Button>
           </div>}
           banner  type="error"
@@ -220,8 +156,6 @@ function App() {
         />
       )}
       <Content>
-        
-        
           { pageLoaded || !PRODMODE ? (
           <div>
             
@@ -328,5 +262,3 @@ function App() {
 }
 
 export default App;
-
-
