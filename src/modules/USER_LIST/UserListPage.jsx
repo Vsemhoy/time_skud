@@ -1,11 +1,12 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 import UserListToolbar from "./components/UserlistToolbar";
 import {Affix, Badge, Drawer, Empty, Layout, message, Modal, Spin, Table, Tag} from "antd";
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
+import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import UserMonitorListCard from "./components/UserMonitorListCard";
 import dayjs from "dayjs";
@@ -422,6 +423,8 @@ const UserList = (props)=>{
   const markedUsersRef = useRef(markedUsers);
   const openUserInfoRef = useRef(openUserInfo);
   const tableRef = useRef(null);
+  const socketRef = useRef(null);
+  const extFiltersRef = useRef(extFilters);
 
   const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -453,6 +456,10 @@ const UserList = (props)=>{
   useEffect(() => {
     openUserInfoRef.current = openUserInfo;
   }, [openUserInfo]);
+
+  useEffect(() => {
+    extFiltersRef.current = extFilters;
+  }, [extFilters]);
 
   useEffect(()=>{
     if (baseUserListData) {
@@ -703,6 +710,32 @@ const UserList = (props)=>{
         }
     }
   /** ------------------ FETCHES END ---------------- */
+
+  useEffect(() => {
+    const socket = io(`${HTTP_HOST}:${BFF_PORT}`, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true,
+    });
+
+    socketRef.current = socket;
+
+    const handleRefreshSkud = () => {
+      get_users(extFiltersRef.current);
+    };
+
+    socket.on('connect', () => {
+      socket.emit('subscribeToSkud');
+    });
+
+    socket.on('REFRESH_SKUD', handleRefreshSkud);
+
+    return () => {
+      socket.off('REFRESH_SKUD', handleRefreshSkud);
+      socket.emit('unsubscribeToSkud');
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, []);
 
 
   const handleMarkUser = (user_id)=>{
