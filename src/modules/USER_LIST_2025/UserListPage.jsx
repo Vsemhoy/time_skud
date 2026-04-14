@@ -74,6 +74,10 @@ const { Header, Sider, Content } = Layout;
 
 const UserList2 = (props)=>{
   const { userdata } = props;
+  const HIDDEN_DEPARTMENT_IDS = [17, 18];
+  const LIMITED_DEPARTMENT_ID = 19;
+  const LIMITED_USER_ID = 583;
+  const HIDDEN_USER_IDS = [393];
   const [ currentUserId, setCurrentUserId] = useState((userdata && userdata.user) ? userdata.user.id : null);
 
   const [baseUserListData, setBaseUserListData] = useState([]);
@@ -639,6 +643,31 @@ const UserList2 = (props)=>{
   };
 
   // Добавляем кастомную строку в зависимости от значения sortBy
+  const filterVisibleDepartments = (departmentList) => {
+    return (departmentList ?? []).filter((department) => !HIDDEN_DEPARTMENT_IDS.includes(Number(department?.id)));
+  };
+
+  const filterVisibleUsers = (userList) => {
+    return (userList ?? []).filter((user) => {
+      const departmentId = Number(user?.department_id);
+      const userId = Number(user?.id);
+
+      if (HIDDEN_USER_IDS.includes(userId)) {
+        return false;
+      }
+
+      if (HIDDEN_DEPARTMENT_IDS.includes(departmentId)) {
+        return false;
+      }
+
+      if (departmentId === LIMITED_DEPARTMENT_ID) {
+        return userId === LIMITED_USER_ID;
+      }
+
+      return true;
+    });
+  };
+
   const customRow = (dep_id) => {
     return {
     id: `custom_row_dep_${dep_id}`,
@@ -679,6 +708,7 @@ const UserList2 = (props)=>{
       if (departFilter){
         userList = filterUserListByDepartment(userList, departFilter.value);
       };
+      userList = filterVisibleUsers(userList);
 
       // SortData
       let sortedData = userList;
@@ -811,7 +841,7 @@ const UserList2 = (props)=>{
                     <ClaimManagerSidebar
                         boss_list={prepareSelectOptions('boss', bosses)}
                         company_list={prepareSelectOptions('company', companies)}
-                        depart_list={prepareSelectOptions('dep', departments)}
+                        depart_list={prepareSelectOptions('dep', filterVisibleDepartments(departments))}
                         on_find_me={handleFindMe}
 
                         on_change_filter={handleFilterChanged}
