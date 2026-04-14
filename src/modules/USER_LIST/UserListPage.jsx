@@ -26,6 +26,10 @@ import BillListModal from "./components/BillListModal";
 
 const UserList = (props)=>{
   const { userdata } = props;
+  const HIDDEN_DEPARTMENT_IDS = [17, 18];
+  const LIMITED_DEPARTMENT_ID = 19;
+  const LIMITED_USER_ID = 583;
+  const HIDDEN_USER_IDS = [393];
 
   /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
   const [isOpenFilters, setIsOpenFilters] = useState(false);
@@ -782,6 +786,31 @@ const UserList = (props)=>{
   };
 
   // Добавляем кастомную строку в зависимости от значения sortBy
+  const filterVisibleDepartments = (departmentList) => {
+    return (departmentList ?? []).filter((department) => !HIDDEN_DEPARTMENT_IDS.includes(Number(department?.id)));
+  };
+
+  const filterVisibleUsers = (userList) => {
+    return (userList ?? []).filter((user) => {
+      const departmentId = Number(user?.department_id);
+      const userId = Number(user?.id);
+
+      if (HIDDEN_USER_IDS.includes(userId)) {
+        return false;
+      }
+
+      if (HIDDEN_DEPARTMENT_IDS.includes(departmentId)) {
+        return false;
+      }
+
+      if (departmentId === LIMITED_DEPARTMENT_ID) {
+        return userId === LIMITED_USER_ID;
+      }
+
+      return true;
+    });
+  };
+
   const customRow = (dep_id) => {
     return {
     id: `custom_row_dep_${dep_id}`,
@@ -822,6 +851,7 @@ const UserList = (props)=>{
       if (departFilter){
         userList = filterUserListByDepartment(userList, departFilter.value);
       }
+      userList = filterVisibleUsers(userList);
 
       // SortData
       let sortedData = userList ?? [];
@@ -903,7 +933,7 @@ const UserList = (props)=>{
             <Affix>
               <UserListToolbar
                 // onSortBy={sortUserList}
-                departments={departments}
+                departments={filterVisibleDepartments(departments)}
                 baseUsers={baseUserListData}
                 userData={userdata}
                 on_find_me={handleFindMe}
