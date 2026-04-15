@@ -115,6 +115,10 @@ function App() {
     get_userdata().then();
   }, []);
 
+  const hasEnteredOfficeToday = Boolean(
+    userAct?.user?.enter_time && dayjs(userAct.user.enter_time).isSame(dayjs(), 'day')
+  );
+
   const handleNotificatorOpened = () => {
     setNotificatorOpened(true);
   }
@@ -136,7 +140,7 @@ function App() {
        />
    
 
-      {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
+      {!hasEnteredOfficeToday && alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
           message={<div className='sk-flex-space'>
           <span>"Возможно Вы забыли приложить карту при входе в офис"</span>
