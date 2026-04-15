@@ -839,6 +839,19 @@ const UserList = (props)=>{
     return arr;
   };
 
+  const prioritizeBossInDepartment = (a, b) => {
+    if (a.department_id === b.department_id) {
+      if (a.id === 46) {
+        return -1;
+      }
+      if (b.id === 46) {
+        return 1;
+      }
+    }
+
+    return null;
+  };
+
   const insertDepartmentNames = (dataArray) => {
       let newDataArray = [];
       let next = -1; // next department ID
@@ -940,6 +953,10 @@ const UserList = (props)=>{
       switch (innerSortByValue) {
           case "department_asc":
               sortedData.sort((a, b) => {
+                const prioritySort = prioritizeBossInDepartment(a, b);
+                if (prioritySort !== null) {
+                  return prioritySort;
+                }
                 if (a.department_id === b.department_id) {
                   return b.rang - a.rang;
                 }
@@ -949,7 +966,13 @@ const UserList = (props)=>{
               break;
 
           case "department_desc":
-              sortedData.sort((a, b) => b.department_id - a.department_id);
+              sortedData.sort((a, b) => {
+                const prioritySort = prioritizeBossInDepartment(a, b);
+                if (prioritySort !== null) {
+                  return prioritySort;
+                }
+                return b.department_id - a.department_id;
+              });
               break;
 
           case "name_asc":
@@ -979,6 +1002,10 @@ const UserList = (props)=>{
 
         default:
           sortedData.sort((a, b) => {
+            const prioritySort = prioritizeBossInDepartment(a, b);
+            if (prioritySort !== null) {
+              return prioritySort;
+            }
             if (a.department_id === b.department_id) {
               return b.rang - a.rang;
             }
