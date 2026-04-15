@@ -250,6 +250,42 @@ td:first-child {
     gap: 10px;
 }
 
+.sk-userlist-toolbar-xtext {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.sk-userlist-toolbar-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.sk-userlist-toolbar-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: block;
+}
+
+.sk-userlist-toolbar-status-dot--loading {
+    background: #f0b429;
+    box-shadow: 0 0 0 4px rgba(240, 180, 41, 0.18);
+}
+
+.sk-userlist-toolbar-status-dot--ready {
+    background: #2db55d;
+    box-shadow: 0 0 0 4px rgba(45, 181, 93, 0.18);
+}
+
+.sk-userlist-toolbar-status-dot--error {
+    background: #e24c4b;
+    box-shadow: 0 0 0 4px rgba(226, 76, 75, 0.18);
+}
+
 .sk-userlist-toolbar-findme {
     display: flex;
     align-items: center;
@@ -692,4 +728,97 @@ font-size: smaller;
 
 .ant-picker-calendar .ant-picker-cell:nth-child(1) .ant-picker-cell-inner {
     --week-start: 1;
+}
+
+.sk-userlist-table-header-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sk-userlist-data-status {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #4a4c50;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(34, 60, 80, 0.08);
+    backdrop-filter: blur(6px);
+}
+
+.sk-userlist-data-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: 0 0 10px;
+}
+
+.sk-userlist-data-status-dot--loading {
+    background: #f0b429;
+    box-shadow: 0 0 0 4px rgba(240, 180, 41, 0.18);
+}
+
+.sk-userlist-data-status-dot--ready {
+    background: #2db55d;
+    box-shadow: 0 0 0 4px rgba(45, 181, 93, 0.18);
+}
+
+.sk-userlist-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.sk-userlist-skeleton-row {
+    display: grid;
+    grid-template-columns: 52px minmax(180px, 2fr) minmax(120px, 1.1fr) 90px 90px 120px 140px 150px 160px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 12px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,250,0.96) 100%);
+    border: 1px solid rgba(193, 202, 214, 0.7);
+}
+
+.sk-userlist-skeleton-row.extended {
+    grid-template-columns: 52px minmax(180px, 2fr) minmax(120px, 1.1fr) 90px 90px 120px 140px 150px 150px 150px 150px 150px 150px 120px 160px;
+}
+
+.sk-userlist-skeleton .ant-skeleton-element,
+.sk-userlist-skeleton .ant-skeleton-input,
+.sk-userlist-skeleton .ant-skeleton-button {
+    width: 100%;
+}
+
+.sk-userlist-skeleton-id .ant-skeleton-button,
+.sk-userlist-skeleton-short .ant-skeleton-button,
+.sk-userlist-skeleton-medium .ant-skeleton-button,
+.sk-userlist-skeleton-name .ant-skeleton-input,
+.sk-userlist-skeleton-phone .ant-skeleton-input,
+.sk-userlist-skeleton-wide .ant-skeleton-input {
+    width: 100% !important;
+    border-radius: 8px !important;
+}
+
+.sk-userlist-empty-state {
+    padding: 24px 0;
+}
+
+@media screen and (max-width: 1500px) {
+    .sk-userlist-skeleton-row,
+    .sk-userlist-skeleton-row.extended {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .sk-userlist-data-status {
+        align-self: stretch;
+        justify-content: center;
+    }
 }

@@ -204,7 +204,27 @@ const UserListToolbar = (props) => {
                      title="Выбранный день. Двойной клик скинет вас на сегодняшнюю дату."
                 >
                     {/*{getMonthName(usedDate.month() + 1)}, {getWeekDayString(usedDate.day())}*/}
-                    {usedDate.date()} {months[usedDate.month()]}, {getWeekDayString(usedDate.day())}
+                    <span>{usedDate.date()} {months[usedDate.month()]}, {getWeekDayString(usedDate.day())}</span>
+                    <span
+                        className="sk-userlist-toolbar-status"
+                        title={
+                            props.isLoadError
+                                ? 'Ошибка подгрузки данных'
+                                : props.isLoading
+                                    ? 'Данные подгружаются'
+                                    : 'Данные корректны'
+                        }
+                    >
+                        <span
+                            className={`sk-userlist-toolbar-status-dot ${
+                                props.isLoadError
+                                    ? 'sk-userlist-toolbar-status-dot--error'
+                                    : props.isLoading
+                                        ? 'sk-userlist-toolbar-status-dot--loading'
+                                        : 'sk-userlist-toolbar-status-dot--ready'
+                            }`}
+                        />
+                    </span>
                 </div>
                 <div className={'sk-userlist-toolbar-findme'}>
                     {imExist && (

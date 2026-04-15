@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
 import UserListToolbar from "./components/UserlistToolbar";
-import {Affix, Badge, Drawer, Empty, Layout, message, Modal, Spin, Table, Tag} from "antd";
+import {Affix, Badge, Drawer, Empty, Layout, message, Modal, Skeleton, Table, Tag} from "antd";
 import '../../assets/timeskud.css';
 import { DS_DEFAULT_USERS, DS_DEPARTMENTS, DS_USERLIST_USERS } from "../../CONFIG/DEFAULTSTATE";
 import UserModal from "./components/usermodal";
@@ -23,6 +23,45 @@ import ExtendedInformationSidebar from "./components/ExtendedInformationSidebar"
 import FiltersSidebar from "./components/FiltersSidebar";
 import ClaimListModal from "./components/ClaimListModal";
 import BillListModal from "./components/BillListModal";
+
+const TABLE_SKELETON_ROWS = 10;
+
+const UserListStatusIndicator = ({isLoading}) => (
+  <div className="sk-userlist-data-status" title={isLoading ? 'Данные подгружаются' : 'Данные загружены'}>
+    <span
+      className={`sk-userlist-data-status-dot ${isLoading ? 'sk-userlist-data-status-dot--loading' : 'sk-userlist-data-status-dot--ready'}`}
+    />
+    <span>{isLoading ? 'Данные подгружаются' : 'Данные корректны'}</span>
+  </div>
+);
+
+const UserListTableSkeleton = ({extendedInfo}) => (
+  <div className="sk-userlist-skeleton" aria-hidden="true">
+    {Array.from({ length: TABLE_SKELETON_ROWS }).map((_, index) => (
+      <div
+        className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''}`}
+        key={`userlist-skeleton-${index}`}
+      >
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-id" />
+        <Skeleton.Input active size="small" className="sk-userlist-skeleton-name" />
+        <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
+        <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />
+      </div>
+    ))}
+  </div>
+);
 
 
 const UserList = (props)=>{
@@ -394,6 +433,8 @@ const UserList = (props)=>{
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadError, setIsLoadError] = useState(false);
+  const [isSkeletonLoading, setIsSkeletonLoading] = useState(false);
 
   const [baseUserListData, setBaseUserListData] = useState([]);
   const [userListData, setUserListData] = useState([]);
@@ -524,10 +565,10 @@ const UserList = (props)=>{
   useEffect(()=>{
     setTargetDate(extFilters.date);
     setIsLoading(true);
+    setIsSkeletonLoading(true);
     //if (PRODMODE){
       const debounceTimer = setTimeout(() => {
-
-        get_users(extFilters);
+        get_users(extFilters, { showSkeleton: true });
         }, 500);
         return () => clearTimeout(debounceTimer);
     /*} else {
@@ -560,7 +601,7 @@ const UserList = (props)=>{
     info();
     if (props.refresh_trigger != null){
       const debounceTimer = setTimeout(() => {
-        get_users(extFilters);
+        get_users(extFilters, { showSkeleton: false });
         }, 500);
         return () => clearTimeout(debounceTimer);
     }
@@ -691,8 +732,13 @@ const UserList = (props)=>{
     /**
      * Получение списка пользователей
      */
-    const get_users = async (filters) => {
+    const get_users = async (filters, options = {}) => {
+        const { showSkeleton = false } = options;
+        setIsLoadError(false);
         setIsLoading(true);
+        if (showSkeleton) {
+          setIsSkeletonLoading(true);
+        }
         try {
             let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/getusers`, {
                 data: filters,
@@ -702,9 +748,12 @@ const UserList = (props)=>{
               setBaseUserListData(response.data.content);
             }
             setIsLoading(false);
+            setIsSkeletonLoading(false);
         } catch (e) {
             console.log(e);
+            setIsLoadError(true);
             setIsLoading(false);
+            setIsSkeletonLoading(false);
         } finally {
             // setLoadingOrgs(false)
         }
@@ -720,7 +769,7 @@ const UserList = (props)=>{
     socketRef.current = socket;
 
     const handleRefreshSkud = () => {
-      get_users(extFiltersRef.current);
+      get_users(extFiltersRef.current, { showSkeleton: false });
     };
 
     socket.on('connect', () => {
@@ -975,6 +1024,8 @@ const UserList = (props)=>{
                 onChangeInnerSort={toggleInnerSorts}
                 onChangeInnerFilers={toggleInnerFilters}
                 command={toolbarCommand}
+                isLoading={isLoading}
+                isLoadError={isLoadError}
 
                 isOpenFilters={isOpenFilters}
                 setIsOpenFilters={(value) => setIsOpenFilters(value)}
@@ -1010,13 +1061,14 @@ const UserList = (props)=>{
             </Sider>
             <Content className="content no-pb">
               <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
-                  {userListData.length === 0 ? (
+                  {userListData.length === 0 && !isLoading && !isSkeletonLoading ? (
                       <Empty />
                   ):(
                       <div>
                         <Affix offsetTop={100}>
-                          <div
-                              className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''}`}>
+                          <div className="sk-userlist-table-header-wrap">
+                            <div
+                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''}`}>
 
                             <div onClick={() => {
                               toggleSelectedColumn(1)
@@ -1143,9 +1195,16 @@ const UserList = (props)=>{
                               <div>Место</div>
                             </div>
                           </div>
+                        </div>
                         </Affix>
-                        <Spin spinning={isLoading}>
-                          {filteredUsers.map((arche, index) =>
+                        {isSkeletonLoading ? (
+                          <UserListTableSkeleton extendedInfo={isShowExtendedInfo} />
+                        ) : filteredUsers.length === 0 ? (
+                          <div className="sk-userlist-empty-state">
+                            <Empty description="Нет данных для отображения" />
+                          </div>
+                        ) : (
+                          filteredUsers.map((arche, index) =>
                               (
                                   <UserMonitorListCard
                                       key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
@@ -1157,8 +1216,8 @@ const UserList = (props)=>{
                                     selected_columns={selectedColumns}
                                     extendedInfo={isShowExtendedInfo}
                                 />
-                            ))}
-                        </Spin>
+                            ))
+                        )}
                       </div>
                   )}
               </div>
