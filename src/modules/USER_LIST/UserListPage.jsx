@@ -934,6 +934,24 @@ const UserList = (props)=>{
       return userList.filter(item => item.department_id === Number(depart_id));
   }
 
+  const getDepartmentRankById = (id) => {
+    const department = departments.find((dept) => Number(dept.id) === Number(id));
+    return department?.rang ?? Number.MAX_SAFE_INTEGER;
+  };
+
+  const compareDepartmentOrder = (a, b, direction = 'asc') => {
+    const rankA = getDepartmentRankById(a.department_id);
+    const rankB = getDepartmentRankById(b.department_id);
+
+    if (rankA !== rankB) {
+      return direction === 'desc' ? rankB - rankA : rankA - rankB;
+    }
+
+    return direction === 'desc'
+      ? b.department_id - a.department_id
+      : a.department_id - b.department_id;
+  };
+
   const filteredUsers = useMemo(() => {
       if (!userListData || userListData.length === 0) return [];
       let userList = JSON.parse(JSON.stringify(userListData));
@@ -960,7 +978,7 @@ const UserList = (props)=>{
                 if (a.department_id === b.department_id) {
                   return b.rang - a.rang;
                 }
-                return a.department_id - b.department_id;
+                return compareDepartmentOrder(a, b, 'asc');
               });
               sortedData = insertDepartmentNames(sortedData);
               break;
@@ -971,7 +989,10 @@ const UserList = (props)=>{
                 if (prioritySort !== null) {
                   return prioritySort;
                 }
-                return b.department_id - a.department_id;
+                if (a.department_id === b.department_id) {
+                  return b.rang - a.rang;
+                }
+                return compareDepartmentOrder(a, b, 'desc');
               });
               break;
 
@@ -1009,7 +1030,7 @@ const UserList = (props)=>{
             if (a.department_id === b.department_id) {
               return b.rang - a.rang;
             }
-            return a.department_id - b.department_id;
+            return compareDepartmentOrder(a, b, 'asc');
           });
           sortedData = insertDepartmentNames(sortedData);
           break;
