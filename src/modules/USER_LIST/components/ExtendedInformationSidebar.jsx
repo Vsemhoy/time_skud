@@ -231,7 +231,7 @@ const ExtendedInformationSidebar = (props) => {
                         <div className={'sk-usermonic-drawer-row'}>
                             <div className={'sk-labed-um'}>Должность</div>
                             <div
-                                className={'sk-contend-um'}>{targetUserInfo.user_occupy ? capitalize(targetUserInfo.user_occupy) : '-'}</div>
+                                className={'sk-contend-um'}>{targetUserInfo.user_occupy ? capitalize(targetUserInfo.user_occupy) : targetUserInfo.occupy ? capitalize(targetUserInfo.occupy) : '-'}</div>
                         </div>
 
                         <div className={'sk-usermonic-drawer-row'}>
