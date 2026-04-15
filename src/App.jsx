@@ -1,4 +1,4 @@
-
+﻿
 import './App.css';
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import {
@@ -89,7 +89,7 @@ function App() {
 
 /** ------------------ FETCHES ---------------- */
     /**
-     * РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РѕС‚РґРµР»РѕРІ
+     * Р СџР С•Р В»РЎС“РЎвЂЎР ВµР Р…Р С‘Р Вµ РЎРѓР С—Р С‘РЎРѓР С”Р В° Р С•РЎвЂљР Т‘Р ВµР В»Р С•Р Р†
      * @param {*} req 
      * @param {*} res 
      */
@@ -139,7 +139,7 @@ function App() {
       {alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
           message={<div className='sk-flex-space'>
-          <span>"Р’РѕР·РјРѕР¶РЅРѕ Р’С‹ Р·Р°Р±С‹Р»Рё РїСЂРёР»РѕР¶РёС‚СЊ РєР°СЂС‚Сѓ РїСЂРё РІС…РѕРґРµ РІ РѕС„РёСЃ"</span>
+          <span>"Возможно Вы забыли приложить карту при входе в офис"</span>
           <Button
             style={{marginRight: '12px'}}
             size={'small'}
@@ -148,7 +148,7 @@ function App() {
               setAlertNotShowDate(dayjs().format("YYYY-MM-DD"));
             }}
           >
-            РќРµ РїРѕРєР°Р·С‹РІР°С‚СЊ СЃРµРіРѕРґРЅСЏ
+            Не показывать сегодня
           </Button>
           </div>}
           banner  type="error"
