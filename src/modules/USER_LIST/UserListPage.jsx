@@ -1407,16 +1407,6 @@ const UserList = (props)=>{
                             doUpdateModal={doUpdateModal}
             />
         )}
-        {/*<UserListSidebarDrawer
-            target_user_guys={targetUserGuys}
-            target_user_info={targetUserInfo}
-            userdata={userdata}
-            base_user_list_data={baseUserListData}
-            open_user_info={openUserInfo}
-            on_mark_user={handleMarkUser}
-            on_close={setOpenUserInfo}
-            target_date={targetDate}
-        />*/}
       </div>
   )
 }

@@ -18,7 +18,7 @@ const UserlistEventDumpCard = (props) => {
     return (
         <div className="sk-w-padding-18 sk-umsmi-card">
 
-    <div className="sk-umsmi-card-title">Скуд-события за день:</div>
+    <div className="sk-umsmi-card-title">События за день:</div>
         <table className="sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
             <thead>
                 <tr style={{fontWeight: '500'}}>
