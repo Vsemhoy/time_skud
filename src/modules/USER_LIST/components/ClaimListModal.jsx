@@ -205,8 +205,14 @@ const ClaimListModal = (props) => {
         >
             <div style={{width: '100%', height: '100%'}}>
                 <Spin spinning={isLoading}>
-                    <div className={'sk-content-table-wrapper-claims-modal affix-in-modal'} style={{outline: '2px solid #f3f3f3', backgroundColor: '#f3f3f3'}}>
-                        <div style={{paddingTop: '5px', backgroundColor: '#f3f3f3'}}>
+                    <div
+                        className={'sk-content-table-wrapper-claims-modal affix-in-modal'}
+                        style={{
+                            outline: '2px solid var(--app-soft-surface-color)',
+                            backgroundColor: 'var(--app-soft-surface-color)'
+                        }}
+                    >
+                        <div style={{paddingTop: '5px', backgroundColor: 'var(--app-soft-surface-color)'}}>
                             <ConfigProvider
                                 theme={{
                                     components: {
@@ -225,7 +231,14 @@ const ClaimListModal = (props) => {
                                 />
                             </ConfigProvider>
                         </div>
-                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#f3f3f3'}}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                backgroundColor: 'var(--app-soft-surface-color)'
+                            }}
+                        >
                             <div className="sk-pagination-container">
                                 <Pagination
                                     current={currentPage}
@@ -248,10 +261,10 @@ const ClaimListModal = (props) => {
                                         height: '30px',
                                         lineHeight: '27px',
                                         textAlign: 'center',
-                                        color: '#868686',
+                                        color: 'var(--app-muted-text-color)',
                                         fontSize: '14px',
-                                        backgroundColor: '#ededed',
-                                        borderColor: '#ededed',
+                                        backgroundColor: 'var(--row-second-bg-color)',
+                                        borderColor: 'var(--table-border-divider-color)',
                                     }}
                                 >Всего найдено: {allClaimsCount}</Tag>
                             </div>
