@@ -447,7 +447,7 @@ const ClaimEditorDrawer = (props) => {
     <>
       
       <Drawer
-        title={`${itemId ? ("Заявка #" + itemId) : 'Новая заявка '}:  ${pageTitle}`} //props.claim_type
+        title={`${itemId ? ("Заявка #" + itemId) : 'Новая заявка'}:  ${pageTitle}`} //props.claim_type
         width={720}
         onClose={onClose}
         open={open}
@@ -497,25 +497,26 @@ const ClaimEditorDrawer = (props) => {
             {/* Диапазон дат с временем */}
             {(formType === 7 || formType === 8 || formType === 9) && (
             <div className={'sk-claimeditor-drawer-row '}>
-              <span className={'sk-usp-filter-col-label sk-labed-um'}>Время начала и конца</span>
+              <span className={'sk-usp-filter-col-label sk-labed-um'}>Начало и конец</span>
               <div className={'sk-flex-space'}>
               {editMode === 'read' ? (
                 <div className='sk-flex-space'>
-                  <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD-MM-YYYY  HH:mm')}</div> - 
-                  <div className={'sk-contend-um'}>{dayjs(formDateRange[1])?.format('DD-MM-YYYY  HH:mm')} </div>
+                  <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD.MM.YYYY  HH:mm')}</div> -
+                  <div className={'sk-contend-um'}>{dayjs(formDateRange[1])?.format('DD.MM.YYYY  HH:mm')} </div>
               </div>
               ):(
                 <>
                   <DatePicker.RangePicker
                       showTime
                       showSecond={false}
+                      format="DD.MM.YYYY HH:mm"
                       style={{ width: '100%' }}
                       value={formDateRange}
                       onChange={setFormDateRange}
                   />
-                  <Button
+                  {/*<Button
                   onClick={()=>{setFormDateRange([formDateRange[0], formDateRange[0]])}}
-                  >Сравнять</Button>
+                  >Сравнять</Button>*/}
                 </>
               )}
               </div>
@@ -530,21 +531,22 @@ const ClaimEditorDrawer = (props) => {
                 <div className={'sk-flex-space'}>
                 {editMode === 'read' ? (
                 <div className='sk-flex-space'>
-                    <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD-MM-YYYY')}</div> - 
-                    <div className={'sk-contend-um'}>{dayjs(formDateRange[1])?.format('DD-MM-YYYY')} </div>
+                    <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD.MM.YYYY')}</div> -
+                    <div className={'sk-contend-um'}>{dayjs(formDateRange[1])?.format('DD.MM.YYYY')} </div>
                 </div>
               ):(
                 <>
                   <DatePicker.RangePicker
+                    format="DD.MM.YYYY"
                     style={{ width: '100%' }}
                     value={formDateRange}
                     onChange={(dates)=>{setFormDateRange([dates[0], dates[1].clone().endOf('day')])}}
                   />
-                  {editMode !== 'read' && (
+                  {/*{editMode !== 'read' && (
                   <Button
                     onClick={()=>{setFormDateRange([formDateRange[0], formDateRange[0].clone().endOf('day')])}}
                   >Сравнять</Button>
-                  )}
+                  )}*/}
                 </>
               )}
               </div>
@@ -740,7 +742,7 @@ const ClaimEditorDrawer = (props) => {
           {(formType === 7 || formType === 8 || formType === 10 || formType === 13) && (
             <div>
               <div className={'sk-claimeditor-drawer-row '}>
-                  <span className={'sk-usp-filter-col-label sk-labed-um'}>Комментарий</span>
+                  <span className={'sk-usp-filter-col-label sk-labed-um'}>Цель</span>
                   {editMode === 'read' ? (
                       <div className={'sk-contend-um'}>{nl2br(formComment)}</div>
                     ) : (
