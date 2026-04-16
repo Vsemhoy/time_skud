@@ -483,7 +483,7 @@ const UserMonitorListCard = (props) => {
                             {content?.claims && content.claims.length > 0 && (
                                 <div style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap'}}>
                                     {content.claims.map((claim) => (
-                                        <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)}>
+                                        <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom">
                                             <span
                                                 style={{
                                                     display: 'inline-flex',
