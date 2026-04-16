@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateLongVacationIcon = ({ height = '100%', title }) => (
+const StateLongVacationIcon = ({ height = '100%' }) => (
   <svg
     viewBox="0 0 36 36"
     xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +12,6 @@ const StateLongVacationIcon = ({ height = '100%', title }) => (
     width={height}
     height={height}
   >
-    {title && <title>{title}</title>}
     {/* Brown container body */}
     <path 
       fill="#C1694F" 
@@ -40,3 +39,4 @@ const StateLongVacationIcon = ({ height = '100%', title }) => (
 );
 
 export default StateLongVacationIcon;
+

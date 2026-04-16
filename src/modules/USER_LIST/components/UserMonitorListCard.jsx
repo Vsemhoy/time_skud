@@ -24,6 +24,7 @@ import { getWeekDayString, secondsToTime } from "../../../components/Helpers/Tex
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
+import UserlistEventDumpCard from "./UserlistEventDumpCard";
 
 
 
@@ -126,6 +127,96 @@ const UserMonitorListCard = (props) => {
             elementdiv.classList.remove('sk-move-to-me');
         }
     }
+
+    const parseClaimInfo = (info) => {
+        if (!info) {
+            return {};
+        }
+
+        if (typeof info === 'object') {
+            return info;
+        }
+
+        try {
+            return JSON.parse(info);
+        } catch (e) {
+            console.log('claim info parse error', e);
+            return {};
+        }
+    };
+
+    const getClaimStatusText = (claim) => {
+        if (claim?.state === 1) {
+            return 'Согласована';
+        }
+        if (claim?.state === 2) {
+            return 'Отклонена';
+        }
+
+        return 'На рассмотрении';
+    };
+
+    const renderClaimTooltip = (claim) => {
+        const info = parseClaimInfo(claim?.info);
+        const details = [
+            info.target_point ? `Цель: ${info.target_point}` : null,
+            info.target_address ? `Адрес: ${info.target_address}` : null,
+            info.comment ? `Комментарий: ${info.comment}` : null,
+            Number.isFinite(Number(info.subway_count)) ? `Метро: ${Number(info.subway_count)}` : null,
+            Number.isFinite(Number(info.bus_count)) ? `Наземный транспорт: ${Number(info.bus_count)}` : null,
+            Number.isFinite(Number(info.total_price)) ? `Сумма: ${Number(info.total_price)}` : null,
+        ].filter(Boolean);
+
+        return (
+            <div style={{maxWidth: '320px'}}>
+                <div><strong>{claim?.skud_current_state?.title || claim?.skud_current_state?.text || 'Заявка'}</strong></div>
+                <div>Статус: {getClaimStatusText(claim)}</div>
+                <div>Начало: {claim?.start ? dayjs(claim.start).format('DD.MM.YYYY HH:mm') : '-'}</div>
+                <div>Конец: {claim?.end ? dayjs(claim.end).format('DD.MM.YYYY HH:mm') : '-'}</div>
+                {details.map((detail, index) => (
+                    <div key={`claim-detail-${claim?.id}-${index}`}>{detail}</div>
+                ))}
+            </div>
+        );
+    };
+
+    const enterExitData = content?.enter_exit ?? content?.event_dump;
+
+    const hasEventDump = Array.isArray(enterExitData)
+        ? enterExitData.length > 0
+        : typeof enterExitData === 'string' && enterExitData.length > 2;
+
+    const renderEventDumpTooltip = () => {
+        if (!hasEventDump) {
+            return null;
+        }
+
+        return (
+            <div style={{maxWidth: '420px'}}>
+                <UserlistEventDumpCard data={enterExitData} themeSafe={true} />
+            </div>
+        );
+    };
+
+    const renderEventDumpCell = (value) => {
+        if (!value) {
+            return '';
+        }
+
+        const formattedValue = dayjs(value).format('HH:mm');
+
+        if (!hasEventDump) {
+            return formattedValue;
+        }
+
+        return (
+            <Tooltip title={renderEventDumpTooltip()} placement="bottom">
+                <span style={{cursor: 'help', display: 'inline-block'}}>
+                    {formattedValue}
+                </span>
+            </Tooltip>
+        );
+    };
 
     
 
@@ -309,11 +400,11 @@ const UserMonitorListCard = (props) => {
                     </div>
 
                     <div className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
-                        {content.enter_time && dayjs(content.enter_time).format('HH:mm')}
+                        {renderEventDumpCell(content.enter_time)}
                     </div>
 
                     <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}>
-                        {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
+                        {renderEventDumpCell(content.exit_time)}
                     </div>
 
                     <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}> {/*обед*/}
@@ -389,12 +480,26 @@ const UserMonitorListCard = (props) => {
 
                     <div style={{textAlign: 'center'}}>
                         <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
-                            {/*{content.claims && content.claims.length > 0 && (
-                                <Tooltip title={JSON.stringify(content.claims)}>
-                                    <FireOutlined/>
-                                </Tooltip>
-                            )}*/}
-                            {content?.globalState && (
+                            {content?.claims && content.claims.length > 0 && (
+                                <div style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap'}}>
+                                    {content.claims.map((claim) => (
+                                        <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)}>
+                                            <span
+                                                style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    cursor: 'help',
+                                                    filter: claim?.not_today ? 'grayscale(1)' : 'none',
+                                                    opacity: claim?.not_today ? 0.55 : 1,
+                                                }}
+                                            >
+                                                <StateIconsController IdState={claim?.skud_current_state_id} height={'20px'}/>
+                                            </span>
+                                        </Tooltip>
+                                    ))}
+                                </div>
+                            )}
+                            {!content?.claims?.length && content?.globalState && (
                                 <StateIconsController IdState={content?.globalState.value} height={'20px'}/>
                             )}
                         </div>

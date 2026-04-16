@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateHomeIcon = ({ height = '100%', title }) => (
+const StateHomeIcon = ({ height = '100%' }) => (
     <svg
         viewBox="0 0 128 128"
         xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +8,6 @@ const StateHomeIcon = ({ height = '100%', title }) => (
         width={height}
         height={height}
     >
-        {title && <title>{title}</title>}
         {/* Дом - основа */}
         <path fill="#ab5832" d="M19.16 48.94V28.58l-1.64.1V16.14l15.82-.1v12.35H31.7v11.96z" />
 

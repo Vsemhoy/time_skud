@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateSuitcaseIcon = ({ height = '100%', title }) => (
+const StateSuitcaseIcon = ({ height = '100%' }) => (
   <svg
     version="1.1"
     id="Layer_1"
@@ -12,7 +12,6 @@ const StateSuitcaseIcon = ({ height = '100%', title }) => (
     width={height}
     height={height}
   >
-    {title && <title>{title}</title>}
     {/* Suitcase handle */}
     <path 
       fill="#383535"
