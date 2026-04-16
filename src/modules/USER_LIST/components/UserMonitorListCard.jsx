@@ -210,7 +210,7 @@ const UserMonitorListCard = (props) => {
         }
 
         return (
-            <Tooltip title={renderEventDumpTooltip()} placement="bottom">
+            <Tooltip title={renderEventDumpTooltip()} placement="bottom" overlayClassName="sk-theme-tooltip">
                 <span style={{cursor: 'help', display: 'inline-block'}}>
                     {formattedValue}
                 </span>
