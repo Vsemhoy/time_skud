@@ -354,6 +354,8 @@ const ClaimEditorDrawer = (props) => {
   const handleSubmitForm = ()=>{
     let res2 = {};
     let result = {};
+    const normalizedSubwayCount = Number(formSubwayCount);
+    const normalizedBusCount = Number(formBusCount);
     result.start = formDateRange[0].format('YYYY-MM-DD HH:mm:ss');
     if (formType === 11 || formType === 13){
       result.end = formDateRange[1].clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
@@ -384,11 +386,11 @@ const ClaimEditorDrawer = (props) => {
     if (formComment?.trim()){
       res2.comment = formComment;
     };
-    if (formSubwayCount > 0){
-      res2.subway_count = parseInt(formSubwayCount);
+    if ((formType === 7 || formType === 8) && Number.isFinite(normalizedSubwayCount) && normalizedSubwayCount >= 0){
+      res2.subway_count = normalizedSubwayCount;
     };
-    if (formBusCount > 0){
-      res2.bus_count = parseInt(formBusCount);
+    if ((formType === 7 || formType === 8) && Number.isFinite(normalizedBusCount) && normalizedBusCount >= 0){
+      res2.bus_count = normalizedBusCount;
     };
     if (formReason?.trim()){
       res2.reason = formReason;
