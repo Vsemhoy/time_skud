@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -40,24 +40,69 @@ const customLocale = {
 };
 /* - LOCALE */
 
+const BrowserThemeProvider = () => {
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        if (typeof window === 'undefined' || !window.matchMedia) {
+            return false;
+        }
+
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    });
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !window.matchMedia) {
+            return undefined;
+        }
+
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleThemeChange = (event) => {
+            setIsDarkMode(event.matches);
+        };
+
+        setIsDarkMode(mediaQuery.matches);
+
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', handleThemeChange);
+            return () => mediaQuery.removeEventListener('change', handleThemeChange);
+        }
+
+        mediaQuery.addListener(handleThemeChange);
+        return () => mediaQuery.removeListener(handleThemeChange);
+    }, []);
+
+    useEffect(() => {
+        const themeClass = isDarkMode ? 'sk-theme-dark' : 'sk-theme-light';
+        const oppositeThemeClass = isDarkMode ? 'sk-theme-light' : 'sk-theme-dark';
+
+        document.documentElement.classList.remove(oppositeThemeClass);
+        document.body.classList.remove(oppositeThemeClass);
+        document.documentElement.classList.add(themeClass);
+        document.body.classList.add(themeClass);
+        document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
+        document.body.style.colorScheme = isDarkMode ? 'dark' : 'light';
+    }, [isDarkMode]);
+
+    const antdTheme = useMemo(() => ({
+        algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    }), [isDarkMode]);
+
+    return (
+        <ConfigProvider
+            locale={customLocale}
+            theme={antdTheme}
+        >
+            <StateProvider>
+                <App />
+            </StateProvider>
+        </ConfigProvider>
+    );
+};
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
     <React.StrictMode>
-        <ConfigProvider
-            locale={customLocale}
-            theme={{
-            // 1. Use dark algorithm
-            //   algorithm: theme.darkAlgorithm,
-
-            // 2. Combine dark algorithm and compact algorithm
-            //   algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
-            }}
-        >
-          <StateProvider>
-            <App />
-          </StateProvider>
-        </ConfigProvider>
+        <BrowserThemeProvider />
     </React.StrictMode>
 
 );

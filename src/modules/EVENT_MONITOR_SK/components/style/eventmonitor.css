@@ -1,18 +1,19 @@
 .sk-arche-stack {
     min-height: calc(100vh - 400px);
-    background-color: #efefef;
+    background-color: var(--app-soft-surface-color);
 }
 
 .sk-evemonic-cardrow {
     display: grid;
     grid-template-columns: 100px 40px 300px auto 130px 90px 70px;
-    border: 1px solid #80808061;
+    border: 1px solid var(--table-border-divider-color);
     border-top: none;
-    background: white;
+    background: var(--app-surface-color);
+    color: var(--app-text-color);
 }
 
 .sk-evemonic-cardrow:first-child {
-    border-top:  1px solid #80808061 !important;
+    border-top:  1px solid var(--table-border-divider-color) !important;
 }
 
 .sk-evemonic-cardrow > div {
@@ -20,41 +21,41 @@
 }
 
 .sk-evemonic-entrance > div {
-    background-color: rgba(0, 255, 255, 0.041);
+    background-color: color-mix(in srgb, var(--row-selected-color_2) 10%, transparent);
 }
 
 .sk-evemonic-exit > div {
-    background-color: rgba(255, 0, 55, 0.041);
+    background-color: color-mix(in srgb, var(--error-color) 12%, transparent);
 }
 
 .sk-evemonic-entrance.sk-evemonic-cuscard > div {
-    background-color: rgba(0, 255, 255, 0.178);
+    background-color: color-mix(in srgb, var(--row-selected-color_2) 24%, transparent);
 }
 .sk-evemonic-exit.sk-evemonic-cuscard > div {
-    background-color: rgba(255, 0, 55, 0.171);
+    background-color: color-mix(in srgb, var(--error-color) 28%, transparent);
 }
 
 .sk-drform-label {
-    color: rgb(43, 43, 43);
+    color: var(--app-text-color);
     margin-bottom: 6px;;
 }
 .sk-dform-enttab {
-    background: #bde9d1;
+    background: color-mix(in srgb, var(--row-divider-color_2) 50%, var(--app-surface-color));
     font-size: large;
     font-weight: 500;
     padding: 6px;
     display: flex;
     flex-direction: column;
-    border: 1px solid #339c6252;
+    border: 1px solid color-mix(in srgb, var(--row-divider-color_2) 75%, transparent);
     border-radius: 3px;
 }
 .sk-dform-exttab {
-    background: #ffd2d2;
+    background: color-mix(in srgb, var(--error-color) 20%, var(--app-surface-color));
     font-size: large;
     font-weight: 500;
     padding: 6px;
     display: flex;
     flex-direction: column;
-    border: 1px solid #ff000052;
+    border: 1px solid color-mix(in srgb, var(--error-color) 45%, transparent);
     border-radius: 3px;
 }

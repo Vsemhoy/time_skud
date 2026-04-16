@@ -160,15 +160,39 @@ const UserListToolbar = (props) => {
                         onClick={decreaseDate}
                         className={'sk-usermonic-filter-bacon'}
                     />
-                    <DatePicker
-                        value={usedDate}
-                        onChange={handleUsedDateChange}
-                        format={"DD.MM.YYYY"}
-                        variant="borderless"
-                        size="large"
-                        title={getWeekDayString(usedDate.day())}
-                        allowClear={false}
-                    />
+                    <div>
+                        <DatePicker
+                            value={usedDate}
+                            onChange={handleUsedDateChange}
+                            format={"DD.MM.YYYY"}
+                            variant="borderless"
+                            size="large"
+                            style={{width: '130px'}}
+                            title={getWeekDayString(usedDate.day())}
+                            allowClear={false}
+                            placement="bottomLeft"
+                        />
+                        <span
+                            className="sk-userlist-toolbar-status"
+                            title={
+                                props.isLoadError
+                                    ? 'Ошибка подгрузки данных'
+                                    : props.isLoading
+                                        ? 'Данные подгружаются'
+                                        : 'Данные актуальны'
+                            }
+                        >
+                            <span
+                                className={`sk-userlist-toolbar-status-dot ${
+                                    props.isLoadError
+                                        ? 'sk-userlist-toolbar-status-dot--error'
+                                        : props.isLoading
+                                            ? 'sk-userlist-toolbar-status-dot--loading'
+                                            : 'sk-userlist-toolbar-status-dot--ready'
+                                }`}
+                            />
+                        </span>
+                    </div>
                     <CaretRightOutlined
                         onClick={increaseDate}
                         className={'sk-usermonic-filter-bacon'}
@@ -205,26 +229,6 @@ const UserListToolbar = (props) => {
                 >
                     {/*{getMonthName(usedDate.month() + 1)}, {getWeekDayString(usedDate.day())}*/}
                     <span>{usedDate.date()} {months[usedDate.month()]}, {getWeekDayString(usedDate.day())}</span>
-                    <span
-                        className="sk-userlist-toolbar-status"
-                        title={
-                            props.isLoadError
-                                ? 'Ошибка подгрузки данных'
-                                : props.isLoading
-                                    ? 'Данные подгружаются'
-                                    : 'Данные корректны'
-                        }
-                    >
-                        <span
-                            className={`sk-userlist-toolbar-status-dot ${
-                                props.isLoadError
-                                    ? 'sk-userlist-toolbar-status-dot--error'
-                                    : props.isLoading
-                                        ? 'sk-userlist-toolbar-status-dot--loading'
-                                        : 'sk-userlist-toolbar-status-dot--ready'
-                            }`}
-                        />
-                    </span>
                 </div>
                 <div className={'sk-userlist-toolbar-findme'}>
                     {imExist && (

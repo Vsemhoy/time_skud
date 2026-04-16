@@ -139,7 +139,7 @@ const UserPage = (props) => {
                         height: '30px',
                         lineHeight: '27px',
                         textAlign: 'center',
-                        color: '#ffffff',
+                        color: 'var(--badge-text-color)',
                         fontSize: '14px',
                         backgroundColor: userCompanyState.color,
                         borderColor: userCompanyState.color,

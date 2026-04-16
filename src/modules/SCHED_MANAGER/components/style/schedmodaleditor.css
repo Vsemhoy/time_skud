@@ -9,26 +9,28 @@
 }
 
 .sk-table-table > thead {
-    background-color: #d4ddea;
+    background-color: var(--row-second-bg-color);
+    color: var(--app-text-color);
 }
 .sk-table-table  th {
     font-weight: 500 !important;
 }
 
 .sk-table-table > tbody > tr:nth-child(odd) {
-    background-color: rgb(233, 227, 210);
+    background-color: color-mix(in srgb, var(--warning-color) 14%, var(--app-surface-color));
 }
 .sk-table-table > tbody > tr:nth-child(even) {
-    background-color: rgb(243, 243, 243);
+    background-color: var(--app-surface-color);
 }
 .sk-table-table td {
     padding: 6px;
+    color: var(--app-text-color);
 }
 .sk-table-table tr > td:first-child {
     text-align: center;
 }
 .sk-trow-future {
-    outline: 2px solid #1677ff;
+    outline: 2px solid color-mix(in srgb, var(--row-selected-color_2) 70%, transparent);
 }
 
 .sk-collaptor .ant-collapse-content-box {
@@ -36,23 +38,53 @@
 }
 
 .sk-trow-current {
-    outline: 2px solid #1677ff;
+    outline: 2px solid color-mix(in srgb, var(--row-selected-color_2) 70%, transparent);
 }
 
 .sk-trow-current td {
-    background-color: #1677ff49;
+    background-color: color-mix(in srgb, var(--row-selected-color_2) 24%, transparent);
     font-weight: 600;
 }
 
 .sk-form-group {
-    border: #b7b7b7 1px solid;
+    border: 1px solid color-mix(in srgb, var(--table-border-divider-color) 55%, transparent);
     margin-bottom: 12px;
     border-radius: 9px;
     overflow: hidden;
     padding: 6px;
+    background: color-mix(in srgb, var(--app-surface-color) 92%, transparent);
 }
 
 .sk-collaptor .ant-collapse-content {
     min-height: 150px;
-    background: #d4ddea;
+    background: var(--row-second-bg-color);
+}
+
+.sk-collaptor .ant-collapse-header,
+.sk-collaptor .ant-collapse-content-box,
+.sk-form-group,
+.sk-form-group .ant-input,
+.sk-form-group .ant-input-number,
+.sk-form-group .ant-select-selector,
+.sk-form-group .ant-picker,
+.sk-form-group textarea,
+.sk-form-group span,
+.sk-form-group div,
+.sk-table-table {
+    color: var(--app-text-color);
+}
+
+.sk-form-group .ant-input,
+.sk-form-group .ant-input-number,
+.sk-form-group .ant-select-selector,
+.sk-form-group .ant-picker,
+.sk-form-group textarea {
+    background: var(--app-surface-color) !important;
+    border-color: color-mix(in srgb, var(--table-border-divider-color) 60%, transparent) !important;
+}
+
+.sk-collaptor .ant-collapse-header,
+.sk-collaptor .ant-collapse-content {
+    background: var(--row-second-bg-color) !important;
+    border-color: color-mix(in srgb, var(--table-border-divider-color) 55%, transparent) !important;
 }

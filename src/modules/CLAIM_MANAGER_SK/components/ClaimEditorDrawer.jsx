@@ -185,15 +185,18 @@ const ClaimEditorDrawer = (props) => {
     if (editMode === 'read' && userCard){
       masterSetReadOptions();
     };
-  }, [userCard, editMode]);
+  }, [userCard, editMode, props.acl_base, MYID]);
 
 
   const masterSetReadOptions = () => {
-      console.log(props.acl_base);
+    if (!userCard || !props.acl_base || !userCard.id_company) {
+      return;
+    }
+    const companyAcls = props.acl_base?.[userCard.id_company];
+    const stateAcls = companyAcls?.[userCard.skud_current_state_id];
     if  (userCard.evaluated === 0 && userCard.id === MYID &&
-        props.acl_base[userCard.id_company] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('PERS_CLAIM_CREATE')
+        stateAcls &&
+        stateAcls.includes('PERS_CLAIM_CREATE')
     ) {
         // Заявку можно отозвать вчера и если она не согласована
         if (!userCard.state !== 1){
@@ -206,29 +209,20 @@ const ClaimEditorDrawer = (props) => {
         }
     }
 
-    console.log(props.acl_base[userCard.id_company])
-    console.log(props.acl_base[userCard.id_company][userCard.skud_current_state_id])
-    console.log(props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('ANY_CLAIM_UPDATE'))
-    console.log(userCard)
-
-
-    if (props.acl_base[userCard.id_company] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('ANY_CLAIM_UPDATE')
+    if (stateAcls &&
+        stateAcls.includes('ANY_CLAIM_UPDATE')
     ) {
         // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
         setAllowEdit(true);
     } else if (userCard.boss_id === MYID &&
-        props.acl_base[userCard.id_company] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('TEAM_CLAIM_UPDATE')
+        stateAcls &&
+        stateAcls.includes('TEAM_CLAIM_UPDATE')
     ) {
         // Если челик мой подчиненный и у меня есть права добавлять подчиненным
         setAllowEdit(true);
     } else if (userCard.id === MYID &&
-        props.acl_base[userCard.id_company] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-        props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('TEAM_CLAIM_UPDATE')
+        stateAcls &&
+        stateAcls.includes('TEAM_CLAIM_UPDATE')
     ) {
       setAllowEdit(true);
     }
@@ -236,9 +230,8 @@ const ClaimEditorDrawer = (props) => {
     if (userCard.need_approved === 1)
     {
         // Согласовываем только те, что требуют согласования
-        if (props.acl_base[userCard.id_company] &&
-            props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-            props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('ANY_CLAIM_APPROVE')
+        if (stateAcls &&
+            stateAcls.includes('ANY_CLAIM_APPROVE')
         ) {
             // фильтр, если есть привилегия согласовывать кому угодно
             if (userCard.state !== 1){
@@ -254,9 +247,8 @@ const ClaimEditorDrawer = (props) => {
                 }
             }
         } else if (userCard.boss_id === MYID &&
-            props.acl_base[userCard.id_company] &&
-            props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-            props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('TEAM_CLAIM_APPROVE')
+            stateAcls &&
+            stateAcls.includes('TEAM_CLAIM_APPROVE')
         ) {
             // Если челик мой подчиненный и у меня есть право ему согласовывать
             if (userCard.state !== 1){
@@ -272,9 +264,8 @@ const ClaimEditorDrawer = (props) => {
                 }
             }
         } else if (userCard.id === MYID &&
-            props.acl_base[userCard.id_company] &&
-            props.acl_base[userCard.id_company][userCard.skud_current_state_id] &&
-            props.acl_base[userCard.id_company][userCard.skud_current_state_id].includes('PERS_CLAIM_APPROVE')
+            stateAcls &&
+            stateAcls.includes('PERS_CLAIM_APPROVE')
         ) {
             if (userCard.state !== 1){
               setAllowApprove(true);

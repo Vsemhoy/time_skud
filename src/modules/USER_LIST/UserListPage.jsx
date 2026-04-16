@@ -1263,7 +1263,7 @@ const UserList = (props)=>{
                                     on_double_click={handleShowUserInfo}
                                     selected_columns={selectedColumns}
                                     extendedInfo={isShowExtendedInfo}
-                                />
+                                  />
                             ))
                         )}
                       </div>

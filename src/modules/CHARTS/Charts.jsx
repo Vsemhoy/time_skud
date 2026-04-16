@@ -739,8 +739,8 @@ const  Charts = (props) => {
                         <Content className="content">
                             <div className="sk-content-table-wrapper-charts">
                                 <Affix offsetTop={44}>
-                                    <div style={{backgroundColor: '#f3f3f3', outline: '2px solid #f3f3f3'}}>
-                                        <div style={{paddingTop: '5px'}}>
+                                    <div className="sk-charts-toolbar-shell">
+                                        <div className="sk-charts-toolbar-row">
                                             <ConfigProvider
                                                 theme={{
                                                     components: {
@@ -782,10 +782,10 @@ const  Charts = (props) => {
                                                         height: '30px',
                                                         lineHeight: '27px',
                                                         textAlign: 'center',
-                                                        color: '#868686',
+                                                        color: 'var(--app-muted-text-color)',
                                                         fontSize: '14px',
-                                                        backgroundColor: '#ededed',
-                                                        borderColor: '#ededed',
+                                                        backgroundColor: 'var(--row-second-bg-color)',
+                                                        borderColor: 'var(--table-border-divider-color)',
                                                     }}
                                                 >Всего найдено: {allUsersCount}</Tag>
                                             </div>

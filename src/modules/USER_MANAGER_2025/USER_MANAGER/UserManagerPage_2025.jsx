@@ -388,10 +388,10 @@ const UserManagerPage_2025 = (props) => {
                                                 height: '30px',
                                                 lineHeight: '27px',
                                                 textAlign: 'center',
-                                                color: '#868686',
+                                                color: 'var(--app-muted-text-color)',
                                                 fontSize: '14px',
-                                                backgroundColor: '#ededed',
-                                                borderColor: '#ededed',
+                                                backgroundColor: 'var(--row-second-bg-color)',
+                                                borderColor: 'var(--table-border-divider-color)',
                                             }}
                                         >Всего найдено: {allUsersCount}</Tag>
                                     </div>
@@ -458,7 +458,7 @@ const UserManagerPage_2025 = (props) => {
                                                                                         <Tag
                                                                                             key={`group-tag-${user.id}-${group.id}`}
                                                                                             style={{
-                                                                                                color: '#757575',
+                                                                                                color: 'var(--app-muted-text-color)',
                                                                                                 borderBottom: '1px solid #FF6200',
                                                                                                 margin: '0'
                                                                                             }}

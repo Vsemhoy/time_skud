@@ -317,10 +317,10 @@ const ProdCalManagerPage = (props) => {
                                             height: '30px',
                                             lineHeight: '27px',
                                             textAlign: 'center',
-                                            color: '#868686',
+                                            color: 'var(--app-muted-text-color)',
                                             fontSize: '14px',
-                                            backgroundColor: '#ededed',
-                                            borderColor: '#ededed',
+                                            backgroundColor: 'var(--row-second-bg-color)',
+                                            borderColor: 'var(--table-border-divider-color)',
                                         }}
                                     >Всего найдено: {count}</Tag>
                                 </div>

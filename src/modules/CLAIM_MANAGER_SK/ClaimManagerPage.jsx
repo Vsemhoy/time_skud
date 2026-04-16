@@ -728,8 +728,8 @@ const ClaimManagerPage = (props) => {
                     <Content className="content">
                         <div className="sk-content-table-wrapper-claims">
                             <Affix offsetTop={44}>
-                                <div style={{backgroundColor: '#f3f3f3', outline: '2px solid #f3f3f3'}}>
-                                    <div style={{paddingTop: '5px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                                <div className="sk-claims-toolbar-shell">
+                                    <div className="sk-claims-toolbar-row">
                                         <ConfigProvider
                                             theme={{
                                                 components: {
@@ -762,7 +762,7 @@ const ClaimManagerPage = (props) => {
                                             <div
                                                 className={`sk_transport_price_wrapper ${isOpenFilters ? 'sk_transport_price_wrapper--filters-open' : 'sk_transport_price_wrapper--filters-closed'}`}
                                                 onClick={() => {
-                                                    if (canUpdatePrices) {
+                                                    if (canUpdatePrices()) {
                                                         setIsOpenTransportPopup(true);
                                                     }
                                                 }}

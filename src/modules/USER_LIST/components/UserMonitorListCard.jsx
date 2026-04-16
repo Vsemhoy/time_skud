@@ -1,4 +1,4 @@
-import { Tag, Tooltip } from "antd";
+﻿import { Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -47,6 +47,78 @@ const DynamicIcon = ({ iconName, ...props }) => {
     const IconComponent = iconMap[iconName];
     return IconComponent ? <IconComponent {...props} /> : null;
   };
+
+const parseColorToRgb = (color) => {
+    if (!color || typeof color !== 'string') {
+        return null;
+    }
+
+    const normalized = color.trim();
+
+    if (normalized.startsWith('#')) {
+        let hex = normalized.slice(1);
+
+        if (hex.length === 3) {
+            hex = hex.split('').map((item) => item + item).join('');
+        }
+
+        if (hex.length !== 6) {
+            return null;
+        }
+
+        return {
+            r: parseInt(hex.slice(0, 2), 16),
+            g: parseInt(hex.slice(2, 4), 16),
+            b: parseInt(hex.slice(4, 6), 16),
+        };
+    }
+
+    const rgbMatch = normalized.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+
+    if (!rgbMatch) {
+        return null;
+    }
+
+    return {
+        r: Number(rgbMatch[1]),
+        g: Number(rgbMatch[2]),
+        b: Number(rgbMatch[3]),
+    };
+};
+
+const blendColor = (source, target, ratio) => ({
+    r: Math.round(source.r * ratio + target.r * (1 - ratio)),
+    g: Math.round(source.g * ratio + target.g * (1 - ratio)),
+    b: Math.round(source.b * ratio + target.b * (1 - ratio)),
+});
+
+const toRgbString = ({ r, g, b }) => `rgb(${r}, ${g}, ${b})`;
+
+const getReadableBadgeBackground = (color) => {
+    if (typeof document === 'undefined') {
+        return color;
+    }
+
+    const isDarkTheme = document.documentElement.classList.contains('sk-theme-dark');
+
+    if (!isDarkTheme) {
+        return color;
+    }
+
+    const rgb = parseColorToRgb(color);
+
+    if (!rgb) {
+        return color;
+    }
+
+    const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+
+    if (brightness < 150) {
+        return color;
+    }
+
+    return toRgbString(blendColor(rgb, { r: 20, g: 26, b: 33 }, 0.38));
+};
 
 
 
@@ -147,44 +219,60 @@ const UserMonitorListCard = (props) => {
 
     const getClaimStatusText = (claim) => {
         if (claim?.state === 1) {
-            return 'Согласована';
+            return 'РЎРѕРіР»Р°СЃРѕРІР°РЅР°';
         }
         if (claim?.state === 2) {
-            return 'Отклонена';
+            return 'РћС‚РєР»РѕРЅРµРЅР°';
         }
 
-        return 'На рассмотрении';
+        return 'РќР° СЂР°СЃСЃРјРѕС‚СЂРµРЅРёРё';
     };
 
     const renderClaimTooltip = (claim) => {
-        const info = parseClaimInfo(claim?.info);
-        const details = [
-            info.target_point ? `Цель: ${info.target_point}` : null,
-            info.target_address ? `Адрес: ${info.target_address}` : null,
-            info.comment ? `Комментарий: ${info.comment}` : null,
-            Number.isFinite(Number(info.subway_count)) ? `Метро: ${Number(info.subway_count)}` : null,
-            Number.isFinite(Number(info.bus_count)) ? `Наземный транспорт: ${Number(info.bus_count)}` : null,
-            Number.isFinite(Number(info.total_price)) ? `Сумма: ${Number(info.total_price)}` : null,
-        ].filter(Boolean);
-
         return (
             <div style={{maxWidth: '320px'}}>
                 <div><strong>{claim?.skud_current_state?.title || claim?.skud_current_state?.text || 'Заявка'}</strong></div>
-                <div>Статус: {getClaimStatusText(claim)}</div>
                 <div>Начало: {claim?.start ? dayjs(claim.start).format('DD.MM.YYYY HH:mm') : '-'}</div>
                 <div>Конец: {claim?.end ? dayjs(claim.end).format('DD.MM.YYYY HH:mm') : '-'}</div>
-                {details.map((detail, index) => (
-                    <div key={`claim-detail-${claim?.id}-${index}`}>{detail}</div>
-                ))}
             </div>
         );
     };
 
     const enterExitData = content?.enter_exit ?? content?.event_dump;
 
-    const hasEventDump = Array.isArray(enterExitData)
-        ? enterExitData.length > 0
-        : typeof enterExitData === 'string' && enterExitData.length > 2;
+    const normalizedEnterExitData = useMemo(() => {
+        if (!enterExitData) {
+            return [];
+        }
+
+        if (Array.isArray(enterExitData)) {
+            return enterExitData;
+        }
+
+        if (typeof enterExitData === 'string') {
+            try {
+                const parsedData = JSON.parse(enterExitData);
+                return Array.isArray(parsedData) ? parsedData : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        return [];
+    }, [enterExitData]);
+
+    const hasEventDump = normalizedEnterExitData.length > 0;
+
+    const shouldHideExitTime = useMemo(() => {
+        if (!normalizedEnterExitData.length) {
+            return false;
+        }
+
+        const lastEvent = normalizedEnterExitData[normalizedEnterExitData.length - 1];
+        const lastDirection = Number(lastEvent?.direction ?? lastEvent?.diraction ?? lastEvent?.d);
+
+        return lastDirection === 0;
+    }, [normalizedEnterExitData]);
 
     const renderEventDumpTooltip = () => {
         if (!hasEventDump) {
@@ -193,7 +281,7 @@ const UserMonitorListCard = (props) => {
 
         return (
             <div style={{maxWidth: '420px'}}>
-                <UserlistEventDumpCard data={enterExitData} themeSafe={true} />
+                <UserlistEventDumpCard data={normalizedEnterExitData} themeSafe={true} />
             </div>
         );
     };
@@ -240,7 +328,7 @@ const UserMonitorListCard = (props) => {
                     <div>
                         <BarChartOutlined
                             className={'sk-usermoinc-divider-statrig-button'}
-                            title="Статистика по отделу"
+                            title="РЎС‚Р°С‚РёСЃС‚РёРєР° РїРѕ РѕС‚РґРµР»Сѓ"
                         />
                     </div>
                     <div style={{padding: '3px'}}></div>
@@ -330,7 +418,7 @@ const UserMonitorListCard = (props) => {
                     <div>
                         <div style={{textAlign: 'center'}} title={JSON.stringify(content.claims)}>
                         {content.boss_id > 0 && (
-                            <Tooltip placement="left" title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`} arrow={mergedArrow}>
+                            <Tooltip placement="left" title={`Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`} arrow={mergedArrow}>
                                 <RobotOutlined
                                     onClick={handleMarkUser}
                                     className={'sk-usermonic-boss-trigger'}
@@ -342,7 +430,7 @@ const UserMonitorListCard = (props) => {
                         <div style={{textAlign: 'center'}}>
                         {badger && (
                             <Tag className="sk-usermonic-badger"
-                                style={{background: badger.color}}
+                                style={{background: getReadableBadgeBackground(badger.color)}}
                                 title={badger.title}
                             >{badger.icon} <span>{badger.text}</span></Tag>
                         )}</div>
@@ -368,7 +456,7 @@ const UserMonitorListCard = (props) => {
                     <div>
                         {/*<BarChartOutlined
                             className={'sk-usermoinc-divider-statrig-button'}
-                            title="Статистика по отделу"
+                            title="РЎС‚Р°С‚РёСЃС‚РёРєР° РїРѕ РѕС‚РґРµР»Сѓ"
                         />*/}
                     </div>
                     <div style={{padding: '3px'}}></div>
@@ -404,10 +492,10 @@ const UserMonitorListCard = (props) => {
                     </div>
 
                     <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}>
-                        {renderEventDumpCell(content.exit_time)}
+                        {shouldHideExitTime ? '' : renderEventDumpCell(content.exit_time)}
                     </div>
 
-                    <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}> {/*обед*/}
+                    <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
                         {content.lunch_time ? secondsToTime(content.lunch_time) : ''}
                     </div>
 
@@ -465,7 +553,7 @@ const UserMonitorListCard = (props) => {
                         <div>
                             {content.boss_id > 0 && (
                                 <Tooltip placement="left"
-                                         title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`}
+                                         title={`Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`}
                                          arrow={mergedArrow}
                                 >
                                     <div style={{textAlign: 'center', cursor: 'pointer'}}
@@ -483,7 +571,7 @@ const UserMonitorListCard = (props) => {
                             {content?.claims && content.claims.length > 0 && (
                                 <div style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap'}}>
                                     {content.claims.map((claim) => (
-                                        <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom">
+                                        <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom" overlayClassName="sk-theme-tooltip">
                                             <span
                                                 style={{
                                                     display: 'inline-flex',
@@ -508,7 +596,7 @@ const UserMonitorListCard = (props) => {
                         <div style={{textAlign: 'center'}}>
                             {badger && (
                                 <Tag className="sk-usermonic-badger"
-                                     style={{background: badger.color}}
+                                     style={{background: getReadableBadgeBackground(badger.color)}}
                                      title={badger.title}
                                 >{badger.icon} <span>{badger.text}</span></Tag>
                             )}
@@ -521,3 +609,6 @@ const UserMonitorListCard = (props) => {
 }
 
 export default UserMonitorListCard;
+
+
+

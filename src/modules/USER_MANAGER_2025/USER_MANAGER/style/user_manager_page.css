@@ -28,13 +28,13 @@
     height: 115px;
     padding: 15px 0 0 0;
     border-radius: 0;
-    background-color: #f3f3f3;
+    background-color: var(--app-soft-surface-color);
 }
 
 .sk-layout-center {}
 
 aside .ant-layout .ant-layout-sider {
-    background-color: #fff !important;
+    background-color: var(--app-surface-color) !important;
 }
 .sider {
     background-color: transparent !important;
@@ -70,7 +70,7 @@ aside .ant-layout .ant-layout-sider {
     grid-template-columns: auto 1fr auto;
     grid-gap: 10px;
     align-items: center;
-    background-color: #f3f3f3;
+    background-color: var(--app-soft-surface-color);
     padding: 0 5px;
 }
 .sk-userlist-toolbar-xtext {
@@ -86,12 +86,12 @@ aside .ant-layout .ant-layout-sider {
     grid-template-columns: 1fr 125px;
     align-items: center;
     padding: 5px;
-    background-color: #f5f5f5;
+    background-color: var(--app-soft-surface-color);
 }
 
 .sk-pagination-container {
     height: 42px;
-    background-color: #f5f5f5;
+    background-color: var(--app-soft-surface-color);
     display: flex;
     align-items: center;
     grid-gap: 20px;
@@ -100,7 +100,7 @@ aside .ant-layout .ant-layout-sider {
 .sk-header-container {
     width: 100%;
     height: 44px;
-    background-color: #eae9e9;
+    background-color: var(--app-surface-gray-color);
     padding: 5px;
     display: flex;
     justify-content: space-between;
@@ -118,12 +118,12 @@ aside .ant-layout .ant-layout-sider {
 
 .sk-usp-filter-col {
     min-height: calc(100vh - 17px - 64px - 46px);
-    background-color: #efefef;
-    border: 1px solid gainsboro;
+    background-color: var(--app-soft-surface-color);
+    border: 1px solid var(--table-border-divider-color);
 }
 
 .sk-tool-console {
-    background-color: #dfdfdf;
+    background-color: var(--app-soft-surface-color);
     border-radius: 6px;
     min-height: calc(100vh - 17px - 64px - 46px);
 }
@@ -147,12 +147,13 @@ aside .ant-layout .ant-layout-sider {
 .sk-department-header {
     width: 100%;
     height: 40px;
-    background-color: #C1CAD6;
+    background-color: var(--row-divider-color);
     display: flex;
     align-items: center;
     grid-gap: 10px;
     cursor: pointer;
     transition: .3s;
+    color: var(--app-text-color);
 }
 .sk-department-header-hover-container {
     width: 100%;
@@ -177,7 +178,7 @@ aside .ant-layout .ant-layout-sider {
     display: flex;
     flex-direction: column;
     grid-gap: 2px;
-    background-color: #BFBFBF;
+    background-color: var(--table-border-divider-color);
     /*outline: 2px solid #BFBFBF;*/
 }
 
@@ -190,12 +191,13 @@ aside .ant-layout .ant-layout-sider {
 .sk-person-row-basic {
     width: 100%;
     min-height: 72px;
-    background-color: #F6F6F6;
+    background-color: var(--row-main-bg-color);
     display: grid;
     grid-template-columns: 1fr;
     /*grid-gap: 10px;*/
     cursor: pointer;
     transition: .3s;
+    color: var(--app-text-color);
 }
 .sk-person-row-basic-hover-container {
     width: 100%;
@@ -235,7 +237,7 @@ aside .ant-layout .ant-layout-sider {
     margin: 0 0 10px 0;
 }
 .sk-person-row-p.occupy {
-    color: #757575;
+    color: var(--app-muted-text-color);
 }
 
 .sk-person-rules {
@@ -247,7 +249,8 @@ aside .ant-layout .ant-layout-sider {
 .sk-person-schedule, .sk-person-rule {
     width: 100%;
     height: 36px;
-    background-color: #FFFFFF;
+    background-color: var(--app-surface-color);
+    color: var(--app-text-color);
 }
 .sk-person-schedule-hover-container {
     width: 100%;
@@ -276,7 +279,7 @@ aside .ant-layout .ant-layout-sider {
     height: 30px;
     line-height: 30px;
     text-align: center;
-    border-right: 1px solid #BFBFBF;
+    border-right: 1px solid var(--table-border-divider-color);
     margin: 0;
     padding: 5px;
     display: flex;
@@ -290,5 +293,6 @@ aside .ant-layout .ant-layout-sider {
 }
 
 .sk-row-selected {
-    outline: 2px solid #2b89e2;
+    outline: 2px solid var(--row-selected-color_2);
 }
+

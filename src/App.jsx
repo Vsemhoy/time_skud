@@ -147,7 +147,7 @@ function App() {
     
 
   return (
-    <Layout style={{background: '#fff'}}>
+    <Layout style={{background: 'var(--app-surface-color)'}}>
         <BrowserRouter basename={ BASE_NAME}>
           <div >
 

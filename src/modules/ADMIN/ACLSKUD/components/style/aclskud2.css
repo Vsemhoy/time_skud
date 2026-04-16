@@ -87,7 +87,7 @@
 }
 
 .sk-act-templaterow {
-    background-color: #ffffff;
+    background-color: var(--app-surface-color);
     box-shadow: inset 1px 1px 16px #00000070;
     /* outline: 3px solid orange; */
     z-index: 999;
@@ -105,7 +105,7 @@
     position: relative;
 } */
 .sk-table-aclskud-header > div {
-    background-color: white;
+    background-color: var(--app-surface-color);
 }
 
 .sk-aclchecker  {
@@ -295,7 +295,7 @@
     color: rgb(25, 115, 175);
     border:rgba(7, 145, 236, 0.671) 1px solid;
     border-radius: 3px;
-    background-color: white;
+    background-color: var(--app-surface-color);
     opacity: 0.4;
     transition: all 0.3s;
     outline: rgba(7, 144, 236, 0) 1px solid;
