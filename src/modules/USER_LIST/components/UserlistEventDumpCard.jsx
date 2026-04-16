@@ -5,7 +5,6 @@ const UserlistEventDumpCard = (props) => {
 
     const [eventDump, setEventDump] = useState([]);
     const themeSafeClass = props.themeSafe ? ' sk-umsmi-card--theme-safe' : '';
-    const themeSafeTitleClass = props.themeSafe ? ' sk-umsmi-card-title--theme-safe' : '';
     const themeSafeTableClass = props.themeSafe ? ' sk-uml-table-dumper--theme-safe' : '';
 
     const normalizeEventDump = (rawData) => {
@@ -52,7 +51,6 @@ const UserlistEventDumpCard = (props) => {
     return (
         <div className={`sk-w-padding-18 sk-umsmi-card${themeSafeClass}`}>
 
-    <div className={`sk-umsmi-card-title${themeSafeTitleClass}`}>События за день:</div>
         <table className={`sk-uml-table-dumper${themeSafeTableClass}`} style={{borderCollapse:'collapse'}}>
             <thead>
                 <tr style={{fontWeight: '500'}}>
@@ -75,6 +73,7 @@ const UserlistEventDumpCard = (props) => {
 }
 
 export default UserlistEventDumpCard;
+
 
 
 
