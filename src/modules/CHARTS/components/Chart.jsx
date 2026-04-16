@@ -283,7 +283,7 @@ const Chart = (props) => {
                         <div className={styles.user_row} key={`user_${user.id}_${index}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
                             <div className={styles.user_cell}>
                                 <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
-                                <div style={{color: '#2788e1'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
+                                <div style={{color: 'var(--row-selected-color_2)'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
                             </div>
                             {months.length <= 2 && months.map((month, index) => (                             // по дням
                                 getDaysInMonth(dayjs(`${activeYear}-${month}-01`)).map((day, dayIndex) => {

@@ -1,7 +1,7 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
-import { HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import {HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined, UserOutlined} from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
@@ -66,7 +66,7 @@ const AppMenu23 = (props) => {
         {
             key: 'home',
             className: 'sk-home-menu-item',
-            icon: <HomeOutlined style={{ fontSize: '20px', color: '#3b3b3b' }} />,
+            icon: <HomeOutlined style={{ fontSize: '20px', color: 'var(--app-text-color)' }} />,
             label: null,
             onClick: () => {
                 window.location.assign(`${HTTP_HOST}`);
@@ -88,10 +88,10 @@ const AppMenu23 = (props) => {
                     key: '/claims',
                     label: <NavLink to="/claims">Список заявок</NavLink>,
                 },
-                {
+                /*{
                     key: '/claims/settings',
                     label: <NavLink to="/claims/settings">Настройка командировок</NavLink>,
-                },
+                },*/
                 {
                     key: '/charts',
                     label: 'Графики заявок',
@@ -294,11 +294,32 @@ const AppMenu23 = (props) => {
                     </div>*/}
 
                     <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
-                        <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                height: '32px',
+                                padding: '0 10px',
+                                borderRadius: '6px',
+                                border: '1px solid var(--table-border-divider-color)',
+                                background: 'color-mix(in srgb, var(--app-surface-gray-color) 78%, transparent)',
+                                boxShadow: '0 6px 18px rgba(34, 60, 80, 0.08)',
+                                backdropFilter: 'blur(6px)',
+                                boxSizing: 'border-box',
+                            }}
+                        >
                             {props.user_act?.user ? (
-                                <span style={{fontWeight: 500, color: "#3d3d3d"}}>
-                                  {props.user_act.user.name} {props.user_act.user.secondname}
-                                </span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', lineHeight: 1 }}>
+                                    <Avatar
+                                        size={22}
+                                        style={{ backgroundColor: 'var(--app-soft-surface-color)', color: 'var(--app-text-color)' }}
+                                        icon={<UserOutlined />}
+                                    ></Avatar>
+                                    <span style={{fontWeight: 500, color: "var(--app-text-color)", fontSize: '14px', whiteSpace: 'nowrap'}}>
+                                      {props.user_act.user.surname} {props.user_act.user.name}
+                                    </span>
+                                </div>
                             ) : (
                                 <span>Пользователь</span>
                             )}
@@ -331,3 +352,6 @@ const AppMenu23 = (props) => {
 }
 
 export default AppMenu23;
+
+
+

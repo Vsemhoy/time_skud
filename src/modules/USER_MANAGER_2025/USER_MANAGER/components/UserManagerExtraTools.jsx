@@ -971,7 +971,7 @@ const UserManagerExtraTools = (props)=>{
             >
                 {props.schedTypes.map((item)=>(
                     <div key={`schedule-type-modal-${item.id}`}
-                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}
+                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: 'var(--app-soft-surface-color)'}}
                     >
                         <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
                         <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>
@@ -997,7 +997,7 @@ const UserManagerExtraTools = (props)=>{
             >
                 {props.ruleTypes.map((item)=>(
                     <div key={`rule-type-modal-${item.id}`}
-                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: '#f3f3f3'}}
+                         style={{borderLeft: `6px solid ${item.color}`, marginBottom: '18px', paddingLeft: '12px', background: 'var(--app-soft-surface-color)'}}
                     >
                         <div style={{fontSize: '1rem', fontWeight: '600'}}>{item.name}</div>
                         <div style={{paddingBottom: '6px', paddingTop: '6px'}}>{item.description}</div>

@@ -53,9 +53,15 @@
     box-shadow: 1px 1px 3px #00000021;
     /*display: flex !important;*/
     /*gap: 7px;*/
+    color: var(--badge-text-color) !important;
+}
+.sk-usermonic-badger > span,
+.sk-usermonic-badger .ant-tag,
+.sk-usermonic-badger .ant-tag span {
+    color: var(--badge-text-color) !important;
 }
 .sk-usermonic-badger > span:last-child {
-    color: gray;
+    color: var(--badge-text-color) !important;
 }
 
 .sk-usermonic-boss-trigger {
@@ -122,7 +128,8 @@
     cursor:default;
 }
 .sk-usermonic-headerrow > div {
-    background: white !important;
+    background: var(--app-surface-color) !important;
+    color: var(--app-text-color);
     /* backdrop-filter: blur(6px); */
 
 }
@@ -254,8 +261,8 @@
 }
 .sk-fried-bacon {
     color: var(--row-self-accent-color);
-    background-color: white;
-    box-shadow: 0px 0px 9px white;
+    background-color: var(--app-surface-color);
+    box-shadow: 0px 0px 9px var(--app-surface-color);
 }
 .sk-usermonic-cardrow-ou {
     transition: all 0.9s;
@@ -282,7 +289,8 @@
 
 
 .sk-umsmi-card {
-    background-color: white;
+    background-color: var(--app-surface-color);
+    color: var(--app-text-color);
     /* border: 1px solid slateblue; */
     box-shadow: 0px 0px 30px -23px black;
 }
@@ -373,6 +381,7 @@
     text-align: center;
     border-right: 1px solid #80808061;
     padding: 4px;
+    color: var(--app-text-color);
 }
 .sk-usermonic-cardrow-ou-test > div:last-child {
     border-right: none;

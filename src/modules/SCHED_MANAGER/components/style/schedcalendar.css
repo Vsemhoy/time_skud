@@ -1,9 +1,11 @@
 .sk-form-button-stack {
     display: grid;
     /* justify-content: space-around; */
-    color: rgb(46, 82, 122);
-    background-color: rgba(255, 255, 255, 0.795);
+    color: var(--app-text-color);
+    background-color: color-mix(in srgb, var(--app-surface-color) 86%, transparent);
     grid-template-columns: repeat( 12, auto);
+    border: 1px solid color-mix(in srgb, var(--table-border-divider-color) 55%, transparent);
+    border-radius: 8px;
 }
 
 .sk-form-button-stack > div {
@@ -15,31 +17,31 @@
     user-select: none;
 }
 .sk-form-button-stack > .sk-active {
-    background-color: #d8e1ef;
+    background-color: var(--row-hovered-bg-color);
 
 }
 .sk-ffr-toolbar {
     display: flex;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid color-mix(in srgb, var(--table-border-divider-color) 55%, transparent);
 }
 .sk-form-frame-row:last-child {
-    border-top: 1px solid white;
+    border-top: 1px solid color-mix(in srgb, var(--table-border-divider-color) 55%, transparent);
 }
 .sk-fbs-vertstack {
     display: flex;
     flex-direction: column;
     padding: 3px 6px;
-    border-right: 1px solid rgba(255, 255, 255, 0.575);
+    border-right: 1px solid color-mix(in srgb, var(--table-border-divider-color) 45%, transparent);
 }
 .sk-ffr-toolbar label {
     font-size: inherit !important;
-    color:rgb(92, 92, 92);
+    color: var(--app-muted-text-color);
 }
 .sk-fbs-br {
-    border-right: 1px solid white;
+    border-right: 1px solid color-mix(in srgb, var(--table-border-divider-color) 45%, transparent);
 }
 .sk-fbs-bl {
-    border-left: 1px solid white;
+    border-left: 1px solid color-mix(in srgb, var(--table-border-divider-color) 45%, transparent);
 }
 .sk-fbs-row-2c {
     display: grid;
@@ -54,7 +56,7 @@
     /* border: 3px solid white; */
     width: 100%;
     text-align: center;
-    color: rgb(92, 92, 92);
+    color: var(--app-muted-text-color);
     font-weight: 500;
     font-size: small;
 }
@@ -62,7 +64,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    background-color: white;
+    background-color: var(--app-surface-color);
     min-height: 100px;
 }
 .sk-fbs-smena {
@@ -71,7 +73,7 @@
     display: block;
     position:absolute;
     height: 40px;
-    background-color: rgba(0, 157, 255, 0.397);
+    background-color: color-mix(in srgb, var(--row-selected-color_2) 38%, transparent);
     min-width: 1px;
     z-index: 1;
     opacity: 0;
@@ -93,7 +95,7 @@
     justify-content: space-around;
     flex-direction: column;
     align-items: center;
-    border-left: 1px solid rgb(109, 128, 150);
+    border-left: 1px solid color-mix(in srgb, var(--table-border-divider-color) 45%, transparent);
     z-index: 99;
 }
 
@@ -102,10 +104,10 @@
 }
 .sk-unit-selected {
     /* background-color: rgba(255, 102, 75, 0.258); */
-    background-color: rgb(0 0 0 / 16%);
+    background-color: color-mix(in srgb, var(--app-text-color) 12%, transparent);
     /* box-shadow: inset 0px 0px 0px 1px #0000002e; */
     /* box-shadow: inset 0px 0px 0px 1px #003aa76e; */
-    outline: 1px solid #00137e6e;
+    outline: 1px solid color-mix(in srgb, var(--row-selected-color_2) 70%, transparent);
 }
 .sk-fbs-vstack-button {
     transition: all 0.1s;
@@ -121,21 +123,21 @@
     padding: 3px;
 }
 .sk-fbs-vstack-button > small {
-    color: rgb(92, 92, 92);
+    color: var(--app-muted-text-color);
 }
 
 .sk-fbs-vstack-button:hover {
-    background-color: rgba(0, 0, 0, 0.096);
+    background-color: color-mix(in srgb, var(--app-text-color) 10%, transparent);
     cursor: pointer;
 }
 .sk-fbs-vstack-button:active {
-    background-color: rgba(0, 119, 255, 0.219);
+    background-color: color-mix(in srgb, var(--row-selected-color_2) 24%, transparent);
     cursor: pointer;
 }
 .sk-fbs-calendar-item-back {
     transition: all 0.2s;
-    background-color: rgb(255, 255, 255);
-    border-bottom: 0.5px solid #cbcbcb;
+    background-color: var(--app-surface-color);
+    border-bottom: 0.5px solid color-mix(in srgb, var(--table-border-divider-color) 50%, transparent);
     width: calc(100% / 7);
     box-sizing: border-box;
     padding: 0px;
@@ -145,12 +147,12 @@
     border-right: 3px solid brown;
 } 
 .sk-fbs-smena.stickright {
-    border-right: 2px solid rgba(90, 90, 90, 0.527);
+    border-right: 2px solid color-mix(in srgb, var(--app-muted-text-color) 55%, transparent);
 }
 
 .sk-text {
-    color: black;
+    color: var(--app-text-color);
 }
 .sk-date-now {
-    outline: 1px solid rgb(50, 106, 146);
+    outline: 1px solid color-mix(in srgb, var(--row-selected-color_2) 65%, transparent);
 }

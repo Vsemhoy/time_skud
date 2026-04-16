@@ -3,6 +3,127 @@
     align-items: stretch;
     margin-bottom: 12px;
 }
+.sk-claims-toolbar-shell {
+    background-color: var(--app-soft-surface-color);
+    outline: 2px solid var(--app-soft-surface-color);
+    color: var(--app-text-color);
+}
+
+.sk-claims-toolbar-row {
+    padding-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.sk-content-table-wrapper-claims .ant-segmented {
+    background: var(--row-second-bg-color);
+}
+
+.sk-content-table-wrapper-claims .ant-segmented-item {
+    color: var(--app-text-color);
+}
+
+.sk-content-table-wrapper-claims .ant-segmented-thumb {
+    box-shadow: 0 8px 18px -16px rgba(0, 0, 0, 0.8);
+}
+
+.sk-content-table-wrapper-claims .ant-tag {
+    width: 160px;
+    height: 30px;
+    line-height: 27px;
+    text-align: center;
+    color: var(--app-muted-text-color) !important;
+    font-size: 14px;
+    background-color: var(--row-second-bg-color) !important;
+    border-color: var(--table-border-divider-color) !important;
+}
+
+.sk_transport_price_wrapper {
+    width: 300px;
+    height: 61px;
+    border-radius: 8px;
+    background-color: var(--row-second-bg-color);
+    border: 1px solid var(--table-border-divider-color);
+    color: var(--app-text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.sk_transport_price_wrapper:hover {
+    background-color: var(--row-hovered-bg-color);
+}
+
+.sk_transport_price_wrapper:active {
+    background-color: var(--row-selected-color);
+}
+
+.sk_transport_price_header {
+    margin: 0;
+    padding: 6px;
+    font-weight: 600;
+    color: var(--app-text-color);
+}
+
+.sk_transport_price_label_container {
+    padding: 6px;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.sk_transport_price_label {
+    margin: 0;
+    color: var(--app-muted-text-color);
+}
+
+.sk_transport_price {
+    font-size: large;
+    color: rgb(22 119 255);
+}
+
+.modal_form_wrapper {
+    width: 300px;
+    min-height: 364px;
+    padding: 10px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--row-selected-color) 38%, var(--app-surface-color));
+    border: 1px solid var(--table-border-divider-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--app-text-color);
+}
+
+.modal_old_prices {
+    margin-top: 10px;
+    width: 300px;
+    height: 150px;
+    border-radius: 8px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal_old_price {
+    width: 100%;
+    min-height: 32px;
+    border-radius: 8px;
+    background-color: var(--row-second-bg-color);
+    border: 1px solid var(--table-border-divider-color);
+    padding: 5px 8px;
+    color: var(--app-text-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal_old_price p {
+    margin: 0;
+}
 .sk-claiman-type-selector > div  {
     min-width: 66px;
     height: 100%;
@@ -70,21 +191,21 @@
     padding-right: 3px;
 }
 .sk-clamen-card-wrapper > .sk-clamen-card {
-    background-color: rgb(255, 255, 255);
+    background-color: var(--app-surface-color);
     transition: all 0.3s;
     border-radius: 5px;
-    color: rgb(31, 31, 31);
+    color: var(--app-text-color);
     max-height: 100px;
     transition: background 2.5s;
 }
 .sk-clamen-card-wrapper > .sk-clamen-card > div:first-child > div {
-    background-color: rgba(255, 255, 255, 0.664);
+    background-color: color-mix(in srgb, var(--app-surface-color) 70%, transparent);
     transition: all 0.3s;
     border-radius: 5px;
         
 }
 .sk-clamen-card-wrapper:hover > .sk-clamen-card > div:first-child > div {
-    background-color: rgba(255, 255, 255, 0.163);
+    background-color: color-mix(in srgb, var(--app-surface-color) 24%, transparent);
 }
 /* .sk-clamen-card-wrapper:hover > .sk-clamen-card {
     background-color: rgba(255, 255, 255, 0.301);
@@ -108,7 +229,7 @@
     /* background-color: rgb(238, 238, 238); */
 }
 .sk-timestring-claim span:first-child{
-    color: rgb(94, 94, 94);
+    color: var(--app-muted-text-color);
     /* background-color: rgb(238, 238, 238); */
 }
 .sk-clamen-headerrow {
@@ -123,7 +244,7 @@
     
 }
 .ant-affix > .sk-clamen-headerrow > .sk-clamen-card {
-    background: white;
+    background: var(--app-surface-color);
     /* border: 1px solid transparent; */
     border-left: 1px solid var(--row-main-bg-color);
     border-right: 1px solid var(--row-main-bg-color);
@@ -148,7 +269,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     justify-content: center;
     height: 100%;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.074);
+    background-color: color-mix(in srgb, var(--app-surface-color) 12%, transparent);
     font-size: large;
     cursor: pointer;
     max-height: 44px;
@@ -185,6 +306,17 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 
 .sk_transport_price_icon {
     display: none;
+}
+
+.sk-claiminfo,
+.sk-claiminfo .ant-typography,
+.sk-clamen-card > div > div,
+.sk-clamen-headerrow .sk-clamen-card > div > div {
+    color: var(--app-text-color);
+}
+
+.sk-claiminfo > div:not(:first-child) {
+    border-top-color: var(--table-border-divider-color);
 }
 
 @media screen and (max-width: 1500px) {
@@ -245,3 +377,4 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     box-shadow: none;
     padding: 0px;
   } */
+

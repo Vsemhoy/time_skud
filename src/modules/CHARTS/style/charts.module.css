@@ -18,8 +18,8 @@
     height: 34px;
     display: grid;
     grid-template-columns: 160px 1fr;
-    background-color: #e9e9e9;
-    outline: 2px solid #e1e1e1;
+    background-color: var(--row-second-bg-color);
+    outline: 2px solid var(--table-border-divider-color);
     position: sticky;
     /*top: 225px;*/
 }
@@ -43,31 +43,33 @@
     height: 34px;
     display: grid;
     grid-template-columns: 160px repeat(30, 1fr);
-    outline: 2px solid #e1e1e1;
+    outline: 2px solid var(--table-border-divider-color);
     transition: .3s;
+    background-color: var(--row-main-bg-color);
+    color: var(--app-text-color);
 }
 .user_row:hover {
-    background-color: rgba(0, 120, 215, 0.1);
+    background-color: var(--row-hovered-bg-color);
     /*background-color: #dcdcdc;*/
 }
 .user_row:nth-child(even) {
-    background-color: rgba(220, 220, 220, 0.3);
+    background-color: var(--row-second-bg-color);
 }
 .user_row:nth-child(even):hover {
-    background-color: rgba(0, 120, 215, 0.1);
+    background-color: var(--row-hovered-bg-color);
     /*background-color: #dcdcdc;*/
 }
 .highlighted {
-    background-color: rgba(0, 120, 215, 0.1);
+    background-color: var(--row-hovered-bg-color);
 }
 .intersection {
-    background-color: rgba(215, 0, 0, 0.1) !important;
+    background-color: color-mix(in srgb, var(--error-color) 24%, transparent) !important;
 }
 .user_row.by_day {
-    background-color: #e9e9e9;
+    background-color: var(--row-second-bg-color);
 }
 .by_week {
-    background-color: #e9e9e9;
+    background-color: var(--row-second-bg-color);
 }
 .chart_header_cell {
     /*border-top: 1px solid rgba(0, 0, 0, 0.1);*/
@@ -86,23 +88,24 @@
 .chart_cell {
     width: 100%;
     height: 100%;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid var(--table-border-divider-color);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: .3s;
     overflow: hidden;
+    color: var(--app-text-color);
 }
 /*.chart_cell:last-child {*/
 /*    border-right: 1px solid rgba(0, 0, 0, 0.1);*/
 /*}*/
 .chart_cell:hover {
-    box-shadow: inset 0 0 50px #0000ff24;
+    box-shadow: inset 0 0 50px rgba(58, 125, 185, 0.2);
 }
 .weekend {
-    background-color: #ffebee;
-    color: #f34059;
+    background-color: color-mix(in srgb, var(--error-color) 18%, transparent);
+    color: #ff8f98;
 }
 .chart_cell_text {
     padding: 0;
@@ -123,8 +126,8 @@
     width: 100%;
     text-align: center;
     padding: 3px 0;
-    background-color: #e7e7e7;
-    color: rgba(0,0,0,0.45);
+    background-color: var(--row-second-bg-color);
+    color: var(--app-muted-text-color);
     border-radius: 5px;
     transition: .3s;
     cursor: pointer;

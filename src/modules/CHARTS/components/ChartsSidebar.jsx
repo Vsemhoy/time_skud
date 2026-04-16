@@ -110,7 +110,7 @@ const ChartsSidebar = (props) => {
                   {info.label}
                 </span>
                 <span style={{
-                    color: '#999',
+                    color: 'var(--app-muted-text-color)',
                     flexShrink: 0
                 }}>
                   {info.count}
@@ -239,7 +239,7 @@ const ChartsSidebar = (props) => {
                               onChange={() => setFilterIntersections(!filterIntersections)}
                               style={{
                                   marginBottom: '6px',
-                                  color: 'gray'
+                                  color: 'var(--app-muted-text-color)'
                               }}
                     >
                         Показать пересечения

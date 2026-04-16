@@ -27,7 +27,7 @@
     padding-bottom: 40vh;
 }
 .sk-grp-card-head {
-    color: rgba(0, 0, 0, 0.88);
+    color: var(--app-text-color);
     font-size: 16px;
     line-height: 1.5714285714285714;
     list-style: none;
@@ -77,7 +77,7 @@
 .sk-group-card.cooxed .sk-grp-user-items-stack {
     /* display: none; */
     height: 0px;
-    background-color: #223c5025;
+    background-color: color-mix(in srgb, var(--app-text-color) 10%, transparent);
 }
 .sk-grp-user-items-stack {
     margin-top: 12px;
@@ -96,23 +96,23 @@
     width: 100% !important;
 }
 .ant-transfer-list-content-item {
-    background-color: white;
+    background-color: var(--app-surface-color);
     margin-bottom: 1px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.144);
     user-select: none;
 }
 .ant-transfer-list-header {
     border-radius: 0px !important;
-    background-color: rgba(255, 255, 255, 0.733) !important;
+    background-color: color-mix(in srgb, var(--app-surface-color) 86%, transparent) !important;
 }
 
 
 
 .ant-transfer-list-header {
-    background-color: #f6f8f8;
+    background-color: var(--app-soft-surface-color);
 }
 .ant-transfer-list-body  {
-    background-color: #dfe3e6;
+    background-color: var(--app-bg-color);
 }
     .ant-transfer-list-content-item{
        margin-inline: 0px 0 !important;
@@ -130,5 +130,6 @@
 .sk-group-card {
     transition: all 0.3s;
 }
+
 
 

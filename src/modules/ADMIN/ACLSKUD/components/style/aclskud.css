@@ -15,7 +15,7 @@
     position: relative;
 } */
 .sk-table-aclskud-header > div {
-    background-color: white;
+    background-color: var(--app-surface-color);
 }
 
 .sk-table-aclskud-groupcol {
@@ -142,7 +142,7 @@
     color: rgb(25, 115, 175);
     border:rgba(7, 145, 236, 0.671) 1px solid;
     border-radius: 3px;
-    background-color: white;
+    background-color: var(--app-surface-color);
     opacity: 0.4;
     transition: all 0.3s;
     outline: rgba(7, 144, 236, 0) 1px solid;

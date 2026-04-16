@@ -58,6 +58,28 @@
     height: 100%;
 }
 
+.sk-charts-toolbar-shell {
+    background-color: var(--app-soft-surface-color);
+    outline: 2px solid var(--app-soft-surface-color);
+    color: var(--app-text-color);
+}
+
+.sk-charts-toolbar-row {
+    padding-top: 5px;
+}
+
+.sk-content-table-wrapper-charts .ant-segmented {
+    background: var(--row-second-bg-color);
+}
+
+.sk-content-table-wrapper-charts .ant-segmented-item {
+    color: var(--app-text-color);
+}
+
+.sk-content-table-wrapper-charts .ant-segmented-thumb {
+    box-shadow: 0 8px 18px -16px rgba(0, 0, 0, 0.8);
+}
+
 .sk-content-table-wrapper .ant-segmented-item-label .ant-segmented-item-icon {
     display: block !important;
     width: 25px !important;

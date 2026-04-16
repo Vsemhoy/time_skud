@@ -13,7 +13,7 @@
 
 .sk-um-as-cards .sk-um-card {
     box-shadow: 0 5px 10px 0px #223c5025;
-    background-color: white;
+    background-color: var(--app-surface-color);
     /* border: 1px solid rgba(0, 0, 0, 0.103); */
     border-radius: 6px;
     transition: all 0.3s;

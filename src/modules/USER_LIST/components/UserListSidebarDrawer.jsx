@@ -188,7 +188,7 @@ const UserListSidebarDrawer = (props) => {
                     {openStateInfoSection ? (
                       <div>
                       {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
-                        <UserlistEventDumpCard data={targetUserInfo.event_dump} />
+                        <UserlistEventDumpCard data={targetUserInfo.event_dump} themeSafe={true} />
                       ) : (
                         <>{ targetUserInfo.state_data != null ? (
                           <div className={'sk-w-padding-18 sk-umsmi-card'}>

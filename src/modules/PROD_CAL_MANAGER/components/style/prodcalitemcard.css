@@ -5,7 +5,7 @@
 
 .sk-cal-first-row > div {
    padding: 6px 12px;
-   border-left: 1px solid rgb(226, 226, 226);
+   border-left: 1px solid color-mix(in srgb, var(--table-border-divider-color) 42%, transparent);
 }
 .sk-cal-first-row > div:first-child {
    /* padding-left: 18px; */
@@ -19,7 +19,7 @@
    display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 0.5px solid  rgb(226, 226, 226);
+    border-top: 0.5px solid color-mix(in srgb, var(--table-border-divider-color) 42%, transparent);
     padding: 3px 12px;
 }
 
@@ -57,7 +57,7 @@
     font-size: x-large;
     margin-bottom: 6px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid color-mix(in srgb, var(--table-border-divider-color) 42%, transparent);
     opacity: 0.8;
  }
 
