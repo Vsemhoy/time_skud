@@ -115,8 +115,26 @@ function App() {
     get_userdata().then();
   }, []);
 
+  const normalizeEnterTime = (enterTime) => {
+    if (!enterTime) {
+      return null;
+    }
+
+    if (typeof enterTime === 'number') {
+      return String(enterTime).length <= 10 ? dayjs.unix(enterTime) : dayjs(enterTime);
+    }
+
+    if (typeof enterTime === 'string' && /^\d+$/.test(enterTime)) {
+      return enterTime.length <= 10 ? dayjs.unix(Number(enterTime)) : dayjs(Number(enterTime));
+    }
+
+    return dayjs(enterTime);
+  };
+
+  const normalizedEnterTime = normalizeEnterTime(userAct?.user?.enter_time);
+
   const hasEnteredOfficeToday = Boolean(
-    userAct?.user?.enter_time && dayjs(userAct.user.enter_time).isSame(dayjs(), 'day')
+    normalizedEnterTime && normalizedEnterTime.isValid() && normalizedEnterTime.isSame(dayjs(), 'day')
   );
 
   const handleNotificatorOpened = () => {
