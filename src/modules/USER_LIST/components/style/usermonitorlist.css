@@ -286,11 +286,21 @@
     /* border: 1px solid slateblue; */
     box-shadow: 0px 0px 30px -23px black;
 }
+.sk-umsmi-card--theme-safe {
+    background-color: var(--tooltip-surface-color) !important;
+    color: var(--tooltip-text-color) !important;
+    border: 1px solid var(--tooltip-border-color);
+    box-shadow: 0 14px 40px -24px rgba(0, 0, 0, 0.55);
+}
 .sk-umsmi-card-title {
     color: rgb(87, 87, 87);
     margin-bottom: 12px;
     font-size: larger;
     border-bottom: 1px solid rgb(172, 172, 172);
+}
+.sk-umsmi-card-title--theme-safe {
+    color: var(--tooltip-text-color);
+    border-bottom-color: var(--tooltip-border-color);
 }
 .sk-umsmi-row {
     display: grid;
@@ -366,4 +376,38 @@
 }
 .sk-usermonic-cardrow-ou-test > div:last-child {
     border-right: none;
+}
+
+.sk-uml-table-dumper--theme-safe,
+.sk-uml-table-dumper--theme-safe thead,
+.sk-uml-table-dumper--theme-safe tbody,
+.sk-uml-table-dumper--theme-safe tr,
+.sk-uml-table-dumper--theme-safe td,
+.sk-uml-table-dumper--theme-safe th {
+    color: var(--tooltip-text-color);
+}
+
+.sk-uml-table-dumper--theme-safe th,
+.sk-uml-table-dumper--theme-safe td {
+    border-bottom-color: var(--tooltip-border-color);
+}
+
+.sk-uml-table-dumper--theme-safe th {
+    background-color: var(--tooltip-header-color);
+}
+
+.sk-uml-table-dumper--theme-safe tr {
+    background-color: transparent;
+}
+
+.sk-uml-table-dumper--theme-safe td {
+    background-color: transparent;
+}
+
+.sk-uml-table-dumper--theme-safe tr:nth-child(even) td {
+    background-color: var(--tooltip-row-alt-color);
+}
+
+.sk-uml-table-dumper--theme-safe tr:nth-child(even) {
+    background-color: var(--tooltip-row-alt-color);
 }

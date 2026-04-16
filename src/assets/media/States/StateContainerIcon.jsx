@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StateContainerIcon = ({ height = '100%', title }) => (
+const StateContainerIcon = ({ height = '100%' }) => (
   <svg
     version="1.1"
     id="Layer_1"
@@ -12,7 +12,6 @@ const StateContainerIcon = ({ height = '100%', title }) => (
     width={height}
     height={height}
   >
-    {title && <title>{title}</title>}
     {/* Yellow container body */}
     <rect 
       x="43.877" 

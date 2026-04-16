@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StopwatchPlusIcon = ({ height = '100%', title }) => (
+const StopwatchPlusIcon = ({ height = '100%' }) => (
     <svg
         viewBox="0 0 58 58"
         xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +8,6 @@ const StopwatchPlusIcon = ({ height = '100%', title }) => (
         width={height}
         height={height}
     >
-        {title && <title>{title}</title>}
         {/* Основной круг */}
         <circle fill="#ECF0F1" cx="29" cy="29" r="29" />
 
@@ -50,3 +49,4 @@ const StopwatchPlusIcon = ({ height = '100%', title }) => (
 );
 
 export default StopwatchPlusIcon;
+
