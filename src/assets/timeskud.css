@@ -162,6 +162,12 @@ body.sk-theme-dark,
     color: var(--app-text-color);
 }
 
+.sk-theme-dark .ant-drawer-header {
+    border-bottom-color: var(--table-border-divider-color) !important;
+    color: var(--app-text-color);
+    box-shadow: inset 0 0 0 999px rgba(15, 20, 26, 0.42);
+}
+
 .sk-theme-tooltip .ant-tooltip-inner {
     background-color: var(--tooltip-surface-color) !important;
     color: var(--tooltip-text-color) !important;

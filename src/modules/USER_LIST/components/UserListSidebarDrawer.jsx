@@ -44,6 +44,18 @@ const DynamicIcon = ({ iconName, ...props }) => {
     return IconComponent ? <IconComponent {...props} /> : null;
   };
 
+const getMutedDrawerAccent = (color) => {
+    if (!color || typeof document === 'undefined') {
+        return color;
+    }
+
+    if (!document.documentElement.classList.contains('sk-theme-dark')) {
+        return color;
+    }
+
+    return `color-mix(in srgb, ${color} 38%, var(--app-surface-color))`;
+};
+
 
 
 const UserListSidebarDrawer = (props) => {
@@ -173,7 +185,7 @@ const UserListSidebarDrawer = (props) => {
 
                     <div className="">
                     <div className="sk-state-intgra-card-backdrop">
-                    <div style={{background: badger.color + 99}}
+                    <div style={{background: getMutedDrawerAccent(badger?.color)}}
                     className="sk-state-intgra-card ">
                       <span style={{textAlign: 'center' , paddingLeft: '4px'}}>{badger.icon}</span> <span>{badger.title}</span>
                       <div onClick={()=>{setOpenStateInfoSection(!openStateInfoSection)}}>

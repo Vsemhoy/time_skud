@@ -11,10 +11,6 @@
         align-items: center;
         justify-content: space-between;
 
-        > .ant-tooltip:last-child {
-            display: none;
-        }
-
         .bill-list-modal-header {
             display: flex;
             align-items: center;
@@ -154,6 +150,32 @@
             width: 28px;
         }
 
+        .bill-list-events-collapse {
+            background: transparent;
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 12px;
+            overflow: hidden;
+
+            .ant-collapse-item {
+                border: none;
+            }
+
+            .ant-collapse-header {
+                background-color: var(--app-soft-surface-color);
+                color: var(--app-text-color) !important;
+                font-weight: 500;
+            }
+
+            .ant-collapse-content,
+            .ant-collapse-content-box {
+                background-color: var(--app-surface-color);
+            }
+
+            .ant-collapse-content > .ant-collapse-content-box {
+                padding: 0;
+            }
+        }
+
         .table-by-days {
             width: 100%;
             display: flex;
@@ -174,7 +196,7 @@
                 padding: 5px;
                 display: grid;
                 grid-template-columns: minmax(100px, 300px) minmax(100px, 1fr);
-                grid-template-rows: 30px;
+                min-height: 40px;
                 outline: 1px solid var(--table-border-divider-color);
                 background-color: var(--app-surface-color);
                 transition: .3s;
@@ -186,13 +208,14 @@
                     align-items: center;
                 }
                 .days-cell {
-                    padding: 0 5px;
+                    padding: 5px 10px;
                     font-size: 14px;
                     display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    align-items: flex-start;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
                     gap: 5px;
-                    overflow-x: auto;
+                    align-content: flex-start;
                 }
             }
             .table-by-days-row:hover {
