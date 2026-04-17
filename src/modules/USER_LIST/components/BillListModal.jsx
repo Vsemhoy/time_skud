@@ -1,124 +1,59 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Modal, Select, Skeleton, Spin, Tag, Tooltip} from "antd";
+import {Button, Collapse, Modal, Select, Skeleton, Spin, Tag, Tooltip} from "antd";
 import './style/bill_list_modal.css'
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
-import {secondsToTime} from "../../../components/Helpers/TextHelpers";
+
+const SUMMARY_ROWS = [
+    {key: 'office', label: '\u0412 \u043e\u0444\u0438\u0441\u0435', color: 'green'},
+    {key: 'vacation', label: '\u041e\u0442\u043f\u0443\u0441\u043a', color: 'blue'},
+    {key: 'sick_leave', label: '\u0411\u043e\u043b\u044c\u043d\u0438\u0447\u043d\u044b\u0439', color: 'volcano'},
+    {key: 'containers', label: '\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u044b', color: 'gold'},
+    {key: 'business_trips', label: '\u041a\u043e\u043c\u0430\u043d\u0434\u0438\u0440\u043e\u0432\u043a\u0438', color: 'cyan'},
+    {key: 'reworkings', label: '\u041e\u0442\u0440\u0430\u0431\u043e\u0442\u043a\u0438', color: 'lime'},
+    {key: 'time_lost', label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f', color: 'red'},
+];
+
+const monthsOptions = [
+    {id: 1, name: '\u042f\u043d\u0432\u0430\u0440\u044c'},
+    {id: 2, name: '\u0424\u0435\u0432\u0440\u0430\u043b\u044c'},
+    {id: 3, name: '\u041c\u0430\u0440\u0442'},
+    {id: 4, name: '\u0410\u043f\u0440\u0435\u043b\u044c'},
+    {id: 5, name: '\u041c\u0430\u0439'},
+    {id: 6, name: '\u0418\u044e\u043d\u044c'},
+    {id: 7, name: '\u0418\u044e\u043b\u044c'},
+    {id: 8, name: '\u0410\u0432\u0433\u0443\u0441\u0442'},
+    {id: 9, name: '\u0421\u0435\u043d\u0442\u044f\u0431\u0440\u044c'},
+    {id: 10, name: '\u041e\u043a\u0442\u044f\u0431\u0440\u044c'},
+    {id: 11, name: '\u041d\u043e\u044f\u0431\u0440\u044c'},
+    {id: 12, name: '\u0414\u0435\u043a\u0430\u0431\u0440\u044c'},
+];
+
+const yearsOptions = Array.from({length: 8}, (_, index) => {
+    const year = dayjs().subtract(5, 'year').add(index, 'year').year();
+
+    return {
+        id: year,
+        name: year,
+    };
+});
+
+const emptyMetric = {
+    days: 0,
+    hours: 0,
+    by_days: [],
+};
 
 const BillListModal = (props) => {
-    const SUMMARY_ROWS = [
-        {
-            key: 'office',
-            label: 'В офисе',
-            dayKeys: ['office_days', 'worked_days', 'days_in_office', 'office.days', 'attendance.days'],
-            hourKeys: ['office_time', 'office_hours', 'worked_time', 'office.seconds', 'attendance.time'],
-        },
-        {
-            key: 'vacation',
-            label: 'Отпуск',
-            dayKeys: ['vacation_days', 'longvacation_days', 'vacation.days'],
-            hourKeys: ['vacation_time', 'vacation_hours', 'longvacation_time', 'vacation.seconds'],
-        },
-        {
-            key: 'sickleave',
-            label: 'Больничный',
-            dayKeys: ['sickleave_days', 'sick_days', 'sick.days'],
-            hourKeys: ['sickleave_time', 'sickleave_hours', 'sick_time', 'sick.seconds'],
-        },
-        {
-            key: 'containers',
-            label: 'Контейнеры',
-            dayKeys: ['containers_days', 'container_days', 'containers.days'],
-            hourKeys: ['containers_time', 'containers_hours', 'container_time', 'containers.seconds'],
-        },
-        {
-            key: 'trips',
-            label: 'Командировки',
-            dayKeys: ['trip_days', 'trips_days', 'shorttrip_days', 'longtrip_days', 'trip.days'],
-            hourKeys: ['trip_time', 'trips_time', 'shorttrip_time', 'longtrip_time', 'trip.seconds'],
-        },
-        {
-            key: 'rework',
-            label: 'Отработки',
-            dayKeys: ['rework_days', 'overtime_days', 'workoff_days', 'rework.days'],
-            hourKeys: ['rework_time', 'overtime_time', 'workoff_time', 'rework.seconds'],
-        },
-        {
-            key: 'lost',
-            label: 'Потерянное время',
-            dayKeys: ['lost_days', 'losttime_days', 'lost_time_days', 'lost.days'],
-            hourKeys: ['lost_time', 'lost_hours', 'losttime', 'lost_time_count', 'lost.seconds'],
-        },
-    ];
-
     const [isLoadingFilters, setIsLoadingFilters] = useState(false);
     const [isLoadingBillList, setIsLoadingBillList] = useState(false);
     const [isExportingAll, setIsExportingAll] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     const [usersOptions, setUsersOptions] = useState(null);
-    const monthsOptions = ([
-        {
-            id: 1,
-            name: 'Январь'
-        },
-        {
-            id: 2,
-            name: 'Февраль'
-        },
-        {
-            id: 3,
-            name: 'Март'
-        },
-        {
-            id: 4,
-            name: 'Апрель'
-        },
-        {
-            id: 5,
-            name: 'Май'
-        },
-        {
-            id: 6,
-            name: 'Июнь'
-        },
-        {
-            id: 7,
-            name: 'Июль'
-        },
-        {
-            id: 8,
-            name: 'Август'
-        },
-        {
-            id: 9,
-            name: 'Сентябрь'
-        },
-        {
-            id: 10,
-            name: 'Октябрь'
-        },
-        {
-            id: 11,
-            name: 'Ноябрь'
-        },
-        {
-            id: 12,
-            name: 'Декабрь'
-        },
-    ]);
-    const yearsOptions = Array.from({length: 8}, (_, index) => {
-        const year = dayjs().subtract(5, 'year').add(index, 'year').year();
-
-        return {
-            id: year,
-            name: year,
-        };
-    });
-
     const [selectedUser, setSelectedUser] = useState(null);
-    const [selectedMonth, setSelectedMonth] = useState(dayjs().month());
+    const [selectedMonth, setSelectedMonth] = useState(dayjs().month() + 1);
     const [selectedYear, setSelectedYear] = useState(dayjs().year());
 
     const [billListInfo, setBillListInfo] = useState(null);
@@ -150,16 +85,19 @@ const BillListModal = (props) => {
             setIsLoadingFilters(false);
         }
     }, [props.user_list]);
+
     useEffect(() => {
         if (isMounted && selectedUser && selectedMonth && selectedYear) {
             const timer = setTimeout(() => {
                 fetchBillListInfo().then();
             }, 200);
+
             return () => clearTimeout(timer);
         }
-    }, [selectedUser, selectedMonth, selectedYear]);
+    }, [isMounted, selectedUser, selectedMonth, selectedYear]);
+
     useEffect(() => {
-        if (props.userdata && props.userdata.user && props.userdata.user.id) {
+        if (props.userdata?.user?.id) {
             setSelectedUser(props.userdata.user.id);
         }
     }, [props.userdata]);
@@ -167,46 +105,44 @@ const BillListModal = (props) => {
     const fetchFiltersOptions = async () => {
         try {
             setIsLoadingFilters(true);
-            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
-                {
-                    _token: CSRF_TOKEN
-                }
-            );
+            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`, {
+                _token: CSRF_TOKEN
+            });
+
             if (response.data.content) {
                 const filters = response.data.content.filters;
                 setUsersOptions(filters.users);
             }
-            setIsLoadingFilters(false);
         } catch (e) {
             console.log(e);
+        } finally {
             setIsLoadingFilters(false);
         }
     };
+
     const fetchBillListInfo = async () => {
         try {
             setIsLoadingBillList(true);
-            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
-                {
-                    data: {
-                        user: selectedUser,
-                        month: selectedMonth,
-                        year: selectedYear
-                    },
-                    _token: CSRF_TOKEN
+            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/employee-month-stats`, {
+                data: {
+                    user_id: selectedUser,
+                    month: selectedMonth,
+                    year: selectedYear,
+                    debug_calendar: 1
                 }
-            );
-            if (response.data.content) {
-                setBillListInfo(response.data.content);
-            }
-            setIsLoadingBillList(false);
+            });
+
+            setBillListInfo(response?.data ?? null);
         } catch (e) {
             console.log(e);
+            setBillListInfo(null);
+        } finally {
             setIsLoadingBillList(false);
         }
     };
 
     const prepareOptions = (options) => {
-        return options ? options.map(option => ({
+        return options ? options.map((option) => ({
             value: option.id,
             label: option.name,
         })) : null;
@@ -215,6 +151,7 @@ const BillListModal = (props) => {
     const handleExportAll = async () => {
         try {
             setIsExportingAll(true);
+
             if (typeof props.onExportAll === 'function') {
                 await props.onExportAll({
                     user: selectedUser,
@@ -231,25 +168,6 @@ const BillListModal = (props) => {
         }
     };
 
-    const getValueByPath = (obj, path) => {
-        if (!obj || !path) {
-            return undefined;
-        }
-
-        return path.split('.').reduce((acc, key) => acc?.[key], obj);
-    };
-
-    const getFirstMetricValue = (source, keys = []) => {
-        for (const key of keys) {
-            const value = getValueByPath(source, key);
-            if (value !== undefined && value !== null && value !== '') {
-                return value;
-            }
-        }
-
-        return null;
-    };
-
     const formatDaysValue = (value) => {
         if (value === null || value === undefined || value === '') {
             return '—';
@@ -263,31 +181,32 @@ const BillListModal = (props) => {
             return '—';
         }
 
-        if (typeof value === 'string' && Number.isNaN(Number(value))) {
-            return value;
-        }
-
         const numericValue = Number(value);
 
         if (Number.isNaN(numericValue)) {
-            return '—';
+            return String(value);
         }
 
-        if (Math.abs(numericValue) >= 3600) {
-            return secondsToTime(numericValue);
+        if (Number.isInteger(numericValue)) {
+            return `${numericValue} ч`;
         }
 
-        return `${numericValue} ч`;
+        return `${numericValue.toFixed(2)} ч`;
     };
 
     const summaryMeta = {
-        workDays: formatDaysValue(getFirstMetricValue(billListInfo, ['work_days', 'working_days', 'month_work_days', 'norm.days'])),
-        normHours: formatHoursValue(getFirstMetricValue(billListInfo, ['norm_hours', 'month_hours', 'hours_to_work', 'required_hours', 'norm.hours'])),
-        rows: SUMMARY_ROWS.map((row) => ({
-            ...row,
-            days: formatDaysValue(getFirstMetricValue(billListInfo, row.dayKeys)),
-            hours: formatHoursValue(getFirstMetricValue(billListInfo, row.hourKeys)),
-        })),
+        workDays: formatDaysValue(billListInfo?.calendar_info?.days),
+        normHours: formatHoursValue(billListInfo?.calendar_info?.hours),
+        rows: SUMMARY_ROWS.map((row) => {
+            const metric = billListInfo?.[row.key] ?? emptyMetric;
+
+            return {
+                ...row,
+                days: formatDaysValue(metric?.days),
+                hours: formatHoursValue(metric?.hours),
+                byDays: Array.isArray(metric?.by_days) ? metric.by_days : [],
+            };
+        }),
     };
 
     const renderBillListSkeleton = () => (
@@ -338,8 +257,8 @@ const BillListModal = (props) => {
 
     return (
         <Modal
-            title="Расчетный лист офис"
-            closable={{ 'aria-label': 'Custom Close Button' }}
+            title={'\u0420\u0430\u0441\u0447\u0435\u0442\u043d\u044b\u0439 \u043b\u0438\u0441\u0442 \u043e\u0444\u0438\u0441'}
+            closable={{'aria-label': 'Custom Close Button'}}
             footer={null}
             open={props?.isOpenBillListModal}
             onCancel={props?.handleCloseBillListModal}
@@ -353,33 +272,34 @@ const BillListModal = (props) => {
             }}
         >
             <div className={'bill-list-modal-container'}>
-                <Spin spinning={isLoadingFilters}
-                      size={'large'}
-                >
+                <Spin spinning={isLoadingFilters} size={'large'}>
                     <div className={'bill-list-modal-header-wrapper'}>
                         <div className={'bill-list-modal-header'}>
-                            <Select placeholder={'Сотрудник'}
-                                    style={{width: '300px'}}
-                                    options={prepareOptions(usersOptions) ?? []}
-                                    showSearch
-                                    optionFilterProp="label"
-                                    filterOption={(input, option) =>
-                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                    }
-                                    value={selectedUser}
-                                    onChange={setSelectedUser}
+                            <Select
+                                placeholder={'\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a'}
+                                style={{width: '300px'}}
+                                options={prepareOptions(usersOptions) ?? []}
+                                showSearch
+                                optionFilterProp="label"
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                }
+                                value={selectedUser}
+                                onChange={setSelectedUser}
                             />
-                            <Select placeholder={'Месяц'}
-                                    style={{width: '150px'}}
-                                    options={prepareOptions(monthsOptions) ?? []}
-                                    value={selectedMonth}
-                                    onChange={setSelectedMonth}
+                            <Select
+                                placeholder={'\u041c\u0435\u0441\u044f\u0446'}
+                                style={{width: '150px'}}
+                                options={prepareOptions(monthsOptions) ?? []}
+                                value={selectedMonth}
+                                onChange={setSelectedMonth}
                             />
-                            <Select placeholder={'Год'}
-                                    style={{width: '150px'}}
-                                    options={prepareOptions(yearsOptions) ?? []}
-                                    value={selectedYear}
-                                    onChange={setSelectedYear}
+                            <Select
+                                placeholder={'\u0413\u043e\u0434'}
+                                style={{width: '150px'}}
+                                options={prepareOptions(yearsOptions) ?? []}
+                                value={selectedYear}
+                                onChange={setSelectedYear}
                             />
                         </div>
                         <Tooltip title={'\u041f\u043e \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u043c\u0443 \u0433\u043e\u0434\u0443 \u0438 \u043c\u0435\u0441\u044f\u0446\u0443'}>
@@ -388,33 +308,36 @@ const BillListModal = (props) => {
                                 loading={isExportingAll}
                                 disabled={isExportingAll || isLoadingFilters || isLoadingBillList}
                                 onClick={handleExportAll}
-                            >Выгрузить данные по всем</Button>
+                            >
+                                {'\u0412\u044b\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435 \u043f\u043e \u0432\u0441\u0435\u043c'}
+                            </Button>
                         </Tooltip>
                     </div>
                 </Spin>
-                <Spin spinning={false}
-                      tip={'Загружаем расчетный лист офис...'}
-                      size={'large'}
-                >
-                    {isLoadingBillList ? renderBillListSkeleton() : (
+
+                {isLoadingBillList ? renderBillListSkeleton() : (
                     <div className={'bill-list-modal-body'}>
                         <div className={'bill-list-summary'}>
                             <div className={'bill-list-summary-cards'}>
                                 <div className={'bill-list-summary-card'}>
-                                    <div className={'bill-list-summary-card-label'}>Рабочих дней в месяце</div>
+                                    <div className={'bill-list-summary-card-label'}>
+                                        {'\u0420\u0430\u0431\u043e\u0447\u0438\u0445 \u0434\u043d\u0435\u0439 \u0432 \u043c\u0435\u0441\u044f\u0446\u0435'}
+                                    </div>
                                     <div className={'bill-list-summary-card-value'}>{summaryMeta.workDays}</div>
                                 </div>
                                 <div className={'bill-list-summary-card'}>
-                                    <div className={'bill-list-summary-card-label'}>Норма часов</div>
+                                    <div className={'bill-list-summary-card-label'}>
+                                        {'\u041d\u043e\u0440\u043c\u0430 \u0447\u0430\u0441\u043e\u0432'}
+                                    </div>
                                     <div className={'bill-list-summary-card-value'}>{summaryMeta.normHours}</div>
                                 </div>
                             </div>
 
                             <div className={'bill-list-summary-table'}>
                                 <div className={'bill-list-summary-table-header'}>
-                                    <div>Показатель</div>
-                                    <div>Дней</div>
-                                    <div>Часов</div>
+                                    <div>{'\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c'}</div>
+                                    <div>{'\u0414\u043d\u0435\u0439'}</div>
+                                    <div>{'\u0427\u0430\u0441\u043e\u0432'}</div>
                                 </div>
                                 {summaryMeta.rows.map((row) => (
                                     <div className={'bill-list-summary-table-row'} key={row.key}>
@@ -426,94 +349,36 @@ const BillListModal = (props) => {
                             </div>
                         </div>
 
-                        <div className={'table-by-days'}>
-                            <div className={'table-by-days-header'}>События по датам</div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Разгрузка контейнеров</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`8 часов`}><Tag color={'gold'}>15</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'gold'}>16</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'gold'}>17</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'gold'}>18</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'gold'}>19</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'gold'}>20</Tag></Tooltip>
-                                </div>
-                            </div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Больничный</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`8 часов`}><Tag color={'volcano'}>15</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'volcano'}>16</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'volcano'}>17</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'volcano'}>18</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'volcano'}>19</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'volcano'}>20</Tag></Tooltip>
-                                </div>
-                            </div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Сверхурочные</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`8 часов`}><Tag color={'lime'}>15</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'lime'}>16</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'lime'}>17</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'lime'}>18</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'lime'}>19</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'lime'}>20</Tag></Tooltip>
-                                </div>
-                            </div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Местная командировка</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`8 часов`}><Tag color={'cyan'}>15</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'cyan'}>16</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'cyan'}>17</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'cyan'}>18</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'cyan'}>19</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'cyan'}>20</Tag></Tooltip>
-                                </div>
-                            </div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Длительная командировка</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`8 часов`}><Tag color={'blue'}>15</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'blue'}>16</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'blue'}>17</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'blue'}>18</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'blue'}>19</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'blue'}>20</Tag></Tooltip>
-                                </div>
-                            </div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Ежегодный отпуск</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`8 часов`}><Tag color={'green'}>15</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'green'}>16</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'green'}>17</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'green'}>18</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'green'}>19</Tag></Tooltip>
-                                    <Tooltip title={`8 часов`}><Tag color={'green'}>20</Tag></Tooltip>
-                                </div>
-                            </div>
-                            <div className={'table-by-days-row'}>
-                                <div className={'label-cell'}>Потерянное время (неопл. отпуск)</div>
-                                <div className={'days-cell'}>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>8</Tag></Tooltip>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>9</Tag></Tooltip>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>10</Tag></Tooltip>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>11</Tag></Tooltip>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>12</Tag></Tooltip>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>13</Tag></Tooltip>
-                                    <Tooltip title={`7 часов 59 минут`}><Tag color={'red'}>14</Tag></Tooltip>
-                                </div>
-                            </div>
-                        </div>
+                        <Collapse
+                            className={'bill-list-events-collapse'}
+                            items={[
+                                {
+                                    key: 'by-days',
+                                    label: '\u0421\u043e\u0431\u044b\u0442\u0438\u044f \u043f\u043e \u0434\u0430\u0442\u0430\u043c',
+                                    children: (
+                                        <div className={'table-by-days'}>
+                                            {summaryMeta.rows.map((row) => (
+                                                <div className={'table-by-days-row'} key={`days-${row.key}`}>
+                                                    <div className={'label-cell'}>{row.label}</div>
+                                                    <div className={'days-cell'}>
+                                                        {row.byDays.length > 0 ? row.byDays.map((item) => (
+                                                            <Tooltip title={item?.time ?? formatHoursValue(item?.hours)} key={`${row.key}-${item?.date ?? item?.day}`}>
+                                                                <Tag color={row.color}>{item?.day ?? '—'}</Tag>
+                                                            </Tooltip>
+                                                        )) : '—'}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
                     </div>
-                    )}
-                </Spin>
+                )}
             </div>
         </Modal>
     );
 }
 
 export default BillListModal;
-
