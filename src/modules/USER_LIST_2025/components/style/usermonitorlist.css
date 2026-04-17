@@ -258,13 +258,13 @@
 .sk-usermonic-cardrow {
     transition: all 0.9s;
 }
-.sk-move-to-me {
+/*.sk-move-to-me {
     position: relative;
     z-index: 988999;
     margin-top: 32px;
     margin-bottom: 32px;
     outline: 6px solid #45454561;
-}
+}*/
 
 .sk-bg-white {
     background-color: rgb(249, 249, 249) !important;
