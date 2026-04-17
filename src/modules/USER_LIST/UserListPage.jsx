@@ -800,7 +800,7 @@ const UserList = (props)=>{
 
       setTimeout(() => {
         elementdiv.classList.remove('sk-move-to-me');
-      }, 5000);
+      }, 1000);
     }
   }
 

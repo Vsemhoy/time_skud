@@ -192,13 +192,7 @@ const UserMonitorListCard = (props) => {
         }
     }
 
-    const handleMouseOver = (ev) => {
-        if (ev.target.closest('.sk-move-to-me')){
-            console.log('ev.target', ev.target)
-            const elementdiv = document.querySelector('.sk-move-to-me');
-            elementdiv.classList.remove('sk-move-to-me');
-        }
-    }
+    const handleMouseOver = () => {};
 
     const parseClaimInfo = (info) => {
         if (!info) {
@@ -218,20 +212,33 @@ const UserMonitorListCard = (props) => {
     };
 
     const getClaimStatusText = (claim) => {
-        if (claim?.state === 1) {
-            return 'РЎРѕРіР»Р°СЃРѕРІР°РЅР°';
-        }
-        if (claim?.state === 2) {
-            return 'РћС‚РєР»РѕРЅРµРЅР°';
+        const approvalState = claim?.is_approved ?? claim?.approved ?? claim?.state;
+        const needApproved = Number(claim?.need_approved ?? claim?.skud_current_state?.need_approved ?? 0);
+
+        if (!needApproved && approvalState == null) {
+            return 'Не требует согласования';
         }
 
-        return 'РќР° СЂР°СЃСЃРјРѕС‚СЂРµРЅРёРё';
+        if (Number(approvalState) === 1) {
+            return 'Согласована';
+        }
+
+        if (Number(approvalState) === 2 || Number(approvalState) === -1) {
+            return 'Отклонена';
+        }
+
+        if (!needApproved && Number(approvalState) === 0) {
+            return 'Не требует согласования';
+        }
+
+        return 'На рассмотрении';
     };
 
     const renderClaimTooltip = (claim) => {
         return (
             <div style={{maxWidth: '320px'}}>
                 <div><strong>{claim?.skud_current_state?.title || claim?.skud_current_state?.text || 'Заявка'}</strong></div>
+                <div>Статус: {getClaimStatusText(claim)}</div>
                 <div>Начало: {claim?.start ? dayjs(claim.start).format('DD.MM.YYYY HH:mm') : '-'}</div>
                 <div>Конец: {claim?.end ? dayjs(claim.end).format('DD.MM.YYYY HH:mm') : '-'}</div>
             </div>
