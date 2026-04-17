@@ -491,10 +491,6 @@ const UserList = (props)=>{
   }, [markedUsers]);
 
   useEffect(() => {
-    sortedUserRef.current = userListData;
-  }, [userListData]);
-  
-  useEffect(() => {
     openUserInfoRef.current = openUserInfo;
   }, [openUserInfo]);
 
@@ -1040,6 +1036,14 @@ const UserList = (props)=>{
     console.log('sorted', sortedData)
       return sortedData;
   }, [userListData, innerSortByValue, innerFilters]);
+
+  const navigableUsers = useMemo(() => {
+    return filteredUsers.filter((item) => item?.id != null && item?.type !== 'header');
+  }, [filteredUsers]);
+
+  useEffect(() => {
+    sortedUserRef.current = navigableUsers;
+  }, [navigableUsers]);
 
   const toggleInnerSorts = (value) => {
     setInnerSortByValue(value);
