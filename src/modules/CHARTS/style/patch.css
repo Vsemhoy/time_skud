@@ -50,12 +50,14 @@
     padding: 8px 8px 0 8px !important;
     width: 100%;
     height: 100%;
+    background-color: color-mix(in srgb, var(--app-surface-color) 70%, transparent);
 }
 .sk-content-table-wrapper-charts .ant-segmented-item-label {
     display: flex !important;
     padding: 2px 8px 2px 8px !important;
     width: 100%;
     height: 100%;
+    background-color: color-mix(in srgb, var(--app-surface-color) 70%, transparent);
 }
 
 .sk-charts-toolbar-shell {
