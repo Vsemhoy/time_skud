@@ -25,6 +25,10 @@
     color: var(--app-text-color);
 }
 
+.sk-content-table-wrapper-claims .ant-segmented-item-label {
+    background-color: color-mix(in srgb, var(--app-surface-color) 70%, transparent);
+}
+
 .sk-content-table-wrapper-claims .ant-segmented-thumb {
     box-shadow: 0 8px 18px -16px rgba(0, 0, 0, 0.8);
 }
