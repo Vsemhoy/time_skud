@@ -48,12 +48,12 @@ const AppMenu23 = (props) => {
             key: 'status',
             label: 'Статус: Онлайн',
         },
-        {
+        /*{
             key: 'hr/notify',
             icon: <ThunderboltOutlined />,
             label: 'Нотификатор',
             onClick: () => navigate('/hr/notify')
-        },
+        },*/
         {
             key: `${HTTP_HOST}/logout`,
             icon: <LoginOutlined />,
