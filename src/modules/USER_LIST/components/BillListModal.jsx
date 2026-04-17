@@ -1,13 +1,60 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Modal, Select, Spin, Tag, Tooltip} from "antd";
+import {Button, Modal, Select, Skeleton, Spin, Tag, Tooltip} from "antd";
 import './style/bill_list_modal.css'
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
+import {secondsToTime} from "../../../components/Helpers/TextHelpers";
 
 const BillListModal = (props) => {
+    const SUMMARY_ROWS = [
+        {
+            key: 'office',
+            label: 'В офисе',
+            dayKeys: ['office_days', 'worked_days', 'days_in_office', 'office.days', 'attendance.days'],
+            hourKeys: ['office_time', 'office_hours', 'worked_time', 'office.seconds', 'attendance.time'],
+        },
+        {
+            key: 'vacation',
+            label: 'Отпуск',
+            dayKeys: ['vacation_days', 'longvacation_days', 'vacation.days'],
+            hourKeys: ['vacation_time', 'vacation_hours', 'longvacation_time', 'vacation.seconds'],
+        },
+        {
+            key: 'sickleave',
+            label: 'Больничный',
+            dayKeys: ['sickleave_days', 'sick_days', 'sick.days'],
+            hourKeys: ['sickleave_time', 'sickleave_hours', 'sick_time', 'sick.seconds'],
+        },
+        {
+            key: 'containers',
+            label: 'Контейнеры',
+            dayKeys: ['containers_days', 'container_days', 'containers.days'],
+            hourKeys: ['containers_time', 'containers_hours', 'container_time', 'containers.seconds'],
+        },
+        {
+            key: 'trips',
+            label: 'Командировки',
+            dayKeys: ['trip_days', 'trips_days', 'shorttrip_days', 'longtrip_days', 'trip.days'],
+            hourKeys: ['trip_time', 'trips_time', 'shorttrip_time', 'longtrip_time', 'trip.seconds'],
+        },
+        {
+            key: 'rework',
+            label: 'Отработки',
+            dayKeys: ['rework_days', 'overtime_days', 'workoff_days', 'rework.days'],
+            hourKeys: ['rework_time', 'overtime_time', 'workoff_time', 'rework.seconds'],
+        },
+        {
+            key: 'lost',
+            label: 'Потерянное время',
+            dayKeys: ['lost_days', 'losttime_days', 'lost_time_days', 'lost.days'],
+            hourKeys: ['lost_time', 'lost_hours', 'losttime', 'lost_time_count', 'lost.seconds'],
+        },
+    ];
+
     const [isLoadingFilters, setIsLoadingFilters] = useState(false);
     const [isLoadingBillList, setIsLoadingBillList] = useState(false);
+    const [isExportingAll, setIsExportingAll] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     const [usersOptions, setUsersOptions] = useState(null);
@@ -61,32 +108,14 @@ const BillListModal = (props) => {
             name: 'Декабрь'
         },
     ]);
-    const yearsOptions = ([
-        {
-            id: 2020,
-            name: 2020
-        },
-        {
-            id: 2021,
-            name: 2021
-        },
-        {
-            id: 2022,
-            name: 2022
-        },
-        {
-            id: 2023,
-            name: 2023
-        },
-        {
-            id: 2024,
-            name: 2024
-        },
-        {
-            id: 2025,
-            name: 2025
-        },
-    ]);
+    const yearsOptions = Array.from({length: 8}, (_, index) => {
+        const year = dayjs().subtract(5, 'year').add(index, 'year').year();
+
+        return {
+            id: year,
+            name: year,
+        };
+    });
 
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(dayjs().month());
@@ -96,11 +125,31 @@ const BillListModal = (props) => {
 
     useEffect(() => {
         if (!isMounted) {
-            fetchFiltersOptions().then(() => {
+            if (props.user_list && props.user_list.length > 0) {
                 setIsMounted(true);
-            });
+            } else {
+                fetchFiltersOptions().then(() => {
+                    setIsMounted(true);
+                });
+            }
         }
-    }, []);
+    }, [isMounted, props.user_list]);
+
+    useEffect(() => {
+        if (props.user_list && props.user_list.length > 0) {
+            const preparedUsers = props.user_list
+                .filter((user) => user?.id != null && user?.type !== 'header')
+                .map((user) => ({
+                    id: user.id,
+                    name: `${user?.surname ?? ''} ${user?.name ?? ''} ${user?.patronymic ?? ''}`.trim() || `#${user.id}`,
+                }))
+                .filter((user, index, array) => array.findIndex((item) => item.id === user.id) === index)
+                .sort((a, b) => a.name.localeCompare(b.name));
+
+            setUsersOptions(preparedUsers);
+            setIsLoadingFilters(false);
+        }
+    }, [props.user_list]);
     useEffect(() => {
         if (isMounted && selectedUser && selectedMonth && selectedYear) {
             const timer = setTimeout(() => {
@@ -116,69 +165,44 @@ const BillListModal = (props) => {
     }, [props.userdata]);
 
     const fetchFiltersOptions = async () => {
-        //if (PRODMODE) {
-            try {
-                setIsLoadingFilters(true);
-                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
-                    {
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (response.data.content) {
-                    const filters = response.data.content.filters;
-                    setUsersOptions(filters.users);
+        try {
+            setIsLoadingFilters(true);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
+                {
+                    _token: CSRF_TOKEN
                 }
-                setIsLoadingFilters(false);
-            } catch (e) {
-                console.log(e);
-                setIsLoadingFilters(false);
+            );
+            if (response.data.content) {
+                const filters = response.data.content.filters;
+                setUsersOptions(filters.users);
             }
-        // } else {
-        //     setIsLoadingFilters(true);
-        //     setUsersOptions([
-        //         {
-        //             id: 46,
-        //             name: 'Коваленко Оллолошка'
-        //         },
-        //         {
-        //             id: 47,
-        //             name: 'Додиков Валера'
-        //         },
-        //         {
-        //             id: 48,
-        //             name: 'Мистичный Мэн'
-        //         },
-        //     ]);
-        //     setTimeout(() => setIsLoadingFilters(false), 500);
-        // }
+            setIsLoadingFilters(false);
+        } catch (e) {
+            console.log(e);
+            setIsLoadingFilters(false);
+        }
     };
     const fetchBillListInfo = async () => {
-        //if (PRODMODE) {
-            try {
-                setIsLoadingBillList(true);
-                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
-                    {
-                        data: {
-                            user: selectedUser,
-                            month: selectedMonth,
-                            year: selectedYear
-                        },
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (response.data.content) {
-                    setBillListInfo(response.data.content);
+        try {
+            setIsLoadingBillList(true);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`,
+                {
+                    data: {
+                        user: selectedUser,
+                        month: selectedMonth,
+                        year: selectedYear
+                    },
+                    _token: CSRF_TOKEN
                 }
-                setIsLoadingBillList(false);
-            } catch (e) {
-                console.log(e);
-                setIsLoadingBillList(false);
+            );
+            if (response.data.content) {
+                setBillListInfo(response.data.content);
             }
-        // } else {
-        //     setIsLoadingBillList(true);
-        //     setBillListInfo(null);
-        //     setTimeout(() => setIsLoadingBillList(false), 500);
-        // }
+            setIsLoadingBillList(false);
+        } catch (e) {
+            console.log(e);
+            setIsLoadingBillList(false);
+        }
     };
 
     const prepareOptions = (options) => {
@@ -186,7 +210,131 @@ const BillListModal = (props) => {
             value: option.id,
             label: option.name,
         })) : null;
-    }
+    };
+
+    const handleExportAll = async () => {
+        try {
+            setIsExportingAll(true);
+            if (typeof props.onExportAll === 'function') {
+                await props.onExportAll({
+                    user: selectedUser,
+                    month: selectedMonth,
+                    year: selectedYear,
+                });
+            } else {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setIsExportingAll(false);
+        }
+    };
+
+    const getValueByPath = (obj, path) => {
+        if (!obj || !path) {
+            return undefined;
+        }
+
+        return path.split('.').reduce((acc, key) => acc?.[key], obj);
+    };
+
+    const getFirstMetricValue = (source, keys = []) => {
+        for (const key of keys) {
+            const value = getValueByPath(source, key);
+            if (value !== undefined && value !== null && value !== '') {
+                return value;
+            }
+        }
+
+        return null;
+    };
+
+    const formatDaysValue = (value) => {
+        if (value === null || value === undefined || value === '') {
+            return '—';
+        }
+
+        return String(value);
+    };
+
+    const formatHoursValue = (value) => {
+        if (value === null || value === undefined || value === '') {
+            return '—';
+        }
+
+        if (typeof value === 'string' && Number.isNaN(Number(value))) {
+            return value;
+        }
+
+        const numericValue = Number(value);
+
+        if (Number.isNaN(numericValue)) {
+            return '—';
+        }
+
+        if (Math.abs(numericValue) >= 3600) {
+            return secondsToTime(numericValue);
+        }
+
+        return `${numericValue} ч`;
+    };
+
+    const summaryMeta = {
+        workDays: formatDaysValue(getFirstMetricValue(billListInfo, ['work_days', 'working_days', 'month_work_days', 'norm.days'])),
+        normHours: formatHoursValue(getFirstMetricValue(billListInfo, ['norm_hours', 'month_hours', 'hours_to_work', 'required_hours', 'norm.hours'])),
+        rows: SUMMARY_ROWS.map((row) => ({
+            ...row,
+            days: formatDaysValue(getFirstMetricValue(billListInfo, row.dayKeys)),
+            hours: formatHoursValue(getFirstMetricValue(billListInfo, row.hourKeys)),
+        })),
+    };
+
+    const renderBillListSkeleton = () => (
+        <div className={'bill-list-modal-body'}>
+            <div className={'bill-list-summary'}>
+                <div className={'bill-list-summary-cards'}>
+                    {Array.from({length: 2}).map((_, index) => (
+                        <div className={'bill-list-summary-card bill-list-summary-card--skeleton'} key={`bill-summary-card-${index}`}>
+                            <Skeleton.Input active size="small" className={'bill-list-skeleton-label'} />
+                            <Skeleton.Input active size="large" className={'bill-list-skeleton-value'} />
+                        </div>
+                    ))}
+                </div>
+                <div className={'bill-list-summary-table'}>
+                    <div className={'bill-list-summary-table-header'}>
+                        <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-header'} /></div>
+                        <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-header'} /></div>
+                        <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-header'} /></div>
+                    </div>
+                    {Array.from({length: 7}).map((_, index) => (
+                        <div className={'bill-list-summary-table-row'} key={`bill-summary-row-${index}`}>
+                            <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-label'} /></div>
+                            <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-value'} /></div>
+                            <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-value'} /></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className={'table-by-days'}>
+                <div className={'table-by-days-header'}>
+                    <Skeleton.Input active size="small" className={'bill-list-skeleton-table-header-wide'} />
+                </div>
+                {Array.from({length: 6}).map((_, index) => (
+                    <div className={'table-by-days-row'} key={`bill-days-row-${index}`}>
+                        <div className={'label-cell'}>
+                            <Skeleton.Input active size="small" className={'bill-list-skeleton-table-label'} />
+                        </div>
+                        <div className={'days-cell bill-list-skeleton-days-cell'}>
+                            {Array.from({length: 8}).map((__, dayIndex) => (
+                                <Skeleton.Button active size="small" className={'bill-list-skeleton-day-tag'} key={`bill-day-${index}-${dayIndex}`} />
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 
     return (
         <Modal
@@ -196,6 +344,7 @@ const BillListModal = (props) => {
             open={props?.isOpenBillListModal}
             onCancel={props?.handleCloseBillListModal}
             width={'90vw'}
+            style={{top: 24}}
             styles={{
                 body: {
                     minHeight: "70vh",
@@ -212,6 +361,11 @@ const BillListModal = (props) => {
                             <Select placeholder={'Сотрудник'}
                                     style={{width: '300px'}}
                                     options={prepareOptions(usersOptions) ?? []}
+                                    showSearch
+                                    optionFilterProp="label"
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                    }
                                     value={selectedUser}
                                     onChange={setSelectedUser}
                             />
@@ -228,16 +382,49 @@ const BillListModal = (props) => {
                                     onChange={setSelectedYear}
                             />
                         </div>
-                        <Tooltip title={'По выбранному году и месяцу'}>
-                            <Button>Выгрузить данные по всем</Button>
+                        <Tooltip title={'\u041f\u043e \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u043c\u0443 \u0433\u043e\u0434\u0443 \u0438 \u043c\u0435\u0441\u044f\u0446\u0443'}>
+                            <Button
+                                className={'bill-list-export-button'}
+                                loading={isExportingAll}
+                                disabled={isExportingAll || isLoadingFilters || isLoadingBillList}
+                                onClick={handleExportAll}
+                            >Выгрузить данные по всем</Button>
                         </Tooltip>
                     </div>
                 </Spin>
-                <Spin spinning={isLoadingBillList}
+                <Spin spinning={false}
                       tip={'Загружаем расчетный лист офис...'}
                       size={'large'}
                 >
+                    {isLoadingBillList ? renderBillListSkeleton() : (
                     <div className={'bill-list-modal-body'}>
+                        <div className={'bill-list-summary'}>
+                            <div className={'bill-list-summary-cards'}>
+                                <div className={'bill-list-summary-card'}>
+                                    <div className={'bill-list-summary-card-label'}>Рабочих дней в месяце</div>
+                                    <div className={'bill-list-summary-card-value'}>{summaryMeta.workDays}</div>
+                                </div>
+                                <div className={'bill-list-summary-card'}>
+                                    <div className={'bill-list-summary-card-label'}>Норма часов</div>
+                                    <div className={'bill-list-summary-card-value'}>{summaryMeta.normHours}</div>
+                                </div>
+                            </div>
+
+                            <div className={'bill-list-summary-table'}>
+                                <div className={'bill-list-summary-table-header'}>
+                                    <div>Показатель</div>
+                                    <div>Дней</div>
+                                    <div>Часов</div>
+                                </div>
+                                {summaryMeta.rows.map((row) => (
+                                    <div className={'bill-list-summary-table-row'} key={row.key}>
+                                        <div>{row.label}</div>
+                                        <div>{row.days}</div>
+                                        <div>{row.hours}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         <div className={'table-by-days'}>
                             <div className={'table-by-days-header'}>События по датам</div>
@@ -321,6 +508,7 @@ const BillListModal = (props) => {
                             </div>
                         </div>
                     </div>
+                    )}
                 </Spin>
             </div>
         </Modal>
@@ -328,3 +516,4 @@ const BillListModal = (props) => {
 }
 
 export default BillListModal;
+

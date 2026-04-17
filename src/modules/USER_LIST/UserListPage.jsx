@@ -1397,6 +1397,7 @@ const UserList = (props)=>{
           <BillListModal isOpenBillListModal={isOpenBillListModal}
                          handleCloseBillListModal={handleCloseBillListModal}
                          userdata={userdata}
+                         user_list={baseUserListData}
           />
         )}
         {isOpenClaimsModal && (
