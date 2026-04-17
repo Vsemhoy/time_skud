@@ -74,13 +74,27 @@
 
 }
 
-.sk-usermonic-crd-marked > div {
+.sk-usermonic-crd-marked {
     background-color: var(--row-selected-color) !important;
+}
+
+.sk-usermonic-crd-marked.sk-usermonic-crd-mine,
+.sk-usermonic-crd-marked.sk-usermonic-crd-notinoffice-state,
+.sk-usermonic-crd-marked.sk-usermonic-crd-notinoffice-state.sk-usermonic-crd-mine {
+    background-color: var(--row-selected-color) !important;
+}
+
+.sk-usermonic-crd-marked > div {
+    background-color: transparent !important;
     /* color: white; */
 }
 
+.sk-usermonic-crd-mine {
+    background-color: color-mix(in srgb, #58b368 18%, var(--app-surface-color));
+}
+
 .sk-usermonic-crd-mine > div {
-    background-color: var(--row-self-accent-color);
+    background-color: transparent;
 }
 
 .sk-usermonic-drawer-row {
@@ -224,8 +238,12 @@
 
 
 
+.sk-usermonic-crd-notinoffice-state.sk-usermonic-crd-mine {
+    background-color: color-mix(in srgb, #58b368 12%, var(--row-second-bg-color)) !important;
+}
+
 .sk-usermonic-crd-notinoffice-state.sk-usermonic-crd-mine > div {
-    background-color: var(--row-self-accent-faded-color) !important;
+    background-color: transparent !important;
 }
 
 .sk-uml-table-dumper {

@@ -158,7 +158,7 @@ function App() {
        />
    
 
-      {!hasEnteredOfficeToday && alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
+      {pageLoaded && !hasEnteredOfficeToday && alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
           message={<div className='sk-flex-space'>
           <span>"Возможно Вы забыли приложить карту при входе в офис"</span>

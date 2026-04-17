@@ -70,9 +70,9 @@
     /* color: white; */
 }
 
-.sk-usermonic-crd-mine > div {
+/*.sk-usermonic-crd-mine > div {
     background-color: var(--row-self-accent-color);
-}
+}*/
 
 .sk-usermonic-drawer-row {
     padding-top: 6px;
@@ -215,9 +215,9 @@
 
 
 
-.sk-usermonic-crd-notinoffice-state.sk-usermonic-crd-mine > div {
+/*.sk-usermonic-crd-notinoffice-state.sk-usermonic-crd-mine > div {
     background-color: var(--row-self-accent-faded-color) !important;
-}
+}*/
 
 .sk-uml-table-dumper {
     width: 100%;
