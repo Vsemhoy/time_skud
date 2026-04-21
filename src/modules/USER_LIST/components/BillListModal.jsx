@@ -352,7 +352,6 @@ const BillListModal = (props) => {
                                 />
                             ) : (
                                 <div className={'bill-list-current-user'}>
-                                    <div className={'bill-list-current-user-label'}>{'\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a'}</div>
                                     <div className={'bill-list-current-user-name'}>{currentUserName}</div>
                                 </div>
                             )}

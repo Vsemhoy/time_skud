@@ -19,26 +19,20 @@
 
         .bill-list-current-user {
             width: 300px;
-            min-height: 32px;
+            height: 32px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            padding: 3px 11px;
+            padding: 0 11px;
             border: 1px solid var(--table-border-divider-color);
             border-radius: 6px;
             background-color: var(--app-soft-surface-color);
         }
 
-        .bill-list-current-user-label {
-            font-size: 11px;
-            line-height: 1.1;
-            color: var(--app-muted-text-color);
-        }
-
         .bill-list-current-user-name {
             overflow: hidden;
             font-size: 14px;
-            line-height: 1.2;
+            line-height: 30px;
             color: var(--app-text-color);
             text-overflow: ellipsis;
             white-space: nowrap;
