@@ -89,6 +89,12 @@ const getMetricByRow = (source, row) => {
     return metric ?? emptyMetric;
 };
 
+const hasMetricData = (metric) => (
+    Number(metric?.days) > 0
+    || Number(metric?.hours) > 0
+    || (Array.isArray(metric?.by_days) && metric.by_days.length > 0)
+);
+
 const BILL_LIST_USER_SELECT_ACL = 88;
 
 const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
@@ -300,10 +306,8 @@ const BillListModal = (props) => {
         return `${numericValue.toFixed(2)} ч`;
     };
 
-    const summaryMeta = {
-        workDays: formatDaysValue(billListInfo?.calendar_info?.days),
-        normHours: formatHoursValue(billListInfo?.calendar_info?.hours),
-        rows: SUMMARY_ROWS.map((row) => {
+    const summaryRows = SUMMARY_ROWS
+        .map((row) => {
             const metric = getMetricByRow(billListInfo, row);
 
             return {
@@ -311,9 +315,17 @@ const BillListModal = (props) => {
                 days: formatDaysValue(metric?.days),
                 hours: formatHoursValue(metric?.hours),
                 byDays: Array.isArray(metric?.by_days) ? metric.by_days : [],
+                hasData: hasMetricData(metric),
             };
-        }),
+        })
+        .filter((row) => row.hasData);
+
+    const summaryMeta = {
+        workDays: formatDaysValue(billListInfo?.calendar_info?.days),
+        normHours: formatHoursValue(billListInfo?.calendar_info?.hours),
+        rows: summaryRows,
     };
+    const eventRows = summaryMeta.rows.filter((row) => row.byDays.length > 0);
 
     const renderBillListSkeleton = () => (
         <div className={'bill-list-modal-body'}>
@@ -481,7 +493,7 @@ const BillListModal = (props) => {
                                     label: '\u0421\u043e\u0431\u044b\u0442\u0438\u044f \u043f\u043e \u0434\u0430\u0442\u0430\u043c',
                                     children: (
                                         <div className={'table-by-days'}>
-                                            {summaryMeta.rows.map((row) => (
+                                            {eventRows.map((row) => (
                                                 <div className={'table-by-days-row'} key={`days-${row.key}`}>
                                                     <div className={`label-cell ${row.danger ? 'label-cell--danger' : ''}`}>
                                                         {row.tooltip ? (
@@ -499,6 +511,11 @@ const BillListModal = (props) => {
                                                     </div>
                                                 </div>
                                             ))}
+                                            {eventRows.length === 0 && (
+                                                <div className={'table-by-days-row table-by-days-row--empty'}>
+                                                    <div className={'days-cell'}>{'\u041d\u0435\u0442 \u0441\u043e\u0431\u044b\u0442\u0438\u0439'}</div>
+                                                </div>
+                                            )}
                                         </div>
                                     ),
                                 },
