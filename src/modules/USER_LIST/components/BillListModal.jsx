@@ -95,6 +95,34 @@ const hasMetricData = (metric) => (
     || (Array.isArray(metric?.by_days) && metric.by_days.length > 0)
 );
 
+const getFilenameFromDisposition = (disposition) => {
+    if (!disposition) {
+        return null;
+    }
+
+    const utfFilename = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+
+    if (utfFilename?.[1]) {
+        return decodeURIComponent(utfFilename[1]);
+    }
+
+    const filename = disposition.match(/filename="?([^";]+)"?/i);
+
+    return filename?.[1] ?? null;
+};
+
+const downloadBlob = (blob, filename) => {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+};
+
 const BILL_LIST_USER_SELECT_ACL = 88;
 
 const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
@@ -263,16 +291,20 @@ const BillListModal = (props) => {
 
         try {
             setIsExportingAll(true);
-
-            if (typeof props.onExportAll === 'function') {
-                await props.onExportAll({
-                    user: selectedUser,
+            const accessibleUserIds = canSelectAllUsers ? null : usersOptions?.map((user) => user.id);
+            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/employee-month-stats/export`, {
+                data: {
                     month: selectedMonth,
                     year: selectedYear,
-                });
-            } else {
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-            }
+                    user_ids: accessibleUserIds,
+                }
+            }, {
+                responseType: 'blob',
+            });
+            const filename = getFilenameFromDisposition(response.headers?.['content-disposition'])
+                ?? `employee-month-stats-${selectedYear}-${String(selectedMonth).padStart(2, '0')}.xlsx`;
+
+            downloadBlob(response.data, filename);
         } catch (e) {
             console.log(e);
         } finally {
