@@ -17,6 +17,33 @@
             gap: 10px;
         }
 
+        .bill-list-current-user {
+            width: 300px;
+            min-height: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3px 11px;
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 6px;
+            background-color: var(--app-soft-surface-color);
+        }
+
+        .bill-list-current-user-label {
+            font-size: 11px;
+            line-height: 1.1;
+            color: var(--app-muted-text-color);
+        }
+
+        .bill-list-current-user-name {
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 1.2;
+            color: var(--app-text-color);
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .bill-list-export-button {
             min-width: 220px;
         }
