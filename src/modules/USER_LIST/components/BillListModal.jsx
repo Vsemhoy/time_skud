@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Button, Collapse, Modal, Select, Skeleton, Spin, Tag, Tooltip} from "antd";
 import './style/bill_list_modal.css'
 import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
@@ -45,6 +45,48 @@ const emptyMetric = {
     by_days: [],
 };
 
+const BILL_LIST_USER_SELECT_ACL = 88;
+
+const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
+
+const hasFullUserSelectAccess = (userdata) => (
+    isTruthyFlag(userdata?.user?.super)
+    || isTruthyFlag(userdata?.user?.is_admin)
+    || (Array.isArray(userdata?.acls) && userdata.acls.some((acl) => Number(acl) === BILL_LIST_USER_SELECT_ACL))
+);
+
+const getUserId = (user) => user?.id ?? user?.user_id;
+
+const getUserFullName = (user) => (
+    `${user?.surname ?? ''} ${user?.name ?? ''} ${user?.patronymic ?? user?.secondname ?? ''}`.trim()
+);
+
+const prepareUserOption = (user) => ({
+    id: getUserId(user),
+    name: getUserFullName(user) || `#${getUserId(user)}`,
+});
+
+const uniqueAndSortUserOptions = (users) => users
+    .filter((user) => user?.id != null)
+    .filter((user, index, array) => array.findIndex((item) => item.id === user.id) === index)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+const getSubordinateUsersOptions = (users, currentUser) => {
+    const currentUserId = getUserId(currentUser);
+
+    if (!currentUserId || !Array.isArray(users)) {
+        return [];
+    }
+
+    const currentUserOption = prepareUserOption(currentUser);
+    const subordinates = users
+        .filter((user) => user?.type !== 'header')
+        .filter((user) => Number(user?.boss_id) === Number(currentUserId))
+        .map(prepareUserOption);
+
+    return uniqueAndSortUserOptions([currentUserOption, ...subordinates]);
+};
+
 const BillListModal = (props) => {
     const [isLoadingFilters, setIsLoadingFilters] = useState(false);
     const [isLoadingBillList, setIsLoadingBillList] = useState(false);
@@ -58,33 +100,45 @@ const BillListModal = (props) => {
 
     const [billListInfo, setBillListInfo] = useState(null);
 
-    useEffect(() => {
-        if (!isMounted) {
-            if (props.user_list && props.user_list.length > 0) {
-                setIsMounted(true);
-            } else {
-                fetchFiltersOptions().then(() => {
-                    setIsMounted(true);
-                });
-            }
-        }
-    }, [isMounted, props.user_list]);
+    const canSelectAllUsers = hasFullUserSelectAccess(props.userdata);
+    const subordinateUsersOptions = useMemo(
+        () => getSubordinateUsersOptions(props.user_list, props.userdata?.user),
+        [props.user_list, props.userdata?.user]
+    );
+    const canSelectUser = canSelectAllUsers || subordinateUsersOptions.length > 1;
+    const currentUserName = getUserFullName(props.userdata?.user) || `#${props.userdata?.user?.id ?? ''}`;
 
     useEffect(() => {
-        if (props.user_list && props.user_list.length > 0) {
-            const preparedUsers = props.user_list
-                .filter((user) => user?.id != null && user?.type !== 'header')
-                .map((user) => ({
-                    id: user.id,
-                    name: `${user?.surname ?? ''} ${user?.name ?? ''} ${user?.patronymic ?? ''}`.trim() || `#${user.id}`,
-                }))
-                .filter((user, index, array) => array.findIndex((item) => item.id === user.id) === index)
-                .sort((a, b) => a.name.localeCompare(b.name));
+        if (!canSelectAllUsers || (props.user_list && props.user_list.length > 0)) {
+            setIsMounted(true);
+            return;
+        }
+
+        if (!usersOptions && !isLoadingFilters) {
+            fetchFiltersOptions().then(() => {
+                setIsMounted(true);
+            });
+        }
+    }, [canSelectAllUsers, isLoadingFilters, props.user_list, usersOptions]);
+
+    useEffect(() => {
+        if (canSelectAllUsers && props.user_list && props.user_list.length > 0) {
+            const preparedUsers = uniqueAndSortUserOptions(
+                props.user_list
+                    .filter((user) => user?.type !== 'header')
+                    .map(prepareUserOption)
+            );
 
             setUsersOptions(preparedUsers);
             setIsLoadingFilters(false);
         }
-    }, [props.user_list]);
+    }, [canSelectAllUsers, props.user_list]);
+
+    useEffect(() => {
+        if (!canSelectAllUsers && subordinateUsersOptions.length > 1) {
+            setUsersOptions(subordinateUsersOptions);
+        }
+    }, [canSelectAllUsers, subordinateUsersOptions]);
 
     useEffect(() => {
         if (isMounted && selectedUser && selectedMonth && selectedYear) {
@@ -103,6 +157,10 @@ const BillListModal = (props) => {
     }, [props.userdata]);
 
     const fetchFiltersOptions = async () => {
+        if (!canSelectAllUsers) {
+            return;
+        }
+
         try {
             setIsLoadingFilters(true);
             const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}`, {
@@ -149,6 +207,10 @@ const BillListModal = (props) => {
     };
 
     const handleExportAll = async () => {
+        if (!canSelectUser) {
+            return;
+        }
+
         try {
             setIsExportingAll(true);
 
@@ -275,18 +337,25 @@ const BillListModal = (props) => {
                 <Spin spinning={isLoadingFilters} size={'large'}>
                     <div className={'bill-list-modal-header-wrapper'}>
                         <div className={'bill-list-modal-header'}>
-                            <Select
-                                placeholder={'\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a'}
-                                style={{width: '300px'}}
-                                options={prepareOptions(usersOptions) ?? []}
-                                showSearch
-                                optionFilterProp="label"
-                                filterOption={(input, option) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                }
-                                value={selectedUser}
-                                onChange={setSelectedUser}
-                            />
+                            {canSelectUser ? (
+                                <Select
+                                    placeholder={'\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a'}
+                                    style={{width: '300px'}}
+                                    options={prepareOptions(usersOptions) ?? []}
+                                    showSearch
+                                    optionFilterProp="label"
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                    }
+                                    value={selectedUser}
+                                    onChange={setSelectedUser}
+                                />
+                            ) : (
+                                <div className={'bill-list-current-user'}>
+                                    <div className={'bill-list-current-user-label'}>{'\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a'}</div>
+                                    <div className={'bill-list-current-user-name'}>{currentUserName}</div>
+                                </div>
+                            )}
                             <Select
                                 placeholder={'\u041c\u0435\u0441\u044f\u0446'}
                                 style={{width: '150px'}}
@@ -302,16 +371,18 @@ const BillListModal = (props) => {
                                 onChange={setSelectedYear}
                             />
                         </div>
-                        <Tooltip title={'\u041f\u043e \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u043c\u0443 \u0433\u043e\u0434\u0443 \u0438 \u043c\u0435\u0441\u044f\u0446\u0443'}>
-                            <Button
-                                className={'bill-list-export-button'}
-                                loading={isExportingAll}
-                                disabled={isExportingAll || isLoadingFilters || isLoadingBillList}
-                                onClick={handleExportAll}
-                            >
-                                {'\u0412\u044b\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435 \u043f\u043e \u0432\u0441\u0435\u043c'}
-                            </Button>
-                        </Tooltip>
+                        {canSelectUser && (
+                            <Tooltip title={'\u041f\u043e \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u043c\u0443 \u0433\u043e\u0434\u0443 \u0438 \u043c\u0435\u0441\u044f\u0446\u0443'}>
+                                <Button
+                                    className={'bill-list-export-button'}
+                                    loading={isExportingAll}
+                                    disabled={isExportingAll || isLoadingFilters || isLoadingBillList}
+                                    onClick={handleExportAll}
+                                >
+                                    {'\u0412\u044b\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435 \u043f\u043e \u0432\u0441\u0435\u043c'}
+                                </Button>
+                            </Tooltip>
+                        )}
                     </div>
                 </Spin>
 
