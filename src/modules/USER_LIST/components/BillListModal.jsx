@@ -10,7 +10,32 @@ const SUMMARY_ROWS = [
     {key: 'vacation', label: '\u041e\u0442\u043f\u0443\u0441\u043a', color: 'blue'},
     {key: 'sick_leave', label: '\u0411\u043e\u043b\u044c\u043d\u0438\u0447\u043d\u044b\u0439', color: 'volcano'},
     {key: 'containers', label: '\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u044b', color: 'gold'},
-    {key: 'business_trips', label: '\u041a\u043e\u043c\u0430\u043d\u0434\u0438\u0440\u043e\u0432\u043a\u0438', color: 'cyan'},
+    {
+        key: 'business_trips_local',
+        label: '\u041c\u0435\u0441\u0442\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u0438\u0440\u043e\u0432\u043a\u0438',
+        color: 'geekblue',
+        dataKeys: [
+            'business_trips_local',
+            'local_business_trips',
+            'short_business_trips',
+            'local_trips',
+            'business_trips.local',
+            'business_trips.local_business_trips',
+            'business_trips.short',
+        ],
+    },
+    {
+        key: 'business_trips_long',
+        label: '\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u0438\u0440\u043e\u0432\u043a\u0438',
+        color: 'cyan',
+        dataKeys: [
+            'business_trips_long',
+            'long_business_trips',
+            'long_trips',
+            'business_trips.long',
+            'business_trips.long_business_trips',
+        ],
+    },
     {key: 'reworkings', label: '\u041e\u0442\u0440\u0430\u0431\u043e\u0442\u043a\u0438', color: 'lime'},
     {key: 'time_lost', label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f', color: 'red'},
 ];
@@ -43,6 +68,19 @@ const emptyMetric = {
     days: 0,
     hours: 0,
     by_days: [],
+};
+
+const getValueByPath = (source, path) => path
+    .split('.')
+    .reduce((value, key) => value?.[key], source);
+
+const getMetricByRow = (source, row) => {
+    const dataKeys = row.dataKeys ?? [row.key];
+    const metric = dataKeys
+        .map((key) => getValueByPath(source, key))
+        .find((value) => value !== null && value !== undefined);
+
+    return metric ?? emptyMetric;
 };
 
 const BILL_LIST_USER_SELECT_ACL = 88;
@@ -260,7 +298,7 @@ const BillListModal = (props) => {
         workDays: formatDaysValue(billListInfo?.calendar_info?.days),
         normHours: formatHoursValue(billListInfo?.calendar_info?.hours),
         rows: SUMMARY_ROWS.map((row) => {
-            const metric = billListInfo?.[row.key] ?? emptyMetric;
+            const metric = getMetricByRow(billListInfo, row);
 
             return {
                 ...row,
@@ -288,7 +326,7 @@ const BillListModal = (props) => {
                         <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-header'} /></div>
                         <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-header'} /></div>
                     </div>
-                    {Array.from({length: 7}).map((_, index) => (
+                    {Array.from({length: SUMMARY_ROWS.length}).map((_, index) => (
                         <div className={'bill-list-summary-table-row'} key={`bill-summary-row-${index}`}>
                             <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-label'} /></div>
                             <div><Skeleton.Input active size="small" className={'bill-list-skeleton-table-value'} /></div>
@@ -301,7 +339,7 @@ const BillListModal = (props) => {
                 <div className={'table-by-days-header'}>
                     <Skeleton.Input active size="small" className={'bill-list-skeleton-table-header-wide'} />
                 </div>
-                {Array.from({length: 6}).map((_, index) => (
+                {Array.from({length: SUMMARY_ROWS.length}).map((_, index) => (
                     <div className={'table-by-days-row'} key={`bill-days-row-${index}`}>
                         <div className={'label-cell'}>
                             <Skeleton.Input active size="small" className={'bill-list-skeleton-table-label'} />
