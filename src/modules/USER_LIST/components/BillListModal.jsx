@@ -306,6 +306,34 @@ const BillListModal = (props) => {
         return `${numericValue.toFixed(2)} ч`;
     };
 
+    const formatEventTimeValue = (time, hours) => {
+        const timeString = typeof time === 'string' ? time : '';
+        const parsedTime = timeString.match(/(\d+)\s*час(?:ов|а)?\s*(\d+)\s*минут(?:ы)?/i);
+
+        if (parsedTime) {
+            const parsedHours = Number(parsedTime[1]);
+            const parsedMinutes = Number(parsedTime[2]);
+
+            if (parsedHours > 0 && parsedMinutes > 0) {
+                return `${parsedHours} ч. ${parsedMinutes} мин.`;
+            }
+
+            if (parsedHours > 0) {
+                return `${parsedHours} ч.`;
+            }
+
+            return `${parsedMinutes} мин.`;
+        }
+
+        if (timeString) {
+            return timeString
+                .replace(/часов|часа|час/gi, 'ч.')
+                .replace(/минуты|минута|минут/gi, 'мин.');
+        }
+
+        return formatHoursValue(hours);
+    };
+
     const summaryRows = SUMMARY_ROWS
         .map((row) => {
             const metric = getMetricByRow(billListInfo, row);
@@ -504,7 +532,7 @@ const BillListModal = (props) => {
                                                     </div>
                                                     <div className={'days-cell'}>
                                                         {row.byDays.length > 0 ? row.byDays.map((item) => (
-                                                            <Tooltip title={item?.time ?? formatHoursValue(item?.hours)} key={`${row.key}-${item?.date ?? item?.day}`}>
+                                                            <Tooltip title={formatEventTimeValue(item?.time, item?.hours)} key={`${row.key}-${item?.date ?? item?.day}`}>
                                                                 <Tag color={row.color}>{item?.day ?? '—'}</Tag>
                                                             </Tooltip>
                                                         )) : '—'}
