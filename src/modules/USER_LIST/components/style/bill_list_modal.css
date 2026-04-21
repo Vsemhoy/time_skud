@@ -251,6 +251,10 @@
             .table-by-days-row:hover {
                 background-color: var(--row-second-bg-color);
             }
+            .table-by-days-row--empty {
+                grid-template-columns: 1fr;
+                color: var(--app-muted-text-color);
+            }
         }
     }
 }
