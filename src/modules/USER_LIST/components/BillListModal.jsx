@@ -37,7 +37,13 @@ const SUMMARY_ROWS = [
         ],
     },
     {key: 'reworkings', label: '\u041e\u0442\u0440\u0430\u0431\u043e\u0442\u043a\u0438', color: 'lime'},
-    {key: 'time_lost', label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f', color: 'red'},
+    {
+        key: 'time_lost',
+        label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f',
+        color: 'red',
+        danger: true,
+        tooltip: '\u041e\u0434\u0438\u043d \u0434\u0435\u043d\u044c = 8 \u0447\u0430\u0441\u043e\u0432 \u043f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0433\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438',
+    },
 ];
 
 const monthsOptions = [
@@ -447,13 +453,23 @@ const BillListModal = (props) => {
                                     <div>{'\u0414\u043d\u0435\u0439'}</div>
                                     <div>{'\u0427\u0430\u0441\u043e\u0432'}</div>
                                 </div>
-                                {summaryMeta.rows.map((row) => (
-                                    <div className={'bill-list-summary-table-row'} key={row.key}>
-                                        <div>{row.label}</div>
-                                        <div>{row.days}</div>
-                                        <div>{row.hours}</div>
-                                    </div>
-                                ))}
+                                {summaryMeta.rows.map((row) => {
+                                    const rowContent = (
+                                        <div className={`bill-list-summary-table-row ${row.danger ? 'bill-list-summary-table-row--danger' : ''}`}>
+                                            <div>{row.label}</div>
+                                            <div>{row.days}</div>
+                                            <div>{row.hours}</div>
+                                        </div>
+                                    );
+
+                                    return row.tooltip ? (
+                                        <Tooltip title={row.tooltip} key={row.key}>
+                                            {rowContent}
+                                        </Tooltip>
+                                    ) : (
+                                        <React.Fragment key={row.key}>{rowContent}</React.Fragment>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -467,7 +483,13 @@ const BillListModal = (props) => {
                                         <div className={'table-by-days'}>
                                             {summaryMeta.rows.map((row) => (
                                                 <div className={'table-by-days-row'} key={`days-${row.key}`}>
-                                                    <div className={'label-cell'}>{row.label}</div>
+                                                    <div className={`label-cell ${row.danger ? 'label-cell--danger' : ''}`}>
+                                                        {row.tooltip ? (
+                                                            <Tooltip title={row.tooltip}>
+                                                                <span>{row.label}</span>
+                                                            </Tooltip>
+                                                        ) : row.label}
+                                                    </div>
                                                     <div className={'days-cell'}>
                                                         {row.byDays.length > 0 ? row.byDays.map((item) => (
                                                             <Tooltip title={item?.time ?? formatHoursValue(item?.hours)} key={`${row.key}-${item?.date ?? item?.day}`}>

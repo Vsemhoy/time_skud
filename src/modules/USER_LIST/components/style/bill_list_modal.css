@@ -120,6 +120,11 @@
             background-color: var(--row-second-bg-color);
         }
 
+        .bill-list-summary-table-row--danger {
+            color: #cf1322;
+            font-weight: 600;
+        }
+
         .bill-list-summary-table-header > div:nth-child(2),
         .bill-list-summary-table-header > div:nth-child(3),
         .bill-list-summary-table-row > div:nth-child(2),
@@ -227,6 +232,10 @@
                     border-right: 1px solid var(--table-border-divider-color);
                     display: flex;
                     align-items: center;
+                }
+                .label-cell--danger {
+                    color: #cf1322;
+                    font-weight: 600;
                 }
                 .days-cell {
                     padding: 5px 10px;
