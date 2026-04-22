@@ -245,7 +245,8 @@ const UserMonitorListCard = (props) => {
         );
     };
 
-    const enterExitData = content?.enter_exit ?? content?.event_dump;
+    const hasEnterExitField = Object.prototype.hasOwnProperty.call(content ?? {}, 'enter_exit');
+    const enterExitData = hasEnterExitField ? content?.enter_exit : content?.event_dump;
 
     const normalizedEnterExitData = useMemo(() => {
         if (!enterExitData) {
@@ -304,8 +305,8 @@ const UserMonitorListCard = (props) => {
         return result;
     }, [normalizedEnterExitData]);
 
-    const displayedEnterTime = latestEnterExitTimes.enter ?? content.enter_time;
-    const displayedExitTime = latestEnterExitTimes.exit ?? content.exit_time;
+    const displayedEnterTime = hasEnterExitField ? latestEnterExitTimes.enter : latestEnterExitTimes.enter ?? content.enter_time;
+    const displayedExitTime = hasEnterExitField ? latestEnterExitTimes.exit : latestEnterExitTimes.exit ?? content.exit_time;
 
     const shouldHideExitTime = useMemo(() => {
         if (!normalizedEnterExitData.length) {
