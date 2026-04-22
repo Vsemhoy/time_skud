@@ -270,13 +270,50 @@ const UserMonitorListCard = (props) => {
 
     const hasEventDump = normalizedEnterExitData.length > 0;
 
+    const getEventDirection = (event) => Number(event?.direction ?? event?.diraction ?? event?.d);
+    const getEventTime = (event) => event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t;
+
+    const latestEnterExitTimes = useMemo(() => {
+        const result = {
+            enter: null,
+            exit: null,
+        };
+
+        for (let index = normalizedEnterExitData.length - 1; index >= 0; index -= 1) {
+            const event = normalizedEnterExitData[index];
+            const direction = getEventDirection(event);
+            const eventTime = getEventTime(event);
+
+            if (!eventTime || Number.isNaN(direction)) {
+                continue;
+            }
+
+            if (direction === 0 && !result.enter) {
+                result.enter = eventTime;
+            }
+
+            if (direction !== 0 && !result.exit) {
+                result.exit = eventTime;
+            }
+
+            if (result.enter && result.exit) {
+                break;
+            }
+        }
+
+        return result;
+    }, [normalizedEnterExitData]);
+
+    const displayedEnterTime = latestEnterExitTimes.enter ?? content.enter_time;
+    const displayedExitTime = latestEnterExitTimes.exit ?? content.exit_time;
+
     const shouldHideExitTime = useMemo(() => {
         if (!normalizedEnterExitData.length) {
             return false;
         }
 
         const lastEvent = normalizedEnterExitData[normalizedEnterExitData.length - 1];
-        const lastDirection = Number(lastEvent?.direction ?? lastEvent?.diraction ?? lastEvent?.d);
+        const lastDirection = getEventDirection(lastEvent);
 
         return lastDirection === 0;
     }, [normalizedEnterExitData]);
@@ -495,11 +532,11 @@ const UserMonitorListCard = (props) => {
                     </div>
 
                     <div className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
-                        {renderEventDumpCell(content.enter_time)}
+                        {renderEventDumpCell(displayedEnterTime)}
                     </div>
 
                     <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}>
-                        {shouldHideExitTime ? '' : renderEventDumpCell(content.exit_time)}
+                        {shouldHideExitTime ? '' : renderEventDumpCell(displayedExitTime)}
                     </div>
 
                     <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
