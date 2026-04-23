@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Button, Collapse, Modal, Select, Skeleton, Spin, Tag, Tooltip} from "antd";
 import './style/bill_list_modal.css'
 import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
@@ -170,6 +170,7 @@ const BillListModal = (props) => {
     const [isLoadingBillList, setIsLoadingBillList] = useState(false);
     const [isExportingAll, setIsExportingAll] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const billListRequestRef = useRef(0);
 
     const [usersOptions, setUsersOptions] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -257,8 +258,13 @@ const BillListModal = (props) => {
     };
 
     const fetchBillListInfo = async () => {
+        const requestId = billListRequestRef.current + 1;
+        billListRequestRef.current = requestId;
+
         try {
             setIsLoadingBillList(true);
+            setBillListInfo(null);
+
             const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/employee-month-stats`, {
                 data: {
                     user_id: selectedUser,
@@ -268,12 +274,18 @@ const BillListModal = (props) => {
                 }
             });
 
-            setBillListInfo(response?.data ?? null);
+            if (requestId === billListRequestRef.current) {
+                setBillListInfo(response?.data ?? null);
+            }
         } catch (e) {
             console.log(e);
-            setBillListInfo(null);
+            if (requestId === billListRequestRef.current) {
+                setBillListInfo(null);
+            }
         } finally {
-            setIsLoadingBillList(false);
+            if (requestId === billListRequestRef.current) {
+                setIsLoadingBillList(false);
+            }
         }
     };
 
