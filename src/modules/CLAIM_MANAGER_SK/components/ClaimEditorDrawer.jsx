@@ -69,16 +69,25 @@ const ClaimEditorDrawer = (props) => {
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
   const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
   const effectiveFormUsers = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
+  const selectedFullDayUsers = effectiveFormUsers
+      .map((userId) => baseUserList.find((user) => Number(user?.id) === Number(userId)))
+      .filter(Boolean);
   const selectedFullDayUser = editMode === 'create' && effectiveFormUsers.length === 1
       ? baseUserList.find((user) => Number(user?.id) === Number(effectiveFormUsers[0]))
       : null;
   const selectedFullDaySchedule = selectedFullDayUser?.schedule?.skud_schedule;
+  const isMultiUserFullWorkDay = effectiveFormUsers.length > 1;
+  const userHasValidSchedule = (user) => (
+      user?.schedule?.skud_schedule
+      && Number.isFinite(Number(user.schedule.skud_schedule.start_time))
+      && Number.isFinite(Number(user.schedule.skud_schedule.end_time))
+  );
   const canUseFullWorkDay = Boolean(
-      selectedFullDaySchedule
+      effectiveFormUsers.length > 0
       && formDateRange?.[0]
       && formDateRange?.[1]
-      && Number.isFinite(Number(selectedFullDaySchedule.start_time))
-      && Number.isFinite(Number(selectedFullDaySchedule.end_time))
+      && selectedFullDayUsers.length === effectiveFormUsers.length
+      && selectedFullDayUsers.every(userHasValidSchedule)
   );
 
 
@@ -203,7 +212,7 @@ const ClaimEditorDrawer = (props) => {
     }
   }, [editMode, canCreateForOtherUsers, MYID]);
   useEffect(() => {
-    if (effectiveFormUsers.length !== 1) {
+    if (effectiveFormUsers.length === 0) {
       setIsFullWorkDay(false);
     }
   }, [effectiveFormUsers]);
@@ -217,10 +226,13 @@ const ClaimEditorDrawer = (props) => {
       return;
     }
 
-    applyFullWorkDayRange();
+    if (!isMultiUserFullWorkDay) {
+      applyFullWorkDayRange();
+    }
   }, [
     isFullWorkDay,
     canUseFullWorkDay,
+    isMultiUserFullWorkDay,
     selectedFullDayUser?.id,
     selectedFullDaySchedule?.start_time,
     selectedFullDaySchedule?.end_time,
@@ -396,15 +408,21 @@ const ClaimEditorDrawer = (props) => {
     return date.clone().startOf('day').add(Number(seconds), 'second');
   };
 
+  const getFullWorkDayRangeForUser = (user, dateRange) => {
+    const schedule = user?.schedule?.skud_schedule;
+
+    return [
+      applyScheduleSecondsToDate(dateRange[0], schedule.start_time),
+      applyScheduleSecondsToDate(dateRange[1], schedule.end_time),
+    ];
+  };
+
   const applyFullWorkDayRange = () => {
-    if (!canUseFullWorkDay) {
+    if (!canUseFullWorkDay || !selectedFullDayUser) {
       return;
     }
 
-    const nextRange = [
-      applyScheduleSecondsToDate(formDateRange[0], selectedFullDaySchedule.start_time),
-      applyScheduleSecondsToDate(formDateRange[1], selectedFullDaySchedule.end_time),
-    ];
+    const nextRange = getFullWorkDayRangeForUser(selectedFullDayUser, formDateRange);
 
     if (
         nextRange[0].valueOf() !== formDateRange[0].valueOf()
@@ -412,6 +430,15 @@ const ClaimEditorDrawer = (props) => {
     ) {
       setFormDateRange(nextRange);
     }
+  };
+
+  const handleDateOnlyRangeChange = (dates) => {
+    if (!dates) {
+      setFormDateRange(dates);
+      return;
+    }
+
+    setFormDateRange([dates[0].startOf('day'), dates[1].endOf('day')]);
   };
 
   const handleToggleFullWorkDay = () => {
@@ -485,6 +512,24 @@ const ClaimEditorDrawer = (props) => {
       if (itemId){
         result.id = itemId;
       };
+
+      if (editMode === 'create' && isFullWorkDay && effectiveFormUsers.length > 1) {
+        const splitClaims = selectedFullDayUsers.map((user) => {
+          const userRange = getFullWorkDayRangeForUser(user, formDateRange);
+
+          return {
+            ...result,
+            users: [user.id],
+            start: userRange[0].format('YYYY-MM-DD HH:mm:ss'),
+            end: userRange[1].format('YYYY-MM-DD HH:mm:ss'),
+          };
+        });
+
+        props.on_send(splitClaims, editMode);
+        setOpen(false);
+        return;
+      }
+
       props.on_send(result, editMode);
     }
     setOpen(false);
@@ -583,16 +628,34 @@ const ClaimEditorDrawer = (props) => {
               </div>
               ):(
                 <>
-                  <DatePicker.RangePicker
-                      showTime
-                      showSecond={false}
-                      format="DD.MM.YYYY HH:mm"
-                      style={{ width: '100%' }}
-                      value={formDateRange}
-                      disabled={isFullWorkDay}
-                      onChange={setFormDateRange}
-                  />
+                  {isFullWorkDay && isMultiUserFullWorkDay ? (
+                    <DatePicker.RangePicker
+                        format="DD.MM.YYYY"
+                        style={{ width: '100%' }}
+                        value={formDateRange}
+                        onChange={handleDateOnlyRangeChange}
+                    />
+                  ) : (
+                    <DatePicker.RangePicker
+                        showTime
+                        showSecond={false}
+                        format="DD.MM.YYYY HH:mm"
+                        style={{ width: '100%' }}
+                        value={formDateRange}
+                        disabled={isFullWorkDay}
+                        onChange={setFormDateRange}
+                    />
+                  )}
                   {editMode === 'create' && effectiveFormUsers.length === 1 && (
+                    <Button
+                        type={isFullWorkDay ? 'primary' : 'default'}
+                        disabled={!canUseFullWorkDay}
+                        onClick={handleToggleFullWorkDay}
+                    >
+                      Весь день
+                    </Button>
+                  )}
+                  {editMode === 'create' && effectiveFormUsers.length > 1 && (
                     <Button
                         type={isFullWorkDay ? 'primary' : 'default'}
                         disabled={!canUseFullWorkDay}

@@ -795,11 +795,19 @@ const ClaimManagerTools = (props)=>{
     const create_claim = async (claimObj) => {
         if (PRODMODE) {
             try {
-                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`,
-                    {
-                        data: claimObj,
-                        _token: CSRF_TOKEN
-                    });
+                if (Array.isArray(claimObj)) {
+                    await Promise.all(claimObj.map((claim) => PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`,
+                        {
+                            data: claim,
+                            _token: CSRF_TOKEN
+                        })));
+                } else {
+                    let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`,
+                        {
+                            data: claimObj,
+                            _token: CSRF_TOKEN
+                        });
+                }
                 //console.log('response data => ', response.data);
                 // debounceFetchUsers();
             } catch (e) {
