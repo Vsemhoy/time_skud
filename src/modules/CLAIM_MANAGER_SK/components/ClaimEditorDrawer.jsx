@@ -28,6 +28,7 @@ const ClaimEditorDrawer = (props) => {
 
   const [formUsers, setFormUsers] = useState([]); // all
   const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs().endOf('day')]); // All
+  const [isFullWorkDay, setIsFullWorkDay] = useState(false);
 
   const [formTargetPoint, setFormTargetPoint] = useState('');                              // 7, 8,
   const [formTargetAddress, setFormTargetAddress] = useState('');                          // 7, 8,
@@ -67,6 +68,18 @@ const ClaimEditorDrawer = (props) => {
       : `#${MYID}`;
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
   const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
+  const effectiveFormUsers = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
+  const selectedFullDayUser = editMode === 'create' && effectiveFormUsers.length === 1
+      ? baseUserList.find((user) => Number(user?.id) === Number(effectiveFormUsers[0]))
+      : null;
+  const selectedFullDaySchedule = selectedFullDayUser?.schedule?.skud_schedule;
+  const canUseFullWorkDay = Boolean(
+      selectedFullDaySchedule
+      && formDateRange?.[0]
+      && formDateRange?.[1]
+      && Number.isFinite(Number(selectedFullDaySchedule.start_time))
+      && Number.isFinite(Number(selectedFullDaySchedule.end_time))
+  );
 
 
   const onClose = () => {
@@ -189,6 +202,29 @@ const ClaimEditorDrawer = (props) => {
       setFormUsers([MYID]);
     }
   }, [editMode, canCreateForOtherUsers, MYID]);
+  useEffect(() => {
+    if (effectiveFormUsers.length !== 1) {
+      setIsFullWorkDay(false);
+    }
+  }, [effectiveFormUsers]);
+  useEffect(() => {
+    if (!isFullWorkDay) {
+      return;
+    }
+
+    if (!canUseFullWorkDay) {
+      setIsFullWorkDay(false);
+      return;
+    }
+
+    applyFullWorkDayRange();
+  }, [
+    isFullWorkDay,
+    canUseFullWorkDay,
+    selectedFullDayUser?.id,
+    selectedFullDaySchedule?.start_time,
+    selectedFullDaySchedule?.end_time,
+  ]);
   useEffect(() => {
     setAllowApprove(false);
     setAllowBack(false);
@@ -341,6 +377,7 @@ const ClaimEditorDrawer = (props) => {
 
   const refreshForm = () => {
     setFormUsers([]);
+    setIsFullWorkDay(false);
     setFormTargetPoint('');
     setFormTargetAddress('');
     setFormContactFace('');
@@ -354,6 +391,39 @@ const ClaimEditorDrawer = (props) => {
     setFormDiseaseNumber('');
     setFormResult('');
   }
+
+  const applyScheduleSecondsToDate = (date, seconds) => {
+    return date.clone().startOf('day').add(Number(seconds), 'second');
+  };
+
+  const applyFullWorkDayRange = () => {
+    if (!canUseFullWorkDay) {
+      return;
+    }
+
+    const nextRange = [
+      applyScheduleSecondsToDate(formDateRange[0], selectedFullDaySchedule.start_time),
+      applyScheduleSecondsToDate(formDateRange[1], selectedFullDaySchedule.end_time),
+    ];
+
+    if (
+        nextRange[0].valueOf() !== formDateRange[0].valueOf()
+        || nextRange[1].valueOf() !== formDateRange[1].valueOf()
+    ) {
+      setFormDateRange(nextRange);
+    }
+  };
+
+  const handleToggleFullWorkDay = () => {
+    if (isFullWorkDay) {
+      setIsFullWorkDay(false);
+      return;
+    }
+
+    applyFullWorkDayRange();
+    setIsFullWorkDay(true);
+  };
+
   const handleSubmitForm = ()=>{
     let res2 = {};
     let result = {};
@@ -366,7 +436,7 @@ const ClaimEditorDrawer = (props) => {
       result.end = formDateRange[1].format('YYYY-MM-DD HH:mm:ss');
 
     }
-    result.users = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
+    result.users = effectiveFormUsers;
     result.skud_current_state_id = formType;
     result.state = 0;
     result.days_count = formDateRange[1].diff(formDateRange[0], 'day') + 1;
@@ -519,8 +589,18 @@ const ClaimEditorDrawer = (props) => {
                       format="DD.MM.YYYY HH:mm"
                       style={{ width: '100%' }}
                       value={formDateRange}
+                      disabled={isFullWorkDay}
                       onChange={setFormDateRange}
                   />
+                  {editMode === 'create' && effectiveFormUsers.length === 1 && (
+                    <Button
+                        type={isFullWorkDay ? 'primary' : 'default'}
+                        disabled={!canUseFullWorkDay}
+                        onClick={handleToggleFullWorkDay}
+                    >
+                      Весь день
+                    </Button>
+                  )}
                   {/*<Button
                   onClick={()=>{setFormDateRange([formDateRange[0], formDateRange[0]])}}
                   >Сравнять</Button>*/}
