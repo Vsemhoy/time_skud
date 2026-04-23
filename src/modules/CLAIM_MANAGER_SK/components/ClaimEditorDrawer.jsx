@@ -61,6 +61,13 @@ const ClaimEditorDrawer = (props) => {
 
   // const [personalModeUser, setPersonalModeUser] = useState(null);
 
+  const currentUser = baseUserList.find((user) => Number(user?.id) === Number(MYID));
+  const currentUserName = currentUser
+      ? `${currentUser.surname ?? ''} ${currentUser.name ?? ''} ${currentUser.patronymic ?? ''}`.trim()
+      : `#${MYID}`;
+  const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
+  const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
+
 
   const onClose = () => {
     console.log('CLOSE TRIGGER');
@@ -177,6 +184,11 @@ const ClaimEditorDrawer = (props) => {
   useEffect(()=>{
     masterFilterUserList();
   },[baseUserList, acls, formType]);
+  useEffect(() => {
+    if (editMode === 'create' && !canCreateForOtherUsers && MYID) {
+      setFormUsers([MYID]);
+    }
+  }, [editMode, canCreateForOtherUsers, MYID]);
   useEffect(() => {
     setAllowApprove(false);
     setAllowBack(false);
@@ -354,7 +366,7 @@ const ClaimEditorDrawer = (props) => {
       result.end = formDateRange[1].format('YYYY-MM-DD HH:mm:ss');
 
     }
-    result.users = formUsers;
+    result.users = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
     result.skud_current_state_id = formType;
     result.state = 0;
     result.days_count = formDateRange[1].diff(formDateRange[0], 'day') + 1;
@@ -466,7 +478,7 @@ const ClaimEditorDrawer = (props) => {
         <div>
           <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Сотрудник</span>
-                {editMode === 'create' ? (
+                {shouldShowUserSelect ? (
                   <Select
                     mode="multiple"
                     allowClear
@@ -481,7 +493,9 @@ const ClaimEditorDrawer = (props) => {
                 ) : (
 
                   <div className='sk-flex-space'>
-                    <div className={'sk-contend-um'} >{`${props.data?.usr_surname} ${props.data?.usr_name} ${props.data?.usr_patronymic}`}</div>
+                    <div className={'sk-contend-um'} >
+                      {editMode === 'create' ? currentUserName : `${props.data?.usr_surname} ${props.data?.usr_name} ${props.data?.usr_patronymic}`}
+                    </div>
                   </div>
                 )}
 
