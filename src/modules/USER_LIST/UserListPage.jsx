@@ -497,6 +497,7 @@ const UserList = (props)=>{
   const tableRef = useRef(null);
   const socketRef = useRef(null);
   const extFiltersRef = useRef(extFilters);
+  const initialLoaderSuccessStartedRef = useRef(false);
 
   const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -1083,21 +1084,36 @@ const UserList = (props)=>{
   }, [navigableUsers]);
 
   useEffect(() => {
-    if (!isInitialPageLoading || !isInitialDataResolved || isLoading || isSkeletonLoading) {
+    if (!isInitialPageLoading || initialLoaderSuccessStartedRef.current || !isInitialDataResolved || isLoading || isSkeletonLoading) {
       return;
     }
 
+    let hideTimeoutId = null;
+    let unmountTimeoutId = null;
     const frameId = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        initialLoaderSuccessStartedRef.current = true;
         setHasCompletedInitialRender(true);
         setInitialLoaderPhase('success');
+        hideTimeoutId = setTimeout(() => {
+          setInitialLoaderPhase('hidden');
+          unmountTimeoutId = setTimeout(() => {
+            setIsInitialPageLoading(false);
+          }, 500);
+        }, 900);
       });
     });
 
     return () => {
       cancelAnimationFrame(frameId);
+      if (hideTimeoutId) {
+        clearTimeout(hideTimeoutId);
+      }
+      if (unmountTimeoutId) {
+        clearTimeout(unmountTimeoutId);
+      }
     };
-  }, [isInitialPageLoading, isInitialDataResolved, isLoading, isSkeletonLoading, filteredUsers]);
+  }, [isInitialPageLoading, isInitialDataResolved, isLoading, isSkeletonLoading]);
 
   const shouldShowTableSkeleton = isSkeletonLoading && hasCompletedInitialRender;
 
