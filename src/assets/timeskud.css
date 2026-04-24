@@ -964,3 +964,135 @@ font-size: smaller;
         justify-content: center;
     }
 }
+
+.sk-userlist-initial-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.98);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.sk-theme-dark .sk-userlist-initial-loader {
+    background: rgba(20, 26, 33, 0.96);
+}
+
+.sk-userlist-initial-loader.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.sk-userlist-initial-loader__spinner {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sk-userlist-initial-loader__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 16px solid #8595a8;
+    border-top-color: #6b829d;
+    animation: sk-userlist-loader-spin 1.15s linear infinite;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.sk-userlist-initial-loader__ring--blur {
+    filter: blur(18px);
+    opacity: 0.75;
+}
+
+.sk-userlist-initial-loader__center {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+
+.sk-userlist-initial-loader__tick {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.sk-userlist-initial-loader__tick-part {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 16px;
+    border-radius: 999px;
+    background: #6b829d;
+    box-shadow: 0 0 18px rgba(107, 130, 157, 0.4);
+    transform-origin: left center;
+}
+
+.sk-userlist-initial-loader__tick-part--short {
+    left: 16px;
+    top: 75px;
+    width: 0;
+    transform: rotate(45deg);
+}
+
+.sk-userlist-initial-loader__tick-part--long {
+    left: 55px;
+    top: 104px;
+    width: 0;
+    transform: rotate(-45deg);
+}
+
+.sk-userlist-initial-loader.is-success .sk-userlist-initial-loader__ring {
+    animation: none;
+    border-color: #6b829d;
+}
+
+.sk-userlist-initial-loader.is-success .sk-userlist-initial-loader__tick {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.sk-userlist-initial-loader.is-success .sk-userlist-initial-loader__tick-part--short {
+    animation: sk-userlist-loader-tick-short 0.25s ease forwards;
+}
+
+.sk-userlist-initial-loader.is-success .sk-userlist-initial-loader__tick-part--long {
+    animation: sk-userlist-loader-tick-long 0.4s ease 0.2s forwards;
+}
+
+@keyframes sk-userlist-loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sk-userlist-loader-tick-short {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 44px;
+    }
+}
+
+@keyframes sk-userlist-loader-tick-long {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 88px;
+    }
+}
