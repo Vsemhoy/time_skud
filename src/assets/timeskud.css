@@ -1031,23 +1031,23 @@ font-size: smaller;
     position: absolute;
     left: 0;
     bottom: 0;
-    height: 16px;
-    border-radius: 999px;
+    height: 17px;
+    border-radius: 3px;
     background: #6b829d;
     box-shadow: 0 0 18px rgba(107, 130, 157, 0.4);
     transform-origin: left center;
 }
 
 .sk-userlist-initial-loader__tick-part--short {
-    left: 16px;
-    top: 75px;
+    left: 34px;
+    top: 62px;
     width: 0;
     transform: rotate(45deg);
 }
 
 .sk-userlist-initial-loader__tick-part--long {
-    left: 55px;
-    top: 104px;
+    left: 65px;
+    top: 105px;
     width: 0;
     transform: rotate(-45deg);
 }
@@ -1084,7 +1084,7 @@ font-size: smaller;
         width: 0;
     }
     100% {
-        width: 44px;
+        width: 48px;
     }
 }
 
@@ -1093,6 +1093,6 @@ font-size: smaller;
         width: 0;
     }
     100% {
-        width: 88px;
+        width: 90px;
     }
 }
