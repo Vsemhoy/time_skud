@@ -63,6 +63,24 @@ const UserListTableSkeleton = ({extendedInfo}) => (
   </div>
 );
 
+const UserListInitialLoader = ({phase}) => (
+  <div
+    className={`sk-userlist-initial-loader ${phase === 'success' ? 'is-success' : ''} ${phase === 'hidden' ? 'is-hidden' : ''}`}
+    aria-hidden={phase === 'hidden'}
+  >
+    <div className="sk-userlist-initial-loader__spinner">
+      <div className="sk-userlist-initial-loader__ring" />
+      <div className="sk-userlist-initial-loader__ring sk-userlist-initial-loader__ring--blur" />
+      <div className="sk-userlist-initial-loader__center">
+        <div className="sk-userlist-initial-loader__tick">
+          <div className="sk-userlist-initial-loader__tick-part sk-userlist-initial-loader__tick-part--short" />
+          <div className="sk-userlist-initial-loader__tick-part sk-userlist-initial-loader__tick-part--long" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 
 const UserList = (props)=>{
   const { userdata } = props;
@@ -444,6 +462,10 @@ const UserList = (props)=>{
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadError, setIsLoadError] = useState(false);
   const [isSkeletonLoading, setIsSkeletonLoading] = useState(false);
+  const [isInitialPageLoading, setIsInitialPageLoading] = useState(true);
+  const [isInitialDataResolved, setIsInitialDataResolved] = useState(false);
+  const [hasCompletedInitialRender, setHasCompletedInitialRender] = useState(false);
+  const [initialLoaderPhase, setInitialLoaderPhase] = useState('loading');
 
   const [baseUserListData, setBaseUserListData] = useState([]);
   const [userListData, setUserListData] = useState([]);
@@ -754,11 +776,17 @@ const UserList = (props)=>{
             }
             setIsLoading(false);
             setIsSkeletonLoading(false);
+            if (isInitialPageLoading) {
+              setIsInitialDataResolved(true);
+            }
         } catch (e) {
             console.log(e);
             setIsLoadError(true);
             setIsLoading(false);
             setIsSkeletonLoading(false);
+            if (isInitialPageLoading) {
+              setIsInitialDataResolved(true);
+            }
         } finally {
             // setLoadingOrgs(false)
         }
@@ -1054,6 +1082,33 @@ const UserList = (props)=>{
     sortedUserRef.current = navigableUsers;
   }, [navigableUsers]);
 
+  useEffect(() => {
+    if (!isInitialPageLoading || !isInitialDataResolved || isLoading || isSkeletonLoading) {
+      return;
+    }
+
+    let hideTimeoutId = null;
+    const frameId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setHasCompletedInitialRender(true);
+        setInitialLoaderPhase('success');
+        hideTimeoutId = setTimeout(() => {
+          setInitialLoaderPhase('hidden');
+          setIsInitialPageLoading(false);
+        }, 900);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      if (hideTimeoutId) {
+        clearTimeout(hideTimeoutId);
+      }
+    };
+  }, [isInitialPageLoading, isInitialDataResolved, isLoading, isSkeletonLoading, filteredUsers]);
+
+  const shouldShowTableSkeleton = isSkeletonLoading && hasCompletedInitialRender;
+
   const toggleInnerSorts = (value) => {
     setInnerSortByValue(value);
   }
@@ -1071,6 +1126,7 @@ const UserList = (props)=>{
 
   return (
       <div className={'mega-layout'}>
+        {isInitialPageLoading && <UserListInitialLoader phase={initialLoaderPhase} />}
         <Layout className={'layout'}>
           <Header className={'header-user-list'}>
             <Affix>
@@ -1258,7 +1314,7 @@ const UserList = (props)=>{
                           </div>
                         </div>
                         </Affix>
-                        {isSkeletonLoading ? (
+                        {shouldShowTableSkeleton ? (
                           <UserListTableSkeleton extendedInfo={isShowExtendedInfo} />
                         ) : filteredUsers.length === 0 ? (
                           <div className="sk-userlist-empty-state">
