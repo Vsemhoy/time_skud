@@ -1087,23 +1087,15 @@ const UserList = (props)=>{
       return;
     }
 
-    let hideTimeoutId = null;
     const frameId = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setHasCompletedInitialRender(true);
         setInitialLoaderPhase('success');
-        hideTimeoutId = setTimeout(() => {
-          setInitialLoaderPhase('hidden');
-          setIsInitialPageLoading(false);
-        }, 900);
       });
     });
 
     return () => {
       cancelAnimationFrame(frameId);
-      if (hideTimeoutId) {
-        clearTimeout(hideTimeoutId);
-      }
     };
   }, [isInitialPageLoading, isInitialDataResolved, isLoading, isSkeletonLoading, filteredUsers]);
 
