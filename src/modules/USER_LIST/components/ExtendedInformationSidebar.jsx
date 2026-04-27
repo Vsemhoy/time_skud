@@ -281,6 +281,12 @@ const ExtendedInformationSidebar = (props) => {
                                 className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
                         </div>
 
+                        <div className={'sk-usermonic-drawer-row'}>
+                            <div className={'sk-labed-um'}>E-mail</div>
+                            <div
+                                className={'sk-contend-um'}>{targetUserInfo.email && targetUserInfo.email != 0 ? targetUserInfo.email : "-"}</div>
+                        </div>
+
                         {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
                             <div className={'sk-usermonic-drawer-row'}>
                                 <div className={'sk-labed-um'}>Работает с</div>
@@ -288,14 +294,6 @@ const ExtendedInformationSidebar = (props) => {
                                     className={'sk-contend-um'}>{targetUserInfo.recrut ? dayjs.unix(targetUserInfo.recrut).format("DD-MM-YYYY") : ""}</div>
                             </div>
                         ) : ""}
-
-
-                        {targetUserInfo.email && targetUserInfo.email != 0 && (
-                            <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>E-mail</div>
-                                <div className={'sk-contend-um'}>{targetUserInfo.email}</div>
-                            </div>
-                        )}
 
                         {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
                             <div className={'sk-usermonic-drawer-row'}>
