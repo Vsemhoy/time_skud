@@ -68,6 +68,7 @@ const ClaimEditorDrawer = (props) => {
       ? `${currentUser.surname ?? ''} ${currentUser.name ?? ''} ${currentUser.patronymic ?? ''}`.trim()
       : `#${MYID}`;
   const isPrivilegedUser = isTruthyFlag(props.current_user?.super) || isTruthyFlag(props.current_user?.is_admin);
+  const createUserIdFromProps = props.data?.user_id ?? props.data?.id;
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
   const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
   const effectiveFormUsers = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
@@ -209,10 +210,10 @@ const ClaimEditorDrawer = (props) => {
     masterFilterUserList();
   },[baseUserList, acls, formType, props.current_user]);
   useEffect(() => {
-    if (editMode === 'create' && !canCreateForOtherUsers && MYID) {
+    if (editMode === 'create' && !canCreateForOtherUsers && MYID && !createUserIdFromProps) {
       setFormUsers([MYID]);
     }
-  }, [editMode, canCreateForOtherUsers, MYID]);
+  }, [editMode, canCreateForOtherUsers, MYID, createUserIdFromProps]);
   useEffect(() => {
     if (effectiveFormUsers.length === 0) {
       setIsFullWorkDay(false);
