@@ -537,12 +537,12 @@ const ClaimEditorDrawer = (props) => {
 
   useEffect(()=>{
     // console.log('HELLOFD');
-    if (formUsers.length > 0){
+    if (effectiveFormUsers.length > 0){
       setFormValid(true);
     } else {
       setFormValid(false);
     }
-  },[formUsers]);
+  },[effectiveFormUsers]);
 
   const handleGetBack = () => {
     if (props.on_get_back){
