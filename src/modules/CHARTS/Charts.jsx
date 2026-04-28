@@ -16,6 +16,7 @@ import {ShortName} from "../../components/Helpers/TextHelpers";
 import "./style/patch.css";
 import MonthsRange from "./components/MonthsRange";
 import StateIconsController from "./components/StateIconsController";
+const isTruthyFlag = (value) => value === true || Number(value) === 1;
 const  Charts = (props) => {
 
     const navigate = useNavigate();
@@ -258,6 +259,7 @@ const  Charts = (props) => {
                         <span>{state.title}</span>
                     </div>
                 ),
+                title: state.title,
                 value: state.id,
                 color: state.color,
                 name: state.name
@@ -395,6 +397,7 @@ const  Charts = (props) => {
         let canCreateByBtnAny = false;
         let canCreateByBtnTeam = false;
         let canCreateByBtnPers = false;
+        const canCreateByBtnPrivileged = isTruthyFlag(currentUser?.super) || isTruthyFlag(currentUser?.is_admin);
         if (
             aclBase[currentUser.id_company] &&
             aclBase[currentUser.id_company][selectedChartState] &&
@@ -421,7 +424,7 @@ const  Charts = (props) => {
             canCreateByBtnAny = true;
         }
 
-        if (canCreateByBtnPers || canCreateByBtnTeam || canCreateByBtnAny) {
+        if (canCreateByBtnPers || canCreateByBtnTeam || canCreateByBtnAny || canCreateByBtnPrivileged) {
             setEditorMode('create');
             if (canCreateByBtnPers) {
                 console.log(1)
@@ -445,7 +448,7 @@ const  Charts = (props) => {
                     id_company: currentUser?.id_company,
                     boss_id: currentUser?.boss_id
                 });
-            } else if (canCreateByBtnAny) {
+            } else if (canCreateByBtnAny || canCreateByBtnPrivileged) {
                 console.log(3)
                 setClaimForDrawer({
                     start: null,
@@ -469,6 +472,7 @@ const  Charts = (props) => {
             let canCreateByChartAny = false;
             let canCreateByChartTeam = false;
             let canCreateByChartPers = false;
+            const canCreateByChartPrivileged = isTruthyFlag(currentUser?.super) || isTruthyFlag(currentUser?.is_admin);
             if (user && aclBase[user.id_company] &&
                 aclBase[user.id_company][selectedChartState] &&
                 aclBase[user.id_company][selectedChartState]?.includes('ANY_CLAIM_CREATE')
@@ -488,7 +492,7 @@ const  Charts = (props) => {
                 canCreateByChartPers = true;
             }
 
-            if (canCreateByChartAny || canCreateByChartTeam || canCreateByChartPers) {
+            if (canCreateByChartAny || canCreateByChartTeam || canCreateByChartPers || canCreateByChartPrivileged) {
                 setEditorMode('create');
                 if (canCreateByChartPers) {
                     console.log(1)
@@ -501,7 +505,7 @@ const  Charts = (props) => {
                         id_company: currentUser?.id_company,
                         boss_id: currentUser?.boss_id
                     });
-                } else if (canCreateByChartAny || canCreateByChartTeam) {
+                } else if (canCreateByChartAny || canCreateByChartTeam || canCreateByChartPrivileged) {
                     console.log(2)
                     setClaimForDrawer({
                         start: start,
@@ -680,6 +684,9 @@ const  Charts = (props) => {
         setRangeValues(arr);
     };
     const isCanCreate = () => {
+        if (isTruthyFlag(currentUser?.super) || isTruthyFlag(currentUser?.is_admin)) {
+            return true;
+        }
         if (aclBase && currentUser.id > 0 && selectedChartState && aclBase[currentUser.id_company] && aclBase[currentUser.id_company][selectedChartState]) {
             console.log(currentUser)
             console.log(aclBase[currentUser.id_company])
@@ -860,6 +867,7 @@ const  Charts = (props) => {
                         on_get_back={handleGetBackEvent}
                         on_approve={handleApproveEvent}
                         on_decline={handleDeclineEvent}
+                        current_user={PRODMODE ? currentUser : USDA.user}
                     />
                 )}
             </div>
