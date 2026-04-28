@@ -16,6 +16,7 @@ function nl2br(str) {
   ));
 }
 
+const isTruthyFlag = (value) => value === true || Number(value) === 1;
 
 
 const ClaimEditorDrawer = (props) => {
@@ -66,6 +67,7 @@ const ClaimEditorDrawer = (props) => {
   const currentUserName = currentUser
       ? `${currentUser.surname ?? ''} ${currentUser.name ?? ''} ${currentUser.patronymic ?? ''}`.trim()
       : `#${MYID}`;
+  const isPrivilegedUser = isTruthyFlag(props.current_user?.super) || isTruthyFlag(props.current_user?.is_admin);
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
   const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
   const effectiveFormUsers = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
@@ -165,7 +167,7 @@ const ClaimEditorDrawer = (props) => {
       if (props.claim_types)
         {
           const q = props.claim_types.find((item)=> item.value === props.data.skud_current_state_id);
-          title = q?.label;
+          title = q?.title ?? q?.label;
           color = q?.color;
         }
     } else if (editMode === 'create'){
@@ -176,13 +178,13 @@ const ClaimEditorDrawer = (props) => {
         if (props.claim_types)
         {
           const q = props.claim_types.find((item)=> item.value === props.claim_type);
-          title = q?.label;
+          title = q?.title ?? q?.label;
           color = q?.color;
         }
         if (props.data) {
-          console.log(props.data.id)
-          if (props.data.id) {
-            setFormUsers([props.data.id]);
+          const selectedUserId = props.data.user_id ?? props.data.id;
+          if (selectedUserId) {
+            setFormUsers([selectedUserId]);
           }
           if (props.data.start) {
             setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
@@ -205,7 +207,7 @@ const ClaimEditorDrawer = (props) => {
   }, [props.my_id]);
   useEffect(()=>{
     masterFilterUserList();
-  },[baseUserList, acls, formType]);
+  },[baseUserList, acls, formType, props.current_user]);
   useEffect(() => {
     if (editMode === 'create' && !canCreateForOtherUsers && MYID) {
       setFormUsers([MYID]);
@@ -347,7 +349,9 @@ const ClaimEditorDrawer = (props) => {
     let filteredUsers = [];
     for (let i = 0; i < baseUserList.length; i++) {
       const userCard = baseUserList[i];
-      if (acls[userCard.id_company] &&
+      if (isPrivilegedUser) {
+        filteredUsers.push(userCard);
+      } else if (acls[userCard.id_company] &&
           acls[userCard.id_company][+formType] &&
           acls[userCard.id_company][+formType]?.includes('ANY_CLAIM_CREATE')
       ) {
