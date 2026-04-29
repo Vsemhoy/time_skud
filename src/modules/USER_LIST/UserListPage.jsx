@@ -47,17 +47,13 @@ const UserListTableSkeleton = ({extendedInfo}) => (
         <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
-        <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
-        <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
-        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
-        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
-        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
-        <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />
-        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
-        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
-        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
         <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
+        {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
       </div>
     ))}
   </div>
@@ -174,7 +170,9 @@ const UserList = (props)=>{
             key: `clt_${claimType.id}`,
             value: claimType.id,
             label: claimType.text,
+            title: claimType.title,
             color: claimType.color,
+            badge: claimType.badge,
             icon: <StateIconsController IdState={claimType.id}/>
           }
       ;
@@ -374,50 +372,6 @@ const UserList = (props)=>{
     } catch (e) {
       console.log(e)
     }
-  };
-
-  /*---SCHEDULE KPP-------------------------------------------------------------------------------------------------------------------*/
-
-  const [isOpenScheduleKPPModal, setIsOpenScheduleKPPModal] = useState(false);
-  const handleOpenScheduleKPPModal = () => {
-    setIsOpenScheduleKPPModal(true);
-  };
-
-  const handleCloseScheduleKPPModal = () => {
-    setIsOpenScheduleKPPModal(false);
-  };
-
-  /*---BILL LIST KPP-------------------------------------------------------------------------------------------------------------------*/
-
-  const [isOpenBillListKPPModal, setIsOpenBillListKPPModal] = useState(false);
-  const handleOpenBillListKPPModal = () => {
-    setIsOpenBillListKPPModal(true);
-  };
-
-  const handleCloseBillListKPPModal = () => {
-    setIsOpenBillListKPPModal(false);
-  };
-
-  /*---SCHEDULE BUILDERS-------------------------------------------------------------------------------------------------------------------*/
-
-  const [isOpenScheduleBuildersModal, setIsOpenScheduleBuildersModal] = useState(false);
-  const handleOpenScheduleBuildersModal = () => {
-    setIsOpenScheduleBuildersModal(true);
-  };
-
-  const handleCloseScheduleBuildersModal = () => {
-    setIsOpenScheduleBuildersModal(false);
-  };
-
-  /*---BILL LIST BUILDERS-------------------------------------------------------------------------------------------------------------------*/
-
-  const [isOpenBillListBuildersModal, setIsOpenBillListBuildersModal] = useState(false);
-  const handleOpenBillListBuildersModal = () => {
-    setIsOpenBillListBuildersModal(true);
-  };
-
-  const handleCloseBillListBuildersModal = () => {
-    setIsOpenBillListBuildersModal(false);
   };
 
   /*---BILL LIST-------------------------------------------------------------------------------------------------------------------*/
@@ -1157,10 +1111,6 @@ const UserList = (props)=>{
                 handleEditorOpenCreate={handleEditorOpenCreate}
                 menuProps={menuProps}
 
-                openScheduleKPPModal={handleOpenScheduleKPPModal}
-                openBillListKPPModal={handleOpenBillListKPPModal}
-                openScheduleBuildersModal={handleOpenScheduleBuildersModal}
-                openBillListBuildersModal={handleOpenBillListBuildersModal}
                 openClaimsModal={handleOpenClaimsModal}
                 openBillListModal={handleOpenBillListModal}
               />
@@ -1213,7 +1163,7 @@ const UserList = (props)=>{
                             }}>
                               <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}
                                    style={{textAlign: 'left'}}>
-                                Имя сотрудника
+                                Сотрудник
                               </div>
                             </div>
 
@@ -1242,7 +1192,7 @@ const UserList = (props)=>{
                             </div>
 
                             <div
-                                className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
+                                className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(22)
                                 }}
@@ -1258,34 +1208,6 @@ const UserList = (props)=>{
                                 title={'Кратковременные перерывы'}
                             >Крат. перерывы
                             </div>
-
-                            {isShowExtendedInfo && (
-                                <div
-                                    className={`${selectedColumns.includes(12) ? "sk-col-selected" : ""}`}
-                                    onClick={() => {
-                                      toggleSelectedColumn(12)
-                                    }}
-                                    title={'Всего рабочее время'}
-                                >Рабочее время</div>
-                            )}
-                            {isShowExtendedInfo && (
-                                <div
-                                    className={`${selectedColumns.includes(13) ? "sk-col-selected" : ""}`}
-                                    onClick={() => {
-                                      toggleSelectedColumn(13)
-                                    }}
-                                    title={'Общее время на предприятии'}
-                                >Время на предприятии</div>
-                            )}
-                            {isShowExtendedInfo && (
-                                <div
-                                    className={`${selectedColumns.includes(15) ? "sk-col-selected" : ""}`}
-                                    onClick={() => {
-                                      toggleSelectedColumn(15)
-                                    }}
-                                    title={'Врямя для отработки'}
-                                >Врямя для отработки</div>
-                            )}
 
                             <div
                                 className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
@@ -1320,9 +1242,6 @@ const UserList = (props)=>{
                             >Заявки
                             </div>
 
-                            <div>
-                              <div>Место</div>
-                            </div>
                           </div>
                         </div>
                         </Affix>
@@ -1400,79 +1319,6 @@ const UserList = (props)=>{
             on_decline={handleDeclineEvent}
         />
 
-
-        {isOpenScheduleKPPModal && (
-            <Modal
-                title="График КПП"
-                closable={{ 'aria-label': 'Custom Close Button' }}
-                footer={null}
-                open={isOpenScheduleKPPModal}
-                onCancel={handleCloseScheduleKPPModal}
-                width={'90vw'}
-                styles={{
-                  body: {
-                    height: "70vh",
-                    overflowY: "auto"
-                  }
-                }}
-            >
-              <div></div>
-            </Modal>
-        )}
-        {isOpenBillListKPPModal && (
-            <Modal
-                title="Расчетный лист КПП"
-                closable={{ 'aria-label': 'Custom Close Button' }}
-                footer={null}
-                open={isOpenBillListKPPModal}
-                onCancel={handleCloseBillListKPPModal}
-                width={'90vw'}
-                styles={{
-                  body: {
-                    height: "70vh",
-                    overflowY: "auto"
-                  }
-                }}
-            >
-              <div></div>
-            </Modal>
-        )}
-        {isOpenScheduleBuildersModal && (
-            <Modal
-                title="График строителей"
-                closable={{ 'aria-label': 'Custom Close Button' }}
-                footer={null}
-                open={isOpenScheduleBuildersModal}
-                onCancel={handleCloseScheduleBuildersModal}
-                width={'90vw'}
-                styles={{
-                  body: {
-                    height: "70vh",
-                    overflowY: "auto"
-                  }
-                }}
-            >
-              <div></div>
-            </Modal>
-        )}
-        {isOpenBillListBuildersModal && (
-            <Modal
-                title="Расчетный лист строителей"
-                closable={{ 'aria-label': 'Custom Close Button' }}
-                footer={null}
-                open={isOpenBillListBuildersModal}
-                onCancel={handleCloseBillListBuildersModal}
-                width={'90vw'}
-                styles={{
-                  body: {
-                    height: "70vh",
-                    overflowY: "auto"
-                  }
-                }}
-            >
-              <div></div>
-            </Modal>
-        )}
 
         {isOpenBillListModal && (
           <BillListModal isOpenBillListModal={isOpenBillListModal}

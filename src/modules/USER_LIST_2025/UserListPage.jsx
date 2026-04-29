@@ -878,7 +878,7 @@ const UserList2 = (props)=>{
                               }}
                           >
                             <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}>
-                              Имя сотрудника
+                              Сотрудник
                             </div>
                           </div>
                           <div
@@ -890,82 +890,54 @@ const UserList2 = (props)=>{
                               Тел.
                             </div>
                           </div>
-                          <div className="sk-flex-space">
-                            <div></div>
-                            <div className="sk-usermonic-micro-row">
-                              <div
-                                  className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(10)
-                                  }}
-                              >
-                                Вход
-                              </div>
-                              <div
-                                  className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(11)
-                                  }}
-                              >Выход
-                              </div>
-                              <div
-                                  className={`${selectedColumns.includes(12) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(12)
-                                  }}
-                                  title={'Всего рабочее время'}
-                              >РВ
-                              </div>
-                              <div
-                                  className={`${selectedColumns.includes(13) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(13)
-                                  }}
-                                  title={'Общее время на предприятии'}
-                              >ОВ
-                              </div>
-                              <div
-                                  className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(14)
-                                  }}
-                                  title={'Время выходов'}
-                              >ВВ
-                              </div>
-                              <div
-                                  className={`${selectedColumns.includes(15) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(15)
-                                  }}
-                                  title={'Врямя для отработки'}
-                              >ОТ
-                              </div>
-                              <div
-                                  className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
-                                  onClick={() => {
-                                    toggleSelectedColumn(16)
-                                  }}
-                                  title={'Потерянное время'}
-                              >ПВ
-                              </div>
-                            </div>
-                            <div></div>
+                          <div
+                              className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}
+                              onClick={() => {
+                                toggleSelectedColumn(10)
+                              }}
+                          >
+                            Вход
                           </div>
                           <div
-                              title="Есть опоздание"
+                              className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}
+                              onClick={() => {
+                                toggleSelectedColumn(11)
+                              }}
+                          >Выход
+                          </div>
+                          <div
+                              className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}
+                              onClick={() => {
+                                toggleSelectedColumn(22)
+                              }}
+                              title={'Обед'}
+                          >Обед
+                          </div>
+                          <div
+                              className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
+                              onClick={() => {
+                                toggleSelectedColumn(14)
+                              }}
+                              title={'Кратковременный перерыв'}
+                          >Крат. перерыв
+                          </div>
+                          <div
+                              className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
+                              onClick={() => {
+                                toggleSelectedColumn(16)
+                              }}
+                              title={'Потерянное время'}
+                          >Потерянное время
+                          </div>
+                          <div
+                              title="Заявки"
                               onClick={() => {
                                 toggleSelectedColumn(20)
                               }}
                           >
                             <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
-                              Оп.
+                              Заявки
                             </div>
-                          </div>
-                          <div>
-                            <div>Рук</div>
-                          </div>
-                          <div>
-                            <div>Место</div>
                           </div>
                         </div>
                       </Affix>
