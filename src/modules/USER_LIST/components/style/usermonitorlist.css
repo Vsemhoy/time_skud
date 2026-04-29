@@ -462,6 +462,14 @@
     padding: 2px 6px;
 }
 
+.sk-userlist-status-inline--tag-new {
+    width: 110px;
+    display: flex;
+    justify-content: center !important;
+    border: 1px solid rgba(128, 128, 128, 0.38);
+    box-shadow: 1px 1px 3px #00000021;
+}
+
 .sk-uml-table-dumper--theme-safe,
 .sk-uml-table-dumper--theme-safe thead,
 .sk-uml-table-dumper--theme-safe tbody,
