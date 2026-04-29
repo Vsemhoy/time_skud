@@ -533,9 +533,8 @@ const UserMonitorListCard = (props) => {
                                 </span>
                                 {badger && (
                                     <span
-                                        className="sk-userlist-status-inline sk-userlist-status-inline--tag"
+                                        className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
                                         title={badger.title}
-                                        style={{width: '110px', display: 'flex', justifyContent: 'center', border: '1px solid rgba(128, 128, 128, 0.38)'}}
                                     >
                                         {badger.icon}
                                         <span>{badger.text || badger.title}</span>
