@@ -1125,7 +1125,7 @@ const UserList = (props)=>{
                      pointerEvents: isOpenFilters ? 'auto' : 'none',
                    }}
             >
-              <Affix offsetTop={100}>
+              <Affix offsetTop={80}>
                 <div className="sk-width-container">
                   <div className="sk-usp-filter-col" style={{height: 'calc(100vh - 46px - 115px)', padding: '10px'}}>
                     <FiltersSidebar onChangeInnerSort={toggleInnerSorts}
@@ -1278,7 +1278,7 @@ const UserList = (props)=>{
                      pointerEvents: openUserInfo ? 'auto' : 'none',
                    }}
             >
-              <Affix offsetTop={100}>
+              <Affix offsetTop={80}>
                 <div className="sk-width-container" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 115px)'}}>
                     <ExtendedInformationSidebar
                         target_user_guys={targetUserGuys}
