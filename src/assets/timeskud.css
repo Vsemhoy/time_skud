@@ -445,7 +445,25 @@ td:first-child {
     max-width: 100%;
 }
 
-@media screen and (max-width: 1300px) {
+.sk-userlist-claim-btn .sk-userlist-claim-btn-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.sk-userlist-claim-btn .sk-userlist-claim-btn-icon > div,
+.sk-userlist-claim-btn .sk-userlist-claim-btn-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+    max-width: 16px;
+    max-height: 16px;
+    display: block;
+}
+
+@media screen and (max-width: 1530px) {
     .sk-userlist-toolbar-top {
         flex-wrap: nowrap;
         padding: 4px 5px;
@@ -920,7 +938,7 @@ font-size: smaller;
 
 .sk-userlist-skeleton-row {
     display: grid;
-    grid-template-columns: 52px minmax(180px, 2fr) minmax(120px, 1.1fr) 90px 90px 120px 140px 150px 160px;
+    grid-template-columns: 52px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
     gap: 12px;
     align-items: center;
     padding: 14px 12px;
@@ -930,7 +948,7 @@ font-size: smaller;
 }
 
 .sk-userlist-skeleton-row.extended {
-    grid-template-columns: 52px minmax(180px, 2fr) minmax(120px, 1.1fr) 90px 90px 120px 140px 150px 150px 150px 150px 150px 150px 120px 160px;
+    grid-template-columns: 52px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) repeat(3, minmax(80px, 1fr)) minmax(90px, 1fr);
 }
 
 .sk-userlist-skeleton .ant-skeleton-element,

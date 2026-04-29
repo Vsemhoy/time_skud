@@ -71,6 +71,7 @@ const UserMonitorListCard = (props) => {
       }, [arrow]);
 
     const [currentState, setCurrentState] = useState(0);
+    const statusBackground = badger?.color;
 
     useEffect(()=> {
         setContent(props.data);
@@ -163,77 +164,64 @@ const UserMonitorListCard = (props) => {
                 </div>
                 </div>
 
-                <div title={content.user_occupy}>
+                <div
+                    title={content.user_occupy}
+                    className="sk-userlist-name-status-cell"
+                    style={{'--user-status-bg': statusBackground}}
+                >
                     <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
-                    {content.user_surname} {content.user_name} {content.user_patronymic}</div>
-                </div>
-
-                    <div style={{overflow: 'hidden', textAlign: 'center'}}>
-                <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
-                    <div>{content.phone && content.phone != 0 && content.phone}</div>
+                        <div className="sk-userlist-name-cell">
+                            <span className="sk-userlist-name-text">
+                                {content.user_surname} {content.user_name} {content.user_patronymic}
+                            </span>
+                            {badger && (
+                                <span
+                                    className="sk-userlist-status-inline sk-userlist-status-inline--tag"
+                                    title={badger.title}
+                                >
+                                    {badger.icon}
+                                    <span>{badger.text || badger.title}</span>
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
 
-                <div className="sk-flex-space">
-                    {/* {dayjs(content.datetime_contr).format("DD-MM-YYYY   HH:mm")} */}
-                    <div></div>
-                    <div className={'sk-usermonic-micro-row'}>
-                        <div className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}>
-                        {content.enter_time && dayjs(content.enter_time).format('HH:mm')}
-                        </div>
-                        
-                        <div className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}>
-                            {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
-                        </div>
-                        <div className={`${selectedColumns.includes(12) ? "sk-col-selected": ""}`}>
-                            {content.job_time_count && secondsToTime(content.job_time_count)}
-                        </div>
-                        <div className={`${selectedColumns.includes(13) ? "sk-col-selected": ""}`}>
-                            {content.all_time_count && secondsToTime(content.all_time_count)}
-                        </div>
-                        <div className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}>
-                            {content.exit_time_count && secondsToTime(content.exit_time_count)}
-                        </div>
-                        <div className={`${selectedColumns.includes(15) ? "sk-col-selected": ""}`}>
-                            {content.time_need_work && secondsToTime(content.time_need_work)}
-                        </div>
-                        <div className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}>
-                            {content.lost_time_count && secondsToTime(content.lost_time_count)}
-                        </div>
-
+                <div style={{overflow: 'hidden', textAlign: 'center'}}>
+                    <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
+                        <div>{content.phone && content.phone != 0 && content.phone !== '0' && content.phone}</div>
                     </div>
-                    <div></div>
+                </div>
+
+                <div className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}>
+                    {content.enter_time && dayjs(content.enter_time).format('HH:mm')}
+                </div>
+
+                <div className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}>
+                    {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
+                </div>
+
+                <div className={`${selectedColumns.includes(22) ? "sk-col-selected": ""}`}>
+                    {content.lunch_time && secondsToTime(content.lunch_time)}
+                </div>
+
+                <div className={`${selectedColumns.includes(14) ? "sk-col-selected": ""}`}>
+                    {content.exit_time_count && secondsToTime(content.exit_time_count)}
+                </div>
+
+                <div className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}>
+                    {content.lost_time_count && secondsToTime(content.lost_time_count)}
                 </div>
 
                 <div style={{textAlign: 'center'}}>
-                <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
-                    {content.is_late && (<IssuesCloseOutlined 
-                        title="Опоздание"
-                    />)}</div>
+                    <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
+                        {content?.claims && content.claims.length > 0 && content.claims.length}
+                        {content.is_late && (<IssuesCloseOutlined
+                            title="Опоздание"
+                        />)}
+                    </div>
                 </div>
-                <div>
-                    <div style={{textAlign: 'center'}}>
-                    {content.boss_id > 0 && ( 
-                        <Tooltip placement="left" title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`} arrow={mergedArrow}>
-                            <RobotOutlined
-                                onClick={handleMarkUser}
-                                className={'sk-usermonic-boss-trigger'}
-                            />
 
-                        </Tooltip>
-                    )}</div>
-                </div>
-                <div>
-                    <div style={{textAlign: 'center'}}>
-                    {badger && (
-                        <Tag className="sk-usermonic-badger"
-                            style={{background: badger.color}}
-                            title={badger.title}
-                        >
-                        {badger.icon} <span>{badger.text}</span>
-                        </Tag>
-                    )}</div>
-                </div>
                 </>
             )}
 

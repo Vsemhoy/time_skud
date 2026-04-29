@@ -148,6 +148,7 @@ const UserMonitorListCard = (props) => {
       }, [arrow]);
 
     const [currentState, setCurrentState] = useState(0);
+    const statusBackground = badger ? getReadableBadgeBackground(badger.color) : undefined;
 
     useEffect(()=> {
         setContent(props.data);
@@ -520,15 +521,32 @@ const UserMonitorListCard = (props) => {
                         </div>
                     </div>
 
-                    <div title={content.user_occupy} style={{textAlign: 'left'}}>
+                    <div
+                        title={content.user_occupy}
+                        className="sk-userlist-name-status-cell"
+                        style={{'--user-status-bg': statusBackground}}
+                    >
                         <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}>
-                            {content.surname} {content.name} {content.patronymic}
+                            <div className="sk-userlist-name-cell">
+                                <span className="sk-userlist-name-text">
+                                    {content.surname} {content.name} {content.patronymic}
+                                </span>
+                                {badger && (
+                                    <span
+                                        className="sk-userlist-status-inline sk-userlist-status-inline--tag"
+                                        title={badger.title}
+                                    >
+                                        {badger.icon}
+                                        <span>{badger.text || badger.title}</span>
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     <div style={{overflow: 'hidden', textAlign: 'center'}}>
                         <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`}>
-                            <div>{content.phone && content.phone !== 0 && content.phone}</div>
+                            <div>{content.phone && content.phone !== 0 && content.phone !== '0' && content.phone}</div>
                         </div>
                     </div>
 
@@ -540,31 +558,13 @@ const UserMonitorListCard = (props) => {
                         {shouldHideExitTime ? '' : renderEventDumpCell(displayedExitTime)}
                     </div>
 
-                    <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
+                    <div className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
                         {content.lunch_time ? secondsToTime(content.lunch_time) : ''}
                     </div>
 
                     <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
                         {content.exit_time_count ? secondsToTime(content.exit_time_count) : ''}
                     </div>
-
-                    {props?.extendedInfo && (
-                        <div className={`${selectedColumns.includes(12) ? "sk-col-selected" : ""}`}>
-                            {content.job_time_count ? secondsToTime(content.job_time_count) : ''}
-                        </div>
-                    )}
-
-                    {props?.extendedInfo && (
-                        <div className={`${selectedColumns.includes(13) ? "sk-col-selected" : ""}`}>
-                            {content.all_time_count ? secondsToTime(content.all_time_count) : ''}
-                        </div>
-                    )}
-
-                    {props?.extendedInfo && (
-                        <div className={`${selectedColumns.includes(15) ? "sk-col-selected" : ""}`}>
-                            {content.time_need_work ? secondsToTime(content.time_need_work) : ''}
-                        </div>
-                    )}
 
                     <div className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}>
                         {content.lost_time_count ? secondsToTime(content.lost_time_count) : ''}
@@ -637,16 +637,7 @@ const UserMonitorListCard = (props) => {
                             )}
                         </div>
                     </div>
-                    <div>
-                        <div style={{textAlign: 'center'}}>
-                            {badger && (
-                                <Tag className="sk-usermonic-badger"
-                                     style={{background: getReadableBadgeBackground(badger.color)}}
-                                     title={badger.title}
-                                >{badger.icon} <span>{badger.text}</span></Tag>
-                            )}
-                        </div>
-                    </div>
+
                 </div>
             )}
         </div>
