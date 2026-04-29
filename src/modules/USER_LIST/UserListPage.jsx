@@ -1169,7 +1169,11 @@ const UserList = (props)=>{
           <Layout className="sk-layout-center">
             <Sider width={isOpenFilters ? "330px" : 0}
                    className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
-                   style={{paddingTop: '0'}}
+                   style={{
+                     paddingTop: '0',
+                     visibility: isOpenFilters ? 'visible' : 'hidden',
+                     pointerEvents: isOpenFilters ? 'auto' : 'none',
+                   }}
             >
               <Affix offsetTop={100}>
                 <div className="sk-width-container">
@@ -1349,7 +1353,11 @@ const UserList = (props)=>{
             </Content>
             <Sider width={openUserInfo ? "330px" : 0}
                    className={`sider ${openUserInfo ? '' : 'sider-hidden'} pl15`}
-                   style={{paddingTop: '0'}}
+                   style={{
+                     paddingTop: '0',
+                     visibility: openUserInfo ? 'visible' : 'hidden',
+                     pointerEvents: openUserInfo ? 'auto' : 'none',
+                   }}
             >
               <Affix offsetTop={100}>
                 <div className="sk-width-container" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 115px)'}}>
