@@ -834,6 +834,10 @@ const UserList2 = (props)=>{
           <Layout className="sk-layout-center">
             <Sider width={isOpenFilters ? "330px" : 0}
                    className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
+                   style={{
+                     visibility: isOpenFilters ? 'visible' : 'hidden',
+                     pointerEvents: isOpenFilters ? 'auto' : 'none',
+                   }}
             >
               <Affix offsetTop={54}>
               <div className="sk-width-container">
