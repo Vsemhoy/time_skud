@@ -1144,7 +1144,7 @@ const UserList = (props)=>{
                       <Empty />
                   ):(
                       <div>
-                        <Affix offsetTop={100}>
+                        <Affix offsetTop={80}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
                                 className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''}`}>
