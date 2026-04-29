@@ -246,6 +246,62 @@ const UserMonitorListCard = (props) => {
         );
     };
 
+    const renderScheduleTooltip = (schedule) => {
+        const scheduleInfo = schedule?.skud_schedule ?? schedule;
+
+        if (!scheduleInfo) {
+            return null;
+        }
+
+        return (
+            <div style={{maxWidth: '320px'}}>
+                <div><strong>{scheduleInfo.name || 'График работы'}</strong></div>
+                {scheduleInfo.start_time != null && scheduleInfo.end_time != null && (
+                    <div>Рабочее время: {secondsToTime(scheduleInfo.start_time)} - {secondsToTime(scheduleInfo.end_time)}</div>
+                )}
+                {scheduleInfo.lunch_start != null && scheduleInfo.lunch_end != null && (
+                    <div>Обед: {secondsToTime(scheduleInfo.lunch_start)} - {secondsToTime(scheduleInfo.lunch_end)}</div>
+                )}
+                {Number(scheduleInfo.lunch_time) > 0 && (
+                    <div>Длительность обеда: {secondsToTime(scheduleInfo.lunch_time)}</div>
+                )}
+                {Number(scheduleInfo.target_time) > 0 && (
+                    <div>Норма: {secondsToTime(scheduleInfo.target_time)}</div>
+                )}
+            </div>
+        );
+    };
+
+    const renderRulesTooltip = (rules) => {
+        if (!Array.isArray(rules) || !rules.length) {
+            return null;
+        }
+
+        return (
+            <div style={{maxWidth: '360px'}}>
+                <div><strong>Правила учета РВ</strong></div>
+                {rules.map((rule, index) => {
+                    const ruleInfo = rule?.skud_rule ?? rule;
+
+                    return (
+                        <div key={`rule-tooltip-${rule?.id ?? index}`} style={{marginTop: index > 0 ? '8px' : '6px'}}>
+                            <div>{ruleInfo?.name || 'Правило'}</div>
+                            {rule?.start && (
+                                <div>Начало: {dayjs(rule.start).format('DD.MM.YYYY')}</div>
+                            )}
+                            {rule?.end && (
+                                <div>Окончание: {dayjs(rule.end).format('DD.MM.YYYY')}</div>
+                            )}
+                            {Number(ruleInfo?.duration_time) > 0 && (
+                                <div>Длительность: {secondsToTime(ruleInfo.duration_time)}</div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     const hasEnterExitField = Object.prototype.hasOwnProperty.call(content ?? {}, 'enter_exit');
     const enterExitData = hasEnterExitField ? content?.enter_exit : content?.event_dump;
 
@@ -581,7 +637,7 @@ const UserMonitorListCard = (props) => {
                         <div>
                             {content.schedule && (
                                 <div style={{textAlign: 'center'}}>
-                                    <Tooltip title={JSON.stringify(content.schedule.skud_schedule)}>
+                                    <Tooltip title={renderScheduleTooltip(content.schedule)} overlayClassName="sk-theme-tooltip">
                                         <CalendarOutlined/>
                                     </Tooltip>
                                 </div>
@@ -593,7 +649,7 @@ const UserMonitorListCard = (props) => {
                         <div>
                             {content.rules && content.rules.length > 0 && (
                                 <div style={{textAlign: 'center'}}>
-                                    <Tooltip title={JSON.stringify(content.rules)}>
+                                    <Tooltip title={renderRulesTooltip(content.rules)} overlayClassName="sk-theme-tooltip">
                                         <FlagOutlined/>
                                     </Tooltip>
                                 </div>
@@ -605,7 +661,7 @@ const UserMonitorListCard = (props) => {
                         <div>
                             {content.boss_id > 0 && (
                                 <Tooltip placement="left"
-                                         title={`Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`}
+                                         title={`Руководитель: ${content.boss_surname} ${content.boss_name} ${content.boss_patronymic}`}
                                          arrow={mergedArrow}
                                 >
                                     <div style={{textAlign: 'center', cursor: 'pointer'}}
