@@ -274,14 +274,15 @@ const UserMonitorListCard = (props) => {
 
     const getEventDirection = (event) => Number(event?.direction ?? event?.diraction ?? event?.d);
     const getEventTime = (event) => event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t;
+    const formatDurationFromMinute = (seconds) => Number(seconds) >= 60 ? secondsToTime(seconds) : '';
 
-    const latestEnterExitTimes = useMemo(() => {
+    const enterExitTimes = useMemo(() => {
         const result = {
             enter: null,
             exit: null,
         };
 
-        for (let index = normalizedEnterExitData.length - 1; index >= 0; index -= 1) {
+        for (let index = 0; index < normalizedEnterExitData.length; index += 1) {
             const event = normalizedEnterExitData[index];
             const direction = getEventDirection(event);
             const eventTime = getEventTime(event);
@@ -290,24 +291,30 @@ const UserMonitorListCard = (props) => {
                 continue;
             }
 
-            if (direction === 0 && !result.enter) {
-                result.enter = eventTime;
+            if (direction === 0) {
+                const currentEnter = result.enter ? dayjs(result.enter) : null;
+                const nextEnter = dayjs(eventTime);
+
+                if (!result.enter || (nextEnter.isValid() && currentEnter?.isValid() && nextEnter.isBefore(currentEnter))) {
+                    result.enter = eventTime;
+                }
             }
 
-            if (direction !== 0 && !result.exit) {
-                result.exit = eventTime;
-            }
+            if (direction !== 0) {
+                const currentExit = result.exit ? dayjs(result.exit) : null;
+                const nextExit = dayjs(eventTime);
 
-            if (result.enter && result.exit) {
-                break;
+                if (!result.exit || (nextExit.isValid() && currentExit?.isValid() && nextExit.isAfter(currentExit))) {
+                    result.exit = eventTime;
+                }
             }
         }
 
         return result;
     }, [normalizedEnterExitData]);
 
-    const displayedEnterTime = hasEnterExitField ? latestEnterExitTimes.enter : latestEnterExitTimes.enter ?? content.enter_time;
-    const displayedExitTime = hasEnterExitField ? latestEnterExitTimes.exit : latestEnterExitTimes.exit ?? content.exit_time;
+    const displayedEnterTime = hasEnterExitField ? enterExitTimes.enter : enterExitTimes.enter ?? content.enter_time;
+    const displayedExitTime = hasEnterExitField ? enterExitTimes.exit : enterExitTimes.exit ?? content.exit_time;
 
     const shouldHideExitTime = useMemo(() => {
         if (!normalizedEnterExitData.length) {
@@ -559,15 +566,15 @@ const UserMonitorListCard = (props) => {
                     </div>
 
                     <div className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
-                        {content.lunch_time ? secondsToTime(content.lunch_time) : ''}
+                        {formatDurationFromMinute(content.lunch_time)}
                     </div>
 
                     <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
-                        {content.exit_time_count ? secondsToTime(content.exit_time_count) : ''}
+                        {formatDurationFromMinute(content.exit_time_count)}
                     </div>
 
                     <div className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}>
-                        {content.lost_time_count ? secondsToTime(content.lost_time_count) : ''}
+                        {formatDurationFromMinute(content.lost_time_count)}
                     </div>
 
                     {props?.extendedInfo && (

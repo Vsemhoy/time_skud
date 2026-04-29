@@ -190,12 +190,11 @@ const UserListToolbar = (props) => {
                 <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
                     <Button color={'default'}
                             variant={'outlined'}
-                            icon={<UnorderedListOutlined />}
+                            icon={<ScheduleOutlined />}
                             className={'sk-userlist-compact-btn'}
-                            style={{ width: '150px' }}
-                            title={'Список заявок'}
-                            onClick={openClaimsModal}
-                    ><span className={'sk-userlist-btn-label'}>Список заявок</span></Button>
+                            title={'Расчетный лист офис'}
+                            onClick={openBillListModal}
+                    ><span className={'sk-userlist-btn-label'}>Расчетный лист офис</span></Button>
                 </div>
             </div>
             <div className={'sk-userlist-toolbar-currentdate sk-userlist-toolbar-currentdate--employees'}>
@@ -240,10 +239,11 @@ const UserListToolbar = (props) => {
                             variant={'outlined'}
                             icon={<ScheduleOutlined />}
                             className={'sk-userlist-compact-btn'}
-                            title={'Расчетный лист офис'}
+                            style={{ width: '150px' }}
+                            title={'Список заявок'}
                             size={'small'}
-                            onClick={openBillListModal}
-                    ><span className={'sk-userlist-btn-label'}>Расчетный лист офис</span></Button>
+                            onClick={openClaimsModal}
+                    ><span className={'sk-userlist-btn-label'}>Список заявок</span></Button>
 
                 </div>
             </div>
