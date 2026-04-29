@@ -25,7 +25,7 @@
 
 .header-user-list {
     text-align: center;
-    height: 115px;
+    height: 100px;
     padding: 15px 0 0 0;
     border-radius: 0;
     background-color: var(--app-soft-surface-color);
@@ -68,6 +68,7 @@ aside .ant-layout .ant-layout-sider {
 .sk-userlist-toolbar-currentdate {
     display: grid;
     grid-template-columns: auto 1fr auto;
+    grid-template-rows: 40px;
     grid-gap: 10px;
     align-items: center;
     background-color: var(--app-soft-surface-color);
