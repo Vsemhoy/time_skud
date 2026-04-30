@@ -247,6 +247,22 @@ const UserMonitorListCard = (props) => {
         );
     };
 
+    const handleClaimClick = (event, claim) => {
+        event.stopPropagation();
+        if (props.on_claim_click) {
+            const normalizedClaim = {
+                ...claim,
+                user_id: claim.user_id ?? content.id,
+                id_company: claim.id_company ?? content.id_company,
+                boss_id: claim.boss_id ?? content.boss_id,
+                usr_surname: claim.usr_surname ?? content.surname,
+                usr_name: claim.usr_name ?? content.name,
+                usr_patronymic: claim.usr_patronymic ?? content.patronymic,
+            };
+            props.on_claim_click(normalizedClaim.id, normalizedClaim);
+        }
+    };
+
     const renderScheduleTooltip = (schedule) => {
         const scheduleInfo = schedule?.skud_schedule ?? schedule;
 
@@ -685,10 +701,19 @@ const UserMonitorListCard = (props) => {
                                     {content.claims.map((claim) => (
                                         <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom" overlayClassName="sk-theme-tooltip">
                                             <span
+                                                onClick={(event) => handleClaimClick(event, claim)}
+                                                role="button"
+                                                tabIndex={0}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === 'Enter' || event.key === ' ') {
+                                                        event.preventDefault();
+                                                        handleClaimClick(event, claim);
+                                                    }
+                                                }}
                                                 style={{
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
-                                                    cursor: 'help',
+                                                    cursor: 'pointer',
                                                     filter: claim?.not_today ? 'grayscale(1)' : 'none',
                                                     opacity: claim?.not_today ? 0.55 : 1,
                                                 }}

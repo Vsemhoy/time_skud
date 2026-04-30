@@ -18,6 +18,23 @@ function nl2br(str) {
 
 const isTruthyFlag = (value) => value === true || Number(value) === 1;
 
+const parseClaimInfo = (info) => {
+  if (!info) {
+    return {};
+  }
+
+  if (typeof info === 'object') {
+    return info;
+  }
+
+  try {
+    return JSON.parse(info);
+  } catch (e) {
+    console.log('claim info parse error', e);
+    return {};
+  }
+};
+
 
 const ClaimEditorDrawer = (props) => {
   const [open, setOpen] = useState(false);
@@ -114,7 +131,7 @@ const ClaimEditorDrawer = (props) => {
     let color = "#999999";
     if ((editMode === 'update' || editMode === 'read') && props.data){
       setUserCard(props.data);
-      let res2 = JSON.parse(props.data.info);
+      let res2 = parseClaimInfo(props.data.info);
       if (res2) {
         /// ДОделать тут
         if (res2.target_address){
@@ -255,9 +272,10 @@ const ClaimEditorDrawer = (props) => {
     if (!userCard || !props.acl_base || !userCard.id_company) {
       return;
     }
+    const claimUserId = userCard.user_id ?? userCard.id;
     const companyAcls = props.acl_base?.[userCard.id_company];
     const stateAcls = companyAcls?.[userCard.skud_current_state_id];
-    if  (userCard.evaluated === 0 && userCard.id === MYID &&
+    if  (userCard.evaluated === 0 && Number(claimUserId) === Number(MYID) &&
         stateAcls &&
         stateAcls.includes('PERS_CLAIM_CREATE')
     ) {
@@ -283,7 +301,7 @@ const ClaimEditorDrawer = (props) => {
     ) {
         // Если челик мой подчиненный и у меня есть права добавлять подчиненным
         setAllowEdit(true);
-    } else if (userCard.id === MYID &&
+    } else if (Number(claimUserId) === Number(MYID) &&
         stateAcls &&
         stateAcls.includes('TEAM_CLAIM_UPDATE')
     ) {
@@ -326,7 +344,7 @@ const ClaimEditorDrawer = (props) => {
                   setAllowDecline(true);
                 }
             }
-        } else if (userCard.id === MYID &&
+        } else if (Number(claimUserId) === Number(MYID) &&
             stateAcls &&
             stateAcls.includes('PERS_CLAIM_APPROVE')
         ) {
