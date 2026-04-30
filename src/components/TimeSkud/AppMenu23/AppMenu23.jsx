@@ -78,9 +78,9 @@ const AppMenu23 = (props) => {
             className: 'sk-home-menu-item',
             icon: (
                 <a
-                    href={homeHref}
+                    href={HTTP_HOST}
                     aria-label="Домой"
-                    onClick={handleHomeClick}
+                    //onClick={handleHomeClick}
                     style={{display: 'inline-flex', alignItems: 'center', color: 'var(--app-text-color)'}}
                 >
                     <HomeOutlined style={{ fontSize: '20px', color: 'var(--app-text-color)' }} />
