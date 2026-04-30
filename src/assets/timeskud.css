@@ -947,8 +947,16 @@ font-size: smaller;
     border: 1px solid var(--app-skeleton-border-color);
 }
 
+.sk-userlist-skeleton-row.without-id-column {
+    grid-template-columns: minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
+}
+
 .sk-userlist-skeleton-row.extended {
     grid-template-columns: 52px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) repeat(3, minmax(80px, 1fr)) minmax(90px, 1fr);
+}
+
+.sk-userlist-skeleton-row.extended.without-id-column {
+    grid-template-columns: minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) repeat(3, minmax(80px, 1fr)) minmax(90px, 1fr);
 }
 
 .sk-userlist-skeleton .ant-skeleton-element,

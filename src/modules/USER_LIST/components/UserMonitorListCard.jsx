@@ -149,6 +149,7 @@ const UserMonitorListCard = (props) => {
 
     const [currentState, setCurrentState] = useState(0);
     const statusBackground = badger ? getReadableBadgeBackground(badger.color) : undefined;
+    const showIdColumn = props.show_id_column !== false;
 
     useEffect(()=> {
         setContent(props.data);
@@ -573,16 +574,19 @@ const UserMonitorListCard = (props) => {
             ) : (
                 <div className={`sk-usermonic-cardrow-ou-test 
                      ${props?.extendedInfo ? 'extended' : ''}
+                     ${showIdColumn ? '' : 'without-id-column'}
                      ${content.type === 'header' ? 'sk-usermonic-crd-divider' : ''}
                      ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${markedCard ? 'sk-usermonic-crd-marked' : ''}
                      ${itsMe ? 'sk-usermonic-crd-mine' : ''} ${currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
                 >
-                    <div>
-                        <div className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
-                             style={{paddingLeft: '6px', textAlign: 'center'}}>
-                            {content.id}
+                    {showIdColumn && (
+                        <div>
+                            <div className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
+                                 style={{paddingLeft: '6px', textAlign: 'center'}}>
+                                {content.id}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div
                         title={content.user_occupy}

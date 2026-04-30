@@ -6,6 +6,9 @@
     background: var(--row-main-bg-color);
     transition: all ease 0.2s;
 }
+.sk-usermonic-cardrow.without-id-column:not(.sk-usermonic-crd-divider) {
+    grid-template-columns: minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
+}
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div {
     transition: all 0.1s;
     align-content: center;

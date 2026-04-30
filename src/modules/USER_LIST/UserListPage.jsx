@@ -35,14 +35,16 @@ const UserListStatusIndicator = ({isLoading}) => (
   </div>
 );
 
-const UserListTableSkeleton = ({extendedInfo}) => (
+const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
+
+const UserListTableSkeleton = ({extendedInfo, showIdColumn = true}) => (
   <div className="sk-userlist-skeleton" aria-hidden="true">
     {Array.from({ length: TABLE_SKELETON_ROWS }).map((_, index) => (
       <div
-        className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''}`}
+        className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'}`}
         key={`userlist-skeleton-${index}`}
       >
-        <Skeleton.Button active size="small" className="sk-userlist-skeleton-id" />
+        {showIdColumn && <Skeleton.Button active size="small" className="sk-userlist-skeleton-id" />}
         <Skeleton.Input active size="small" className="sk-userlist-skeleton-name" />
         <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
@@ -80,6 +82,7 @@ const UserListInitialLoader = ({phase}) => (
 
 const UserList = (props)=>{
   const { userdata } = props;
+  const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
   const LIMITED_USER_ID = 583;
@@ -1147,16 +1150,18 @@ const UserList = (props)=>{
                         <Affix offsetTop={80}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
-                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''}`}>
+                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'}`}>
 
-                            <div onClick={() => {
-                              toggleSelectedColumn(1)
-                            }}>
-                              <div style={{paddingLeft: '9px'}}
-                                   className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
-                              >id
+                            {showIdColumn && (
+                              <div onClick={() => {
+                                toggleSelectedColumn(1)
+                              }}>
+                                <div style={{paddingLeft: '9px'}}
+                                     className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
+                                >id
+                                </div>
                               </div>
-                            </div>
+                            )}
 
                             <div onClick={() => {
                               toggleSelectedColumn(2)
@@ -1246,7 +1251,7 @@ const UserList = (props)=>{
                         </div>
                         </Affix>
                         {shouldShowTableSkeleton ? (
-                          <UserListTableSkeleton extendedInfo={isShowExtendedInfo} />
+                          <UserListTableSkeleton extendedInfo={isShowExtendedInfo} showIdColumn={showIdColumn} />
                         ) : filteredUsers.length === 0 ? (
                           <div className="sk-userlist-empty-state">
                             <Empty description="Нет данных для отображения" />
@@ -1263,6 +1268,7 @@ const UserList = (props)=>{
                                     on_double_click={handleShowUserInfo}
                                     selected_columns={selectedColumns}
                                     extendedInfo={isShowExtendedInfo}
+                                    show_id_column={showIdColumn}
                                   />
                             ))
                         )}
