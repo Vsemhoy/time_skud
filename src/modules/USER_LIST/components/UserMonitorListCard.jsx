@@ -580,7 +580,7 @@ const UserMonitorListCard = (props) => {
                      ${itsMe ? 'sk-usermonic-crd-mine' : ''} ${currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
                 >
                     {showIdColumn && (
-                        <div>
+                        <div className="sk-userlist-id-cell">
                             <div className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
                                  style={{paddingLeft: '6px', textAlign: 'center'}}>
                                 {content.id}

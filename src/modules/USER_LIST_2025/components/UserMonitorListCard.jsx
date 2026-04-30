@@ -160,7 +160,7 @@ const UserMonitorListCard = (props) => {
                 
                 <>
                 {showIdColumn && (
-                    <div>
+                    <div className="sk-userlist-id-cell">
                         <div className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
                         style={{paddingLeft: '6px', textAlign: 'center'}}>
                             {content.user_id}
