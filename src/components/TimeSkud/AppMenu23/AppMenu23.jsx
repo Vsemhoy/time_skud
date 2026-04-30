@@ -16,6 +16,16 @@ const AppMenu23 = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const selectedKey = location.pathname;
+    const homeHref = `${window.location.origin}/`;
+
+    const handleHomeClick = (event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+
+        event.preventDefault();
+        window.location.assign(homeHref);
+    };
 
     const showNotyBar = () => {
         if (props.on_open_notificator){
@@ -66,11 +76,17 @@ const AppMenu23 = (props) => {
         {
             key: 'home',
             className: 'sk-home-menu-item',
-            icon: <HomeOutlined style={{ fontSize: '20px', color: 'var(--app-text-color)' }} />,
+            icon: (
+                <a
+                    href={homeHref}
+                    aria-label="Домой"
+                    onClick={handleHomeClick}
+                    style={{display: 'inline-flex', alignItems: 'center', color: 'var(--app-text-color)'}}
+                >
+                    <HomeOutlined style={{ fontSize: '20px', color: 'var(--app-text-color)' }} />
+                </a>
+            ),
             label: null,
-            onClick: () => {
-                window.location.assign(`${HTTP_HOST}`);
-            },
         },
         {
             key: '/',
