@@ -91,7 +91,10 @@ export const ParseRoute = (url, setNewState = false) => {
             result.target_section = true;
         };
         if (element.param.toLowerCase() === 'date'){
-            result.date = dayjs().unix(element.value);
+            const routeDate = dayjs.unix(Number(element.value));
+            if (routeDate.isValid()){
+                result.date = routeDate;
+            }
         };
     }
 
