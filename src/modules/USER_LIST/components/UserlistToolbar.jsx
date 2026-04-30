@@ -43,7 +43,22 @@ const UserListToolbar = (props) => {
 
 
 
-    const [usedDate, setUsedDate] = useState(dayjs());
+    const getDateFromSearch = (search) => {
+        const params = new URLSearchParams(search);
+        const targetDateValue = params.get('date');
+        const routeDate = targetDateValue ? dayjs.unix(Number(targetDateValue)) : null;
+
+        return routeDate && routeDate.isValid() ? routeDate : dayjs();
+    };
+
+    const [usedDate, setUsedDate] = useState(() => getDateFromSearch(location.search));
+
+    useEffect(() => {
+        const routeDate = getDateFromSearch(location.search);
+        if (!routeDate.isSame(usedDate, 'second')){
+            setUsedDate(routeDate);
+        }
+    }, [location.search]);
 
 
 
@@ -66,7 +81,6 @@ const UserListToolbar = (props) => {
             value = dayjs();
         }
         setUsedDate(value);
-        setDateInContext(usedDate);
     }
 
     useEffect(() => {
