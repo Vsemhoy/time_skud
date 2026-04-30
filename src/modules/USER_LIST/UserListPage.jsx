@@ -1268,6 +1268,7 @@ const UserList = (props)=>{
                                       key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
                                       data={arche}
                                       on_mark_user={handleMarkUser}
+                                      on_claim_click={handleOpenInfo}
                                     marked_users={markedUsers}
                                     its_me={userdata.user.id === arche.id}
                                     on_double_click={handleShowUserInfo}
@@ -1325,6 +1326,7 @@ const UserList = (props)=>{
             claim_types={claimTypes}
             on_send={handleSaveClaim}
             my_id={userData?.user?.id}
+            current_user={userData?.user}
             on_get_back={handleGetBackEvent}
             on_approve={handleApproveEvent}
             on_decline={handleDeclineEvent}
