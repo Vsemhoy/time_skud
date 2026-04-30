@@ -431,6 +431,7 @@ td:first-child {
 .sk-userlist-toolbar-findme {
     display: flex;
     align-items: center;
+    gap: 8px;
 }
 
 .sk-userlist-toolbar-actions {
@@ -461,6 +462,22 @@ td:first-child {
     max-width: 16px;
     max-height: 16px;
     display: block;
+}
+
+@media screen and (max-width: 1540px) {
+    .sk-userlist-claim-btn .sk-userlist-btn-label {
+        display: none;
+    }
+
+    .ant-btn.sk-userlist-claim-btn {
+        width: auto !important;
+        min-width: 34px !important;
+        padding-inline: 8px !important;
+    }
+
+    .ant-btn.sk-userlist-claim-btn .anticon {
+        margin-inline-end: 0 !important;
+    }
 }
 
 @media screen and (max-width: 1530px) {

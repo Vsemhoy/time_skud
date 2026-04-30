@@ -799,6 +799,10 @@ const UserList = (props)=>{
     }
   }
 
+  const handleRefreshUsers = () => {
+    get_users(extFiltersRef.current, { showSkeleton: false });
+  }
+
   const handleShowUserInfo = (user_id)=>{
     console.log('user_id', user_id)
     handleMarkUser(user_id);
@@ -1101,6 +1105,7 @@ const UserList = (props)=>{
                 baseUsers={baseUserListData}
                 userData={userdata}
                 on_find_me={handleFindMe}
+                on_refresh={handleRefreshUsers}
                 im_exist={userListData.find((item)=>  item.id === userdata.user.id) != null}
                 onChangeExternalFilters={toggleExternalFilters}
                 onChangeInnerSort={toggleInnerSorts}
