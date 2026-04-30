@@ -72,6 +72,7 @@ const UserMonitorListCard = (props) => {
 
     const [currentState, setCurrentState] = useState(0);
     const statusBackground = badger?.color;
+    const showIdColumn = props.show_id_column !== false;
 
     useEffect(()=> {
         setContent(props.data);
@@ -132,6 +133,7 @@ const UserMonitorListCard = (props) => {
             id={`row_${content.user_id}`}
             onDoubleClick={handleDoubleClickOnRow}
             className={`sk-usermonic-cardrow ${ content.type == 'header' ? 'sk-usermonic-crd-divider' : ''}
+            ${showIdColumn ? '' : 'without-id-column'}
             ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${ markedCard ? 'sk-usermonic-crd-marked' : ''}
             ${ itsMe ? 'sk-usermonic-crd-mine' : ''} ${ currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
         >
@@ -157,12 +159,14 @@ const UserMonitorListCard = (props) => {
             ):(
                 
                 <>
-                <div >
-                <div className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
-                style={{paddingLeft: '6px', textAlign: 'center'}}>
-                    {content.user_id}
-                </div>
-                </div>
+                {showIdColumn && (
+                    <div>
+                        <div className={`${selectedColumns.includes(1) ? "sk-col-selected": ""}`}
+                        style={{paddingLeft: '6px', textAlign: 'center'}}>
+                            {content.user_id}
+                        </div>
+                    </div>
+                )}
 
                 <div
                     title={content.user_occupy}

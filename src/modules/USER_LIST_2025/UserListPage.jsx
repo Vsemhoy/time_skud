@@ -71,9 +71,11 @@ import TopSider from "./components/TopSider";
 
 const { Header, Sider, Content } = Layout;
 
+const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
 
 const UserList2 = (props)=>{
   const { userdata } = props;
+  const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
   const LIMITED_USER_ID = 583;
@@ -860,18 +862,20 @@ const UserList2 = (props)=>{
                   <div className="sk-content-table">
                     <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
                       <Affix offsetTop={0}>
-                        <div className={`sk-usermonic-cardrow sk-usermonic-headerrow`}>
-                          <div
-                              onClick={() => {
-                                toggleSelectedColumn(1)
-                              }}
-                          >
+                        <div className={`sk-usermonic-cardrow sk-usermonic-headerrow ${showIdColumn ? '' : 'without-id-column'}`}>
+                          {showIdColumn && (
                             <div
-                                style={{paddingLeft: '9px'}}
-                                className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
-                            >id
+                                onClick={() => {
+                                  toggleSelectedColumn(1)
+                                }}
+                            >
+                              <div
+                                  style={{paddingLeft: '9px'}}
+                                  className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
+                              >id
+                              </div>
                             </div>
-                          </div>
+                          )}
                           <div
                               onClick={() => {
                                 toggleSelectedColumn(2)
@@ -951,6 +955,7 @@ const UserList2 = (props)=>{
                                   its_me={userdata.user.id === arche.user_id}
                                   on_double_click={handleShowUserInfo}
                                   selected_columns={selectedColumns}
+                                  show_id_column={showIdColumn}
 
                               />
                           ))}
