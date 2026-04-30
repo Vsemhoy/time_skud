@@ -224,7 +224,7 @@
 /* .sk-usermonic-cardrow-ou > div:first-child {
     color:#006d9f;
 } */
-.sk-usermonic-crd-notinoffice-state > div:first-child {
+.sk-usermonic-crd-notinoffice-state > .sk-userlist-id-cell {
     /* background-color: rgb(243, 243, 243) !important; */
     color: rgb(116, 116, 116);
 }
