@@ -1,6 +1,5 @@
 import {Button, Collapse, DatePicker, Drawer, Select} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
 
 
 import dayjs from "dayjs";
@@ -8,7 +7,7 @@ import dayjs from "dayjs";
 import '../../../assets/timeskud.css'
 import {
     CaretLeftOutlined, CaretRightOutlined, DiffOutlined,
-    FilterOutlined, ScheduleOutlined, SearchOutlined, UnorderedListOutlined
+    FilterOutlined, ReloadOutlined, ScheduleOutlined, SearchOutlined, UnorderedListOutlined
 } from "@ant-design/icons";
 import { getMonthName, getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
@@ -18,8 +17,6 @@ import { StateContext } from "../../../components/ComStateProvider25/ComStatePro
 const UserListToolbar = (props) => {
     const { state, setState } = useContext(StateContext);
     const {onChange, userData} = props;
-    const location = useLocation();
-    const navigate = useNavigate();
 
     const [imExist, setImExist] = useState(false);
 
@@ -43,22 +40,7 @@ const UserListToolbar = (props) => {
 
 
 
-    const getDateFromSearch = (search) => {
-        const params = new URLSearchParams(search);
-        const targetDateValue = params.get('date');
-        const routeDate = targetDateValue ? dayjs.unix(Number(targetDateValue)) : null;
-
-        return routeDate && routeDate.isValid() ? routeDate : dayjs();
-    };
-
-    const [usedDate, setUsedDate] = useState(() => getDateFromSearch(location.search));
-
-    useEffect(() => {
-        const routeDate = getDateFromSearch(location.search);
-        if (!routeDate.isSame(usedDate, 'second')){
-            setUsedDate(routeDate);
-        }
-    }, [location.search]);
+    const [usedDate, setUsedDate] = useState(dayjs());
 
 
 
@@ -101,10 +83,6 @@ const UserListToolbar = (props) => {
 
 
     const setDateInContext = (value) => {
-        const params = new URLSearchParams(window.location.search);
-        params.set('date', value.unix());
-        navigate(`?${params.toString()}`);
-
         setState(prevState => ({
         ...prevState, // Сохраняем все текущие значения
         date: value, // Обновляем только `date`
@@ -118,6 +96,12 @@ const UserListToolbar = (props) => {
     const handleFindMyself = ()=>{
         if (props.on_find_me){
             props.on_find_me();
+        }
+    }
+
+    const handleRefresh = () => {
+        if (props.on_refresh){
+            props.on_refresh();
         }
     }
 
@@ -222,15 +206,24 @@ const UserListToolbar = (props) => {
                     <span>{usedDate.date()} {months[usedDate.month()]}, {getWeekDayString(usedDate.day())}</span>
                 </div>
                 <div className={'sk-userlist-toolbar-findme'}>
+                    <Button color={'default'}
+                            variant={'outlined'}
+                            icon={<ReloadOutlined />}
+                            className={'sk-userlist-compact-btn'}
+                            title={'Обновить данные таблицы'}
+                            size={'middle'}
+                            loading={props.isLoading}
+                            onClick={handleRefresh}
+                    />
                     {imExist && (
                         <Button color={'default'}
                                 variant={'outlined'}
                                 icon={<SearchOutlined />}
                                 className={'sk-userlist-compact-btn'}
                                 title={'Найти себя в списке'}
-                                size={'small'}
+                                size={'middle'}
                                 onClick={handleFindMyself}
-                        ><span className={'sk-userlist-btn-label'}>Найти себя в списке</span></Button>
+                        />
                     )}
                 </div>
                 <div className={'sk-userlist-toolbar-actions'}>
@@ -242,7 +235,7 @@ const UserListToolbar = (props) => {
                             icon={<span className={'sk-userlist-claim-btn-icon'} style={{marginTop: '3px'}}>{item.icon || <DiffOutlined />}</span>}
                             className={'sk-userlist-compact-btn sk-userlist-claim-btn'}
                             title={item.badge}
-                            size={'small'}
+                            size={'middle'}
                             onClick={() => handleEditorButtonClick(item)}
                         >
                             <span className={'sk-userlist-btn-label'}>{item.badge}</span>
@@ -251,11 +244,11 @@ const UserListToolbar = (props) => {
 
                     <Button color={'default'}
                             variant={'outlined'}
-                            icon={<ScheduleOutlined />}
+                            icon={<UnorderedListOutlined />}
                             className={'sk-userlist-compact-btn'}
                             style={{ width: '150px' }}
                             title={'Список заявок'}
-                            size={'small'}
+                            size={'middle'}
                             onClick={openClaimsModal}
                     ><span className={'sk-userlist-btn-label'}>Список заявок</span></Button>
 
