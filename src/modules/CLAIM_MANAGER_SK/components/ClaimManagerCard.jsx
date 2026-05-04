@@ -8,6 +8,7 @@ import StateAgreedIcon from "../../../assets/media/States/StateAgreedIcon";
 import StateForbiddenIcon from "../../../assets/media/States/StateForbiddenIcon";
 import StateAwaitedIcon from "../../../assets/media/States/StateAwaitedIcon";
 import StateTransferredIcon from "../../../assets/media/States/StateTransferredIcon";
+import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 
 // const items = [
 //   {
@@ -243,13 +244,12 @@ const ClaimManagerCard = (props) => {
 
     const clearTimeString = (str) => {
         if (str) {
-            let s = str.replace(' 00:00:00', '');
-            let st = s.split(' ');
-            if (st.length === 2 && props.data.skud_current_state_id !== 7 && props.data.skud_current_state_id !== 6 && props.data.skud_current_state_id !== 10 && props.data.skud_current_state_id !== 13 && props.data.skud_current_state_id !== 11){
-                let time = st[1].split(':');
-                return <div><span>{st[0]}</span>  <span>{time[0]}:{time[1]}</span></div> ;
+            const date = formatMoscowDateTime(str, 'YYYY-MM-DD');
+            const time = formatMoscowDateTime(str, 'HH:mm');
+            if (time !== '00:00' && props.data.skud_current_state_id !== 7 && props.data.skud_current_state_id !== 6 && props.data.skud_current_state_id !== 10 && props.data.skud_current_state_id !== 13 && props.data.skud_current_state_id !== 11){
+                return <div><span>{date}</span>  <span>{time}</span></div> ;
             } else {
-                return <div><span>{st[0]}</span></div> ;
+                return <div><span>{date}</span></div> ;
             }
         }
     };

@@ -1,5 +1,4 @@
 ﻿import { Tag, Tooltip } from "antd";
-import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
@@ -21,6 +20,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     CalendarOutlined
  } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../components/Helpers/TextHelpers";
+import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
@@ -241,8 +241,8 @@ const UserMonitorListCard = (props) => {
             <div style={{maxWidth: '320px'}}>
                 <div><strong>{claim?.skud_current_state?.title || claim?.skud_current_state?.text || 'Заявка'}</strong></div>
                 <div>Статус: {getClaimStatusText(claim)}</div>
-                <div>Начало: {claim?.start ? dayjs(claim.start).format('DD.MM.YYYY HH:mm') : '-'}</div>
-                <div>Конец: {claim?.end ? dayjs(claim.end).format('DD.MM.YYYY HH:mm') : '-'}</div>
+                <div>Начало: {claim?.start ? formatMoscowDateTime(claim.start, 'DD.MM.YYYY HH:mm') : '-'}</div>
+                <div>Конец: {claim?.end ? formatMoscowDateTime(claim.end, 'DD.MM.YYYY HH:mm') : '-'}</div>
             </div>
         );
     };
@@ -304,10 +304,10 @@ const UserMonitorListCard = (props) => {
                         <div key={`rule-tooltip-${rule?.id ?? index}`} style={{marginTop: index > 0 ? '8px' : '6px'}}>
                             <div>{ruleInfo?.name || 'Правило'}</div>
                             {rule?.start && (
-                                <div>Начало: {dayjs(rule.start).format('DD.MM.YYYY')}</div>
+                                <div>Начало: {formatMoscowDateTime(rule.start, 'DD.MM.YYYY')}</div>
                             )}
                             {rule?.end && (
-                                <div>Окончание: {dayjs(rule.end).format('DD.MM.YYYY')}</div>
+                                <div>Окончание: {formatMoscowDateTime(rule.end, 'DD.MM.YYYY')}</div>
                             )}
                             {Number(ruleInfo?.duration_time) > 0 && (
                                 <div>Длительность: {secondsToTime(ruleInfo.duration_time)}</div>
@@ -365,8 +365,8 @@ const UserMonitorListCard = (props) => {
             }
 
             if (direction === 0) {
-                const currentEnter = result.enter ? dayjs(result.enter) : null;
-                const nextEnter = dayjs(eventTime);
+                const currentEnter = result.enter ? moscowDateTime(result.enter) : null;
+                const nextEnter = moscowDateTime(eventTime);
 
                 if (!result.enter || (nextEnter.isValid() && currentEnter?.isValid() && nextEnter.isBefore(currentEnter))) {
                     result.enter = eventTime;
@@ -374,8 +374,8 @@ const UserMonitorListCard = (props) => {
             }
 
             if (direction !== 0) {
-                const currentExit = result.exit ? dayjs(result.exit) : null;
-                const nextExit = dayjs(eventTime);
+                const currentExit = result.exit ? moscowDateTime(result.exit) : null;
+                const nextExit = moscowDateTime(eventTime);
 
                 if (!result.exit || (nextExit.isValid() && currentExit?.isValid() && nextExit.isAfter(currentExit))) {
                     result.exit = eventTime;
@@ -417,7 +417,7 @@ const UserMonitorListCard = (props) => {
             return '';
         }
 
-        const formattedValue = dayjs(value).format('HH:mm');
+        const formattedValue = formatMoscowDateTime(value);
 
         if (!hasEventDump) {
             return formattedValue;
@@ -486,10 +486,10 @@ const UserMonitorListCard = (props) => {
                     <div className={'sk-time-info'}>
                         <div className={`sk-usermonic-micro-row ${props?.extendedInfo ? 'extended' : ''}`}>
                             <div className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
-                                {content.enter_time && dayjs(content.enter_time).format('HH:mm')}
+                                {formatMoscowDateTime(content.enter_time)}
                             </div>
                             <div className={`${selectedColumns.includes(11) ? "sk-col-selected" : ""}`}>
-                                {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
+                                {formatMoscowDateTime(content.exit_time)}
                             </div>
                             <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
                                 {content.exit_time_count && secondsToTime(content.exit_time_count)}

@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
 import React, { useState, useEffect } from "react";
+import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 
 const UserlistEventDumpCard = (props) => {
 
@@ -32,8 +32,8 @@ const UserlistEventDumpCard = (props) => {
                     <tr key={`evdkey_${index}`} 
                     className={`${evt.c && evt.c ===1 ? 'sk-uml-custom' : ''}`}>
                         <td>{index + 1}</td>
-                        <td className={`${evt.d !== 0 && evt.c ? "sk-uml-cuscontent" : ""}`}>{evt.d === 0 ? dayjs(evt.t).format('HH:mm') : evt.c && evt.c === 1 ? evt.r : '' }</td>
-                        <td className={`${evt.d === 0 && evt.c ? "sk-uml-cuscontent" : ""}`}>{evt.d > 0 ? dayjs(evt.t).format('HH:mm')  : evt.c && evt.c === 1 ? evt.r : '' }</td>
+                        <td className={`${evt.d !== 0 && evt.c ? "sk-uml-cuscontent" : ""}`}>{evt.d === 0 ? formatMoscowDateTime(evt.t) : evt.c && evt.c === 1 ? evt.r : '' }</td>
+                        <td className={`${evt.d === 0 && evt.c ? "sk-uml-cuscontent" : ""}`}>{evt.d > 0 ? formatMoscowDateTime(evt.t)  : evt.c && evt.c === 1 ? evt.r : '' }</td>
                     </tr>
                 ))}
                 </tbody>

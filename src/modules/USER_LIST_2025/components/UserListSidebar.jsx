@@ -3,6 +3,7 @@ import UserlistEventDumpCard from "./UserlistEventDumpCard";
 import { Drawer, Empty, Tag } from "antd";
 
 import dayjs from "dayjs";
+import { formatMoscowDateTime, formatMoscowUnix, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
@@ -199,17 +200,17 @@ const UserListSidebar = (props) => {
                       <tbody>
                         <tr>
                           <td style={{textAlign: 'left'}}>Дата и время начала</td>
-                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.start).format("DD-MM-YYYY")}   {
-                            dayjs(targetUserInfo.state_data.start).format('HH:mm') != '00:00' && (
-                              <span>{dayjs(targetUserInfo.state_data.start).format('HH:mm')}</span>
+                          <td style={{textAlign: 'left'}}>{formatMoscowDateTime(targetUserInfo.state_data.start, "DD-MM-YYYY")}   {
+                            formatMoscowDateTime(targetUserInfo.state_data.start) != '00:00' && (
+                              <span>{formatMoscowDateTime(targetUserInfo.state_data.start)}</span>
                             )
                           }</td>
                         </tr>
                         <tr>
                           <td style={{textAlign: 'left'}}>Дата и время завершения</td>
-                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).format("DD-MM-YYYY")}   {
-                            dayjs(targetUserInfo.state_data.end).format('HH:mm') != '23:59' && (
-                              <span>{dayjs(targetUserInfo.state_data.end).format('HH:mm')}</span>
+                          <td style={{textAlign: 'left'}}>{formatMoscowDateTime(targetUserInfo.state_data.end, "DD-MM-YYYY")}   {
+                            formatMoscowDateTime(targetUserInfo.state_data.end) != '23:59' && (
+                              <span>{formatMoscowDateTime(targetUserInfo.state_data.end)}</span>
                             )
                           }</td>
                         </tr>
@@ -219,7 +220,7 @@ const UserListSidebar = (props) => {
                         </tr>
                         <tr>
                           <td style={{textAlign: 'left'}}>Количество дней осталось</td>
-                          <td style={{textAlign: 'left'}}>{dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') > 0 ? dayjs(targetUserInfo.state_data.end).diff(dayjs(), 'day') : ""}</td>
+                          <td style={{textAlign: 'left'}}>{moscowDateTime(targetUserInfo.state_data.end).diff(moscowDateTime(dayjs()), 'day') > 0 ? moscowDateTime(targetUserInfo.state_data.end).diff(moscowDateTime(dayjs()), 'day') : ""}</td>
                         </tr>
                           </tbody>
                       </table>
@@ -280,7 +281,7 @@ const UserListSidebar = (props) => {
           {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
             <div className={'sk-usermonic-drawer-row'}>
               <div className={'sk-labed-um'}>Работает с</div>
-              <div className={'sk-contend-um'}>{targetUserInfo.recrut ? dayjs.unix(targetUserInfo.recrut).format("DD-MM-YYYY") : ""}</div>
+              <div className={'sk-contend-um'}>{formatMoscowUnix(targetUserInfo.recrut)}</div>
             </div>
           ): ""}
 

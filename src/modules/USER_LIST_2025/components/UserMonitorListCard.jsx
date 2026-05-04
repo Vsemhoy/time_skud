@@ -1,5 +1,4 @@
 import { Tag, Tooltip } from "antd";
-import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
@@ -18,6 +17,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     TruckOutlined
  } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../components/Helpers/TextHelpers";
+import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 
@@ -198,11 +198,11 @@ const UserMonitorListCard = (props) => {
                 </div>
 
                 <div className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}>
-                    {content.enter_time && dayjs(content.enter_time).format('HH:mm')}
+                    {formatMoscowDateTime(content.enter_time)}
                 </div>
 
                 <div className={`${selectedColumns.includes(11) ? "sk-col-selected": ""}`}>
-                    {content.exit_time && dayjs(content.exit_time).format('HH:mm')}
+                    {formatMoscowDateTime(content.exit_time)}
                 </div>
 
                 <div className={`${selectedColumns.includes(22) ? "sk-col-selected": ""}`}>

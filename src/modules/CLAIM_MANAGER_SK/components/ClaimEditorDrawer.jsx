@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, TimePicker, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
+import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 const { Option } = Select;
 
 
@@ -178,7 +179,7 @@ const ClaimEditorDrawer = (props) => {
         };
       }
 
-      setFormDateRange([dayjs(props.data.start), props.data.end ? dayjs(props.data.end) : null]);
+      setFormDateRange([moscowDateTime(props.data.start), props.data.end ? moscowDateTime(props.data.end) : null]);
       setItemId(props.data.id);
       setFormType(props.data.skud_current_state_id);
 
@@ -205,7 +206,7 @@ const ClaimEditorDrawer = (props) => {
             setFormUsers([selectedUserId]);
           }
           if (props.data.start) {
-            setFormDateRange([dayjs(props.data.start, 'DD.MM.YYYY'),  dayjs(props.data.start, 'DD.MM.YYYY').endOf('day')]);
+            setFormDateRange([moscowDateTime(props.data.start, 'DD.MM.YYYY'),  moscowDateTime(props.data.start, 'DD.MM.YYYY').endOf('day')]);
           }
         }
     }
@@ -646,8 +647,8 @@ const ClaimEditorDrawer = (props) => {
               <div className={'sk-flex-space'}>
               {editMode === 'read' ? (
                 <div className='sk-flex-space'>
-                  <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD.MM.YYYY  HH:mm')}</div> -
-                  <div className={'sk-contend-um'}>{dayjs(formDateRange[1])?.format('DD.MM.YYYY  HH:mm')} </div>
+                  <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[0], 'DD.MM.YYYY  HH:mm')}</div> -
+                  <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[1], 'DD.MM.YYYY  HH:mm')} </div>
               </div>
               ):(
                 <>
@@ -704,8 +705,8 @@ const ClaimEditorDrawer = (props) => {
                 <div className={'sk-flex-space'}>
                 {editMode === 'read' ? (
                 <div className='sk-flex-space'>
-                    <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD.MM.YYYY')}</div> -
-                    <div className={'sk-contend-um'}>{dayjs(formDateRange[1])?.format('DD.MM.YYYY')} </div>
+                    <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[0], 'DD.MM.YYYY')}</div> -
+                    <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[1], 'DD.MM.YYYY')} </div>
                 </div>
               ):(
                 <>
@@ -733,7 +734,7 @@ const ClaimEditorDrawer = (props) => {
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Дата события</span>
               {editMode === 'read' ? (
                 <>
-                    <div className={'sk-contend-um'}>{dayjs(formDateRange[0])?.format('DD-MM-YY')} </div>
+                    <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[0], 'DD-MM-YY')} </div>
                 </>
               ):(
                 <>
