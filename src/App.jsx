@@ -115,27 +115,79 @@ function App() {
     get_userdata().then();
   }, []);
 
-  const normalizeEnterTime = (enterTime) => {
-    if (!enterTime) {
+  const normalizeSkudTime = (time) => {
+    if (!time) {
       return null;
     }
 
-    if (typeof enterTime === 'number') {
-      return String(enterTime).length <= 10 ? dayjs.unix(enterTime) : dayjs(enterTime);
+    if (typeof time === 'number') {
+      return String(time).length <= 10 ? dayjs.unix(time) : dayjs(time);
     }
 
-    if (typeof enterTime === 'string' && /^\d+$/.test(enterTime)) {
-      return enterTime.length <= 10 ? dayjs.unix(Number(enterTime)) : dayjs(Number(enterTime));
+    if (typeof time === 'string' && /^\d+$/.test(time)) {
+      return time.length <= 10 ? dayjs.unix(Number(time)) : dayjs(Number(time));
     }
 
-    return dayjs(enterTime);
+    return dayjs(time);
   };
 
-  const normalizedEnterTime = normalizeEnterTime(userAct?.user?.enter_time);
+  const parseEventDump = (eventDump) => {
+    if (!eventDump) {
+      return [];
+    }
 
-  const hasEnteredOfficeToday = Boolean(
-    normalizedEnterTime && normalizedEnterTime.isValid() && normalizedEnterTime.isSame(dayjs(), 'day')
-  );
+    if (Array.isArray(eventDump)) {
+      return eventDump;
+    }
+
+    if (typeof eventDump === 'string') {
+      try {
+        const parsed = JSON.parse(eventDump);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.log('Cannot parse event_dump', e);
+      }
+    }
+
+    return [];
+  };
+
+  const shouldShowOfficeMarkAlert = (user) => {
+    if (!user) {
+      return false;
+    }
+
+    const today = dayjs();
+    const hasEventDumpField = Object.prototype.hasOwnProperty.call(user, 'event_dump');
+    const todayEvents = parseEventDump(user.event_dump)
+      .map((event) => ({
+        ...event,
+        normalizedTime: normalizeSkudTime(event.t),
+      }))
+      .filter((event) => event.normalizedTime?.isValid() && event.normalizedTime.isSame(today, 'day'))
+      .sort((a, b) => a.normalizedTime.valueOf() - b.normalizedTime.valueOf());
+
+    if (hasEventDumpField) {
+      if (todayEvents.length === 0) {
+        return true;
+      }
+
+      return Number(todayEvents[todayEvents.length - 1].d) > 0;
+    }
+
+    const normalizedEnterTime = normalizeSkudTime(user.enter_time);
+    const normalizedExitTime = normalizeSkudTime(user.exit_time);
+    const hasEnteredOfficeToday = Boolean(
+      normalizedEnterTime && normalizedEnterTime.isValid() && normalizedEnterTime.isSame(today, 'day')
+    );
+    const hasExitedOfficeToday = Boolean(
+      normalizedExitTime && normalizedExitTime.isValid() && normalizedExitTime.isSame(today, 'day')
+    );
+
+    return !hasEnteredOfficeToday || (hasExitedOfficeToday && normalizedExitTime.isAfter(normalizedEnterTime));
+  };
+
+  const showOfficeMarkAlert = shouldShowOfficeMarkAlert(userAct?.user);
 
   const handleNotificatorOpened = () => {
     setNotificatorOpened(true);
@@ -158,7 +210,7 @@ function App() {
        />
    
 
-      {pageLoaded && !hasEnteredOfficeToday && alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
+      {pageLoaded && showOfficeMarkAlert && alertNotShowDate !== dayjs().format("YYYY-MM-DD") && userAct?.user?.id !== 46 && (
         <Alert
           message={<div className='sk-flex-space'>
           <span>"Возможно Вы забыли приложить карту при входе в офис"</span>

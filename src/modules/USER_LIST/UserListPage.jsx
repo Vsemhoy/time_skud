@@ -104,17 +104,21 @@ const UserList = (props)=>{
   const [doUpdateModal, setDoUpdateModal] = useState(0);
 
   const handleEditorOpenCreate = (key) => {
+    setEditedClaim(null);
     setEditorMode('create');
     setEditorOpened(true);
     setFormType(key);
+    setSelectedClaimId(0);
   }
 
   const handleEditorOpen = (value) => {
     if (value && value.key){
       let key = parseInt(value.key.replace('clt_', ''));
+      setEditedClaim(null);
       setEditorMode('create');
       setEditorOpened(true);
       setFormType(key);
+      setSelectedClaimId(0);
     }
   }
 

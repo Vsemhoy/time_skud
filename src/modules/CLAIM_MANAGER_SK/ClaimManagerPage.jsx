@@ -140,9 +140,11 @@ const ClaimManagerPage = (props) => {
     const handleEditorOpen = (value) => {
         if (value && value.key){
             let key = parseInt(value.key.replace('clt_', ''));
+            setEditedClaim(null);
             setEditorMode('create');
             setEditorOpened(true);
             setFormType(key);
+            setSelectedClaimId(0);
         }
     }
 
@@ -507,6 +509,7 @@ const ClaimManagerPage = (props) => {
         } else if (ev.button === 1 && value !== 0 && canCreate){
             // Средней кнопкой мыши мы открываем редактор
             ev.preventDefault();
+            setEditedClaim(null);
             setFormType(value);
             setEditorMode('create');
             setEditorOpened(true);
@@ -524,6 +527,7 @@ const ClaimManagerPage = (props) => {
         setEditorOpened(false);
         setTimeout(() => {
             setSelectedClaimId(0);
+            setEditedClaim(null);
             console.log(999999999);
         }, 555);
     }
@@ -557,6 +561,7 @@ const ClaimManagerPage = (props) => {
         setEditorOpened(false);
         setTimeout(() => {
             setSelectedClaimId(0);
+            setEditedClaim(null);
             console.log(888888333333);
         }, 555);
     }
@@ -570,6 +575,7 @@ const ClaimManagerPage = (props) => {
         setEditorOpened(false);
         setTimeout(() => {
             setSelectedClaimId(0);
+            setEditedClaim(null);
             console.log(555555555555);
         }, 555);
     }
@@ -581,6 +587,7 @@ const ClaimManagerPage = (props) => {
         // setEditorMode('update');
         setTimeout(() => {
             setSelectedClaimId(0);
+            setEditedClaim(null);
             console.log(1111111111111);
         }, 555);
         setEditorOpened(false);
@@ -595,6 +602,7 @@ const ClaimManagerPage = (props) => {
             setTimeout(() => {
                 console.log(2222222222222222);
                 setSelectedClaimId(0);
+                setEditedClaim(null);
             }, 555);
         }
     }
