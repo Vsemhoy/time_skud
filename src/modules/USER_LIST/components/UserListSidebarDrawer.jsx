@@ -229,7 +229,7 @@ const UserListSidebarDrawer = (props) => {
                                 </tr>
                                 <tr>
                                   <td style={{textAlign: 'left'}}>Количество дней осталось</td>
-                                  <td style={{textAlign: 'left'}}>{moscowDateTime(targetUserInfo.state_data.end).diff(moscowDateTime(dayjs()), 'day') > 0 ? moscowDateTime(targetUserInfo.state_data.end).diff(moscowDateTime(dayjs()), 'day') : ""}</td>
+                                  <td style={{textAlign: 'left'}}>{(moscowDateTime(targetUserInfo.state_data.end)?.diff(moscowDateTime(dayjs()), 'day') ?? 0) > 0 ? moscowDateTime(targetUserInfo.state_data.end)?.diff(moscowDateTime(dayjs()), 'day') : ""}</td>
                                 </tr>
                                   </tbody>
                               </table>

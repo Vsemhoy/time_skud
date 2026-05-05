@@ -206,7 +206,10 @@ const ClaimEditorDrawer = (props) => {
             setFormUsers([selectedUserId]);
           }
           if (props.data.start) {
-            setFormDateRange([moscowDateTime(props.data.start, 'DD.MM.YYYY'),  moscowDateTime(props.data.start, 'DD.MM.YYYY').endOf('day')]);
+            const parsedStart = moscowDateTime(props.data.start, 'DD.MM.YYYY');
+            if (parsedStart) {
+              setFormDateRange([parsedStart, parsedStart.endOf('day')]);
+            }
           }
         }
     }
