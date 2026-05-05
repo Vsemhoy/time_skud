@@ -91,6 +91,7 @@ const UserList = (props)=>{
   /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
+  const effectiveShowIdColumn = showIdColumn || isShowExtendedInfo;
   const [editorMode, setEditorMode] = useState('create');
   const [editorOpened, setEditorOpened] = useState(false);
   const [formType, setFormType] = useState(null);
@@ -1159,9 +1160,9 @@ const UserList = (props)=>{
                         <Affix offsetTop={80}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
-                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'}`}>
+                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'}`}>
 
-                            {showIdColumn && (
+                            {effectiveShowIdColumn && (
                               <div onClick={() => {
                                 toggleSelectedColumn(1)
                               }}>
@@ -1260,7 +1261,7 @@ const UserList = (props)=>{
                         </div>
                         </Affix>
                         {shouldShowTableSkeleton ? (
-                          <UserListTableSkeleton extendedInfo={isShowExtendedInfo} showIdColumn={showIdColumn} />
+                          <UserListTableSkeleton extendedInfo={isShowExtendedInfo} showIdColumn={effectiveShowIdColumn} />
                         ) : filteredUsers.length === 0 ? (
                           <div className="sk-userlist-empty-state">
                             <Empty description="Нет данных для отображения" />
@@ -1278,7 +1279,7 @@ const UserList = (props)=>{
                                     on_double_click={handleShowUserInfo}
                                     selected_columns={selectedColumns}
                                     extendedInfo={isShowExtendedInfo}
-                                    show_id_column={showIdColumn}
+                                    show_id_column={effectiveShowIdColumn}
                                   />
                             ))
                         )}
