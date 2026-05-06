@@ -209,7 +209,7 @@ const AppMenu23 = (props) => {
         },
         {
             key: '/admin/aclskud',
-            label: <NavLink to="admin/aclskud">ACL</NavLink>,
+            label: <NavLink to="admin/aclskud">Доступы СКУД</NavLink>,
         },
         /*{
             key: 'menu4',
