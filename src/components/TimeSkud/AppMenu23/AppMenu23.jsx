@@ -227,14 +227,19 @@ const AppMenu23 = (props) => {
         console.log(props.user_act)
     }, [props.user_act]);
 
+    const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
+
     const getMenuItems = () => {
         console.log(props.user_act)
+        const currentUser = props.user_act?.user;
+        const hasFullMenuAccess = isTruthyFlag(currentUser?.super) || isTruthyFlag(currentUser?.is_admin);
+
         return mainMenuItems.filter(item => {
             const shouldShowItem = (() => {
                 switch (item.key) {
-                    case 'menu2': return props.user_act && props.user_act.user && (props.user_act.user.id_departament === 2 || props.user_act.user.super === 1);
-                    case 'menu3': return props.user_act && props.user_act.acls && props.user_act.acls.includes(82);
-                    case '/admin/aclskud': return props.user_act && props.user_act.user && props.user_act.user.super === 1;
+                    case 'menu2': return hasFullMenuAccess || (currentUser && currentUser.id_departament === 2);
+                    case 'menu3': return hasFullMenuAccess || (props.user_act && props.user_act.acls && props.user_act.acls.includes(82));
+                    case '/admin/aclskud': return hasFullMenuAccess;
                     default: return true;
                 }
             })();
