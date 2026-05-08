@@ -44,89 +44,322 @@
     border-color: var(--table-border-divider-color) !important;
 }
 
-.sk_transport_price_wrapper {
-    width: 300px;
-    height: 61px;
-    border-radius: 8px;
-    background-color: var(--row-second-bg-color);
+.sk-claims-type-radio.ant-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.sk-claims-type-radio .ant-radio-button-wrapper {
+    height: 32px;
+    padding: 0 8px;
     border: 1px solid var(--table-border-divider-color);
+    border-radius: 6px;
+    background: var(--app-surface-color);
     color: var(--app-text-color);
-    cursor: pointer;
+    line-height: 30px;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+.sk-claims-type-radio .ant-radio-button-wrapper::before {
+    display: none;
+}
+
+.sk-claims-type-radio .ant-radio-button-wrapper:hover {
+    color: var(--row-selected-color_2);
+    border-color: color-mix(in srgb, var(--row-selected-color_2) 42%, var(--table-border-divider-color));
+}
+
+.sk-claims-type-radio .ant-radio-button-wrapper-checked {
+    background: var(--claim-radio-active-color, var(--row-selected-color)) !important;
+    border-color: var(--claim-radio-active-color, var(--row-selected-color)) !important;
+    color: var(--app-text-color) !important;
+    font-weight: 600;
+}
+
+.sk-claims-type-radio-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 100%;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.sk-claims-type-radio-label > svg,
+.sk-claims-type-radio-label .anticon,
+.sk-claims-type-radio-label > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.sk-claims-type-radio-label svg {
+    width: 14px;
+    height: 14px;
+}
+
+.sk-claims-type-radio-label .anticon {
+    font-size: 14px;
+}
+
+.sk_transport_price_wrapper {
+    width: 260px;
+    min-height: 42px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--app-surface-color) 82%, var(--row-selected-color_2) 18%);
+    border: 1px solid color-mix(in srgb, var(--row-selected-color_2) 28%, var(--table-border-divider-color));
+    color: var(--app-text-color);
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .sk_transport_price_wrapper:hover {
-    background-color: var(--row-hovered-bg-color);
+    background: color-mix(in srgb, var(--app-surface-color) 74%, var(--row-selected-color_2) 26%);
+    border-color: color-mix(in srgb, var(--row-selected-color_2) 48%, var(--table-border-divider-color));
+    box-shadow: 0 6px 16px -14px var(--row-selected-color_2);
 }
 
 .sk_transport_price_wrapper:active {
-    background-color: var(--row-selected-color);
+    background: color-mix(in srgb, var(--app-surface-color) 66%, var(--row-selected-color_2) 34%);
 }
 
 .sk_transport_price_header {
     margin: 0;
-    padding: 6px;
+    padding: 0;
     font-weight: 600;
+    font-size: 11px;
+    line-height: 1.1;
     color: var(--app-text-color);
+    grid-column: 2;
+    opacity: 0.78;
 }
 
 .sk_transport_price_label_container {
-    padding: 6px;
+    padding: 0;
     display: grid;
     align-items: center;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
+    grid-column: 2;
 }
 
 .sk_transport_price_label {
     margin: 0;
+    padding: 3px 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--app-surface-color) 74%, transparent);
     color: var(--app-muted-text-color);
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .sk_transport_price {
-    font-size: large;
+    margin-left: 3px;
+    font-size: 13px;
+    font-weight: 700;
     color: rgb(22 119 255);
 }
 
 .modal_form_wrapper {
-    width: 300px;
-    min-height: 364px;
-    padding: 10px;
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--row-selected-color) 38%, var(--app-surface-color));
+    min-width: 0;
+    min-height: 0;
+    padding: 16px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--app-surface-color) 90%, var(--row-selected-color_2) 10%);
     border: 1px solid var(--table-border-divider-color);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 14px;
     color: var(--app-text-color);
 }
 
 .modal_old_prices {
-    margin-top: 10px;
-    width: 300px;
-    height: 150px;
-    border-radius: 8px;
+    margin-top: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    max-height: 138px;
+    border-radius: 6px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
+    padding-right: 6px;
 }
 
 .modal_old_price {
-    width: 100%;
-    min-height: 32px;
-    border-radius: 8px;
-    background-color: var(--row-second-bg-color);
+    width: calc(100% - 2px);
+    max-width: 100%;
+    min-height: 30px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background: var(--app-surface-color);
     border: 1px solid var(--table-border-divider-color);
-    padding: 5px 8px;
+    padding: 5px 7px;
     color: var(--app-text-color);
-    display: flex;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
 }
 
 .modal_old_price p {
     margin: 0;
+    min-width: 0;
+}
+
+.modal_old_price > p:first-child {
+    color: rgb(22 119 255);
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.modal_old_price > div {
+    min-width: 0;
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 3px !important;
+    flex-wrap: wrap;
+    color: var(--app-muted-text-color);
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.modal_old_price > div p,
+.modal_old_price > div span {
+    flex: 0 1 auto;
+}
+
+.sk-transport-price-modal .ant-modal-content {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sk-transport-price-modal .ant-modal-header {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--table-border-divider-color);
+}
+
+.sk-transport-price-modal .ant-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.sk-transport-price-modal-layout {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(250px, 1fr) minmax(270px, 1fr);
+    gap: 8px;
+}
+
+.modal_form_wrapper p {
+    margin: 0 0 5px;
+    color: var(--app-muted-text-color);
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.modal_form_wrapper p:not(:first-child) {
+    margin-top: 12px;
+}
+
+.modal_form_wrapper .ant-select,
+.modal_form_wrapper .ant-input,
+.modal_form_wrapper .ant-picker {
+    border-radius: 6px;
+}
+
+.modal_form_wrapper > div:last-child {
+    display: flex !important;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.modal_form_wrapper > div:last-child .ant-btn {
+    margin-top: 0 !important;
+    border-radius: 6px;
+}
+
+.sk-transport-price-history {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+.sk-transport-price-history > p {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 10px 7px;
+    border: 1px solid var(--table-border-divider-color);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: color-mix(in srgb, var(--app-surface-color) 88%, var(--row-selected-color_2) 12%);
+    color: var(--app-text-color);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sk-transport-price-history > p:not(:first-child) {
+    margin-top: 12px;
+}
+
+.modal_old_prices_header {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 8px;
+    padding: 5px 13px 5px 7px;
+    border-left: 1px solid var(--table-border-divider-color);
+    border-right: 1px solid var(--table-border-divider-color);
+    background: color-mix(in srgb, var(--app-surface-color) 76%, var(--row-selected-color_2) 24%);
+    color: var(--app-muted-text-color);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.modal_old_prices_header span:last-child {
+    text-align: right;
+}
+
+.sk-transport-price-history .modal_old_prices {
+    border: 1px solid var(--table-border-divider-color);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 5px 6px 5px 5px;
+    background: color-mix(in srgb, var(--app-surface-color) 94%, var(--row-selected-color_2) 6%);
+}
+
+@media screen and (max-width: 760px) {
+    .sk-transport-price-modal-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .modal_old_prices {
+        max-height: 116px;
+    }
 }
 .sk-claiman-type-selector > div  {
     min-width: 66px;
@@ -185,28 +418,23 @@
     text-align: center;
 }
 .sk-clamen-headerrow {
-    padding-left: 4px;
-    padding-right: 3px;
+    border: 1px solid var(--table-border-divider-color);
+    border-bottom: 2px solid color-mix(in srgb, var(--row-selected-color_2) 40%, var(--table-border-divider-color));
 }
 .sk-clamen-card-wrapper {
-    padding-bottom: 4px;
-    /* padding-top: 1px; */
-    padding-left: 4px;
-    padding-right: 3px;
+    border-left: 1px solid var(--table-border-divider-color);
+    border-right: 1px solid var(--table-border-divider-color);
+    border-bottom: 1px solid var(--table-border-divider-color);
 }
 .sk-clamen-card-wrapper > .sk-clamen-card {
     background-color: var(--app-surface-color);
-    transition: all 0.3s;
-    border-radius: 5px;
     color: var(--app-text-color);
-    max-height: 100px;
-    transition: background 2.5s;
+    height: 54px;
+    transition: background-color 0.2s ease;
 }
 .sk-clamen-card-wrapper > .sk-clamen-card > div:first-child > div {
     background-color: color-mix(in srgb, var(--app-surface-color) 70%, transparent);
-    transition: all 0.3s;
-    border-radius: 5px;
-        
+    transition: background-color 0.2s ease;
 }
 .sk-clamen-card-wrapper:hover > .sk-clamen-card > div:first-child > div {
     background-color: color-mix(in srgb, var(--app-surface-color) 24%, transparent);
@@ -216,48 +444,44 @@
 } */
 .sk-clamen-card {
     display: grid;
-        grid-template-columns: 40px 2fr 55px 100px 100px 55px 3fr 50px 38px 36px 36px 55px;
-        /* border: 1px solid #80808061; */
-        border-top: none;
-        background: var(--row-main-bg-color);
-        transition: all ease 0.2s;
-        box-shadow: -1px 1px 3px #00000042;
-        max-height: 111px;
-}
-.sk-clamen-card > div:first-child {
-    border-radius: 5px;
-}
-.sk-timestring-claim span:nth-child(2){
-    color: rgb(22 119 255);
-    font-size: larger;
-    /* background-color: rgb(238, 238, 238); */
-}
-.sk-timestring-claim span:first-child{
-    color: var(--app-muted-text-color);
-    /* background-color: rgb(238, 238, 238); */
+    grid-template-columns:
+        minmax(40px, 0.4fr)
+        minmax(300px, 3fr)
+        minmax(170px, 1.7fr)
+        minmax(135px, 1.35fr)
+        minmax(135px, 1.35fr)
+        minmax(72px, 0.72fr)
+        minmax(56px, 0.56fr)
+        minmax(64px, 0.64fr)
+        minmax(72px, 0.72fr)
+        minmax(72px, 0.72fr)
+        minmax(72px, 0.72fr)
+        minmax(84px, 0.84fr);
+    background: var(--row-main-bg-color);
+    transition: background-color 0.2s ease;
+    min-width: 1272px;
+    height: 54px;
 }
 .sk-clamen-headerrow {
-    /* background: #00000012 !important; */
-    background-color: var(--row-header-color) !important;
+    background-color: color-mix(in srgb, var(--app-surface-color) 86%, var(--row-selected-color_2) 14%) !important;
     backdrop-filter: blur(22px);
-    padding-bottom: 3px;
-    padding-top: 3px;
+    color: var(--app-text-color);
     -webkit-user-select: none;
     user-select: none;
     cursor: default;
-    
 }
+.sk-clamen-headerrow > .sk-clamen-card,
 .ant-affix > .sk-clamen-headerrow > .sk-clamen-card {
-    background: var(--app-surface-color);
-    /* border: 1px solid transparent; */
-    border-left: 1px solid var(--row-main-bg-color);
-    border-right: 1px solid var(--row-main-bg-color);
+    background: color-mix(in srgb, var(--app-surface-color) 86%, var(--row-selected-color_2) 14%);
+    color: var(--app-text-color);
+    font-weight: 700;
 }
 
 .sk-clamen-card > div > div {
-    padding: 4px;
+    padding: 8px 10px;
     align-content: center;
     height: 100%;
+    overflow: hidden;
 }
 
 div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
@@ -265,8 +489,159 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 
 .sk-clamen-card > div:not(:first-child){
-        box-shadow: -7px 0px 1px -6px var(--column-divider-color);
-    }
+    border-left: 1px solid var(--column-divider-color);
+}
+
+.sk-clamen-card > div:nth-child(2) > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sk-clamen-headerrow .sk-clamen-card > div:nth-child(7) > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+}
+
+.sk-clamen-headerrow .sk-clamen-card > div:nth-child(7) > div::after {
+    content: "Инфо";
+    color: inherit;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sk-clamen-headerrow .sk-clamen-card > div > div {
+    text-align: center;
+}
+
+.sk-clamen-headerrow .sk-clamen-card > div:nth-child(2) > div {
+    text-align: left;
+}
+
+.sk-claim-status-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sk-claim-status-tag.ant-tag {
+    width: 100%;
+    height: 26px;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    padding: 0 8px 0 10px;
+}
+
+.sk-claim-status-tag .anticon {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    font-size: 14px;
+}
+
+.sk-claim-status-tag span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sk-claim-status-tag--pending.ant-tag {
+    color: #575757;
+    background: #f1f2f4;
+    border-color: #d7dbe0;
+}
+
+.sk-claim-status-tag--approved.ant-tag {
+    color: #207044;
+    background: #e7f6ee;
+    border-color: #bfe6d0;
+}
+
+.sk-claim-status-tag--declined.ant-tag {
+    color: #a93838;
+    background: #fdeaea;
+    border-color: #f2bcbc;
+}
+
+.sk-claim-date {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.sk-claim-date-value {
+    color: var(--app-muted-text-color);
+    font-size: 12px;
+}
+
+.sk-claim-time-value {
+    min-width: 40px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: rgb(22 119 255);
+    background: color-mix(in srgb, rgb(22 119 255) 10%, transparent);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sk-claiminfo.sk-claiminfo--compact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+}
+
+.sk-claiminfo-trigger {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--table-border-divider-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(22 119 255);
+    background: var(--app-surface-color);
+    cursor: help;
+}
+
+.sk-claiminfo-trigger--empty {
+    color: var(--app-muted-text-color);
+    opacity: 0.55;
+}
+
+.sk-claiminfo-tooltip {
+    max-width: 360px;
+}
+
+.sk-claiminfo-tooltip-row:not(:first-child) {
+    margin-top: 8px;
+}
+
+.sk-claiminfo-tooltip-row span {
+    display: block;
+    margin-bottom: 2px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+}
+
+.sk-claiminfo-tooltip-row p {
+    margin: 0;
+    white-space: pre-line;
+}
 .sk-clamen-card-trigger {
     display: flex;
         align-items: center;
@@ -309,12 +684,23 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 
 .sk_transport_price_icon {
-    display: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    grid-row: 1 / span 2;
+    color: var(--row-selected-color_2);
+    background: color-mix(in srgb, var(--app-surface-color) 72%, var(--row-selected-color_2) 28%);
 }
 
 .sk-claiminfo,
 .sk-claiminfo .ant-typography,
-.sk-clamen-card > div > div,
+.sk-clamen-card > div > div {
+    color: var(--app-text-color);
+}
+
 .sk-clamen-headerrow .sk-clamen-card > div > div {
     color: var(--app-text-color);
 }
@@ -345,9 +731,36 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
         align-items: center;
         justify-content: center;
         font-size: 18px;
-        color: #4f4f4f;
+        color: var(--row-selected-color_2);
+        background: transparent;
     }
 }
+
+.sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed.small {
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed .sk_transport_price_header.small,
+.sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed .sk_transport_price_label_container.small {
+    display: none;
+}
+
+.sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed .sk_transport_price_icon.small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--row-selected-color_2);
+    background: transparent;
+}
+
 
 @media screen and (max-width: 1300px) {
     .sk_transport_price_wrapper.sk_transport_price_wrapper--filters-closed {
@@ -371,7 +784,8 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
         align-items: center;
         justify-content: center;
         font-size: 18px;
-        color: #4f4f4f;
+        color: var(--row-selected-color_2);
+        background: transparent;
     }
 }
 

@@ -1,13 +1,9 @@
-import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckSquareOutlined, ClockCircleOutlined, DislikeOutlined, InfoCircleOutlined, LikeOutlined } from "@ant-design/icons";
-import { Dropdown, Typography } from "antd";
+import { BarChartOutlined, BarsOutlined, CarryOutOutlined, CheckCircleOutlined, CheckSquareOutlined, ClockCircleOutlined, CloseCircleOutlined, DislikeOutlined, InfoCircleOutlined, LikeOutlined } from "@ant-design/icons";
+import { Dropdown, Tag, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import ClaimIcon from "./ClaimIcon";
 import dayjs from "dayjs";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
-import StateAgreedIcon from "../../../assets/media/States/StateAgreedIcon";
-import StateForbiddenIcon from "../../../assets/media/States/StateForbiddenIcon";
-import StateAwaitedIcon from "../../../assets/media/States/StateAwaitedIcon";
-import StateTransferredIcon from "../../../assets/media/States/StateTransferredIcon";
 import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 
 // const items = [
@@ -242,17 +238,76 @@ const ClaimManagerCard = (props) => {
     //     console.log(info);
     // }
 
+    const shouldShowTime = (time) => (
+        time !== '00:00'
+        && props.data.skud_current_state_id !== 7
+        && props.data.skud_current_state_id !== 6
+        && props.data.skud_current_state_id !== 10
+        && props.data.skud_current_state_id !== 13
+        && props.data.skud_current_state_id !== 11
+    );
+
     const clearTimeString = (str) => {
         if (str) {
-            const date = formatMoscowDateTime(str, 'YYYY-MM-DD');
+            const date = formatMoscowDateTime(str, 'DD.MM.YYYY');
             const time = formatMoscowDateTime(str, 'HH:mm');
-            if (time !== '00:00' && props.data.skud_current_state_id !== 7 && props.data.skud_current_state_id !== 6 && props.data.skud_current_state_id !== 10 && props.data.skud_current_state_id !== 13 && props.data.skud_current_state_id !== 11){
-                return <div><span>{date}</span>  <span>{time}</span></div> ;
-            } else {
-                return <div><span>{date}</span></div> ;
-            }
+            return (
+                <div className="sk-claim-date">
+                    <span className="sk-claim-date-value">{date}</span>
+                    {shouldShowTime(time) && <span className="sk-claim-time-value">{time}</span>}
+                </div>
+            );
         }
     };
+
+    const renderStatusTag = () => {
+        if (props.data.state === 1) {
+            return (
+                <Tag className="sk-claim-status-tag sk-claim-status-tag--approved">
+                    <span>Согласовано</span>
+                    <CheckCircleOutlined />
+                </Tag>
+            );
+        }
+
+        if (props.data.state === 2) {
+            return (
+                <Tag className="sk-claim-status-tag sk-claim-status-tag--declined">
+                    <span>Отклонено</span>
+                    <CloseCircleOutlined />
+                </Tag>
+            );
+        }
+
+        return (
+            <Tag className="sk-claim-status-tag sk-claim-status-tag--pending">
+                <span>На рассмотрении</span>
+                <ClockCircleOutlined />
+            </Tag>
+        );
+    };
+
+    const claimInfoRows = [
+        ['Комментарий', jsonData.comment],
+        ['Причина', jsonData.reason],
+        ['Место назначения', jsonData.target_point],
+        ['Задача', jsonData.task],
+        ['Результат', jsonData.result],
+        ['Описание', jsonData.description],
+    ].filter(([, value]) => value);
+
+    const renderInfoTooltip = () => (
+        <div className="sk-claiminfo-tooltip">
+            {claimInfoRows.length > 0 ? claimInfoRows.map(([label, value]) => (
+                <div className="sk-claiminfo-tooltip-row" key={label}>
+                    <span>{label}:</span>
+                    <p>{value}</p>
+                </div>
+            )) : (
+                <span>Нет дополнительной информации</span>
+            )}
+        </div>
+    );
 
 
 
@@ -277,34 +332,9 @@ const ClaimManagerCard = (props) => {
                   </div>
               </div>
               <div>
-                  {props.data.state === 0 && (
-                      <div className={'sk-icon-base'}
-                           title={'Ожидает согласования'}
-                      >
-                          <StateAwaitedIcon height={'25px'}/>
-                      </div>
-                  )}
-                  {props.data.state === 1 && (
-                      <div className={'sk-icon-success'}
-                           title={'Согласовано'}
-                      >
-                          <StateAgreedIcon height={'25px'}/>
-                      </div>
-                  )}
-                  {props.data.state === 2 && (
-                      <div className={'sk-icon-fail'}
-                           title={'Отклонено'}
-                      >
-                          <StateForbiddenIcon height={'25px'}/>
-                      </div>
-                  )}
-                  {props.data.state === 3 && (
-                      <div className={'sk-icon-fail'}
-                           title={'Перенесено'}
-                      >
-                          <StateTransferredIcon height={'25px'}/>
-                      </div>
-                  )}
+                  <div className="sk-claim-status-cell">
+                      {renderStatusTag()}
+                  </div>
               </div>
               <div>
                   <div className={'sk-timestring-claim'}>
@@ -322,31 +352,13 @@ const ClaimManagerCard = (props) => {
                   </div>
               </div>
               <div>
-                  {jsonData && (
-                      <div className={'sk-claiminfo'}>
-                          {jsonData.comment && (
-                              <Typography.Paragraph
-                                  style={{whiteSpace: 'pre-line'}}><i>Комментарий:</i> {jsonData.comment}
-                              </Typography.Paragraph>
-                          )}
-                          {jsonData.reason && (
-                              <Typography.Paragraph><i>Причина:</i> {jsonData.reason}</Typography.Paragraph>
-                          )}
-                          {jsonData.target_point && (
-                              <Typography.Paragraph><i>Место назначения:</i> {jsonData.target_point}
-                              </Typography.Paragraph>
-                          )}
-                          {jsonData.task && (
-                              <Typography.Paragraph><i>Задача:</i> {jsonData.task}</Typography.Paragraph>
-                          )}
-                          {jsonData.result && (
-                              <Typography.Paragraph><i>Результат:</i> {jsonData.result}</Typography.Paragraph>
-                          )}
-                          {jsonData.description && (
-                              <Typography.Paragraph><i>Описание:</i> {jsonData.description}</Typography.Paragraph>
-                          )}
-                      </div>
-                  )}
+                  <div className="sk-claiminfo sk-claiminfo--compact">
+                      <Tooltip title={renderInfoTooltip()} placement="left">
+                          <span className={`sk-claiminfo-trigger ${claimInfoRows.length === 0 ? 'sk-claiminfo-trigger--empty' : ''}`}>
+                              <InfoCircleOutlined />
+                          </span>
+                      </Tooltip>
+                  </div>
               </div>
               <div>
                   <div className={'sk-hidden-text'}>

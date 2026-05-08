@@ -126,7 +126,7 @@
     width: 100%;
     text-align: center;
     padding: 3px 0;
-    background-color: var(--row-second-bg-color);
+    background-color: #e8e8e8;
     color: var(--app-muted-text-color);
     border-radius: 5px;
     transition: .3s;
