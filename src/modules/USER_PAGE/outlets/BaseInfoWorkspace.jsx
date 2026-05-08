@@ -10,6 +10,7 @@ import {
     Spin,
     Tooltip,
     Alert,
+    Radio,
     message,
     Modal,
     notification
@@ -68,7 +69,7 @@ const BaseInfoWorkspace = (props) => {
             name: 'Да'
         },
     ]);
-
+    const [sex, setSex] = useState(null);
     const [company, setCompany] = useState({
         id: null,
         name: '',
@@ -315,10 +316,11 @@ const BaseInfoWorkspace = (props) => {
         //if (PRODMODE) {
             try {
                 const data = {
-                    company, surname, name, patronymic, department, occupy,
+                    sex, company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
                     rating, status, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
+                console.log(data);
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/updateuserbaseinfo/${userIdState}`,
                     {
                         data,
@@ -402,7 +404,24 @@ const BaseInfoWorkspace = (props) => {
         <Spin spinning={isLoading}>
             <div className={styles.sk_base_workspace}>
                 <div className={styles.sk_user_info_column}>
-                    <p className={styles.sk_column_header}>Основные данные пользователя</p>
+                    <div style={{width: '100%', display: 'flex'}}>
+                        <p className={styles.sk_column_header}>Основные данные пользователя</p>
+                        <div className={styles.sk_column_header}>
+                            <Radio.Group
+                                block
+                                options={[
+                                    {label: 'Муж', value: 1},
+                                    {label: 'Жен', value: 2},
+                                ]}
+                                value={sex}
+                                onChange={(e) => setSex(e.target.value)}
+                                optionType="button"
+                                buttonStyle="solid"
+                                size="small"
+                                style={{marginTop: '2px'}}
+                            />
+                        </div>
+                    </div>
 
                     <div className={styles.sk_info_line}>
                         <p className={styles.sk_line_label}>Компания</p>

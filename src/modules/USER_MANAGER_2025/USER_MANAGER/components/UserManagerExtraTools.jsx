@@ -66,15 +66,15 @@ const UserManagerExtraTools = (props)=>{
 
 
     useEffect(() => {
-      if (PRODMODE){
+      //if (PRODMODE){
         get_ruleList();
         get_scheduleList();
         get_groupList();
-      } else {
+     /* } else {
         setBaseRuleList(DS_RULES);
         setBaseScheduleList(DS_SCHEDULE_LIST);
         setBaseGroupList(DS_SKUD_GROUPS);
-      }
+      }*/
     }, []);
 
 
