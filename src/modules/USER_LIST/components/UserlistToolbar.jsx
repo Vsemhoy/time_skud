@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import '../../../assets/timeskud.css'
 import {
     CaretLeftOutlined, CaretRightOutlined, DiffOutlined,
-    FilterOutlined, ReloadOutlined, ScheduleOutlined, SearchOutlined, UnorderedListOutlined
+    FilterOutlined, ReloadOutlined, ScheduleOutlined, SearchOutlined, UnorderedListOutlined, UserOutlined
 } from "@ant-design/icons";
 import { getMonthName, getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
@@ -218,7 +218,7 @@ const UserListToolbar = (props) => {
                     {imExist && (
                         <Button color={'default'}
                                 variant={'outlined'}
-                                icon={<SearchOutlined />}
+                                icon={<UserOutlined />}
                                 className={'sk-userlist-compact-btn'}
                                 title={'Найти себя в списке'}
                                 size={'middle'}
