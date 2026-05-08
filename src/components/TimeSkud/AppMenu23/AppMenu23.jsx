@@ -178,7 +178,7 @@ const AppMenu23 = (props) => {
                 },
             ],
         },
-        {
+        /*{
             key: 'menu3',
             label: 'Бухгалтерия',
             children: [
@@ -206,7 +206,7 @@ const AppMenu23 = (props) => {
                     label: <NavLink to="/accounting/retentions">Удержания</NavLink>,
                 },
             ]
-        },
+        },*/
         {
             key: '/admin/aclskud',
             label: <NavLink to="admin/aclskud">Доступы СКУД</NavLink>,
