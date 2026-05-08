@@ -155,7 +155,7 @@ const UserMonitorListCard = (props) => {
         setContent(props.data);
         if (props.data.current_state !== 0)
         {
-            setBadger({ title: props.data.state_text, text: props.data.state_title, color: props.data.state_color, icon: <DynamicIcon iconName={props.data.state_icon} />});
+            setBadger({ title: props.data.state_text, text: props.data.state_title, text_w: props.data.state_title_w, color: props.data.state_color, icon: <DynamicIcon iconName={props.data.state_icon} />});
         } else {
             setBadger(USER_STATE_PLACES[0]);
         }
@@ -620,7 +620,7 @@ const UserMonitorListCard = (props) => {
                                         title={badger.title}
                                     >
                                         {badger.icon}
-                                        <span>{badger.text || badger.title}</span>
+                                        <span>{+content?.sex === 2 ? badger.text_w : badger.text}</span>
                                     </span>
                                 )}
                             </div>
