@@ -49,7 +49,7 @@
     width: 300px;
     height: 61px;
     border-radius: 4px;
-    background-color: #eae9e9;
+    background-color: #91d5ff38;
     cursor: pointer;
 }
 
@@ -57,36 +57,36 @@
 .sk_transport_price_wrapper:active { background-color: #c3c2c2; }
 
 .sk_transport_price_header {
-    padding: 6px;
+    padding: 0 6px;
     font-weight: bold;
 }
 
 .sk_transport_price_label_container {
-    padding: 6px;
+    padding: 0 6px;
     display: grid;
     align-items: center;
     grid-template-columns: 1fr 1fr;
 }
 
 .sk_transport_price {
-    font-size: large;
+    /*font-size: large;*/
     color: rgb(22 119 255);
 }
 
 .modal_form_wrapper {
-    width: 300px;
-    height: 364px;
+    /*width: 300px;
+    height: 364px;*/
     padding: 6px;
     border-radius: 4px;
-    background-color: rgba(22, 104, 220, 0.32);
+    background-color: rgba(145, 180, 228, 0.32);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .modal_old_prices {
-    margin-top: 10px;
-    width: 300px;
+    /*margin-top: 10px;*/
+    width: 100%;
     height: 150px;
     border-radius: 4px;
     overflow-y: scroll;
@@ -96,7 +96,7 @@
 }
 
 .modal_old_price {
-    width: 90%;
+    width: 100%;
     max-height: 32px;
     border-radius: 4px;
     background-color: #eae9e9;

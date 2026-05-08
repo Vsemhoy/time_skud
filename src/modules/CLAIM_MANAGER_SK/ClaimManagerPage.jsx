@@ -7,7 +7,7 @@ import {
     Dropdown,
     Layout, Modal,
     Pagination,
-    Segmented,
+    Radio,
     Select,
     Spin,
     Tag,
@@ -20,7 +20,7 @@ import ClaimManagerCard from "./components/ClaimManagerCard";
 import ClaimEditorDrawer from "./components/ClaimEditorDrawer";
 import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
 import { CLAIM_ACL_MOCK, CLAIM_BASE_CLAIM_TYPES, CLAIM_DEPARTS, CLAIM_STATES, CLAIM_USERS, CLAIMS_MOCKS } from "./CLAIM_MOCK";
 import "../CHARTS/style/patch.css";
@@ -161,25 +161,13 @@ const ClaimManagerPage = (props) => {
 
     useEffect(()=>{
         setAclBase([]);
-        if (PRODMODE){
-            get_aclbase();
-            get_departlist();
-            get_stateList();
-            get_userList();
-            get_approverList();
-            get_claimList([]);
-            get_transport_price();
-        } else {
-            //mock data
-            setAclBase(CLAIM_ACL_MOCK);
-            setDepartList(CLAIM_DEPARTS);
-            setBaseUserList(CLAIM_USERS);
-            setStateList(CLAIM_STATES);
-            setBaseClaimList(CLAIMS_MOCKS);
-            setBaseClaimTypes(BASE_CLAIM_TYPES);
-            setTotal(CLAIMS_MOCKS.length);
-            setUserData(USDA);
-        }
+        get_aclbase();
+        get_departlist();
+        get_stateList();
+        get_userList();
+        get_approverList();
+        get_claimList([]);
+        get_transport_price();
     },[]);
 
 
@@ -269,6 +257,7 @@ const ClaimManagerPage = (props) => {
         console.log('PAGE', page);
         safeFilter.page = page;
         safeFilter.onPage = onPage;
+        safeFilter.type = typeSelect !== 0 ? typeSelect : null;
         setFilterPack(safeFilter);
     }
 
@@ -281,45 +270,34 @@ const ClaimManagerPage = (props) => {
         console.log('FAPAK', filterPack);
         const debounceTimer = setTimeout(() => {
             let pack = JSON.parse(JSON.stringify(filterPack));
-            if (typeSelect !== 0){
-                pack.type = typeSelect;
-            } else {
-                pack.type = null;
-            }
             get_claimList(pack);
         }, 800);
         return () => clearTimeout(debounceTimer);
-    }, [filterPack, typeSelect, showOnlyCrew, showOnlyMine]);
+    }, [filterPack, showOnlyCrew, showOnlyMine]);
 
     // ------------------ FetchWorld ----------------------
 
     const get_claimList = async (filters) => {
         setClaimsLoading(true);
-        if (PRODMODE) {
-            try {
-                if (showOnlyCrew){
-                    filters.boss_id = userData?.user.id;
-                };
-                if (showOnlyMine){
-                    filters.user_id = userData?.user.id;
-                };
+        try {
+            if (showOnlyCrew){
+                filters.boss_id = userData?.user.id;
+            };
+            if (showOnlyMine){
+                filters.user_id = userData?.user.id;
+            };
 
-                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`,
-                    {
-                        data: filters,
-                        _token: CSRF_TOKEN
-                    });
-                setBaseClaimList(response.data.content);
-                setTotal(response.data.total);
-                console.log('response data => ', response.data);
-            } catch (e) {
-                console.log(e)
-            } finally {
-                setClaimsLoading(false);
-            }
-        } else {
-            setBaseClaimList(CLAIMS_MOCKS);
-            setTotal(CHART_STATES.length);
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`,
+                {
+                    data: filters,
+                    _token: CSRF_TOKEN
+                });
+            setBaseClaimList(response.data.content);
+            setTotal(response.data.total);
+            console.log('response data => ', response.data);
+        } catch (e) {
+            console.log(e)
+        } finally {
             setClaimsLoading(false);
         }
     }
@@ -502,11 +480,25 @@ const ClaimManagerPage = (props) => {
 
     // ------------------ FetchWorld ----------------------
 
+    const selectClaimType = (value) => {
+        const nextValue = Number(value);
+        const selectedOption = claimTypeOptions.find(op => +op.value === nextValue);
+        const nextFilterPack = (filterPack && !Array.isArray(filterPack))
+            ? JSON.parse(JSON.stringify(filterPack))
+            : {};
+
+        nextFilterPack.page = 1;
+        nextFilterPack.onPage = onPage;
+        nextFilterPack.type = nextValue !== 0 ? nextValue : null;
+
+        setPage(1);
+        setTypeSelect(nextValue);
+        setReactiveColor(selectedOption?.background ?? '#c3c3c3');
+        setFilterPack(nextFilterPack);
+    }
+
     const handleSetTypeSelect = (ev, value, canCreate) => {
-        if (ev.button === 0){
-            setTypeSelect(value);
-            setReactiveColor(claimTypeOptions.find(op => +op.value === +value).background);
-        } else if (ev.button === 1 && value !== 0 && canCreate){
+        if (ev.button === 1 && value !== 0 && canCreate){
             // Средней кнопкой мыши мы открываем редактор
             ev.preventDefault();
             setEditedClaim(null);
@@ -628,36 +620,6 @@ const ClaimManagerPage = (props) => {
 
     return (
         <div className={'mega-layout'}>
-            {/*<div className={'sk-content-table-wrapper'}>
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Segmented: {
-                                    itemSelectedBg: reactiveColor,
-                                    itemSelectedColor: 'black',
-                                    height: '150px'
-                                },
-                            },
-                        }}
-                    >
-                        <Segmented
-                            value={typeSelect}
-                            options={claimTypeOptions.map(opt => ({
-                                ...opt,
-                                label: (
-                                    <div
-                                        onMouseDown={(e) => handleSetTypeSelect(e, opt.value)}
-                                        style={{display: 'flex', alignItems: 'center', gap: '8px'}}
-                                    >
-                                        <StateIconsController IdState={opt.value}/>
-                                        <span>{opt.label}</span>
-                                    </div>
-                                )
-                            }))}
-                            onChange={(value) => setTypeSelect(value)}
-                        />
-                    </ConfigProvider>
-                </div>*/}
             {/*<div className={'sk-flex-space'}>
                     <div className="sk-flex">
                         <Pagination
@@ -747,33 +709,25 @@ const ClaimManagerPage = (props) => {
                             <Affix offsetTop={44}>
                                 <div className="sk-claims-toolbar-shell">
                                     <div className="sk-claims-toolbar-row">
-                                        <ConfigProvider
-                                            theme={{
-                                                components: {
-                                                    Segmented: {
-                                                        itemSelectedBg: reactiveColor,
-                                                        itemSelectedColor: 'black',
-                                                        height: '150px'
-                                                    },
-                                                },
-                                            }}
+                                        <Radio.Group
+                                            className="sk-claims-type-radio"
+                                            value={typeSelect}
                                         >
-                                            <Segmented value={typeSelect}
-                                                       options={claimTypeOptions.map(opt => ({
-                                                           ...opt,
-                                                           label: (
-                                                               <div
-                                                                   onMouseDown={(e) => handleSetTypeSelect(e, opt.value, opt.canCreate)}
-                                                                   style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}
-                                                               >
-                                                                   <StateIconsController IdState={opt.value}/>
-                                                                   <span>{opt.label}</span>
-                                                               </div>
-                                                           ),
-                                                       }))}
-                                                       onChange={(value) => setTypeSelect(value)}
-                                            />
-                                        </ConfigProvider>
+                                            {claimTypeOptions.map(opt => (
+                                                <Radio.Button
+                                                    key={opt.value}
+                                                    value={opt.value}
+                                                    onClick={() => selectClaimType(opt.value)}
+                                                    onMouseDown={(e) => handleSetTypeSelect(e, opt.value, opt.canCreate)}
+                                                    style={+typeSelect === +opt.value ? {'--claim-radio-active-color': opt.background} : undefined}
+                                                >
+                                                    <span className="sk-claims-type-radio-label">
+                                                        <StateIconsController IdState={opt.value}/>
+                                                        <span>{opt.label}</span>
+                                                    </span>
+                                                </Radio.Button>
+                                            ))}
+                                        </Radio.Group>
 
                                         <Tooltip title={transportPriceTooltipTitle}>
                                             <div
@@ -852,9 +806,7 @@ const ClaimManagerPage = (props) => {
                         </div>
                         <Spin spinning={claimsLoading} size="large">
                             <div className="sk-usp-content-col">
-                                <div className={'sk-arche-stack'}
-                                     style={{paddingBottom: '44vw'}}
-                                >
+                                <div className={'sk-arche-stack'}>
                                     <Affix offsetTop={165}>
                                         <div className="sk-clamen-headerrow">
                                             <div className={'sk-clamen-card'}>
@@ -865,7 +817,7 @@ const ClaimManagerPage = (props) => {
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Пользователь
+                                                        Сотрудник
                                                     </div>
                                                 </div>
                                                 <div>
@@ -1047,9 +999,7 @@ const ClaimManagerPage = (props) => {
                             <br/>
 
                             <div className="sk-usp-content-col">
-                                <div className={'sk-arche-stack'}
-                                     style={{paddingBottom: '44vw'}}
-                                >
+                                <div className={'sk-arche-stack'}>
                                     <Affix offsetTop={0}>
                                         <div className="sk-clamen-headerrow">
                                             <div className={'sk-clamen-card'}>
@@ -1060,7 +1010,7 @@ const ClaimManagerPage = (props) => {
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Пользователь
+                                                        Сотрудник
                                                     </div>
                                                 </div>
                                                 <div>

@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Affix, Button, ConfigProvider, Modal, Pagination, Segmented, Spin, Tag} from "antd";
-import styles from "../../CHARTS/style/charts.module.css";
-import MonthsRange from "../../CHARTS/components/MonthsRange";
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
+import {Button, Modal, Pagination, Radio, Spin, Tag, Tooltip} from "antd";
+import {DollarOutlined} from "@ant-design/icons";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
-import {CHART_STATES, USERS_PAGE} from "../../CHARTS/mock/mock";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
 import '../../CHARTS/style/patch.css'
-import {CLAIMS_MOCKS} from "../../CLAIM_MANAGER_SK/CLAIM_MOCK";
+import '../../CLAIM_MANAGER_SK/components/style/claimmanager.css'
 import ClaimManagerCard from "../../CLAIM_MANAGER_SK/components/ClaimManagerCard";
+import TransportPriceModal from "../../CLAIM_MANAGER_SK/components/TransportPriceModal";
 
 const ClaimListModal = (props) => {
 
@@ -29,12 +28,16 @@ const ClaimListModal = (props) => {
 
     const [aclBase, setAclBase] = useState({});
     const [selectedClaimId, setSelectedClaimId] = useState(0);
+    const [upPrice, setUpPrice] = useState(null);
+    const [downPrice, setDownPrice] = useState(null);
+    const [isOpenTransportPopup, setIsOpenTransportPopup] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
         fetchAclBase().then();
         fetchChartStates().then();
         fetchClaims().then();
+        get_transport_price().then();
     }, []);
 
     useEffect(() => {
@@ -69,7 +72,6 @@ const ClaimListModal = (props) => {
     }
 
     const fetchChartStates = async () => {
-        //if (PRODMODE) {
             try {
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`,
                     {
@@ -111,13 +113,11 @@ const ClaimListModal = (props) => {
         //             "name": "Все заявки",
         //             "fillable": 1
         //         },
-        //         ...CHART_STATES
         //     ]));
         // }
     };
 
     const fetchClaims = async () => {
-        //if (PRODMODE) {
             try {
                 const filters = {};
                 filters.type = selectedChartState;
@@ -128,8 +128,8 @@ const ClaimListModal = (props) => {
                 } else if (myClaims){
                     filters.user_id = props?.userData?.user?.id;
                 } else {
-                    filters.boss_id = props?.userData?.user?.id;
-                    filters.user_id = props?.userData?.user?.id;
+                    filters.boss_id = null;
+                    filters.user_id = null;
                 }
                 let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`,
                     {
@@ -143,11 +143,36 @@ const ClaimListModal = (props) => {
                 console.log(e);
             }
         // } else {
-        //     setClaimsPage(CLAIMS_MOCKS);
         //     setAllClaimsCount(80);
         //     setTimeout(() => setIsLoading(false), 500);
         // }
     };
+
+    const get_transport_price = async () => {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/transport/price`, {});
+            if (response.data.content) {
+                setUpPrice(response.data.content?.up?.price);
+                setDownPrice(response.data.content?.down?.price);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const canUpdatePrices = () => {
+        return props?.userData?.user && props?.userData?.acls &&
+            (props.userData.user.super || props.userData.user.is_admin || props.userData.acls.find(acl => +acl === 151));
+    };
+
+    const transportPriceTooltipTitle = (
+        <div>
+            <div style={{fontWeight: 600}}>Текущая стоимость проезда</div>
+            <div>Наземный: {upPrice ?? '-'}</div>
+            <div>Подземный: {downPrice ?? '-'}</div>
+            {canUpdatePrices() && <div style={{marginTop: '4px', opacity: 0.85}}>Нажмите, чтобы изменить</div>}
+        </div>
+    );
 
     const prepareStates = (states) => {
         return states.filter(state => state.fillable).map(state => ({
@@ -212,24 +237,44 @@ const ClaimListModal = (props) => {
                             backgroundColor: 'var(--app-soft-surface-color)'
                         }}
                     >
-                        <div style={{paddingTop: '5px', backgroundColor: 'var(--app-soft-surface-color)'}}>
-                            <ConfigProvider
-                                theme={{
-                                    components: {
-                                        Segmented: {
-                                            itemSelectedBg: reactiveColor,
-                                            itemSelectedColor: 'black',
-                                            height: '150px'
-                                        },
-                                    },
-                                }}
+                        <div className="sk-claim-list-modal-toolbar">
+                            <Radio.Group
+                                className="sk-charts-type-radio"
+                                value={selectedChartState}
                             >
-                                <Segmented
-                                    value={selectedChartState}
-                                    options={chartStates}
-                                    onChange={value => setSelectedChartState(value)}
-                                />
-                            </ConfigProvider>
+                                {chartStates.map(state => (
+                                    <Radio.Button
+                                        key={state.value}
+                                        value={state.value}
+                                        onClick={() => setSelectedChartState(state.value)}
+                                        style={+selectedChartState === +state.value ? {'--chart-radio-active-color': reactiveColor || state.color} : undefined}
+                                    >
+                                        <span className="sk-charts-type-radio-label">
+                                            {state.label}
+                                        </span>
+                                    </Radio.Button>
+                                ))}
+                            </Radio.Group>
+
+                            <Tooltip title={transportPriceTooltipTitle}>
+                                <div
+                                    className="sk_transport_price_wrapper sk_transport_price_wrapper--filters-closed small"
+                                    onClick={() => {
+                                        if (canUpdatePrices()) {
+                                            setIsOpenTransportPopup(true);
+                                        }
+                                    }}
+                                >
+                                    <div className={'sk_transport_price_icon small'}>
+                                        <DollarOutlined />
+                                    </div>
+                                    <p className={'sk_transport_price_header small'}>Текущая стоимость проезда</p>
+                                    <div className={'sk_transport_price_label_container small'}>
+                                        <p className={'sk_transport_price_label'}>Наземный :  <span className={'sk_transport_price'}>{upPrice}</span></p>
+                                        <p className={'sk_transport_price_label'}>Подземный: <span className={'sk_transport_price'}>{downPrice}</span></p>
+                                    </div>
+                                </div>
+                            </Tooltip>
                         </div>
                         <div
                             style={{
@@ -338,11 +383,24 @@ const ClaimListModal = (props) => {
                                         </div>
                                     </div>
                                     <div>
+                                        <Tooltip title={"Количество наземных поездок"}>
+                                            <div style={{textAlign: 'center'}}>
+                                                🚎
+                                            </div>
+                                        </Tooltip>
+                                    </div>
+                                    <div>
+                                        <Tooltip title={"Количество подземных поездок"}>
+                                            <div style={{textAlign: 'center'}}>
+                                                Ⓜ️
+                                            </div>
+                                        </Tooltip>
+                                    </div>
+                                    <div>
                                         <div>
-
+                                            Сумма
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             {claimsPage && claimsPage.map((claim, idx) => (
@@ -363,6 +421,12 @@ const ClaimListModal = (props) => {
                     </div>
                 </Spin>
             </div>
+            {canUpdatePrices() && (
+                <TransportPriceModal isOpenTransportPopup={isOpenTransportPopup}
+                                     setIsOpenTransportPopup={setIsOpenTransportPopup}
+                                     updateCurrentPrices={get_transport_price}
+                />
+            )}
         </Modal>
     );
 }

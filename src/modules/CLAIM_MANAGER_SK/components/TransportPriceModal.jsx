@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, DatePicker, Input, Modal, Select} from "antd";
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
-import {OLD_DOWN_TRANSPORT_PRICES, OLD_UP_TRANSPORT_PRICES} from "../CLAIM_MOCK";
 
 const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, updateCurrentPrices}) => {
     const [newPrice, setNewPrice] = useState(null);
@@ -12,49 +11,40 @@ const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, upd
     const [oldDownTransportPrices, setOldDownTransportPrices] = useState([]);
 
     const getInfo = async () => {
-        if (PRODMODE) {
-            try {
-                let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/transport/price/history`,
-                    {
-                        data: {},
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (response.data.content) {
-                    setOldUpTransportPrices(response.data.content.up);
-                    setOldDownTransportPrices(response.data.content.down);
+        try {
+            let response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/transport/price/history`,
+                {
+                    data: {},
+                    _token: CSRF_TOKEN
                 }
-            } catch (e) {
-                console.log(e);
+            );
+            if (response.data.content) {
+                setOldUpTransportPrices(response.data.content.up);
+                setOldDownTransportPrices(response.data.content.down);
             }
-        } else {
-            setOldUpTransportPrices(OLD_UP_TRANSPORT_PRICES);
-            setOldDownTransportPrices(OLD_DOWN_TRANSPORT_PRICES);
+        } catch (e) {
+            console.log(e);
         }
     };
 
     const saveNewPrice = async () => {
         const startDate = newDate ? newDate.format('DD.MM.YYYY') : null;
-        if (PRODMODE) {
-            try {
-                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/transport/price`,
-                    {
-                        data: {
-                            price: +newPrice,
-                            type_transport: newType,
-                            start: startDate,
-                        },
-                        _token: CSRF_TOKEN
-                    }
-                );
-                clearInputs();
-                await getInfo();
-                updateCurrentPrices();
-            } catch (e) {
-                console.log(e);
-            }
-        } else {
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/transport/price`,
+                {
+                    data: {
+                        price: +newPrice,
+                        type_transport: newType,
+                        start: startDate,
+                    },
+                    _token: CSRF_TOKEN
+                }
+            );
             clearInputs();
+            await getInfo();
+            updateCurrentPrices();
+        } catch (e) {
+            console.log(e);
         }
     };
 
@@ -75,9 +65,10 @@ const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, upd
             footer={null}
             open={isOpenTransportPopup}
             onCancel={() => setIsOpenTransportPopup(false)}
-            width={650}
+            width={760}
+            className="sk-transport-price-modal"
         >
-            <div style={{display: 'flex', gap: '10px', width: '610px'}}>
+            <div className="sk-transport-price-modal-layout">
                 <div className={'modal_form_wrapper'}>
                     <div>
                         <p>Укажите тип транспорта:</p>
@@ -118,8 +109,12 @@ const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, upd
                         >Сохранить</Button>
                     </div>
                 </div>
-                <div>
+                <div className="sk-transport-price-history">
                     <p>Наземный транспорт:</p>
+                    <div className="modal_old_prices_header">
+                        <span>Цена</span>
+                        <span>Диапазон</span>
+                    </div>
                     <div className={'modal_old_prices'}>
                         {oldUpTransportPrices.map(upPrice => (
                             <div className={'modal_old_price'} key={upPrice.id + 'oldUp'}>
@@ -133,6 +128,10 @@ const TransportPriceModal = ({isOpenTransportPopup, setIsOpenTransportPopup, upd
                         ))}
                     </div>
                     <p>Подземный транспорт:</p>
+                    <div className="modal_old_prices_header">
+                        <span>Цена</span>
+                        <span>Диапазон</span>
+                    </div>
                     <div className={'modal_old_prices'}>
                         {oldDownTransportPrices.map(downPrice => (
                             <div className={'modal_old_price'} key={downPrice.id + 'oldDown'}>
