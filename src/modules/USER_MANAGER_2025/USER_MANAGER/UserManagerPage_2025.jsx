@@ -94,16 +94,16 @@ const UserManagerPage_2025 = (props) => {
         setIsLoading(true);
         await fetchUsers();
         await fetchFilters();
-        if (PRODMODE) {
+        //if (PRODMODE) {
             setIsLoading(false);
-        } else {
+        /*} else {
             setTimeout(() => {
                 setIsLoading(false);
             }, 300);
-        }
+        }*/
     };
     const fetchUsers = async () => {
-         if (PRODMODE) {
+         //if (PRODMODE) {
              try {
                  const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/users`,
                      {
@@ -123,13 +123,13 @@ const UserManagerPage_2025 = (props) => {
              } catch (error) {
                  console.error('Error fetching users info:', error);
              }
-         } else {
+         /*} else {
              filterAndSetUsers(USERS_MANAGER);
              setAllUsersCount(USERS_MANAGER.length);
-         }
+         }*/
     };
     const fetchFilters = async () => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/filterselects`,
                     {
@@ -171,7 +171,7 @@ const UserManagerPage_2025 = (props) => {
             } catch (error) {
                 console.error('Error fetching users info:', error);
             }
-        } else {
+        /*} else {
             setCompanies(props.userdata.companies)
             setBosses(USERS_MANAGER);
             setEnters(USERS_MANAGER);
@@ -181,7 +181,7 @@ const UserManagerPage_2025 = (props) => {
             setCurrentSchedules(SCHEDULE_LIST);
             setCurrentRuleTypes(RULE_TYPE_LIST);
             setCurrentRules(RULE_LIST);
-        }
+        }*/
     };
     const filterAndSetUsers = (newUsers) => {
         setUsers(newUsers.sort((a, b) => a.department - b.department));
@@ -299,7 +299,7 @@ const UserManagerPage_2025 = (props) => {
         });
     };
     const fetchRemoveGroup = async (groupLinkId) => {
-        if (PRODMODE) {
+        //if (PRODMODE) {
             try {
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/usermanagerremovegroup/${groupLinkId}`,
                     {
@@ -309,7 +309,7 @@ const UserManagerPage_2025 = (props) => {
             } catch (error) {
                 console.error('Error fetching remove user group:', error);
             }
-        }
+        //}
     };
 
     return (
