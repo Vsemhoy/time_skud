@@ -476,6 +476,55 @@
     box-shadow: 1px 1px 3px #00000021;
 }
 
+.sk-userlist-claim-icon {
+    position: relative;
+    border-radius: 4px;
+    padding: 2px;
+    overflow: hidden;
+}
+
+.sk-userlist-claim-icon--pending {
+    background: rgba(255, 152, 0, 0.18);
+    box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.55), 0 0 8px rgba(255, 152, 0, 0.45);
+    animation: sk-userlist-claim-pending-pulse 1.55s ease-in-out infinite;
+}
+
+.sk-userlist-claim-icon--pending::after {
+    content: "⚠";
+    position: absolute;
+    top: 12px;
+    right: 0;
+    z-index: 2;
+    font-size: 12px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+}
+
+.sk-userlist-claim-icon--approved::after {
+    content: "✅";
+    position: absolute;
+    top: 12px;
+    right: 0;
+    z-index: 2;
+    font-size: 12px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+}
+
+@keyframes sk-userlist-claim-pending-pulse {
+    0% {
+        box-shadow: 0 0 0 1px rgba(255, 152, 0, 0.55), 0 0 5px rgba(255, 152, 0, 0.35);
+    }
+    50% {
+        box-shadow: 0 0 0 5px rgba(255, 152, 0, 0.2), 0 0 14px rgba(255, 152, 0, 0.65);
+    }
+    100% {
+        box-shadow: 0 0 0 1px rgba(255, 152, 0, 0.55), 0 0 5px rgba(255, 152, 0, 0.35);
+    }
+}
+
 .sk-uml-table-dumper--theme-safe,
 .sk-uml-table-dumper--theme-safe thead,
 .sk-uml-table-dumper--theme-safe tbody,
