@@ -1312,6 +1312,7 @@ const UserList = (props)=>{
                                     selected_columns={selectedColumns}
                                     extendedInfo={isShowExtendedInfo}
                                     show_id_column={effectiveShowIdColumn}
+                                    current_user_id={userdata.user.id}
                                   />
                             ))
                         )}

@@ -236,6 +236,59 @@ const UserMonitorListCard = (props) => {
         return 'На рассмотрении';
     };
 
+    const isClaimForToday = (claim) => {
+        if (claim?.not_today != null) {
+            return !claim.not_today;
+        }
+
+        const today = moscowDateTime(Date.now());
+        const start = moscowDateTime(claim?.start);
+        const end = moscowDateTime(claim?.end ?? claim?.start);
+
+        if (!today || !start) {
+            return false;
+        }
+
+        const todayStart = today.startOf('day');
+        const todayEnd = today.endOf('day');
+        const claimEnd = end ?? start;
+
+        return start.isBefore(todayEnd) && claimEnd.isAfter(todayStart);
+    };
+
+    const isClaimPendingApproval = (claim) => {
+        const approvalState = claim?.is_approved ?? claim?.approved ?? claim?.state;
+        const needApproved = Number(claim?.need_approved ?? claim?.skud_current_state?.need_approved ?? 0);
+
+        if (Number(approvalState) === 1 || Number(approvalState) === 2 || Number(approvalState) === -1) {
+            return false;
+        }
+
+        return needApproved === 1 || Number(approvalState) === 0;
+    };
+
+    const isClaimApproved = (claim) => {
+        const approvalState = claim?.is_approved ?? claim?.approved ?? claim?.state;
+        return Number(approvalState) === 1;
+    };
+    const canSeeClaimApprovalState = () => Number(content?.boss_id) === Number(props.current_user_id);
+
+    const getClaimIconClassName = (claim) => {
+        const classNames = ['sk-userlist-claim-icon'];
+
+        if (!canSeeClaimApprovalState() || !isClaimForToday(claim)) {
+            return classNames.join(' ');
+        }
+
+        if (isClaimPendingApproval(claim)) {
+            classNames.push('sk-userlist-claim-icon--pending');
+        } else if (isClaimApproved(claim)) {
+            classNames.push('sk-userlist-claim-icon--approved');
+        }
+
+        return classNames.join(' ');
+    };
+
     const renderClaimTooltip = (claim) => {
         return (
             <div style={{maxWidth: '320px'}}>
@@ -701,6 +754,7 @@ const UserMonitorListCard = (props) => {
                                     {content.claims.map((claim) => (
                                         <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom" overlayClassName="sk-theme-tooltip">
                                             <span
+                                                className={getClaimIconClassName(claim)}
                                                 onClick={(event) => handleClaimClick(event, claim)}
                                                 role="button"
                                                 tabIndex={0}
