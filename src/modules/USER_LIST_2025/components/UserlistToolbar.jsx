@@ -1,4 +1,4 @@
-import { Button, Collapse, DatePicker, Drawer, Select } from "antd";
+import { Button, Collapse, DatePicker, Drawer, Input, Select } from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -309,6 +309,12 @@ const UserListToolbar = (props) => {
         }
     }
 
+    const handleEmployeeSearchChange = (event) => {
+        if (props.onEmployeeSearchChange){
+            props.onEmployeeSearchChange(event.target.value);
+        }
+    }
+
 
     return (
         <div style={{width: '100%'}}>
@@ -361,7 +367,14 @@ const UserListToolbar = (props) => {
 
             </div>
 
-            <div>
+            <div className="sk-flex" style={{gap: '8px', alignItems: 'center'}}>
+                <Input
+                    allowClear
+                    placeholder="Сотрудник"
+                    value={props.employeeSearchValue ?? ''}
+                    onChange={handleEmployeeSearchChange}
+                    style={{width: '150px'}}
+                />
                 {imExist ? (
                     <CrownOutlined 
                         title="Найти себя в списке"

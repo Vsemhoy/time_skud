@@ -1,4 +1,4 @@
-import {Button, Collapse, DatePicker, Drawer, Select} from "antd";
+import {Button, Collapse, DatePicker, Drawer, Input, Select} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 
 
@@ -96,6 +96,12 @@ const UserListToolbar = (props) => {
     const handleFindMyself = ()=>{
         if (props.on_find_me){
             props.on_find_me();
+        }
+    }
+
+    const handleEmployeeSearchChange = (event) => {
+        if (props.onEmployeeSearchChange){
+            props.onEmployeeSearchChange(event.target.value);
         }
     }
 
@@ -206,6 +212,13 @@ const UserListToolbar = (props) => {
                     <span>{usedDate.date()} {months[usedDate.month()]}, {getWeekDayString(usedDate.day())}</span>
                 </div>
                 <div className={'sk-userlist-toolbar-findme'}>
+                    <Input
+                        allowClear
+                        placeholder="Сотрудник"
+                        value={props.employeeSearchValue ?? ''}
+                        onChange={handleEmployeeSearchChange}
+                        className="sk-userlist-employee-search"
+                    />
                     <Button color={'default'}
                             variant={'outlined'}
                             icon={<ReloadOutlined />}
