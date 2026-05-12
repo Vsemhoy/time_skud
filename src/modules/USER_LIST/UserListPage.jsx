@@ -451,6 +451,7 @@ const UserList = (props)=>{
   const [extFilters, setExtFilters] = useState([]);
   const [innerSortByValue, setInnerSortByValue] = useState('department_asc');
   const [innerFilters, setInnerFiletrs] = useState([]);
+  const [employeeSearchValue, setEmployeeSearchValue] = useState('');
   
 
   const sortedUserRef = useRef(userListData);
@@ -934,6 +935,34 @@ const UserList = (props)=>{
       return userList.filter(item => item.department_id === Number(depart_id));
   }
 
+  const filterUserListByEmployeeSearch = (userList, searchValue) => {
+    const query = searchValue.trim().toLowerCase();
+    if (!query) {
+      return userList;
+    }
+
+    return userList.filter((user) => {
+      const searchableText = [
+        user.surname,
+        user.name,
+        user.patronymic,
+        user.user_surname,
+        user.user_name,
+        user.user_patronymic,
+        user.position,
+        user.department_name,
+        user.tabnum,
+        user.id,
+        user.user_id,
+      ]
+        .filter((value) => value != null)
+        .join(' ')
+        .toLowerCase();
+
+      return searchableText.includes(query);
+    });
+  }
+
   const getDepartmentRankById = (id) => {
     const department = departments.find((dept) => Number(dept.id) === Number(id));
     return department?.rang ?? Number.MAX_SAFE_INTEGER;
@@ -965,6 +994,7 @@ const UserList = (props)=>{
         userList = filterUserListByDepartment(userList, departFilter.value);
       }
       userList = filterVisibleUsers(userList);
+      userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
 
       // SortData
       let sortedData = userList ?? [];
@@ -1039,7 +1069,7 @@ const UserList = (props)=>{
 
     console.log('sorted', sortedData)
       return sortedData;
-  }, [userListData, innerSortByValue, innerFilters]);
+  }, [userListData, innerSortByValue, innerFilters, employeeSearchValue]);
 
   const navigableUsers = useMemo(() => {
     return filteredUsers.filter((item) => item?.id != null && item?.type !== 'header');
@@ -1111,6 +1141,8 @@ const UserList = (props)=>{
                 userData={userdata}
                 on_find_me={handleFindMe}
                 on_refresh={handleRefreshUsers}
+                employeeSearchValue={employeeSearchValue}
+                onEmployeeSearchChange={setEmployeeSearchValue}
                 im_exist={userListData.find((item)=>  item.id === userdata.user.id) != null}
                 onChangeExternalFilters={toggleExternalFilters}
                 onChangeInnerSort={toggleInnerSorts}
@@ -1153,7 +1185,7 @@ const UserList = (props)=>{
             </Sider>
             <Content className="content no-pb">
               <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
-                  {userListData.length === 0 && !isLoading && !isSkeletonLoading ? (
+                  {filteredUsers.length === 0 && !isLoading && !isSkeletonLoading ? (
                       <Empty />
                   ):(
                       <div>

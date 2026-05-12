@@ -15,6 +15,7 @@ import {
   Table,
   Tag,
   Flex,
+  Input,
   Select,
   DatePicker, Divider, Menu, Modal
 } from "antd";
@@ -48,7 +49,7 @@ import {
   SafetyCertificateOutlined,
   SendOutlined, SmileOutlined,
   StepBackwardOutlined,
-  ToolOutlined, TruckOutlined, TwitterOutlined, WarningOutlined
+  ToolOutlined, TruckOutlined, TwitterOutlined, UserOutlined, WarningOutlined
 } from "@ant-design/icons";
 import ClaimManagerSidebar from "../USER_LIST_2025/components/ClaimManagerSidebar";
 import {NavLink, useNavigate} from "react-router-dom";
@@ -103,6 +104,7 @@ const UserList2 = (props)=>{
   const [extFilters, setExtFilters] = useState([]);
   const [innerSortByValue, setInnerSortByValue] = useState('department_asc');
   const [innerFilters, setInnerFiletrs] = useState([]);
+  const [employeeSearchValue, setEmployeeSearchValue] = useState('');
 
 
   const sortedUserRef = useRef(userListData);
@@ -699,6 +701,34 @@ const UserList2 = (props)=>{
         return userList.filter(item => item.department_id === Number(depart_id));
     }
 
+    const filterUserListByEmployeeSearch = (userList, searchValue) => {
+      const query = searchValue.trim().toLowerCase();
+      if (!query) {
+        return userList;
+      }
+
+      return userList.filter((user) => {
+        const searchableText = [
+          user.user_surname,
+          user.user_name,
+          user.user_patronymic,
+          user.surname,
+          user.name,
+          user.patronymic,
+          user.position,
+          user.department_name,
+          user.tabnum,
+          user.user_id,
+          user.id,
+        ]
+          .filter((value) => value != null)
+          .join(' ')
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
+    }
+
     const filteredUsers = useMemo(() => {
       let userList = JSON.parse(JSON.stringify(baseUserListData));
 
@@ -711,6 +741,7 @@ const UserList2 = (props)=>{
         userList = filterUserListByDepartment(userList, departFilter.value);
       };
       userList = filterVisibleUsers(userList);
+      userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
 
       // SortData
       let sortedData = userList;
@@ -759,7 +790,7 @@ const UserList2 = (props)=>{
       }
 
       return sortedData;
-    }, [baseUserListData, innerSortByValue, innerFilters]);
+    }, [baseUserListData, innerSortByValue, innerFilters, employeeSearchValue]);
 
     const toggleInnerSorts = (value) => {
       setInnerSortByValue(value);
@@ -821,6 +852,23 @@ const UserList2 = (props)=>{
 
                 </div>
 
+
+                <div className="sk-flex" style={{gap: '8px', alignItems: 'center'}}>
+                  <Input
+                      allowClear
+                      placeholder="Сотрудник"
+                      value={employeeSearchValue}
+                      onChange={(event) => setEmployeeSearchValue(event.target.value)}
+                      style={{width: '150px'}}
+                  />
+                  <Button
+                      color="default"
+                      variant="outlined"
+                      icon={<UserOutlined />}
+                      title="Найти себя в списке"
+                      onClick={handleFindMe}
+                  />
+                </div>
 
                 <Button color="default"
                         variant={isOpenTools ? 'solid' : 'outlined'}

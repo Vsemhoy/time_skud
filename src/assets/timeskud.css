@@ -434,6 +434,10 @@ td:first-child {
     gap: 8px;
 }
 
+.sk-userlist-employee-search {
+    width: 150px;
+}
+
 .sk-userlist-toolbar-actions {
     display: flex;
     gap: 10px;
@@ -521,6 +525,10 @@ td:first-child {
         flex: initial;
     }
 
+    .sk-userlist-employee-search {
+        width: 140px;
+    }
+
     .sk-userlist-toolbar-actions {
         flex: initial;
         justify-content: flex-end;
@@ -569,6 +577,10 @@ td:first-child {
 
     .sk-userlist-toolbar-top-center .ant-picker {
         width: 132px;
+    }
+
+    .sk-userlist-employee-search {
+        width: 130px;
     }
 }
 
