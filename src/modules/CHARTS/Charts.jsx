@@ -468,6 +468,7 @@ const  Charts = (props) => {
     };
     const prepareDrawerByChart = async (currentChart = null, user = null, start = null) => {
         if (currentChart) {
+            setEditorMode('read');
             await fetch_claim(currentChart?.id);
             setEditorOpened(true);
         } else {
