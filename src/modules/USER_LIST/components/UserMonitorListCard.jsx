@@ -267,10 +267,6 @@ const UserMonitorListCard = (props) => {
         return needApproved === 1 || Number(approvalState) === 0;
     };
 
-    const isClaimApproved = (claim) => {
-        const approvalState = claim?.is_approved ?? claim?.approved ?? claim?.state;
-        return Number(approvalState) === 1;
-    };
     const canSeeClaimApprovalState = () => Number(content?.boss_id) === Number(props.current_user_id);
 
     const getClaimIconClassName = (claim) => {
@@ -282,8 +278,6 @@ const UserMonitorListCard = (props) => {
 
         if (isClaimPendingApproval(claim)) {
             classNames.push('sk-userlist-claim-icon--pending');
-        } else if (isClaimApproved(claim)) {
-            classNames.push('sk-userlist-claim-icon--approved');
         }
 
         return classNames.join(' ');

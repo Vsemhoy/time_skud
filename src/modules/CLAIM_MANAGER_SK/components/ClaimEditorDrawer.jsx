@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, TimePicker, Typography } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, Popover, Row, Select, Space, TimePicker, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
@@ -70,6 +70,8 @@ const ClaimEditorDrawer = (props) => {
   const [acls, setAcls] = useState({});
   const [editMode, setEditMode] = useState('create');
   const [formValid, setFormValid] = useState(true);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [transferDateRange, setTransferDateRange] = useState([dayjs(), dayjs().endOf('day')]);
 
   const [MYID, setMYID] = useState(0);
 
@@ -110,6 +112,7 @@ const ClaimEditorDrawer = (props) => {
       && selectedFullDayUsers.length === effectiveFormUsers.length
       && selectedFullDayUsers.every(userHasValidSchedule)
   );
+  const isVacationTransferAvailable = editMode === 'read' && itemId && Number(formType) === 10;
 
 
   const onClose = () => {
@@ -180,6 +183,7 @@ const ClaimEditorDrawer = (props) => {
       }
 
       setFormDateRange([moscowDateTime(props.data.start), props.data.end ? moscowDateTime(props.data.end) : null]);
+      setTransferDateRange([moscowDateTime(props.data.start), props.data.end ? moscowDateTime(props.data.end) : null]);
       setItemId(props.data.id);
       setFormType(props.data.skud_current_state_id);
 
@@ -478,22 +482,10 @@ const ClaimEditorDrawer = (props) => {
     setIsFullWorkDay(true);
   };
 
-  const handleSubmitForm = ()=>{
+  const buildClaimInfo = () => {
     let res2 = {};
-    let result = {};
     const normalizedSubwayCount = Number(formSubwayCount);
     const normalizedBusCount = Number(formBusCount);
-    result.start = formDateRange[0].format('YYYY-MM-DD HH:mm:ss');
-    if (formType === 11 || formType === 13){
-      result.end = formDateRange[1].clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-    } else {
-      result.end = formDateRange[1].format('YYYY-MM-DD HH:mm:ss');
-
-    }
-    result.users = effectiveFormUsers;
-    result.skud_current_state_id = formType;
-    result.state = 0;
-    result.days_count = formDateRange[1].diff(formDateRange[0], 'day') + 1;
 
     if (formTargetPoint?.trim()){
       res2.target_point = formTargetPoint;
@@ -532,7 +524,29 @@ const ClaimEditorDrawer = (props) => {
       res2.result = formResult;
     };
 
-    result.info = res2;
+    return res2;
+  };
+
+  const buildClaimPayload = (dateRange = formDateRange, users = effectiveFormUsers) => {
+    let result = {};
+    result.start = dateRange[0].format('YYYY-MM-DD HH:mm:ss');
+    if (formType === 11 || formType === 13){
+      result.end = dateRange[1].clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      result.end = dateRange[1].format('YYYY-MM-DD HH:mm:ss');
+
+    }
+    result.users = users;
+    result.skud_current_state_id = formType;
+    result.state = 0;
+    result.days_count = dateRange[1].diff(dateRange[0], 'day') + 1;
+    result.info = buildClaimInfo();
+
+    return result;
+  };
+
+  const handleSubmitForm = ()=>{
+    let result = buildClaimPayload();
 
     // console.log(result);
     if (props.on_send){
@@ -561,6 +575,47 @@ const ClaimEditorDrawer = (props) => {
     }
     setOpen(false);
   }
+
+  const handleTransferClaim = () => {
+    const claimUserId = userCard?.user_id ?? props.data?.user_id ?? props.data?.id;
+    if (!props.on_send || !itemId || !claimUserId || !transferDateRange?.[0] || !transferDateRange?.[1]) {
+      return;
+    }
+
+    const baseInfo = parseClaimInfo(props.data?.info);
+    const transferStamp = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    const oldClaimUpdate = {
+      ...props.data,
+      id: itemId,
+      deleted: true,
+      is_active: 0,
+      transfer: true,
+      is_transfer: true,
+      transfer_at: transferStamp,
+      info: {
+        ...baseInfo,
+        transfer: true,
+        transfer_role: 'source',
+        transfer_at: transferStamp,
+      },
+    };
+    const newClaim = {
+      ...buildClaimPayload(transferDateRange, [claimUserId]),
+      transfer: true,
+      is_transfer: true,
+      transfer_from_claim_id: itemId,
+      info: {
+        ...buildClaimInfo(),
+        transfer: true,
+        transfer_role: 'target',
+        transfer_from_claim_id: itemId,
+      },
+    };
+
+    props.on_send({ update: oldClaimUpdate, create: newClaim }, 'transfer');
+    setTransferOpen(false);
+    setOpen(false);
+  };
 
   useEffect(()=>{
     // console.log('HELLOFD');
@@ -993,6 +1048,45 @@ const ClaimEditorDrawer = (props) => {
 
             {editMode === 'read' && (
               <div className={'sk-flex'} style={{justifyContent: 'flex-end', gridGap: '0.5rem'}}>
+                {isVacationTransferAvailable && (
+                  <Popover
+                    trigger="click"
+                    open={transferOpen}
+                    onOpenChange={setTransferOpen}
+                    placement="topRight"
+                    title="Новые даты отпуска"
+                    content={(
+                      <div style={{width: '320px'}}>
+                        <DatePicker.RangePicker
+                          format="DD.MM.YYYY"
+                          style={{width: '100%'}}
+                          value={transferDateRange}
+                          onChange={(dates) => {
+                            if (dates) {
+                              setTransferDateRange([dates[0], dates[1].clone().endOf('day')]);
+                            } else {
+                              setTransferDateRange(null);
+                            }
+                          }}
+                        />
+                        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px'}}>
+                          <Button onClick={() => setTransferOpen(false)}>Отмена</Button>
+                          <Button
+                            type="primary"
+                            disabled={!transferDateRange?.[0] || !transferDateRange?.[1]}
+                            onClick={handleTransferClaim}
+                          >
+                            OK
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  >
+                    <Button>
+                      Перенести
+                    </Button>
+                  </Popover>
+                )}
                 {allowBack && (
                   <Button 
                     danger
