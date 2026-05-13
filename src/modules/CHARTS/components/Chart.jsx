@@ -259,7 +259,7 @@ const Chart = (props) => {
         <Spin spinning={isLoadingChart}>
             {usersPage && (
                 <div className={styles.sk_chart}>
-                    <Affix offsetTop={200}>
+                    <Affix offsetTop={192}>
                         <div className={styles.chart_sticky_header}>
                             <div className={styles.month_row}>
                                 <div></div>
