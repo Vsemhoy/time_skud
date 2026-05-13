@@ -447,6 +447,10 @@ const UserMonitorListCard = (props) => {
         return lastDirection === 0;
     }, [normalizedEnterExitData]);
 
+    const visibleClaims = useMemo(() => {
+        return (content?.claims ?? []).filter((claim) => Number(claim?.state) !== 3);
+    }, [content?.claims]);
+
     const renderEventDumpTooltip = () => {
         if (!hasEventDump) {
             return null;
@@ -743,9 +747,9 @@ const UserMonitorListCard = (props) => {
 
                     <div style={{textAlign: 'center'}}>
                         <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
-                            {content?.claims && content.claims.length > 0 && (
+                            {visibleClaims.length > 0 && (
                                 <div style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap'}}>
-                                    {content.claims.map((claim) => (
+                                    {visibleClaims.map((claim) => (
                                         <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom" overlayClassName="sk-theme-tooltip">
                                             <span
                                                 className={getClaimIconClassName(claim)}
@@ -772,7 +776,7 @@ const UserMonitorListCard = (props) => {
                                     ))}
                                 </div>
                             )}
-                            {!content?.claims?.length && content?.globalState && (
+                            {visibleClaims.length === 0 && content?.globalState && (
                                 <StateIconsController IdState={content?.globalState.value} height={'20px'}/>
                             )}
                         </div>

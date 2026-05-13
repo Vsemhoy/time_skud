@@ -194,6 +194,11 @@ const Chart = (props) => {
         });
         return count > 1 ? count : false;
     };
+    const getChartCellStyle = (chart) => ({
+        backgroundColor: Number(chart?.state) === 3 ? '#bdbdbd' : reactiveColor,
+        cursor: 'pointer',
+        opacity: Number(chart?.state) === 2 ? '.5' : '1',
+    });
 
     return (
         <Spin spinning={isLoadingChart}>
@@ -310,7 +315,7 @@ const Chart = (props) => {
                                                     ${styles.chart_cell}
                                                     ${date === highlightedColumn ? styles.highlighted : ''}
                                                 `}
-                                                     style={{backgroundColor: reactiveColor, cursor: 'pointer', opacity: currentChart.state === 2 ? '.5' : '1'}}
+                                                     style={getChartCellStyle(currentChart)}
                                                      onClick={() => {
                                                          if (currentChart && user) {
                                                              openDrawer(currentChart, user);
@@ -368,7 +373,7 @@ const Chart = (props) => {
                                                 ${styles.chart_cell}
                                                 ${index === highlightedColumn ? styles.highlighted : ''}
                                             `}
-                                                 style={{backgroundColor: reactiveColor, cursor: 'pointer', opacity: currentChart[0].state === 2 ? '.5' : '1'}}
+                                                 style={getChartCellStyle(currentChart[0])}
                                                  onClick={() => {
                                                      if (currentChart.length === 1 && user) {
                                                          openDrawer(currentChart[0], user);

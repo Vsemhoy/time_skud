@@ -279,6 +279,15 @@ const ClaimManagerCard = (props) => {
             );
         }
 
+        if (props.data.state === 3) {
+            return (
+                <Tag className="sk-claim-status-tag sk-claim-status-tag--rescheduled">
+                    <span>Перенесено</span>
+                    <CarryOutOutlined />
+                </Tag>
+            );
+        }
+
         return (
             <Tag className="sk-claim-status-tag sk-claim-status-tag--pending">
                 <span>На рассмотрении</span>
