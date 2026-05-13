@@ -779,12 +779,15 @@ const ClaimManagerTools = (props)=>{
         }
     };
 
-    const handleSaveClaim = (claim, editmode) => {
+    const handleSaveClaim = async (claim, editmode) => {
         if (editmode === 'create'){
-            create_claim(claim).then();
+            await create_claim(claim);
         } else if (editmode === 'update'){
             //console.log('update claim');
-            update_claim(claim).then();
+            await update_claim(claim);
+        } else if (editmode === 'transfer'){
+            await update_claim(claim.update);
+            await create_claim(claim.create);
         }
         setEditorOpened(false);
         setTimeout(() => {
