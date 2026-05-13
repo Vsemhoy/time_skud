@@ -143,7 +143,24 @@
     width: 100%;
 }
 .sk_staffing_skeleton :global(.ant-skeleton-input) {
-    min-width: 0;
+    min-width: 0 !important;
+    max-width: 100%;
+}
+.sk_skeleton_department_name {
+    width: min(220px, 70%) !important;
+}
+.sk_skeleton_id {
+    width: min(32px, 100%) !important;
+}
+.sk_skeleton_name {
+    width: min(180px, 90%) !important;
+}
+.sk_skeleton_occupy {
+    width: min(120px, 72%) !important;
+    margin-top: 6px;
+}
+.sk_skeleton_value {
+    width: min(76px, 100%) !important;
 }
 .sk_staffing_empty_state {
     min-height: 160px;

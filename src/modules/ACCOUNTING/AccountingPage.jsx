@@ -279,21 +279,21 @@ const AccountingPage = (props) => {
                 <div key={`skeleton-department-${departmentIndex}`}>
                     <div className={styles.sk_department_header}>
                         <div className={styles.sk_department_header_hover_container}>
-                            <Skeleton.Input active size="small" style={{width: 220}} />
+                            <Skeleton.Input active size="small" className={styles.sk_skeleton_department_name} />
                         </div>
                     </div>
                     {[0, 1, 2, 3].map((rowIndex) => (
                         <div key={`skeleton-row-${departmentIndex}-${rowIndex}`} className={`${styles.sk_person_row_basic_hover_container}`}>
                             <div className={`${styles.sk_person_row_content}`}>
-                                <Skeleton.Input active size="small" style={{width: 32}} />
+                                <Skeleton.Input active size="small" className={styles.sk_skeleton_id} />
                             </div>
                             <div className={`${styles.sk_person_row_content}`}>
-                                <Skeleton.Input active size="small" style={{width: 180}} />
-                                <Skeleton.Input active size="small" style={{width: 120, marginTop: 6}} />
+                                <Skeleton.Input active size="small" className={styles.sk_skeleton_name} />
+                                <Skeleton.Input active size="small" className={styles.sk_skeleton_occupy} />
                             </div>
                             {STAFFING_VALUE_FIELDS.map((_, valueIdx) => (
                                 <div key={`skeleton-cell-${departmentIndex}-${rowIndex}-${valueIdx}`} className={`${styles.sk_person_row_content}`}>
-                                    <Skeleton.Input active size="small" style={{width: 76}} />
+                                    <Skeleton.Input active size="small" className={styles.sk_skeleton_value} />
                                 </div>
                             ))}
                         </div>
