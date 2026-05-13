@@ -572,6 +572,12 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     border-color: #f2bcbc;
 }
 
+.sk-claim-status-tag--rescheduled.ant-tag {
+    color: #5f6368;
+    background: #eeeeee;
+    border-color: #d6d6d6;
+}
+
 .sk-claim-date {
     display: inline-flex;
     align-items: center;
@@ -795,4 +801,3 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     box-shadow: none;
     padding: 0px;
   } */
-
