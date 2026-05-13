@@ -516,7 +516,10 @@ const ClaimManagerPage = (props) => {
             console.log('update claim');
             await update_claim(claim);
         } else if (editmode === 'transfer'){
-            await update_claim(claim.update);
+            await update_claim_state({
+                id: claim.update.id,
+                state: 3,
+            });
             await create_claim(claim.create);
         }
         setEditorOpened(false);
