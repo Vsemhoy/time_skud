@@ -142,6 +142,14 @@ const AccountingPage = (props) => {
             month: Number(filters.month) || defaultPeriod.month,
         };
     };
+    const getStaffingRequestPeriod = (filters = {}) => {
+        const {month, year} = getStaffingPeriod(filters);
+
+        return {
+            year,
+            month: month - 1,
+        };
+    };
     const extractStaffingUsers = (responseData) => {
         const content = responseData?.content;
         const data = responseData?.data;
@@ -156,7 +164,7 @@ const AccountingPage = (props) => {
         return [];
     };
     const fetchUsersInfo = async (filters = filterParams) => {
-        const {month, year} = getStaffingPeriod(filters);
+        const {month, year} = getStaffingRequestPeriod(filters);
 
         try {
             setIsLoading(true);
@@ -174,7 +182,7 @@ const AccountingPage = (props) => {
         }
     };
     const createStaffList = async () => {
-        const {month, year} = getStaffingPeriod(filterParams);
+        const {month, year} = getStaffingRequestPeriod(filterParams);
 
         try {
             setCreatingStaffList(true);
