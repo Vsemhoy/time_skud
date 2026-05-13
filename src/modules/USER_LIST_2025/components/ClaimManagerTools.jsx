@@ -786,7 +786,10 @@ const ClaimManagerTools = (props)=>{
             //console.log('update claim');
             await update_claim(claim);
         } else if (editmode === 'transfer'){
-            await update_claim(claim.update);
+            await update_claim_state({
+                id: claim.update.id,
+                state: 3,
+            });
             await create_claim(claim.create);
         }
         setEditorOpened(false);
@@ -828,6 +831,21 @@ const ClaimManagerTools = (props)=>{
                         _token: CSRF_TOKEN
                     });
                 //console.log('response data => ', response.data);
+                // debounceFetchUsers();
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    };
+
+    const update_claim_state = async (claimObj) => {
+        if (PRODMODE) {
+            try {
+                await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updatestate`,
+                    {
+                        data: claimObj,
+                        _token: CSRF_TOKEN
+                    });
                 // debounceFetchUsers();
             } catch (e) {
                 console.log(e)

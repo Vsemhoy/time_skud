@@ -589,26 +589,26 @@ const ClaimEditorDrawer = (props) => {
       id: itemId,
       deleted: true,
       is_active: 0,
-      transfer: true,
-      is_transfer: true,
-      transfer_at: transferStamp,
+      rescheduled: true,
+      is_rescheduled: true,
+      rescheduled_at: transferStamp,
       info: {
         ...baseInfo,
-        transfer: true,
-        transfer_role: 'source',
-        transfer_at: transferStamp,
+        rescheduled: true,
+        rescheduled_role: 'source',
+        rescheduled_at: transferStamp,
       },
     };
     const newClaim = {
       ...buildClaimPayload(transferDateRange, [claimUserId]),
-      transfer: true,
-      is_transfer: true,
-      transfer_from_claim_id: itemId,
+      rescheduled: true,
+      is_rescheduled: true,
+      rescheduled_from_claim_id: itemId,
       info: {
         ...buildClaimInfo(),
-        transfer: true,
-        transfer_role: 'target',
-        transfer_from_claim_id: itemId,
+        rescheduled: true,
+        rescheduled_role: 'target',
+        rescheduled_from_claim_id: itemId,
       },
     };
 
