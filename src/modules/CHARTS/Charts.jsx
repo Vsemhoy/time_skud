@@ -535,8 +535,11 @@ const  Charts = (props) => {
                     },
                     _token: CSRF_TOKEN
                 });
-            //console.log('response data => ', response.data);
-            setClaimForDrawer(response?.data.content);
+            const content = response?.data.content;
+            setClaimForDrawer(content ? {
+                ...content,
+                id: content.id ?? claim_id,
+            } : content);
         } catch (e) {
             console.log(e)
         }
@@ -875,6 +878,7 @@ const  Charts = (props) => {
                         user_list={users}
                         opened={editorOpened}
                         claim_type={selectedChartState}
+                        allow_transfer={Number(selectedChartState) === 10}
                         on_close={handleCloseEditor}
                         claim_types={chartStates}
                         on_send={handleSaveClaim}

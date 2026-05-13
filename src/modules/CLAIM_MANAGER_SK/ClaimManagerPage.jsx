@@ -1104,6 +1104,7 @@ const ClaimManagerPage = (props) => {
                 on_get_back={handleGetBackEvent}
                 on_approve={handleApproveEvent}
                 on_decline={handleDeclineEvent}
+                current_user={userData?.user}
             />
 
             {canUpdatePrices() && (
