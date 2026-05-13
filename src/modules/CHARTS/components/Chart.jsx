@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import styles from "../style/charts.module.css";
-import {Affix, Button, Spin, Tooltip} from "antd";
+import {Affix, Button, Spin} from "antd";
 import {useOutletContext} from "react-router-dom";
 import {ShortName} from "../../../components/Helpers/TextHelpers";
 import dayjs from "dayjs";
@@ -199,48 +199,104 @@ const Chart = (props) => {
         cursor: 'pointer',
         opacity: Number(chart?.state) === 2 ? '.5' : '1',
     });
+    const getChartStatusText = (chart) => {
+        switch (Number(chart?.state)) {
+            case 0:
+                return 'Ожидает согласования';
+            case 1:
+                return 'Согласовано';
+            case 2:
+                return 'Отклонено';
+            case 3:
+                return 'Перенесен';
+            default:
+                return '';
+        }
+    };
+    const getChartTitle = (user, chart) => [
+        `${user.surname} ${user.name} ${user.patronymic}`,
+        `Начало ${ruWord()}: ${dayjs(chart.start).format('DD.MM.YYYY')}`,
+        `Конец ${ruWord()}: ${dayjs(chart.end).format('DD.MM.YYYY')}`,
+        `Длительность: ${dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней`,
+        getChartStatusText(chart),
+    ].filter(Boolean).join('\n');
+    const getWeekChartTitle = (user, charts) => [
+        `${user.surname} ${user.name} ${user.patronymic}`,
+        ...charts.flatMap((chart, index) => [
+            `${index + 1}. Начало ${ruWord()}: ${dayjs(chart.start).format('DD.MM.YYYY')}`,
+            `Конец ${ruWord()}: ${dayjs(chart.end).format('DD.MM.YYYY')}`,
+            `Длительность: ${dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней`,
+            getChartStatusText(chart),
+        ].filter(Boolean)),
+    ].join('\n');
+    const getClaimCellClassName = (chart, day) => {
+        if (!chart || !day) {
+            return '';
+        }
+
+        const currentDay = dayjs.isDayjs(day) ? day : dayjs(day);
+        const startDate = dayjs(chart.start);
+        const endDate = dayjs(chart.end);
+        const isStart = currentDay.isSame(startDate, 'day');
+        const isEnd = currentDay.isSame(endDate, 'day');
+
+        if (isStart && isEnd) {
+            return `${styles.chart_claim_cell} ${styles.chart_claim_single}`;
+        }
+
+        if (isStart) {
+            return `${styles.chart_claim_cell} ${styles.chart_claim_start}`;
+        }
+
+        if (isEnd) {
+            return `${styles.chart_claim_cell} ${styles.chart_claim_end}`;
+        }
+
+        return `${styles.chart_claim_cell} ${styles.chart_claim_middle}`;
+    };
 
     return (
         <Spin spinning={isLoadingChart}>
             {usersPage && (
                 <div className={styles.sk_chart}>
-                    <Affix offsetTop={182}>
-                        <div className={styles.month_row}>
-                            <div></div>
-                            <div className={styles.month_container} style={{gridTemplateColumns: (rangeValues[1] - rangeValues[0] + 1) !== 12 ? '39px 1fr 39px' : '1fr'}}>
-                                {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
-                                    <Button style={{width: '100%'}}
-                                            icon={<ArrowLeftOutlined/>}
-                                            color="default"
-                                            variant="text"
-                                            onClick={onPreviousMonth}
-                                            disabled={rangeValues.includes(1)}
-                                    />
-                                )}
-                                <div className={styles.months}
-                                     style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}
-                                >
-                                    {months.map((month, index) => (
-                                        <p className={styles.month_name_p}
-                                           key={`month-${month}-${index}`}
-                                           onClick={() => setRangeValues([month,month])}
-                                        >
-                                            {dayjs(`${activeYear}-${month}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${month}-01`).format('MMMM').slice(1)}
-                                        </p>
-                                    ))}
+                    <Affix offsetTop={200}>
+                        <div className={styles.chart_sticky_header}>
+                            <div className={styles.month_row}>
+                                <div></div>
+                                <div className={styles.month_container} style={{gridTemplateColumns: (rangeValues[1] - rangeValues[0] + 1) !== 12 ? '39px 1fr 39px' : '1fr'}}>
+                                    {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
+                                        <Button style={{width: '100%'}}
+                                                icon={<ArrowLeftOutlined/>}
+                                                color="default"
+                                                variant="text"
+                                                onClick={onPreviousMonth}
+                                                disabled={rangeValues.includes(1)}
+                                        />
+                                    )}
+                                    <div className={styles.months}
+                                         style={{gridTemplateColumns: `repeat(${rangeValues[1] - rangeValues[0] + 1}, 1fr)`}}
+                                    >
+                                        {months.map((month, index) => (
+                                            <p className={styles.month_name_p}
+                                               key={`month-${month}-${index}`}
+                                               onClick={() => setRangeValues([month,month])}
+                                            >
+                                                {dayjs(`${activeYear}-${month}-01`).format('MMMM').charAt(0).toUpperCase() + dayjs(`${activeYear}-${month}-01`).format('MMMM').slice(1)}
+                                            </p>
+                                        ))}
+                                    </div>
+                                    {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
+                                        <Button style={{width: '100%'}}
+                                                icon={<ArrowRightOutlined />}
+                                                color="default"
+                                                variant="text"
+                                                onClick={onNextMonth}
+                                                disabled={rangeValues.includes(12)}
+                                        />
+                                    )}
                                 </div>
-                                {(rangeValues[1] - rangeValues[0] + 1) !== 12 && (
-                                    <Button style={{width: '100%'}}
-                                            icon={<ArrowRightOutlined />}
-                                            color="default"
-                                            variant="text"
-                                            onClick={onNextMonth}
-                                            disabled={rangeValues.includes(12)}
-                                    />
-                                )}
                             </div>
-                        </div>
-                        <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
+                            <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
                             <div className={styles.user_cell}></div>
                             {months.length <= 2 && months.map((month, monthIdx) => {                          // по дням
                                 const daysInMonth = getDaysInMonth(dayjs(`${activeYear}-${month}-01`));
@@ -282,6 +338,7 @@ const Chart = (props) => {
                                     </div>
                                 );
                             })}
+                            </div>
                         </div>
                     </Affix>
                     {usersPage.map((user, index) => (
@@ -298,21 +355,11 @@ const Chart = (props) => {
                                     const inter = isIntersectDay(day);
                                     const date = day.date() + '.' + index;
                                     return currentChart ? (
-                                        <Tooltip key={`tooltip_${activeYear}-${month}-${day.date()}`} title={
-                                            <div>
-                                                <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
-                                                <div>Начало {ruWord()}: {dayjs(currentChart.start).format('DD.MM.YYYY')}</div>
-                                                <div>Конец {ruWord()}: {dayjs(currentChart.end).format('DD.MM.YYYY')}</div>
-                                                <div>Длительность: {dayjs(currentChart.end).diff(dayjs(currentChart.start), 'day') + 1} дней</div>
-                                                <div>{+currentChart.state === 0 ? 'Ожидает согласования' : ''}</div>
-                                                <div>{+currentChart.state === 1 ? 'Согласовано' : ''}</div>
-                                                <div>{+currentChart.state === 2 ? 'Отклонено' : ''}</div>
-                                                <div>{+currentChart.state === 3 ? 'Перенесен' : ''}</div>
-                                            </div>
-                                        }>
-                                            <div className={`${inter ? styles.intersection : ''}`}>
+                                        <div key={`tooltip_${activeYear}-${month}-${day.date()}`} title={getChartTitle(user, currentChart)}>
+                                            <div className={`${styles.chart_cell_slot} ${inter ? styles.intersection : ''}`}>
                                                 <div className={`
                                                     ${styles.chart_cell}
+                                                    ${getClaimCellClassName(currentChart, day)}
                                                     ${date === highlightedColumn ? styles.highlighted : ''}
                                                 `}
                                                      style={getChartCellStyle(currentChart)}
@@ -325,9 +372,9 @@ const Chart = (props) => {
                                                      onMouseLeave={() => setHighlightedColumn(null)}
                                                 ></div>
                                             </div>
-                                        </Tooltip>
+                                        </div>
                                     ) : (
-                                        <div className={`${inter ? styles.intersection : ''}`} key={`${activeYear}-${month}-${day.date()}`}>
+                                        <div className={`${styles.chart_cell_slot} ${inter ? styles.intersection : ''}`} key={`${activeYear}-${month}-${day.date()}`}>
                                             <div className={`
                                                         ${styles.chart_cell}
                                                         ${date === highlightedColumn ? styles.highlighted : ''}
@@ -350,27 +397,12 @@ const Chart = (props) => {
                                 const fullDate = `${week} неделя, ${getStartEndOfWeek(index + 1)}`;
                                 const inter = isIntersectWeek(week);
                                 return currentChart.length > 0 ? (
-                                    <Tooltip key={`week_tooltip_${week}`} title={
-                                        <>
-                                            <div>{`${user.surname} ${user.name} ${user.patronymic}`}</div>
-                                            <ol>
-                                                {currentChart.map((chart, dayIndex) => (
-                                                    <li key={`week_chart_${dayIndex}`}>
-                                                        <div>Начало {ruWord()}: {dayjs(chart.start).format('DD.MM.YYYY')}</div>
-                                                        <div>Конец {ruWord()}: {dayjs(chart.end).format('DD.MM.YYYY')}</div>
-                                                        <div>Длительность: {dayjs(chart.end).diff(dayjs(chart.start), 'day') + 1} дней</div>
-                                                        <div>{+chart.state === 0 ? 'Ожидает согласования' : ''}</div>
-                                                        <div>{+chart.state === 1 ? 'Согласовано' : ''}</div>
-                                                        <div>{+chart.state === 2 ? 'Отклонено' : ''}</div>
-                                                        <div>{+chart.state === 3 ? 'Перенесен' : ''}</div>
-                                                    </li>
-                                                ))}
-                                            </ol>
-                                        </>
-                                    }>
-                                        <div className={`${inter ? styles.intersection : ''}`}>
+                                    <div key={`week_tooltip_${week}`} title={getWeekChartTitle(user, currentChart)}>
+                                        <div className={`${styles.chart_cell_slot} ${inter ? styles.intersection : ''}`}>
                                             <div className={`
                                                 ${styles.chart_cell}
+                                                ${styles.chart_claim_cell}
+                                                ${styles.chart_claim_single}
                                                 ${index === highlightedColumn ? styles.highlighted : ''}
                                             `}
                                                  style={getChartCellStyle(currentChart[0])}
@@ -385,9 +417,9 @@ const Chart = (props) => {
                                                 <div>{currentChart.length > 1 ? currentChart.length : ''}</div>
                                             </div>
                                         </div>
-                                    </Tooltip>
+                                    </div>
                                 ) : (
-                                    <div className={`${inter ? styles.intersection : ''}`} key={`week_${week}`}>
+                                    <div className={`${styles.chart_cell_slot} ${inter ? styles.intersection : ''}`} key={`week_${week}`}>
                                         <div className={`
                                                 ${styles.chart_cell}
                                                 ${index === highlightedColumn ? styles.highlighted : ''}

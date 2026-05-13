@@ -113,8 +113,28 @@ const ClaimEditorDrawer = (props) => {
       && selectedFullDayUsers.every(userHasValidSchedule)
   );
   const effectiveItemId = itemId ?? props.data?.id;
-  const effectiveFormType = formType || props.data?.skud_current_state_id || props.claim_type;
-  const isVacationTransferAvailable = editMode === 'read' && effectiveItemId && Number(effectiveFormType) === 10;
+  const isLongVacationClaim = [
+    formType,
+    props.data?.skud_current_state_id,
+    props.data?.state_id,
+    props.claim_type,
+    props.allow_transfer ? 10 : null,
+  ].some((value) => Number(value) === 10);
+  const currentUserId = props.current_user?.id ?? MYID;
+  const transferClaimUserId = userCard?.user_id ?? props.data?.user_id;
+  const transferClaimBossId = userCard?.boss_id ?? props.data?.boss_id;
+  const canTransferByUserRelation = Boolean(
+      isPrivilegedUser
+      || Number(transferClaimUserId) === Number(currentUserId)
+      || Number(transferClaimBossId) === Number(currentUserId)
+  );
+  const isVacationTransferAvailable = Boolean(
+      editMode === 'read'
+      && effectiveItemId
+      && isLongVacationClaim
+      && canTransferByUserRelation
+      && Number(props.data?.state) !== 3
+  );
 
 
   const onClose = () => {
@@ -579,8 +599,9 @@ const ClaimEditorDrawer = (props) => {
   }
 
   const handleTransferClaim = () => {
+    const sourceClaimId = effectiveItemId;
     const claimUserId = userCard?.user_id ?? props.data?.user_id ?? props.data?.id;
-    if (!props.on_send || !itemId || !claimUserId || !transferDateRange?.[0] || !transferDateRange?.[1]) {
+    if (!props.on_send || !sourceClaimId || !claimUserId || !transferDateRange?.[0] || !transferDateRange?.[1]) {
       return;
     }
 
@@ -588,7 +609,7 @@ const ClaimEditorDrawer = (props) => {
     const transferStamp = dayjs().format('YYYY-MM-DD HH:mm:ss');
     const oldClaimUpdate = {
       ...props.data,
-      id: itemId,
+      id: sourceClaimId,
       deleted: true,
       is_active: 0,
       rescheduled: true,
@@ -605,12 +626,12 @@ const ClaimEditorDrawer = (props) => {
       ...buildClaimPayload(transferDateRange, [claimUserId]),
       rescheduled: true,
       is_rescheduled: true,
-      rescheduled_from_claim_id: itemId,
+      rescheduled_from_claim_id: sourceClaimId,
       info: {
         ...buildClaimInfo(),
         rescheduled: true,
         rescheduled_role: 'target',
-        rescheduled_from_claim_id: itemId,
+        rescheduled_from_claim_id: sourceClaimId,
       },
     };
 
