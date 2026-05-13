@@ -1,12 +1,31 @@
+.sk_accounting_table_wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 10px 12px 18px;
+    --accounting-cell-border-color: #dfe7ef;
+    --accounting-section-border-color: #7fb3e8;
+    --accounting-divider-strong-color: #3478bd;
+}
+.sk_accounting_table {
+    min-width: 1220px;
+    gap: 0;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 16px 34px rgba(24, 44, 66, 0.08);
+}
 .sk_department_header {
     width: 100%;
-    height: 40px;
-    background-color: #C1CAD6;
+    min-height: 42px;
+    background: linear-gradient(180deg, #e7f2ff 0%, #d5e9fb 100%);
     display: flex;
     align-items: center;
     grid-gap: 10px;
     cursor: pointer;
-    transition: .3s;
+    transition: .2s;
+    border: 1px solid var(--accounting-section-border-color);
+    border-top: none;
+    box-shadow: inset 4px 0 0 var(--accounting-divider-strong-color), 0 4px 10px rgba(34, 103, 172, 0.12);
 }
 .sk_department_header_hover_container {
     width: 100%;
@@ -14,28 +33,34 @@
     display: flex;
     align-items: center;
     grid-gap: 10px;
-    padding: 5px;
+    padding: 9px 14px;
     cursor: pointer;
-    transition: .3s;
+    transition: .2s;
 }
 .sk_department_header_hover_container:hover {
-    background-color: var(--row-hovered-bg-color);
+    background-color: rgba(111, 143, 176, 0.12);
 }
 .sk_department_header_p {
     min-width: 25px;
     margin: 0;
-    font-weight: 500;
+    font-weight: 700;
     text-align: center;
+    color: #25374a;
 }
 .sk_table_row_staffingschedule {
     width: 100%;
-    height: 45px;
+    min-height: 52px;
     display: grid;
-    grid-template-columns: 40px 3fr repeat(8, 1fr);
+    grid-template-columns: 56px minmax(260px, 3fr) repeat(8, minmax(108px, 1fr));
     align-items: center;
-    transition: .3s;
-    padding: 5px;
-    background-color: #F6F6F6;
+    transition: .2s;
+    padding: 0;
+    background: linear-gradient(180deg, #34465b 0%, #26384c 100%);
+    border: 1px solid var(--accounting-cell-border-color);
+    border-radius: 8px 8px 0 0;
+    border-bottom: 2px solid #1b2d42;
+    box-shadow: 0 10px 22px rgba(22, 39, 58, 0.18);
+    overflow: hidden;
 }
 .sk_department_table_header {
     width: 100%;
@@ -44,30 +69,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-right: 2px solid #C1CAD6;
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 8px 10px;
 }
 .sk_department_table_header:last-child {
     border-right: none;
 }
+.sk_department_table_header_p {
+    margin: 0;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.22);
+}
 .sk_person_row_basic_hover_container {
     width: 100%;
-    height: 100%;
+    min-height: 60px;
     display: grid;
-    grid-template-columns: 40px 3fr repeat(8, 1fr);
-    padding: 5px;
-    transition: .3s;
-    background-color: #F6F6F6;
+    grid-template-columns: 56px minmax(260px, 3fr) repeat(8, minmax(108px, 1fr));
+    padding: 0;
+    transition: .2s;
+    background-color: #ffffff;
+    border-left: 1px solid var(--accounting-cell-border-color);
+    border-right: 1px solid var(--accounting-cell-border-color);
+    border-bottom: 1px solid var(--accounting-cell-border-color);
 }
 .sk_person_row_basic_hover_container:hover {
-    background-color: var(--row-hovered-bg-color);
+    background-color: #f6faff;
+    box-shadow: inset 4px 0 0 #8aa6c1;
 }
 .sk_person_row_content {
-    border-right: 2px solid #C1CAD6;
+    border-right: 1px solid var(--accounting-cell-border-color);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 5px;
+    padding: 8px 10px;
+    min-width: 0;
 }
 .sk_person_row_content:last-child {
     border-right: none;
@@ -77,10 +116,42 @@
     margin: 0 0 10px 0;
     text-align: center;
     margin: 0;
+    color: #172033;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
 }
 .sk_person_row_p_occupy {
     min-width: 25px;
-    margin: 0;
+    margin: 3px 0 0;
     text-align: center;
-    color: #757575;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.25;
+}
+.sk_person_row_input {
+    max-width: 108px;
+    text-align: right;
+    border-color: #d6e0eb;
+    border-radius: 6px;
+    background: #fbfdff;
+}
+.sk_person_row_input input {
+    text-align: right;
+}
+.sk_staffing_skeleton {
+    width: 100%;
+}
+.sk_staffing_skeleton :global(.ant-skeleton-input) {
+    min-width: 0;
+}
+.sk_staffing_empty_state {
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid var(--accounting-cell-border-color);
+    border-top: none;
 }

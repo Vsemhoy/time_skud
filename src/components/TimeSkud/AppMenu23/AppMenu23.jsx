@@ -178,7 +178,7 @@ const AppMenu23 = (props) => {
                 },
             ],
         },
-        /*{
+        {
             key: 'menu3',
             label: 'Бухгалтерия',
             children: [
@@ -191,22 +191,11 @@ const AppMenu23 = (props) => {
                     label: <NavLink to="/accounting/bankcard">Банковские карты</NavLink>,
                 },
                 {
-                    key: '/accounting/productioncalendar',
-                    label: <NavLink to="/accounting/productioncalendar">Производственный календарь</NavLink>,
-                },
-                {
                     key: '/accounting/surcharges',
                     label: <NavLink to="/accounting/surcharges">Доплаты</NavLink>,
                 },
-                {
-                    key: '/accounting/rewards',
-                    label: <NavLink to="/accounting/rewards">Вознаграждения</NavLink>,
-                },{
-                    key: '/accounting/retentions',
-                    label: <NavLink to="/accounting/retentions">Удержания</NavLink>,
-                },
             ]
-        },*/
+        },
         {
             key: '/admin/aclskud',
             label: <NavLink to="admin/aclskud">Доступы СКУД</NavLink>,
@@ -238,7 +227,7 @@ const AppMenu23 = (props) => {
             const shouldShowItem = (() => {
                 switch (item.key) {
                     case 'menu2': return hasFullMenuAccess || (currentUser && currentUser.id_departament === 2);
-                    case 'menu3': return hasFullMenuAccess || (props.user_act && props.user_act.acls && props.user_act.acls.includes(82));
+                    case 'menu3': return isTruthyFlag(currentUser?.is_admin) || isTruthyFlag(currentUser?.super);
                     case '/admin/aclskud': return hasFullMenuAccess;
                     default: return true;
                 }

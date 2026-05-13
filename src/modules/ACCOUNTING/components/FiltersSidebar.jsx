@@ -6,7 +6,7 @@ const FiltersSidebar = (props) => {
 
     const initialstate = {
         filterYear: dayjs().year(),
-        filterMonth: dayjs().month(),
+        filterMonth: dayjs().month() + 1,
         filterDepartments: null,
         filterUser: null,
     }

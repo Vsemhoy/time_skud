@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Affix, Button, Checkbox, Input, Layout, Select, Spin, Tag} from "antd";
+import {Affix, Button, Checkbox, Input, Layout, Select, Skeleton, Spin, Tag} from "antd";
 import {Content, Header} from "antd/es/layout/layout";
 import {EditOutlined, FilterOutlined} from "@ant-design/icons";
 import Cookies from "js-cookie";
@@ -15,6 +15,34 @@ import SchedIcons from "../../assets/Comicon/SchedIcons";
 import RuleIcons from "../../assets/Comicon/RuleIcons";
 import {USERS_MANAGER} from "../USER_MANAGER_2025/USER_MANAGER/mock/mock";
 import styles from "./style/accountins.module.css";
+
+const STAFFING_VALUE_FIELDS = [
+    ['oplatafact'],
+    ['oplatabuh'],
+    ['otpusk'],
+    ['bollist'],
+    ['konteiner'],
+    ['countnaruh'],
+    ['blacklist'],
+    ['bet'],
+];
+const STAFFING_FORM_FIELDS = [
+    'id',
+    'surname',
+    'name',
+    'occupy',
+    'user_id',
+    'namedep',
+    'oplatafact',
+    'otpusk',
+    'bollist',
+    'konteiner',
+    'countnaruh',
+    'date',
+    'blacklist',
+    'oplatabuh',
+    'bet',
+];
 
 const AccountingPage = (props) => {
     const useCookieState = (key, defaultValue) => {
@@ -34,7 +62,11 @@ const AccountingPage = (props) => {
     const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', true);
     const [disableSaveInfo, setdDisableSavingInfo] = useState(false);
     const [savingInfo, setSavingInfo] = useState(false);
-    const [filterParams, setFilterParams] = useState([]);
+    const [creatingStaffList, setCreatingStaffList] = useState(false);
+    const [filterParams, setFilterParams] = useState({
+        year: dayjs().year(),
+        month: dayjs().month() + 1,
+    });
     const [years, setYears] = useState([]);
     const [months, setMonths] = useState([
         {id: 1, 'name': 'Январь'},
@@ -52,20 +84,24 @@ const AccountingPage = (props) => {
     ]);
     const [users, setUsers] = useState([]);
     const [departments, setDepartments] = useState([]);
+    const [staffingUsers, setStaffingUsers] = useState([]);
     const [usersInfo, setUsersInfo] = useState([]);
     const [departmentsInfo, setDepartmentsInfo] = useState([]);
     const [closedDepartments, setClosedDepartments] = useState([]);
     useEffect(() => {
         if (!isMounted) {
             setYears(prepareYears());
-            fetchInfo().then();
+            fetchSelects().then();
             setIsMounted(true);
         }
     }, []);
-    const fetchInfo = async () => {
-        await fetchSelects();
-        await fetchUsersInfo();
-    };
+    useEffect(() => {
+        const {month, year} = getStaffingPeriod(filterParams);
+        fetchUsersInfo({month, year}).then();
+    }, [filterParams.month, filterParams.year]);
+    useEffect(() => {
+        filterAndSetUsers(staffingUsers, filterParams);
+    }, [staffingUsers, filterParams.departments, filterParams.users]);
     const prepareYears = () => {
         const startYear = 2016;
         const endYear = dayjs().year();
@@ -95,33 +131,99 @@ const AccountingPage = (props) => {
             setDepartments(DEPARTMENTS);
         }
     };
-    const fetchUsersInfo = async () => {
-        if (PRODMODE) {
-            try {
-                let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/accounting/getstaffingschedule`,
-                    {
-                        data: {
-                            filterParams
-                        },
-                        _token: CSRF_TOKEN
-                    });
-                if (response.data.content) {
-                    const content = response.data.content;
-                    filterAndSetUsers(content.users);
-                }
-            } catch (e) {
-                console.log(e);
+    const getDefaultPeriod = () => ({
+        year: dayjs().year(),
+        month: dayjs().month() + 1,
+    });
+    const getStaffingPeriod = (filters = {}) => {
+        const defaultPeriod = getDefaultPeriod();
+        return {
+            year: Number(filters.year) || defaultPeriod.year,
+            month: Number(filters.month) || defaultPeriod.month,
+        };
+    };
+    const extractStaffingUsers = (responseData) => {
+        const content = responseData?.content;
+        const data = responseData?.data;
+
+        if (Array.isArray(content?.users)) return content.users;
+        if (Array.isArray(content)) return content;
+        if (Array.isArray(data?.users)) return data.users;
+        if (Array.isArray(data)) return data;
+        if (Array.isArray(responseData?.users)) return responseData.users;
+        if (Array.isArray(responseData)) return responseData;
+
+        return [];
+    };
+    const fetchUsersInfo = async (filters = filterParams) => {
+        const {month, year} = getStaffingPeriod(filters);
+
+        try {
+            setIsLoading(true);
+            let response = await PROD_AXIOS_INSTANCE.get('/api/finance/data/getdatastafflist', {
+                params: {month, year}
+            });
+            setStaffingUsers(extractStaffingUsers(response.data));
+        } catch (e) {
+            console.log(e);
+            if (!PRODMODE) {
+                setStaffingUsers(USERS_MANAGER);
             }
-        } else {
-            filterAndSetUsers(USERS_MANAGER);
+        } finally {
+            setIsLoading(false);
         }
     };
-    const filterAndSetUsers = (newUsers) => {
-        setUsersInfo(newUsers.sort((a, b) => a.department - b.department));
-        setDepartmentsInfo([...new Set(newUsers.map(user => JSON.stringify({
-            id: user.departament,
-            name: user.departament_name
-        })))].map(str => JSON.parse(str)).sort((a, b) => a.id - b.id));
+    const createStaffList = async () => {
+        const {month, year} = getStaffingPeriod(filterParams);
+
+        try {
+            setCreatingStaffList(true);
+            let response = await PROD_AXIOS_INSTANCE.get('/api/finance/data/createstafflist', {
+                params: {month, year}
+            });
+            setStaffingUsers(extractStaffingUsers(response.data));
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setCreatingStaffList(false);
+        }
+    };
+    const prepareStaffListFormData = () => {
+        const formData = new FormData();
+
+        staffingUsers.forEach((user, index) => {
+            STAFFING_FORM_FIELDS.forEach((fieldName) => {
+                formData.append(`data[${index}][${fieldName}]`, user?.[fieldName] ?? '');
+            });
+        });
+
+        return formData;
+    };
+    const saveStaffList = async () => {
+        try {
+            setSavingInfo(true);
+            let response = await PROD_AXIOS_INSTANCE.post(
+                '/api/finance/data/savedatastafflist',
+                prepareStaffListFormData()
+            );
+            setStaffingUsers(extractStaffingUsers(response.data));
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setSavingInfo(false);
+        }
+    };
+    const filterAndSetUsers = (newUsers, filters = filterParams) => {
+        const filteredUsers = [...newUsers]
+            .filter((user) => !filters.departments || filters.departments.length === 0 || filters.departments.map(String).includes(String(user.departament ?? user.namedep)))
+            .filter((user) => !filters.users || filters.users.length === 0 || filters.users.map(String).includes(String(user.user_id ?? user.id)))
+            .sort((a, b) => String(a.namedep ?? '').localeCompare(String(b.namedep ?? ''), 'ru'));
+
+        setUsersInfo(filteredUsers);
+        setDepartmentsInfo([...new Set(filteredUsers.map(user => JSON.stringify({
+            id: user.departament ?? user.namedep,
+            name: user.departament_name ?? user.namedep
+        })))].map(str => JSON.parse(str)).sort((a, b) => String(a.name ?? '').localeCompare(String(b.name ?? ''), 'ru')));
     };
     const btnHeader = () => {
         return savingInfo ? 'Сохраняем' : 'Сохранить';
@@ -152,6 +254,55 @@ const AccountingPage = (props) => {
     const handleFilterChanged = async (filtersSelected) => {
         setFilterParams(filtersSelected);
     };
+    const getUserFieldValue = (user, fieldNames) => {
+        const value = fieldNames
+            .map((fieldName) => user?.[fieldName])
+            .find((fieldValue) => fieldValue !== undefined && fieldValue !== null && fieldValue !== '');
+
+        return value ?? 0;
+    };
+    const updateStaffingUserField = (rowId, fieldName, fieldValue) => {
+        setStaffingUsers((currentUsers) => currentUsers.map((user) => {
+            if (String(user.id) !== String(rowId)) {
+                return user;
+            }
+
+            return {
+                ...user,
+                [fieldName]: fieldValue,
+            };
+        }));
+    };
+    const renderTableSkeleton = () => (
+        <div className={styles.sk_staffing_skeleton}>
+            {[0, 1, 2].map((departmentIndex) => (
+                <div key={`skeleton-department-${departmentIndex}`}>
+                    <div className={styles.sk_department_header}>
+                        <div className={styles.sk_department_header_hover_container}>
+                            <Skeleton.Input active size="small" style={{width: 220}} />
+                        </div>
+                    </div>
+                    {[0, 1, 2, 3].map((rowIndex) => (
+                        <div key={`skeleton-row-${departmentIndex}-${rowIndex}`} className={`${styles.sk_person_row_basic_hover_container}`}>
+                            <div className={`${styles.sk_person_row_content}`}>
+                                <Skeleton.Input active size="small" style={{width: 32}} />
+                            </div>
+                            <div className={`${styles.sk_person_row_content}`}>
+                                <Skeleton.Input active size="small" style={{width: 180}} />
+                                <Skeleton.Input active size="small" style={{width: 120, marginTop: 6}} />
+                            </div>
+                            {STAFFING_VALUE_FIELDS.map((_, valueIdx) => (
+                                <div key={`skeleton-cell-${departmentIndex}-${rowIndex}-${valueIdx}`} className={`${styles.sk_person_row_content}`}>
+                                    <Skeleton.Input active size="small" style={{width: 76}} />
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+    const shouldShowCreateStaffList = !isLoading && staffingUsers.length === 0;
     const openCloseDepartments = (departmentId) => {
         if (closedDepartments.includes(departmentId)) {
             setClosedDepartments(closedDepartments.filter(id => id !== departmentId));
@@ -173,11 +324,11 @@ const AccountingPage = (props) => {
                             >Фильтры</Button>
                             <h1 className={'page-header'}>Штатное расписание</h1>
                             <Button type="primary"
-                                    disabled={disableSaveInfo}
+                                    disabled={disableSaveInfo || isLoading || staffingUsers.length === 0}
                                     loading={savingInfo}
                                     iconPosition={'end'}
                                     style={{width: '125px'}}
-                                    onClick={() => setSavingInfo(true)}
+                                    onClick={saveStaffList}
                             >{btnHeader()}</Button>
                         </div>
                     </Affix>
@@ -201,9 +352,9 @@ const AccountingPage = (props) => {
                         </Affix>
                     </Sider>
                     <Content className="content">
-                        <div className="sk-content-table-wrapper">
-                            <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
-                                <div className="sk-content-table">
+                        <div className={`sk-content-table-wrapper ${styles.sk_accounting_table_wrapper}`}>
+                            <Spin tip="Ожидайте" spinning={false} style={{width: '100%', height: '100%'}}>
+                                <div className={`sk-content-table ${styles.sk_accounting_table}`}>
                                     <Affix offsetTop={44}>
                                         <div className={`${styles.sk_table_row_staffingschedule}`}>
                                             <div className={`${styles.sk_department_table_header}`}>
@@ -237,39 +388,42 @@ const AccountingPage = (props) => {
                                             </div>
                                         </div>
                                     </Affix>
-                                    {departmentsInfo.map((department, index) => (
+                                    {isLoading ? renderTableSkeleton() : departmentsInfo.map((department, index) => (
                                         <div key={`${department.id}-${index}`}>
-                                            <div className={`${styles.sk_department_header}`}
-                                                 onDoubleClick={() => openCloseDepartments(department.id)}
-                                            >
-                                                <div className={`${styles.sk_department_header_hover_container}`}>
-                                                    <p className={`${styles.sk_department_header_p}`}>{department.id}</p>
-                                                    <p className={`${styles.sk_department_header_p}`}>{department.name}</p>
+                                            <Affix offsetTop={96}>
+                                                <div className={`${styles.sk_department_header}`}
+                                                    onDoubleClick={() => openCloseDepartments(department.id)}
+                                                >
+                                                    <div className={`${styles.sk_department_header_hover_container}`}>
+                                                        <p className={`${styles.sk_department_header_p}`}>{department.name}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </Affix>
                                             {!closedDepartments.find(item => item === department.id) && (
                                                 <div className="sk-person-rows">
                                                     {usersInfo.map((user, idx) => {
-                                                        if (+user.departament === +department.id) {
+                                                        if (String(user.departament ?? user.namedep) === String(department.id)) {
                                                             return (
                                                                 <div key={`${user.id}-${idx}`} className={`${styles.sk_person_row_basic_hover_container}`}>
                                                                     <div className={`${styles.sk_person_row_content}`}>
                                                                         <p className={`${styles.sk_person_row_p}`}>
-                                                                            {user.id}
+                                                                            {user.user_id ?? user.id}
                                                                         </p>
                                                                     </div>
                                                                     <div className={`${styles.sk_person_row_content}`}>
                                                                         <p className={`${styles.sk_person_row_p}`}>{`${user.surname} ${user.name} ${user.patronymic}`}</p>
                                                                         <p className={`${styles.sk_person_row_p_occupy}`}>{user.occupy}</p>
                                                                     </div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
-                                                                    <div className={`${styles.sk_person_row_content}`}><Input value={0}/></div>
+                                                                    {STAFFING_VALUE_FIELDS.map((fieldNames, valueIdx) => (
+                                                                        <div key={`${user.id}-${valueIdx}`} className={`${styles.sk_person_row_content}`}>
+                                                                            <Input
+                                                                                className={styles.sk_person_row_input}
+                                                                                size="small"
+                                                                                value={getUserFieldValue(user, fieldNames)}
+                                                                                onChange={(event) => updateStaffingUserField(user.id, fieldNames[0], event.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                    ))}
                                                                 </div>
                                                             );
                                                         }
@@ -279,6 +433,17 @@ const AccountingPage = (props) => {
                                             )}
                                         </div>
                                     ))}
+                                    {shouldShowCreateStaffList && (
+                                        <div className={styles.sk_staffing_empty_state}>
+                                            <Button
+                                                type="primary"
+                                                loading={creatingStaffList}
+                                                onClick={createStaffList}
+                                            >
+                                                На текущий месяц штатное расписание не создано. Создать?
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                             </Spin>
                         </div>
