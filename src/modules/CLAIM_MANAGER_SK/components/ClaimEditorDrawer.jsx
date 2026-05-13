@@ -112,7 +112,9 @@ const ClaimEditorDrawer = (props) => {
       && selectedFullDayUsers.length === effectiveFormUsers.length
       && selectedFullDayUsers.every(userHasValidSchedule)
   );
-  const isVacationTransferAvailable = editMode === 'read' && itemId && Number(formType) === 10;
+  const effectiveItemId = itemId ?? props.data?.id;
+  const effectiveFormType = formType || props.data?.skud_current_state_id || props.claim_type;
+  const isVacationTransferAvailable = editMode === 'read' && effectiveItemId && Number(effectiveFormType) === 10;
 
 
   const onClose = () => {
