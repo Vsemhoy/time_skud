@@ -10,7 +10,7 @@
     "axios": "^1.10.0",
     "chart.js": "^4.4.9",
     "corp-chat-library-antd-react-socket": "^1.2.14",
-    "corp-notificator-library-antd-react-socket": "^0.0.13",
+    "corp-notificator-library-antd-react-socket": "^0.0.14",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "lodash.debounce": "^4.0.8",
