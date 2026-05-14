@@ -262,6 +262,8 @@ const AccountingPage = (props) => {
     const handleFilterChanged = async (filtersSelected) => {
         setFilterParams(filtersSelected);
     };
+    const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
+    const showIdColumn = isTruthyFlag(props.userdata?.user?.is_admin);
     const getUserFieldValue = (user, fieldNames) => {
         const value = fieldNames
             .map((fieldName) => user?.[fieldName])
@@ -269,6 +271,9 @@ const AccountingPage = (props) => {
 
         return value ?? 0;
     };
+    const getUserFullName = (user) => [user?.surname, user?.name, user?.secondname ?? user?.patronymic]
+        .filter(Boolean)
+        .join(' ');
     const updateStaffingUserField = (rowId, fieldName, fieldValue) => {
         setStaffingUsers((currentUsers) => currentUsers.map((user) => {
             if (String(user.id) !== String(rowId)) {
@@ -291,16 +296,23 @@ const AccountingPage = (props) => {
                         </div>
                     </div>
                     {[0, 1, 2, 3].map((rowIndex) => (
-                        <div key={`skeleton-row-${departmentIndex}-${rowIndex}`} className={`${styles.sk_person_row_basic_hover_container}`}>
-                            <div className={`${styles.sk_person_row_content}`}>
-                                <Skeleton.Input active size="small" className={styles.sk_skeleton_id} />
-                            </div>
+                        <div
+                            key={`skeleton-row-${departmentIndex}-${rowIndex}`}
+                            className={`${styles.sk_person_row_basic_hover_container} ${showIdColumn ? '' : styles.sk_staffing_grid_no_id}`}
+                        >
+                            {showIdColumn && (
+                                <div className={`${styles.sk_person_row_content}`}>
+                                    <Skeleton.Input active size="small" className={styles.sk_skeleton_id} />
+                                </div>
+                            )}
                             <div className={`${styles.sk_person_row_content}`}>
                                 <Skeleton.Input active size="small" className={styles.sk_skeleton_name} />
+                            </div>
+                            <div className={`${styles.sk_person_row_content}`}>
                                 <Skeleton.Input active size="small" className={styles.sk_skeleton_occupy} />
                             </div>
                             {STAFFING_VALUE_FIELDS.map((_, valueIdx) => (
-                                <div key={`skeleton-cell-${departmentIndex}-${rowIndex}-${valueIdx}`} className={`${styles.sk_person_row_content}`}>
+                                <div key={`skeleton-cell-${departmentIndex}-${rowIndex}-${valueIdx}`} className={`${styles.sk_person_row_content} ${styles.sk_person_row_input_cell}`}>
                                     <Skeleton.Input active size="small" className={styles.sk_skeleton_value} />
                                 </div>
                             ))}
@@ -364,11 +376,17 @@ const AccountingPage = (props) => {
                             <Spin tip="Ожидайте" spinning={false} style={{width: '100%', height: '100%'}}>
                                 <div className={`sk-content-table ${styles.sk_accounting_table}`}>
                                     <Affix offsetTop={44}>
-                                        <div className={`${styles.sk_table_row_staffingschedule}`}>
+                                        <div className={`${styles.sk_table_row_staffingschedule} ${showIdColumn ? '' : styles.sk_staffing_grid_no_id}`}>
+                                            {showIdColumn && (
+                                                <div className={`${styles.sk_department_table_header}`}>
+                                                    <p className={`${styles.sk_department_table_header_p}`}>ID</p>
+                                                </div>
+                                            )}
                                             <div className={`${styles.sk_department_table_header}`}>
-                                                <p className={`${styles.sk_department_table_header_p}`}>ID</p>
-                                            </div><div className={`${styles.sk_department_table_header}`}>
-                                                <p className={`${styles.sk_department_table_header_p}`}>ФИО, должность</p>
+                                                <p className={`${styles.sk_department_table_header_p}`}>ФИО</p>
+                                            </div>
+                                            <div className={`${styles.sk_department_table_header}`}>
+                                                <p className={`${styles.sk_department_table_header_p}`}>Должность</p>
                                             </div>
                                             <div className={`${styles.sk_department_table_header}`}>
                                                 <p className={`${styles.sk_department_table_header_p}`}>Оклад факт. руб.</p>
@@ -412,18 +430,22 @@ const AccountingPage = (props) => {
                                                     {usersInfo.map((user, idx) => {
                                                         if (String(user.departament ?? user.namedep) === String(department.id)) {
                                                             return (
-                                                                <div key={`${user.id}-${idx}`} className={`${styles.sk_person_row_basic_hover_container}`}>
+                                                                <div key={`${user.id}-${idx}`} className={`${styles.sk_person_row_basic_hover_container} ${showIdColumn ? '' : styles.sk_staffing_grid_no_id}`}>
+                                                                    {showIdColumn && (
+                                                                        <div className={`${styles.sk_person_row_content}`}>
+                                                                            <p className={`${styles.sk_person_row_p}`}>
+                                                                                {user.user_id ?? user.id}
+                                                                            </p>
+                                                                        </div>
+                                                                    )}
                                                                     <div className={`${styles.sk_person_row_content}`}>
-                                                                        <p className={`${styles.sk_person_row_p}`}>
-                                                                            {user.user_id ?? user.id}
-                                                                        </p>
+                                                                        <p className={`${styles.sk_person_row_p}`} title={getUserFullName(user)}>{getUserFullName(user)}</p>
                                                                     </div>
                                                                     <div className={`${styles.sk_person_row_content}`}>
-                                                                        <p className={`${styles.sk_person_row_p}`}>{`${user.surname} ${user.name} ${user.patronymic}`}</p>
-                                                                        <p className={`${styles.sk_person_row_p_occupy}`}>{user.occupy}</p>
+                                                                        <p className={`${styles.sk_person_row_p_occupy}`} title={user.occupy}>{user.occupy}</p>
                                                                     </div>
                                                                     {STAFFING_VALUE_FIELDS.map((fieldNames, valueIdx) => (
-                                                                        <div key={`${user.id}-${valueIdx}`} className={`${styles.sk_person_row_content}`}>
+                                                                        <div key={`${user.id}-${valueIdx}`} className={`${styles.sk_person_row_content} ${styles.sk_person_row_input_cell}`}>
                                                                             <Input
                                                                                 className={styles.sk_person_row_input}
                                                                                 size="small"
