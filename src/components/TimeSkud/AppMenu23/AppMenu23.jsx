@@ -1,5 +1,5 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
 import {HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined, UserOutlined} from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
@@ -7,6 +7,39 @@ import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 import Chat from "corp-chat-library-antd-react-socket";
 import Notificator from "corp-notificator-library-antd-react-socket";
+
+const isBrowserNotificationSupported = () => (
+    typeof window !== 'undefined' && 'Notification' in window
+);
+
+const requestBrowserNotificationPermission = async () => {
+    if (!isBrowserNotificationSupported()) {
+        return undefined;
+    }
+
+    if (Notification.permission !== 'default') {
+        return Notification.permission;
+    }
+
+    try {
+        return await Notification.requestPermission();
+    } catch (e) {
+        console.log('Cannot request browser notification permission', e);
+        return Notification.permission;
+    }
+};
+
+const getNotificationText = (value) => {
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    if (typeof value === 'string') {
+        return value;
+    }
+
+    return String(value);
+};
 
 const AppMenu23 = (props) => {
     const { state, setState } = useContext(StateContext);
@@ -36,6 +69,48 @@ const AppMenu23 = (props) => {
         setNotificatorLoading(true);
         setTimeout(() => setNotificatorLoading(false), 2000);
     };
+
+    useEffect(() => {
+        requestBrowserNotificationPermission();
+
+        const enableBrowserNotifications = () => {
+            requestBrowserNotificationPermission();
+        };
+
+        window.addEventListener('click', enableBrowserNotifications, { once: true, capture: true });
+        window.addEventListener('keydown', enableBrowserNotifications, { once: true, capture: true });
+
+        return () => {
+            window.removeEventListener('click', enableBrowserNotifications, { capture: true });
+            window.removeEventListener('keydown', enableBrowserNotifications, { capture: true });
+        };
+    }, []);
+
+    const handleNewNotification = useCallback(async (notification) => {
+        if (!isBrowserNotificationSupported()) {
+            return;
+        }
+
+        const permission = await requestBrowserNotificationPermission();
+
+        if (permission !== 'granted') {
+            return;
+        }
+
+        const title = getNotificationText(notification?.name) || 'New notification';
+        const body = getNotificationText(notification?.message) || getNotificationText(notification?.content);
+        const notificationOptions = {
+            body,
+            icon: `${window.location.origin}/favicon.ico`,
+            data: notification,
+        };
+
+        if (notification?.id) {
+            notificationOptions.tag = `notification-${notification.id}`;
+        }
+
+        new Notification(title, notificationOptions);
+    }, []);
 
     useEffect(() => {
       setCountOfNotifications(props.count_of_notifications);
@@ -287,12 +362,13 @@ const AppMenu23 = (props) => {
                                      PROD_AXIOS_INSTANCE: null,
                                  }}
                                  socketSubscribe={{
-                                     subscribeToNotification: 'subscribeToNotification'
+                                     subscribeToNotification: 'subscribe:notification'
                                  }}
                                  socketActions={{
                                      newNotification: 'new:notification',
                                      readNotification: 'read:notification',
                                  }}
+                                 onNewNotification={handleNewNotification}
                     />
 
                     {/*<div onClick={showNotyBar} style={{ cursor: "pointer", width: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
