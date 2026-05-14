@@ -41,6 +41,45 @@ const getNotificationText = (value) => {
     return String(value);
 };
 
+const showBrowserNotification = async ({ title, body, tag, data }) => {
+    if (!isBrowserNotificationSupported()) {
+        return;
+    }
+
+    const permission = await requestBrowserNotificationPermission();
+
+    if (permission !== 'granted') {
+        return;
+    }
+
+    const notificationOptions = {
+        body: getNotificationText(body),
+        icon: `${window.location.origin}/favicon.ico`,
+        data,
+    };
+
+    if (tag) {
+        notificationOptions.tag = tag;
+    }
+
+    new Notification(getNotificationText(title) || 'New notification', notificationOptions);
+};
+
+const getChatPayloadMessage = (payload) => (
+    payload?.sms
+    || payload?.left
+    || payload?.right
+    || payload?.message
+    || payload
+);
+
+const getChatSenderName = (message) => {
+    const sender = message?.from;
+    const fullName = [sender?.surname, sender?.name].filter(Boolean).join(' ');
+
+    return fullName || message?.who || message?.name || 'Новое сообщение';
+};
+
 const AppMenu23 = (props) => {
     const { state, setState } = useContext(StateContext);
     const [notificatorLoading, setNotificatorLoading] = useState(true);
@@ -87,29 +126,23 @@ const AppMenu23 = (props) => {
     }, []);
 
     const handleNewNotification = useCallback(async (notification) => {
-        if (!isBrowserNotificationSupported()) {
-            return;
-        }
-
-        const permission = await requestBrowserNotificationPermission();
-
-        if (permission !== 'granted') {
-            return;
-        }
-
-        const title = getNotificationText(notification?.name) || 'New notification';
-        const body = getNotificationText(notification?.message) || getNotificationText(notification?.content);
-        const notificationOptions = {
-            body,
-            icon: `${window.location.origin}/favicon.ico`,
+        await showBrowserNotification({
+            title: notification?.name || 'Новое уведомление',
+            body: notification?.message || notification?.content,
+            tag: notification?.id ? `notification-${notification.id}` : undefined,
             data: notification,
-        };
+        });
+    }, []);
 
-        if (notification?.id) {
-            notificationOptions.tag = `notification-${notification.id}`;
-        }
+    const handleNewChatMessage = useCallback(async (payload) => {
+        const message = getChatPayloadMessage(payload);
 
-        new Notification(title, notificationOptions);
+        await showBrowserNotification({
+            title: getChatSenderName(message),
+            body: message?.text || payload?.text || payload?.content || payload?.message || '',
+            tag: message?.id ? `chat-message-${message.id}` : undefined,
+            data: payload,
+        });
     }, []);
 
     useEffect(() => {
@@ -351,6 +384,7 @@ const AppMenu23 = (props) => {
                               newSms: 'new:sms',
                               updateSms: 'update:sms',
                           }}
+                          onNewMessage={handleNewChatMessage}
                     />
 
                     <Notificator userdata={props.user_act}
