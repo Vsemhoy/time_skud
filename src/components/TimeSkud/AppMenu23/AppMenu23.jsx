@@ -1,4 +1,4 @@
-import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu } from 'antd';
+import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Switch } from 'antd';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
 import {HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined, UserOutlined} from '@ant-design/icons';
@@ -7,6 +7,16 @@ import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 import Chat from "corp-chat-library-antd-react-socket";
 import Notificator from "corp-notificator-library-antd-react-socket";
+
+const THEME_STORAGE_KEY = 'skud_theme';
+
+const getSavedThemeMode = () => {
+    if (typeof window === 'undefined') {
+        return 'light';
+    }
+
+    return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light';
+};
 
 const isBrowserNotificationSupported = () => (
     typeof window !== 'undefined' && 'Notification' in window
@@ -85,6 +95,7 @@ const AppMenu23 = (props) => {
     const [notificatorLoading, setNotificatorLoading] = useState(true);
 
     const [countOfNotifications, setCountOfNotifications] = useState(0);
+    const [themeMode, setThemeMode] = useState(getSavedThemeMode);
     const navigate = useNavigate();
     const location = useLocation();
     const selectedKey = location.pathname;
@@ -150,6 +161,28 @@ const AppMenu23 = (props) => {
       console.log(props.count_of_notifications);
     }, [props.count_of_notifications]);
 
+    useEffect(() => {
+        const handleStorageChange = (event) => {
+            if (event.key === THEME_STORAGE_KEY) {
+                setThemeMode(event.newValue === 'dark' ? 'dark' : 'light');
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+    const handleThemeChange = (checked) => {
+        const nextThemeMode = checked ? 'dark' : 'light';
+
+        setThemeMode(nextThemeMode);
+        window.localStorage.setItem(THEME_STORAGE_KEY, nextThemeMode);
+        window.location.reload();
+    };
+
 
 
     const getSelectedKeys = () => {
@@ -165,6 +198,22 @@ const AppMenu23 = (props) => {
         {
             key: 'status',
             label: 'Статус: Онлайн',
+        },
+        {
+            key: 'theme',
+            label: (
+                <div
+                    onClick={(event) => event.stopPropagation()}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minWidth: '160px' }}
+                >
+                    <span>Темная тема</span>
+                    <Switch
+                        size="small"
+                        checked={themeMode === 'dark'}
+                        onChange={handleThemeChange}
+                    />
+                </div>
+            ),
         },
         /*{
             key: 'hr/notify',
