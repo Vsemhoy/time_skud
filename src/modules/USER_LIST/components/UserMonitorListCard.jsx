@@ -694,7 +694,7 @@ const UserMonitorListCard = (props) => {
                                         title={badger.title}
                                     >
                                         {badger.icon}
-                                        <span>{+content?.sex === 2 ? badger.text_w : badger.text}</span>
+                                        <span>{badger.text}</span>
                                     </span>
                                 )}
                             </div>

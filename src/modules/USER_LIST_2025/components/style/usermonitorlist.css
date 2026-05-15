@@ -32,6 +32,20 @@
     order: 3;
 }
 
+.sk-usermonic-headerrow > .sk-userlist-employee-cell > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left !important;
+}
+
+.sk-usermonic-headerrow > .sk-userlist-employee-cell > div::after {
+    content: "Статус";
+    width: 118px;
+    text-align: center;
+}
+
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-claims-cell {
     order: 4;
 }
