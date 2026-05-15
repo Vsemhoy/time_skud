@@ -17,7 +17,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     TruckOutlined
  } from "@ant-design/icons";
 import { getWeekDayString, secondsToTime } from "../../../components/Helpers/TextHelpers";
-import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
+import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 
@@ -42,6 +42,28 @@ const DynamicIcon = ({ iconName, ...props }) => {
     const IconComponent = iconMap[iconName];
     return IconComponent ? <IconComponent {...props} /> : null;
   };
+
+const formatPhone = (phone) => (phone && phone != 0 && phone !== '0' ? phone : '-');
+
+const getScheduleStartTime = (schedule) => {
+    const scheduleInfo = schedule?.skud_schedule ?? schedule;
+    const startTime = Number(scheduleInfo?.start_time);
+
+    return Number.isFinite(startTime) ? startTime : null;
+};
+
+const isEnterLaterThanSchedule = (enterTime, schedule) => {
+    const scheduleStartTime = getScheduleStartTime(schedule);
+    const enterDateTime = enterTime ? moscowDateTime(enterTime) : null;
+
+    if (scheduleStartTime == null || !enterDateTime?.isValid?.()) {
+        return false;
+    }
+
+    const enterSeconds = enterDateTime.hour() * 3600 + enterDateTime.minute() * 60 + enterDateTime.second();
+
+    return enterSeconds > scheduleStartTime;
+};
 
 
 
@@ -73,6 +95,7 @@ const UserMonitorListCard = (props) => {
     const [currentState, setCurrentState] = useState(0);
     const statusBackground = badger?.color;
     const showIdColumn = props.show_id_column !== false;
+    const isLateEnter = isEnterLaterThanSchedule(content.enter_time, content.schedule);
 
     useEffect(()=> {
         setContent(props.data);
@@ -170,7 +193,7 @@ const UserMonitorListCard = (props) => {
 
                 <div
                     title={content.user_occupy}
-                    className="sk-userlist-name-status-cell"
+                    className="sk-userlist-name-status-cell sk-userlist-employee-cell"
                     style={{'--user-status-bg': statusBackground}}
                 >
                     <div className={`${selectedColumns.includes(2) ? "sk-col-selected": ""}`}>
@@ -191,13 +214,13 @@ const UserMonitorListCard = (props) => {
                     </div>
                 </div>
 
-                <div style={{overflow: 'hidden', textAlign: 'center'}}>
+                <div className="sk-userlist-phone-cell" style={{overflow: 'hidden', textAlign: 'center'}}>
                     <div className={`${selectedColumns.includes(3) ? "sk-col-selected": ""}`}>
-                        <div>{content.phone && content.phone != 0 && content.phone !== '0' && content.phone}</div>
+                        <div>{formatPhone(content.phone)}</div>
                     </div>
                 </div>
 
-                <div className={`${selectedColumns.includes(10) ? "sk-col-selected": ""}`}>
+                <div className={`sk-userlist-enter-cell ${isLateEnter ? 'sk-userlist-enter-cell--late' : ''} ${selectedColumns.includes(10) ? "sk-col-selected": ""}`}>
                     {formatMoscowDateTime(content.enter_time)}
                 </div>
 
@@ -213,11 +236,11 @@ const UserMonitorListCard = (props) => {
                     {content.exit_time_count && secondsToTime(content.exit_time_count)}
                 </div>
 
-                <div className={`${selectedColumns.includes(16) ? "sk-col-selected": ""}`}>
+                <div className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected": ""}`}>
                     {content.lost_time_count && secondsToTime(content.lost_time_count)}
                 </div>
 
-                <div style={{textAlign: 'center'}}>
+                <div className="sk-userlist-claims-cell" style={{textAlign: 'center'}}>
                     <div className={`${selectedColumns.includes(20) ? "sk-col-selected": ""}`}>
                         {content?.claims && content.claims.length > 0 && content.claims.length}
                         {content.is_late && (<IssuesCloseOutlined

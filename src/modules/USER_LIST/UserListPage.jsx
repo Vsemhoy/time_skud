@@ -23,6 +23,7 @@ import ExtendedInformationSidebar from "./components/ExtendedInformationSidebar"
 import FiltersSidebar from "./components/FiltersSidebar";
 import ClaimListModal from "./components/ClaimListModal";
 import BillListModal from "./components/BillListModal";
+import {PhoneOutlined} from "@ant-design/icons";
 
 const TABLE_SKELETON_ROWS = 10;
 
@@ -44,15 +45,15 @@ const UserListTableSkeleton = ({extendedInfo, showIdColumn = true}) => (
         className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'}`}
         key={`userlist-skeleton-${index}`}
       >
+        <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
         {showIdColumn && <Skeleton.Button active size="small" className="sk-userlist-skeleton-id" />}
         <Skeleton.Input active size="small" className="sk-userlist-skeleton-name" />
-        <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
+        <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
-        <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />
         {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
         {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
         {extendedInfo && <Skeleton.Input active size="small" className="sk-userlist-skeleton-wide" />}
@@ -1200,8 +1201,19 @@ const UserList = (props)=>{
                             <div
                                 className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'}`}>
 
+                            <div
+                              className="sk-userlist-phone-cell"
+                              onClick={() => {
+                                toggleSelectedColumn(3)
+                              }}
+                            >
+                              <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`} title="Телефон">
+                                <PhoneOutlined />
+                              </div>
+                            </div>
+
                             {effectiveShowIdColumn && (
-                              <div onClick={() => {
+                              <div className="sk-userlist-id-cell" onClick={() => {
                                 toggleSelectedColumn(1)
                               }}>
                                 <div style={{paddingLeft: '9px'}}
@@ -1211,7 +1223,7 @@ const UserList = (props)=>{
                               </div>
                             )}
 
-                            <div onClick={() => {
+                            <div className="sk-userlist-employee-cell" onClick={() => {
                               toggleSelectedColumn(2)
                             }}>
                               <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}
@@ -1220,7 +1232,19 @@ const UserList = (props)=>{
                               </div>
                             </div>
 
-                            <div onClick={() => {
+                            <div
+                                className="sk-userlist-claims-cell"
+                                title="Заявки"
+                                onClick={() => {
+                                  toggleSelectedColumn(20)
+                                }}
+                            >
+                              <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
+                                Заявки
+                              </div>
+                            </div>
+
+                            <div className="sk-userlist-legacy-phone-header" onClick={() => {
                               toggleSelectedColumn(3)
                             }}>
                               <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`}>
@@ -1263,7 +1287,7 @@ const UserList = (props)=>{
                             </div>
 
                             <div
-                                className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
+                                className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(16)
                                 }}
@@ -1291,7 +1315,7 @@ const UserList = (props)=>{
                                 </div>
                             )}
 
-                            <div title='Заявки' className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
+                            <div title='Заявки' className={`sk-userlist-legacy-claims-header ${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
                             >Заявки
                             </div>
 
