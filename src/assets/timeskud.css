@@ -993,23 +993,15 @@ font-size: smaller;
 }
 
 .sk-userlist-skeleton-row .sk-userlist-skeleton-phone {
-    order: 1;
+    order: 2;
 }
 
 .sk-userlist-skeleton-row .sk-userlist-skeleton-id {
-    order: 2;
+    order: 1;
 }
 
 .sk-userlist-skeleton-row .sk-userlist-skeleton-name {
     order: 3;
-}
-
-.sk-userlist-skeleton-row.extended .sk-userlist-skeleton-id {
-    order: 1;
-}
-
-.sk-userlist-skeleton-row.extended .sk-userlist-skeleton-phone {
-    order: 2;
 }
 
 .sk-userlist-skeleton .ant-skeleton-element,

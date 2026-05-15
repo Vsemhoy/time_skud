@@ -426,11 +426,11 @@
 }
 
 .sk-usermonic-cardrow-ou-test > .sk-userlist-phone-cell {
-    order: 1;
+    order: 2;
 }
 
 .sk-usermonic-cardrow-ou-test > .sk-userlist-id-cell {
-    order: 2;
+    order: 1;
 }
 
 .sk-usermonic-cardrow-ou-test > .sk-userlist-employee-cell {
@@ -439,14 +439,6 @@
 
 .sk-usermonic-cardrow-ou-test > .sk-userlist-claims-cell {
     order: 4;
-}
-
-.sk-usermonic-cardrow-ou-test.extended > .sk-userlist-id-cell {
-    order: 1;
-}
-
-.sk-usermonic-cardrow-ou-test.extended > .sk-userlist-phone-cell {
-    order: 2;
 }
 
 .sk-userlist-legacy-phone-header,
