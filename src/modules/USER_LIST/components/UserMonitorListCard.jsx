@@ -59,17 +59,32 @@ const getScheduleStartTime = (schedule) => {
 
 const isFreeSchedule = (schedule) => {
     const scheduleInfo = schedule?.skud_schedule ?? schedule;
-    const scheduleTypeId = Number(scheduleInfo?.skud_schedule_type_id ?? schedule?.skud_schedule_type_id);
-    const scheduleTypeName = String(scheduleInfo?.skud_schedule_type?.name ?? schedule?.skud_schedule_type?.name ?? '');
+    const scheduleTypeId = Number(
+        scheduleInfo?.skud_schedule_type_id
+        ?? schedule?.skud_schedule_type_id
+        ?? schedule?.skud_schedule?.skud_schedule_type_id
+    );
+    const scheduleText = [
+        scheduleInfo?.skud_schedule_type?.name,
+        schedule?.skud_schedule_type?.name,
+        scheduleInfo?.name,
+        schedule?.name,
+        scheduleInfo?.description,
+        schedule?.description,
+    ].filter(Boolean).join(' ').toLowerCase();
 
-    return scheduleTypeId === 3 || scheduleTypeName.toLowerCase().includes('свобод');
+    return scheduleTypeId === 3 || scheduleText.includes('свобод');
 };
 
 const isEnterLaterThanSchedule = (enterTime, schedule) => {
+    if (isFreeSchedule(schedule)) {
+        return false;
+    }
+
     const scheduleStartTime = getScheduleStartTime(schedule);
     const enterDateTime = enterTime ? moscowDateTime(enterTime) : null;
 
-    if (isFreeSchedule(schedule) || scheduleStartTime == null || !enterDateTime?.isValid?.()) {
+    if (scheduleStartTime == null || !enterDateTime?.isValid?.()) {
         return false;
     }
 
