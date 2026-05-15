@@ -21,11 +21,11 @@
 }
 
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-phone-cell {
-    order: 1;
+    order: 2;
 }
 
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-id-cell {
-    order: 2;
+    order: 1;
 }
 
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-employee-cell {
