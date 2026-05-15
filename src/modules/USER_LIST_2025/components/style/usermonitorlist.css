@@ -1,22 +1,75 @@
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) {
     display: grid;
-    grid-template-columns: 42px minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
+    grid-template-columns: 42px 42px minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+    height: 32px;
     border: 1px solid #80808061;
     border-top: none;
     background: var(--row-main-bg-color);
     transition: all ease 0.2s;
 }
 .sk-usermonic-cardrow.without-id-column:not(.sk-usermonic-crd-divider) {
-    grid-template-columns: minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
+    grid-template-columns: 42px minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
 }
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div {
     transition: all 0.1s;
     align-content: center;
     min-width: 0;
+    order: 10;
+    box-sizing: border-box;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-phone-cell {
+    order: 1;
+}
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-id-cell {
+    order: 2;
+}
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-employee-cell {
+    order: 3;
+}
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-claims-cell {
+    order: 4;
+}
+
+.sk-userlist-legacy-phone-header,
+.sk-userlist-legacy-claims-header {
+    display: none;
 }
 .sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > div, .sk-usermonic-micro-row > div {
     box-shadow: -7px 0px 1px -6px var(--column-divider-color);
 }
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-claims-cell {
+    box-shadow: -7px 0px 1px -6px var(--column-divider-color), 7px 0px 1px -6px var(--column-divider-color);
+    white-space: nowrap;
+}
+
+.sk-userlist-claims-cell > div {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    max-width: 100%;
+    height: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+.sk-usermonic-cardrow:not(.sk-usermonic-crd-divider) > .sk-userlist-lost-time-cell {
+    box-shadow: -7px 0px 1px -6px var(--column-divider-color);
+}
+
+.sk-userlist-enter-cell--late,
+.sk-userlist-enter-cell--late * {
+    color: #d32029 !important;
+}
+
 .sk-usermonic-micro-row > div:last-child {
     box-shadow: -7px 0px 1px -6px var(--column-divider-color), 7px 0px 1px -6px var(--column-divider-color);
 }

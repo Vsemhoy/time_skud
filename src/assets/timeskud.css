@@ -967,7 +967,7 @@ font-size: smaller;
 
 .sk-userlist-skeleton-row {
     display: grid;
-    grid-template-columns: 52px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
+    grid-template-columns: 42px 52px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
     gap: 12px;
     align-items: center;
     padding: 14px 12px;
@@ -977,15 +977,39 @@ font-size: smaller;
 }
 
 .sk-userlist-skeleton-row.without-id-column {
-    grid-template-columns: minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) minmax(90px, 1fr);
+    grid-template-columns: 42px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
 }
 
 .sk-userlist-skeleton-row.extended {
-    grid-template-columns: 52px minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) repeat(3, minmax(80px, 1fr)) minmax(90px, 1fr);
+    grid-template-columns: 52px 42px minmax(220px, 2.4fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
 }
 
 .sk-userlist-skeleton-row.extended.without-id-column {
-    grid-template-columns: minmax(220px, 2.4fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr)) repeat(3, minmax(80px, 1fr)) minmax(90px, 1fr);
+    grid-template-columns: 42px minmax(220px, 2.4fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+}
+
+.sk-userlist-skeleton-row > * {
+    order: 10;
+}
+
+.sk-userlist-skeleton-row .sk-userlist-skeleton-phone {
+    order: 1;
+}
+
+.sk-userlist-skeleton-row .sk-userlist-skeleton-id {
+    order: 2;
+}
+
+.sk-userlist-skeleton-row .sk-userlist-skeleton-name {
+    order: 3;
+}
+
+.sk-userlist-skeleton-row.extended .sk-userlist-skeleton-id {
+    order: 1;
+}
+
+.sk-userlist-skeleton-row.extended .sk-userlist-skeleton-phone {
+    order: 2;
 }
 
 .sk-userlist-skeleton .ant-skeleton-element,

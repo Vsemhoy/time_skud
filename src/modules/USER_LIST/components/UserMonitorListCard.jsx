@@ -48,6 +48,28 @@ const DynamicIcon = ({ iconName, ...props }) => {
     return IconComponent ? <IconComponent {...props} /> : null;
   };
 
+const formatPhone = (phone) => (phone && phone !== 0 && phone !== '0' ? phone : '-');
+
+const getScheduleStartTime = (schedule) => {
+    const scheduleInfo = schedule?.skud_schedule ?? schedule;
+    const startTime = Number(scheduleInfo?.start_time);
+
+    return Number.isFinite(startTime) ? startTime : null;
+};
+
+const isEnterLaterThanSchedule = (enterTime, schedule) => {
+    const scheduleStartTime = getScheduleStartTime(schedule);
+    const enterDateTime = enterTime ? moscowDateTime(enterTime) : null;
+
+    if (scheduleStartTime == null || !enterDateTime?.isValid?.()) {
+        return false;
+    }
+
+    const enterSeconds = enterDateTime.hour() * 3600 + enterDateTime.minute() * 60 + enterDateTime.second();
+
+    return enterSeconds > scheduleStartTime;
+};
+
 const parseColorToRgb = (color) => {
     if (!color || typeof color !== 'string') {
         return null;
@@ -435,6 +457,7 @@ const UserMonitorListCard = (props) => {
 
     const displayedEnterTime = hasEnterExitField ? enterExitTimes.enter : enterExitTimes.enter ?? content.enter_time;
     const displayedExitTime = hasEnterExitField ? enterExitTimes.exit : enterExitTimes.exit ?? content.exit_time;
+    const isLateEnter = isEnterLaterThanSchedule(displayedEnterTime, content.schedule);
 
     const shouldHideExitTime = useMemo(() => {
         if (!normalizedEnterExitData.length) {
@@ -657,7 +680,7 @@ const UserMonitorListCard = (props) => {
 
                     <div
                         title={content.user_occupy}
-                        className="sk-userlist-name-status-cell"
+                        className="sk-userlist-name-status-cell sk-userlist-employee-cell"
                         style={{'--user-status-bg': statusBackground}}
                     >
                         <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}>
@@ -678,13 +701,13 @@ const UserMonitorListCard = (props) => {
                         </div>
                     </div>
 
-                    <div style={{overflow: 'hidden', textAlign: 'center'}}>
+                    <div className="sk-userlist-phone-cell" style={{overflow: 'hidden', textAlign: 'center'}}>
                         <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`}>
-                            <div>{content.phone && content.phone !== 0 && content.phone !== '0' && content.phone}</div>
+                            <div>{formatPhone(content.phone)}</div>
                         </div>
                     </div>
 
-                    <div className={`${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
+                    <div className={`sk-userlist-enter-cell ${isLateEnter ? 'sk-userlist-enter-cell--late' : ''} ${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
                         {renderEventDumpCell(displayedEnterTime)}
                     </div>
 
@@ -700,7 +723,7 @@ const UserMonitorListCard = (props) => {
                         {formatDurationFromMinute(content.exit_time_count)}
                     </div>
 
-                    <div className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}>
+                    <div className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}>
                         {formatDurationFromMinute(content.lost_time_count)}
                     </div>
 
@@ -745,10 +768,10 @@ const UserMonitorListCard = (props) => {
                         </div>
                     )}
 
-                    <div style={{textAlign: 'center'}}>
+                    <div className="sk-userlist-claims-cell" style={{textAlign: 'center'}}>
                         <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
                             {visibleClaims.length > 0 && (
-                                <div style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap'}}>
+                                <div className="sk-userlist-claims-icons">
                                     {visibleClaims.map((claim) => (
                                         <Tooltip key={`claim-icon-${content.id}-${claim.id}`} title={renderClaimTooltip(claim)} placement="bottom" overlayClassName="sk-theme-tooltip">
                                             <span

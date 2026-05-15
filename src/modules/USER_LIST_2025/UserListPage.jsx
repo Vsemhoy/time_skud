@@ -47,6 +47,7 @@ import {
   RightOutlined, RocketOutlined,
   RollbackOutlined,
   SafetyCertificateOutlined,
+  PhoneOutlined,
   SendOutlined, SmileOutlined,
   StepBackwardOutlined,
   ToolOutlined, TruckOutlined, TwitterOutlined, UserOutlined, WarningOutlined
@@ -911,8 +912,19 @@ const UserList2 = (props)=>{
                     <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
                       <Affix offsetTop={0}>
                         <div className={`sk-usermonic-cardrow sk-usermonic-headerrow ${showIdColumn ? '' : 'without-id-column'}`}>
+                          <div
+                              className="sk-userlist-phone-cell"
+                              onClick={() => {
+                                toggleSelectedColumn(3)
+                              }}
+                          >
+                            <div className={`${selectedColumns.includes(3) ? "sk-col-selected" : ""}`} title="Телефон">
+                              <PhoneOutlined />
+                            </div>
+                          </div>
                           {showIdColumn && (
                             <div
+                                className="sk-userlist-id-cell"
                                 onClick={() => {
                                   toggleSelectedColumn(1)
                                 }}
@@ -925,6 +937,7 @@ const UserList2 = (props)=>{
                             </div>
                           )}
                           <div
+                              className="sk-userlist-employee-cell"
                               onClick={() => {
                                 toggleSelectedColumn(2)
                               }}
@@ -934,6 +947,18 @@ const UserList2 = (props)=>{
                             </div>
                           </div>
                           <div
+                              className="sk-userlist-claims-cell"
+                              title="Заявки"
+                              onClick={() => {
+                                toggleSelectedColumn(20)
+                              }}
+                          >
+                            <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
+                              Заявки
+                            </div>
+                          </div>
+                          <div
+                              className="sk-userlist-legacy-phone-header"
                               onClick={() => {
                                 toggleSelectedColumn(3)
                               }}
@@ -974,7 +999,7 @@ const UserList2 = (props)=>{
                           >Крат. перерыв
                           </div>
                           <div
-                              className={`${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
+                              className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
                               onClick={() => {
                                 toggleSelectedColumn(16)
                               }}
@@ -982,6 +1007,7 @@ const UserList2 = (props)=>{
                           >Потерянное время
                           </div>
                           <div
+                              className="sk-userlist-legacy-claims-header"
                               title="Заявки"
                               onClick={() => {
                                 toggleSelectedColumn(20)
