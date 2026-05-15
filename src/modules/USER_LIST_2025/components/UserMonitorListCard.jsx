@@ -52,11 +52,19 @@ const getScheduleStartTime = (schedule) => {
     return Number.isFinite(startTime) ? startTime : null;
 };
 
+const isFreeSchedule = (schedule) => {
+    const scheduleInfo = schedule?.skud_schedule ?? schedule;
+    const scheduleTypeId = Number(scheduleInfo?.skud_schedule_type_id ?? schedule?.skud_schedule_type_id);
+    const scheduleTypeName = String(scheduleInfo?.skud_schedule_type?.name ?? schedule?.skud_schedule_type?.name ?? '');
+
+    return scheduleTypeId === 3 || scheduleTypeName.toLowerCase().includes('свобод');
+};
+
 const isEnterLaterThanSchedule = (enterTime, schedule) => {
     const scheduleStartTime = getScheduleStartTime(schedule);
     const enterDateTime = enterTime ? moscowDateTime(enterTime) : null;
 
-    if (scheduleStartTime == null || !enterDateTime?.isValid?.()) {
+    if (isFreeSchedule(schedule) || scheduleStartTime == null || !enterDateTime?.isValid?.()) {
         return false;
     }
 
