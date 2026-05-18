@@ -73,6 +73,7 @@ const yearsOptions = Array.from({length: 8}, (_, index) => {
 const emptyMetric = {
     days: 0,
     hours: 0,
+    time: '',
     by_days: [],
 };
 
@@ -92,6 +93,7 @@ const getMetricByRow = (source, row) => {
 const hasMetricData = (metric) => (
     Number(metric?.days) > 0
     || Number(metric?.hours) > 0
+    || Boolean(metric?.time)
     || (Array.isArray(metric?.by_days) && metric.by_days.length > 0)
 );
 
@@ -350,6 +352,14 @@ const BillListModal = (props) => {
         return `${numericValue.toFixed(2)} ч`;
     };
 
+    const formatMetricTimeValue = (metric) => {
+        if (metric?.time) {
+            return metric.time;
+        }
+
+        return formatHoursValue(metric?.hours);
+    };
+
     const formatEventTimeValue = (time, hours) => {
         const timeString = typeof time === 'string' ? time : '';
         const parsedTime = timeString.match(/(\d+)\s*час(?:ов|а)?\s*(\d+)\s*минут(?:ы)?/i);
@@ -385,7 +395,7 @@ const BillListModal = (props) => {
             return {
                 ...row,
                 days: formatDaysValue(metric?.days),
-                hours: formatHoursValue(metric?.hours),
+                hours: formatMetricTimeValue(metric),
                 byDays: Array.isArray(metric?.by_days) ? metric.by_days : [],
                 hasData: hasMetricData(metric),
             };
