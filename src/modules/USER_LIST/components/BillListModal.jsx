@@ -93,7 +93,6 @@ const getMetricByRow = (source, row) => {
 const hasMetricData = (metric) => (
     Number(metric?.days) > 0
     || Number(metric?.hours) > 0
-    || Boolean(metric?.time)
     || (Array.isArray(metric?.by_days) && metric.by_days.length > 0)
 );
 
@@ -404,7 +403,7 @@ const BillListModal = (props) => {
 
     const summaryMeta = {
         workDays: formatDaysValue(billListInfo?.calendar_info?.days),
-        normHours: formatHoursValue(billListInfo?.calendar_info?.hours),
+        normHours: formatMetricTimeValue(billListInfo?.calendar_info),
         rows: summaryRows,
     };
     const eventRows = summaryMeta.rows.filter((row) => row.byDays.length > 0);
@@ -552,7 +551,7 @@ const BillListModal = (props) => {
                                         <div className={`bill-list-summary-table-row ${row.danger ? 'bill-list-summary-table-row--danger' : ''}`}>
                                             <div>{row.label}</div>
                                             <div>{row.days}</div>
-                                            <div>{row.time}</div>
+                                            <div>{row.hours}</div>
                                         </div>
                                     );
 
