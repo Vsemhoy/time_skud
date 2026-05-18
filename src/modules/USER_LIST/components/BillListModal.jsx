@@ -6,13 +6,13 @@ import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
 
 const SUMMARY_ROWS = [
-    {key: 'office', label: '\u0412 \u043e\u0444\u0438\u0441\u0435', color: 'green'},
-    {key: 'vacation', label: '\u041e\u0442\u043f\u0443\u0441\u043a', color: 'blue'},
-    {key: 'sick_leave', label: '\u0411\u043e\u043b\u044c\u043d\u0438\u0447\u043d\u044b\u0439', color: 'volcano'},
-    {key: 'containers', label: '\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u044b', color: 'gold'},
+    {key: 'office', label: 'В офисе', color: 'green'},
+    {key: 'vacation', label: 'Отпуск', color: 'blue'},
+    {key: 'sick_leave', label: 'Больничный', color: 'volcano'},
+    {key: 'containers', label: 'Контейнеры', color: 'gold'},
     {
         key: 'business_trips_local',
-        label: '\u041c\u0435\u0441\u0442\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u0438\u0440\u043e\u0432\u043a\u0438',
+        label: 'Местные командировки',
         color: 'geekblue',
         dataKeys: [
             'business_trips_local',
@@ -26,7 +26,7 @@ const SUMMARY_ROWS = [
     },
     {
         key: 'business_trips_long',
-        label: '\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u0438\u0440\u043e\u0432\u043a\u0438',
+        label: 'Длительные командировки',
         color: 'cyan',
         dataKeys: [
             'business_trips_long',
@@ -36,29 +36,29 @@ const SUMMARY_ROWS = [
             'business_trips.long_business_trips',
         ],
     },
-    {key: 'reworkings', label: '\u041e\u0442\u0440\u0430\u0431\u043e\u0442\u043a\u0438', color: 'lime'},
+    {key: 'reworkings', label: 'Отработки', color: 'lime'},
     {
         key: 'time_lost',
-        label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f',
+        label: 'Потерянное время',
         color: 'red',
         danger: true,
-        tooltip: '\u041e\u0434\u0438\u043d \u0434\u0435\u043d\u044c = 8 \u0447\u0430\u0441\u043e\u0432 \u043f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0433\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438',
+        tooltip: 'Один день = 8 часов потерянного времени',
     },
 ];
 
 const monthsOptions = [
-    {id: 1, name: '\u042f\u043d\u0432\u0430\u0440\u044c'},
-    {id: 2, name: '\u0424\u0435\u0432\u0440\u0430\u043b\u044c'},
-    {id: 3, name: '\u041c\u0430\u0440\u0442'},
-    {id: 4, name: '\u0410\u043f\u0440\u0435\u043b\u044c'},
-    {id: 5, name: '\u041c\u0430\u0439'},
-    {id: 6, name: '\u0418\u044e\u043d\u044c'},
-    {id: 7, name: '\u0418\u044e\u043b\u044c'},
-    {id: 8, name: '\u0410\u0432\u0433\u0443\u0441\u0442'},
-    {id: 9, name: '\u0421\u0435\u043d\u0442\u044f\u0431\u0440\u044c'},
-    {id: 10, name: '\u041e\u043a\u0442\u044f\u0431\u0440\u044c'},
-    {id: 11, name: '\u041d\u043e\u044f\u0431\u0440\u044c'},
-    {id: 12, name: '\u0414\u0435\u043a\u0430\u0431\u0440\u044c'},
+    {id: 1, name: 'Январь'},
+    {id: 2, name: 'Февраль'},
+    {id: 3, name: 'Март'},
+    {id: 4, name: 'Апрель'},
+    {id: 5, name: 'Май'},
+    {id: 6, name: 'Июнь'},
+    {id: 7, name: 'Июль'},
+    {id: 8, name: 'Август'},
+    {id: 9, name: 'Сентябрь'},
+    {id: 10, name: 'Октябрь'},
+    {id: 11, name: 'Ноябрь'},
+    {id: 12, name: 'Декабрь'},
 ];
 
 const yearsOptions = Array.from({length: 8}, (_, index) => {
@@ -73,6 +73,7 @@ const yearsOptions = Array.from({length: 8}, (_, index) => {
 const emptyMetric = {
     days: 0,
     hours: 0,
+    time: '',
     by_days: [],
 };
 
@@ -92,6 +93,7 @@ const getMetricByRow = (source, row) => {
 const hasMetricData = (metric) => (
     Number(metric?.days) > 0
     || Number(metric?.hours) > 0
+    || Boolean(metric?.time)
     || (Array.isArray(metric?.by_days) && metric.by_days.length > 0)
 );
 
@@ -350,6 +352,14 @@ const BillListModal = (props) => {
         return `${numericValue.toFixed(2)} ч`;
     };
 
+    const formatMetricTimeValue = (metric) => {
+        if (metric?.time) {
+            return metric.time;
+        }
+
+        return formatHoursValue(metric?.hours);
+    };
+
     const formatEventTimeValue = (time, hours) => {
         const timeString = typeof time === 'string' ? time : '';
         const parsedTime = timeString.match(/(\d+)\s*час(?:ов|а)?\s*(\d+)\s*минут(?:ы)?/i);
@@ -385,7 +395,7 @@ const BillListModal = (props) => {
             return {
                 ...row,
                 days: formatDaysValue(metric?.days),
-                hours: formatHoursValue(metric?.hours),
+                hours: formatMetricTimeValue(metric),
                 byDays: Array.isArray(metric?.by_days) ? metric.by_days : [],
                 hasData: hasMetricData(metric),
             };
@@ -447,7 +457,7 @@ const BillListModal = (props) => {
 
     return (
         <Modal
-            title={'\u0420\u0430\u0441\u0447\u0435\u0442\u043d\u044b\u0439 \u043b\u0438\u0441\u0442 \u043e\u0444\u0438\u0441'}
+            title={'Расчетный лист офис'}
             closable={{'aria-label': 'Custom Close Button'}}
             footer={null}
             open={props?.isOpenBillListModal}
@@ -467,7 +477,7 @@ const BillListModal = (props) => {
                         <div className={'bill-list-modal-header'}>
                             {canSelectUser ? (
                                 <Select
-                                    placeholder={'\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a'}
+                                    placeholder={'Сотрудник'}
                                     style={{width: '300px'}}
                                     options={prepareOptions(usersOptions) ?? []}
                                     showSearch
@@ -484,14 +494,14 @@ const BillListModal = (props) => {
                                 </div>
                             )}
                             <Select
-                                placeholder={'\u041c\u0435\u0441\u044f\u0446'}
+                                placeholder={'Месяц'}
                                 style={{width: '150px'}}
                                 options={prepareOptions(monthsOptions) ?? []}
                                 value={selectedMonth}
                                 onChange={setSelectedMonth}
                             />
                             <Select
-                                placeholder={'\u0413\u043e\u0434'}
+                                placeholder={'Год'}
                                 style={{width: '150px'}}
                                 options={prepareOptions(yearsOptions) ?? []}
                                 value={selectedYear}
@@ -499,14 +509,14 @@ const BillListModal = (props) => {
                             />
                         </div>
                         {canSelectUser && (
-                            <Tooltip title={'\u041f\u043e \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u043c\u0443 \u0433\u043e\u0434\u0443 \u0438 \u043c\u0435\u0441\u044f\u0446\u0443'}>
+                            <Tooltip title={'По выбранному году и месяцу'}>
                                 <Button
                                     className={'bill-list-export-button'}
                                     loading={isExportingAll}
                                     disabled={isExportingAll || isLoadingFilters || isLoadingBillList}
                                     onClick={handleExportAll}
                                 >
-                                    {'\u0412\u044b\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435 \u043f\u043e \u0432\u0441\u0435\u043c'}
+                                    {'Выгрузить данные по всем'}
                                 </Button>
                             </Tooltip>
                         )}
@@ -519,13 +529,13 @@ const BillListModal = (props) => {
                             <div className={'bill-list-summary-cards'}>
                                 <div className={'bill-list-summary-card'}>
                                     <div className={'bill-list-summary-card-label'}>
-                                        {'\u0420\u0430\u0431\u043e\u0447\u0438\u0445 \u0434\u043d\u0435\u0439 \u0432 \u043c\u0435\u0441\u044f\u0446\u0435'}
+                                        {'Рабочих дней в месяце'}
                                     </div>
                                     <div className={'bill-list-summary-card-value'}>{summaryMeta.workDays}</div>
                                 </div>
                                 <div className={'bill-list-summary-card'}>
                                     <div className={'bill-list-summary-card-label'}>
-                                        {'\u041d\u043e\u0440\u043c\u0430 \u0447\u0430\u0441\u043e\u0432'}
+                                        {'Норма часов'}
                                     </div>
                                     <div className={'bill-list-summary-card-value'}>{summaryMeta.normHours}</div>
                                 </div>
@@ -533,16 +543,16 @@ const BillListModal = (props) => {
 
                             <div className={'bill-list-summary-table'}>
                                 <div className={'bill-list-summary-table-header'}>
-                                    <div>{'\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c'}</div>
-                                    <div>{'\u0414\u043d\u0435\u0439'}</div>
-                                    <div>{'\u0427\u0430\u0441\u043e\u0432'}</div>
+                                    <div>{'Показатель'}</div>
+                                    <div>{'Дней'}</div>
+                                    <div>{'Часов'}</div>
                                 </div>
                                 {summaryMeta.rows.map((row) => {
                                     const rowContent = (
                                         <div className={`bill-list-summary-table-row ${row.danger ? 'bill-list-summary-table-row--danger' : ''}`}>
                                             <div>{row.label}</div>
                                             <div>{row.days}</div>
-                                            <div>{row.hours}</div>
+                                            <div>{row.time}</div>
                                         </div>
                                     );
 
@@ -562,7 +572,7 @@ const BillListModal = (props) => {
                             items={[
                                 {
                                     key: 'by-days',
-                                    label: '\u0421\u043e\u0431\u044b\u0442\u0438\u044f \u043f\u043e \u0434\u0430\u0442\u0430\u043c',
+                                    label: 'События по датам',
                                     children: (
                                         <div className={'table-by-days'}>
                                             {eventRows.map((row) => (
@@ -585,7 +595,7 @@ const BillListModal = (props) => {
                                             ))}
                                             {eventRows.length === 0 && (
                                                 <div className={'table-by-days-row table-by-days-row--empty'}>
-                                                    <div className={'days-cell'}>{'\u041d\u0435\u0442 \u0441\u043e\u0431\u044b\u0442\u0438\u0439'}</div>
+                                                    <div className={'days-cell'}>{'Нет событий'}</div>
                                                 </div>
                                             )}
                                         </div>
