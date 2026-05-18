@@ -26,6 +26,26 @@ import dayjs from "dayjs";
 import {USERS} from "../../CHARTS/mock/mock";
 import {ManOutlined, WomanOutlined} from "@ant-design/icons";
 
+const FIELD_CONTROL_STYLE = {width: '100%'};
+const USER_ROLES = [
+    {
+        id: 1,
+        name: 'Менеджер',
+    },
+    {
+        id: 2,
+        name: 'Администратор',
+    },
+    {
+        id: 3,
+        name: 'Бухгалтер',
+    },
+    {
+        id: 4,
+        name: 'Инженер',
+    },
+];
+
 const BaseInfoWorkspace = (props) => {
     const navigate = useNavigate();
     const { currentUser, userIdState, savingInfo, onSavedInfo, onUpdateBaseInfo, onUpdateSavingInfo, prepareAndShowAlert } = useOutletContext();
@@ -98,6 +118,10 @@ const BaseInfoWorkspace = (props) => {
         id: 0,
         name: 'Работает',
     });
+    const [role, setRole] = useState({
+        id: null,
+        name: '',
+    });
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [cardNumber, setCardNumber] = useState('');
@@ -128,7 +152,7 @@ const BaseInfoWorkspace = (props) => {
     }, [
         company, surname, name, patronymic, department, occupy,
         innerPhone, telegramID, email, dateLeave, dateEnter, dateLeave,
-        rating, status, login, password, cardNumber, conditionalCard, allowEntry
+        rating, status, role, boss, login, password, cardNumber, conditionalCard, allowEntry
     ]);
 
     useEffect(() => {
@@ -164,6 +188,18 @@ const BaseInfoWorkspace = (props) => {
         console.log(companies);
         console.log(company);
     }, [companies, company]);
+
+    useEffect(() => {
+        if (!boss?.id || !bosses?.length) {
+            return;
+        }
+
+        const selectedBoss = bosses.find((item) => Number(item.id) === Number(boss.id));
+
+        if (selectedBoss && selectedBoss !== boss) {
+            setBoss(selectedBoss);
+        }
+    }, [boss?.id, bosses]);
 
     const fetchInfo = async () => {
         setIsLoading(true);
@@ -241,7 +277,12 @@ const BaseInfoWorkspace = (props) => {
         setDateEnter(content.dateEnter ? dayjs(content.dateEnter, 'DD.MM.YYYY') : null);
         setRating(content?.rating);
         setStatus(content?.status);
-        setBoss(content?.boss);
+        setRole(
+            content?.role
+            ?? USER_ROLES.find((item) => Number(item.id) === Number(content?.sales_role))
+            ?? {id: null, name: ''}
+        );
+        setBoss(content?.boss ?? {id: content?.boss_id ?? null, name: ''});
         setLogin(content?.login);
         setPassword(content?.password);
         setCardNumber(content?.cardNumber);
@@ -280,10 +321,11 @@ const BaseInfoWorkspace = (props) => {
     const createUser = async () => {
         //if (PRODMODE) {
             try {
+                const sales_role = (role?.id !== undefined && role?.id !== null) ? Number(role.id) : null;
                 const info = {
                     sex, company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, boss, login, password, cardNumber, conditionalCard, allowEntry
+                    rating, status, sales_role, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
                 const data = {
                     id: userIdState,
@@ -317,10 +359,11 @@ const BaseInfoWorkspace = (props) => {
     const sendUpdatedInfo = async () => {
         //if (PRODMODE) {
             try {
+                const sales_role = (role?.id !== undefined && role?.id !== null) ? Number(role.id) : null;
                 const data = {
                     sex, company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, boss, login, password, cardNumber, conditionalCard, allowEntry
+                    rating, status, sales_role, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
                 console.log(data);
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/updateuserbaseinfo/${userIdState}`,
@@ -402,273 +445,356 @@ const BaseInfoWorkspace = (props) => {
         setAlertDescription(description);
     };*/
 
+    const renderField = ({key, label, control, tooltip, wide}) => {
+        const row = (
+            <div className={`${styles.sk_info_line} ${wide ? styles.sk_info_line_wide : ''}`}>
+                <p className={styles.sk_line_label}>{label}</p>
+                <div className={styles.sk_field_control}>{control}</div>
+            </div>
+        );
+
+        if (!tooltip) {
+            return React.cloneElement(row, {key});
+        }
+
+        return (
+            <Tooltip key={key} title={tooltip}>
+                {row}
+            </Tooltip>
+        );
+    };
+
+    const mainInfoFields = [
+        {
+            key: 'company',
+            label: 'Компания',
+            control: (
+                <ConfigProvider
+                    theme={{
+                        components: {
+                            Select: {
+                                selectorBg: '#ffffff',
+                                colorBgElevated: '#ffffff',
+                                colorBgContainerDisabled: company.color,
+                                colorTextDisabled: '#ffffff',
+                                colorBorder: '#d9d9d9',
+                                colorBorderDisabled: company.color,
+                            },
+                        },
+                    }}
+                >
+                    <Select placeholder="Компания"
+                            value={(company.id !== undefined && company.id !== null) ? +company.id : null}
+                            options={companies}
+                            disabled={userIdState !== 'new'}
+                            onChange={(id) => setCompany(companies.find(c => c.id === id))}
+                            style={FIELD_CONTROL_STYLE}
+                            status="warning"
+                            fieldNames={{
+                                value: 'id',
+                                label: 'name',
+                            }}
+                    />
+                </ConfigProvider>
+            ),
+        },
+        {
+            key: 'surname',
+            label: 'Фамилия',
+            control: (
+                <Input placeholder="Фамилия"
+                       value={surname}
+                       onChange={(e) => setSurname(e.target.value)}
+                       status="warning"
+                />
+            ),
+        },
+        {
+            key: 'name',
+            label: 'Имя',
+            control: (
+                <Input placeholder="Имя"
+                       value={name}
+                       onChange={(e) => setName(e.target.value)}
+                       status="warning"
+                />
+            ),
+        },
+        {
+            key: 'patronymic',
+            label: 'Отчество',
+            control: (
+                <Input placeholder="Отчество"
+                       value={patronymic}
+                       onChange={(e) => setPatronymic(e.target.value)}
+                       status="warning"
+                />
+            ),
+        },
+        {
+            key: 'department',
+            label: 'Отдел',
+            tooltip: userIdState === 'new' ? 'Пользователи без отдела могут быть не видны в списках' : null,
+            control: (
+                <Select placeholder="Отдел"
+                        value={(department.id !== undefined && department.id !== null) ? +department.id : null}
+                        options={departments}
+                        onChange={(id) => setDepartment(departments.find(c => c.id === id))}
+                        style={FIELD_CONTROL_STYLE}
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                />
+            ),
+        },
+        {
+            key: 'occupy',
+            label: 'Должность',
+            control: (
+                <Input placeholder="Должность"
+                       value={occupy}
+                       onChange={(e) => setOccupy(e.target.value)}
+                       status="warning"
+                />
+            ),
+        },
+        {
+            key: 'role',
+            label: 'Роль',
+            tooltip: 'Необходимо указывать для сотрудников работающих в модуле отдела продаж',
+            control: (
+                <Select placeholder="Роль"
+                        value={(role.id !== undefined && role.id !== null) ? +role.id : null}
+                        options={USER_ROLES}
+                        onChange={(id) => setRole(USER_ROLES.find(c => Number(c.id) === Number(id)) ?? {id: null, name: ''})}
+                        style={FIELD_CONTROL_STYLE}
+                        allowClear
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                />
+            ),
+        },
+        {
+            key: 'innerPhone',
+            label: 'Внутренний телефон',
+            control: (
+                <Input placeholder="Внутренний телефон"
+                       value={innerPhone}
+                       onChange={(e) => setInnerPhone(e.target.value)}
+                       status="warning"
+                />
+            ),
+        },
+        {
+            key: 'telegramID',
+            label: 'Телеграм ID',
+            control: (
+                <Input placeholder="Телеграм ID"
+                       value={telegramID}
+                       onChange={(e) => setTelegramID(e.target.value)}
+                />
+            ),
+        },
+        {
+            key: 'email',
+            label: 'Эл. почта',
+            control: (
+                <Input placeholder="Эл. почта"
+                       value={email}
+                       onChange={(e) => setEmail(e.target.value)}
+                />
+            ),
+        },
+        {
+            key: 'dateLeave',
+            label: 'Дата ухода',
+            control: (
+                <DatePicker placeholder="Дата ухода"
+                            value={dateLeave}
+                            onChange={(e) => setDateLeave(e)}
+                            format={"DD.MM.YYYY"}
+                            style={FIELD_CONTROL_STYLE}
+                />
+            ),
+        },
+        {
+            key: 'dateEnter',
+            label: 'Дата приёма',
+            control: (
+                <DatePicker placeholder="Дата приёма"
+                            value={dateEnter}
+                            onChange={(e) => setDateEnter(e)}
+                            format={"DD.MM.YYYY"}
+                            style={FIELD_CONTROL_STYLE}
+                />
+            ),
+        },
+        {
+            key: 'rating',
+            label: 'Рейтинг',
+            tooltip: userIdState === 'new' ? 'Рейтинг определяет порядок сортировки пользователя в списках старой системы' : null,
+            control: (
+                <Input placeholder="Рейтинг"
+                       value={rating}
+                       onChange={(e) => setRating(e.target.value)}
+                       status="warning"
+                />
+            ),
+        },
+        {
+            key: 'status',
+            label: 'Статус',
+            control: (
+                <Select placeholder="Статус"
+                        value={(status.id !== undefined && status.id !== null) ? +status.id : null}
+                        options={statuses}
+                        onChange={(id) => setStatus(statuses.find(c => c.id === id))}
+                        style={FIELD_CONTROL_STYLE}
+                        status="warning"
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                />
+            ),
+        },
+        {
+            key: 'boss',
+            label: 'Руководитель',
+            wide: true,
+            tooltip: userIdState === 'new' ? 'Каждый новый пользователь должен иметь руководителя' : null,
+            control: (
+                <Select placeholder="Руководитель"
+                        value={(boss.id !== undefined && boss.id !== null && Number(boss.id) !== 0) ? +boss.id : null}
+                        options={bosses}
+                        onChange={(id) => setBoss(bosses.find(c => Number(c.id) === Number(id)) ?? {id: id ?? null, name: ''})}
+                        style={FIELD_CONTROL_STYLE}
+                        status="warning"
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                        showSearch
+                        optionFilterProp="name"
+                        allowClear
+                />
+            ),
+        },
+    ];
+
+    const accessFields = [
+        {
+            key: 'login',
+            label: 'Логин',
+            control: (
+                <Input placeholder="Не менее пяти символов"
+                       value={login}
+                       onChange={(e) => setLogin(e.target.value)}
+                />
+            ),
+        },
+        {
+            key: 'password',
+            label: 'Пароль',
+            tooltip: userIdState !== 'new' ? 'Для изменения пароля впишите новый' : 'Один пароль для старой и новой системы',
+            control: (
+                <Input placeholder="Не менее четырех символов"
+                       value={password}
+                       onChange={(e) => setPassword(e.target.value)}
+                />
+            ),
+        },
+        {
+            key: 'cardNumber',
+            label: 'Номер карточки',
+            control: (
+                <Input placeholder="Карточка для доступа в офис"
+                       value={cardNumber}
+                       onChange={(e) => setCardNumber(e.target.value)}
+                />
+            ),
+        },
+        {
+            key: 'conditionalCard',
+            label: 'Условная карточка',
+            control: (
+                <Select placeholder="Стелс / Нормальная"
+                        value={(conditionalCard.id !== undefined && conditionalCard.id !== null) ? +conditionalCard.id : null}
+                        options={conditionalCards}
+                        onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
+                        style={FIELD_CONTROL_STYLE}
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                />
+            ),
+        },
+        {
+            key: 'allowEntry',
+            label: 'Разрешить вход',
+            control: (
+                <Select placeholder="Да / Нет"
+                        value={(allowEntry.id !== undefined && allowEntry.id !== null) ? +allowEntry.id : null}
+                        options={allowEntries}
+                        onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
+                        style={FIELD_CONTROL_STYLE}
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                        disabled={IsDisableAllowEntry()}
+                />
+            ),
+        },
+    ];
+
     return (
         <Spin spinning={isLoading}>
             <div className={styles.sk_base_workspace}>
-                <div className={styles.sk_user_info_column}>
-                    <div style={{width: '100%', display: 'flex'}}>
+                <section className={styles.sk_user_info_column}>
+                    <div className={styles.sk_section_header}>
                         <p className={styles.sk_column_header}>Основные данные пользователя</p>
-                        <div className={styles.sk_column_header} style={{display: 'flex', justifyContent: 'flex-end'}}>
-                            <Radio.Group
-                                value={sex}
-                                onChange={(e) => setSex(e.target.value)}
-                                optionType="button"
-                                buttonStyle="solid"
-                                size="small"
-                                style={{marginTop: '2px', width: '360px', display: 'flex'}}
-                            >
-                                <Radio.Button value={1} style={{flex: 1, textAlign: 'center'}}>
-                                    <ManOutlined /> Муж
-                                </Radio.Button>
-                                <Radio.Button value={2} style={{flex: 1, textAlign: 'center'}}>
-                                    <WomanOutlined /> Жен
-                                </Radio.Button>
-                            </Radio.Group>
-                        </div>
-                    </div>
-
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Компания</p>
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Select: {
-                                        selectorBg: '#ffffff',
-                                        colorBgElevated: '#ffffff',
-                                        colorBgContainerDisabled: company.color,
-                                        colorTextDisabled: '#ffffff',
-                                        colorBorder: '#d9d9d9',
-                                        colorBorderDisabled: company.color,
-                                    },
-                                },
-                            }}
+                        <Radio.Group
+                            value={sex}
+                            onChange={(e) => setSex(e.target.value)}
+                            optionType="button"
+                            buttonStyle="solid"
+                            size="small"
+                            className={styles.sk_sex_switch}
                         >
-                            <Select placeholder="Компания"
-                                    value={(company.id !== undefined && company.id !== null) ? +company.id : null}
-                                    options={companies}
-                                    disabled={userIdState !== 'new'}
-                                    onChange={(id) => setCompany(companies.find(c => c.id === id))}
-                                    style={{width: 360}}
-                                    status="warning"
-                                    fieldNames={{
-                                        value: 'id',
-                                        label: 'name',
-                                    }}
-                            />
-                        </ConfigProvider>
+                            <Radio.Button value={1}>
+                                <ManOutlined /> Муж
+                            </Radio.Button>
+                            <Radio.Button value={2}>
+                                <WomanOutlined /> Жен
+                            </Radio.Button>
+                        </Radio.Group>
                     </div>
-
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Фамилия</p>
-                        <Input placeholder="Фамилия"
-                               value={surname}
-                               onChange={(e) => setSurname(e.target.value)}
-                               style={{width: 360}}
-                               status="warning"
-                        />
+                    <div className={styles.sk_fields_grid}>
+                        {mainInfoFields.map(renderField)}
                     </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Имя</p>
-                        <Input placeholder="Имя"
-                               value={name}
-                               onChange={(e) => setName(e.target.value)}
-                               style={{width: 360}}
-                               status="warning"
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Отчество</p>
-                        <Input placeholder="Отчество"
-                               value={patronymic}
-                               onChange={(e) => setPatronymic(e.target.value)}
-                               style={{width: 360}}
-                               status="warning"
-                        />
-                    </div>
-                    <Tooltip title={userIdState === 'new' ? 'Пользователи без отдела могут быть не видны в списках' : null}>
-                        <div className={styles.sk_info_line}>
-                            <p className={styles.sk_line_label}>Отдел</p>
-                            <Select placeholder="Отдел"
-                                    value={(department.id !== undefined && department.id !== null) ? +department.id : null}
-                                    options={departments}
-                                    onChange={(id) => setDepartment(departments.find(c => c.id === id))}
-                                    style={{width: 360}}
-                                    fieldNames={{
-                                        value: 'id',
-                                        label: 'name',
-                                    }}
-                            />
-                        </div>
-                    </Tooltip>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Должность</p>
-                        <Input placeholder="Должность"
-                               value={occupy}
-                               onChange={(e) => setOccupy(e.target.value)}
-                               style={{width: 360}}
-                               status="warning"
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Внутренний телефон</p>
-                        <Input placeholder="Внутренний телефон"
-                               value={innerPhone}
-                               onChange={(e) => setInnerPhone(e.target.value)}
-                               style={{width: 360}}
-                               status="warning"
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Телеграм ID</p>
-                        <Input placeholder="Телеграм ID"
-                               value={telegramID}
-                               onChange={(e) => setTelegramID(e.target.value)}
-                               style={{width: 360}}
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Эл. Почта</p>
-                        <Input placeholder="Эл. Почта"
-                               value={email}
-                               onChange={(e) => setEmail(e.target.value)}
-                               style={{width: 360}}
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Дата ухода</p>
-                        <DatePicker placeholder="Дата ухода"
-                                    value={dateLeave}
-                                    onChange={(e) => setDateLeave(e)}
-                                    format={"DD.MM.YYYY"}
-                                    style={{width: 360}}
-                        />
-                    </div>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Дата приёма</p>
-                        <DatePicker placeholder="Дата приёма"
-                                    value={dateEnter}
-                                    onChange={(e) => setDateEnter(e)}
-                                    format={"DD.MM.YYYY"}
-                                    style={{width: 360}}
-                        />
-                    </div>
-                    <Tooltip title={userIdState === 'new' ? 'Рейтинг определяет порядок сортировки пользователя в списках старой системы' : null}>
-                        <div className={styles.sk_info_line}>
-                            <p className={styles.sk_line_label}>Рейтинг</p>
-                            <Input placeholder="Рейтинг"
-                                value={rating}
-                                onChange={(e) => setRating(e.target.value)}
-                                style={{width: 360}}
-                                status="warning"
-                            />
-                        </div>
-                    </Tooltip>
-                    <div className={styles.sk_info_line}>
-                        <p className={styles.sk_line_label}>Статус</p>
-                        <Select placeholder="Статус"
-                                value={(status.id !== undefined && status.id !== null) ? +status.id : null}
-                                options={statuses}
-                                onChange={(id) => setStatus(statuses.find(c => c.id === id))}
-                                style={{width: 360}}
-                                status="warning"
-                                fieldNames={{
-                                    value: 'id',
-                                    label: 'name',
-                                }}
-                        />
-                    </div>
-                    <Tooltip title={userIdState === 'new' ? 'Каждый новый пользователь должен иметь руководителя' : null}>
-                        <div className={styles.sk_info_line}>
-                            <p className={styles.sk_line_label}>Руководитель</p>
-                            <Select placeholder="Руководитель"
-                                    value={(boss.id !== undefined && boss.id !== null && boss.id !== 0) ? +boss.id : null}
-                                    options={bosses}
-                                    onChange={(id) => setBoss(bosses.find(c => c.id === id))}
-                                    style={{width: 360}}
-                                    status="warning"
-                                    fieldNames={{
-                                        value: 'id',
-                                        label: 'name',
-                                    }}
-                                    showSearch
-                                    optionFilterProp="name"
-                                    allowClear
-                            />
-                        </div>
-                    </Tooltip>
-                </div>
-                <div className={styles.sk_user_info_column}>
-                    <div style={{width:'100%'}}>
+                </section>
+                <section className={styles.sk_user_info_column}>
+                    <div className={styles.sk_section_header}>
                         <p className={styles.sk_column_header}>Настройки доступа</p>
-                        <div className={styles.sk_info_line}>
-                            <p className={styles.sk_line_label}>Логин</p>
-                            <Input placeholder="Не менее пяти символов"
-                                   value={login}
-                                   onChange={(e) => setLogin(e.target.value)}
-                                   style={{width: 360}}
-                            />
-                        </div>
-                        <Tooltip
-                            title={userIdState !== 'new' ? 'Для изменения пароля впишите новый' : 'Один пароль для старой и новой системы'}>
-                            <div className={styles.sk_info_line}>
-                                <p className={styles.sk_line_label}>Пароль</p>
-                                <Input placeholder="Не менее четырех символов"
-                                       value={password}
-                                       onChange={(e) => setPassword(e.target.value)}
-                                       style={{width: 360}}
-                                />
-                            </div>
-                        </Tooltip>
-                        <div className={styles.sk_info_line}>
-
-                            <p className={styles.sk_line_label}>Номер карточки</p>
-                            <Input placeholder="Карточка для доступа в офис"
-                                   value={cardNumber}
-                                   onChange={(e) => setCardNumber(e.target.value)}
-                                   style={{width: 360}}
-                            />
-
-                        </div>
-                        <div className={styles.sk_info_line}>
-
-                            <p className={styles.sk_line_label}>Условная карточка</p>
-                            <Select placeholder="Стелс / Нормальная"
-                                    value={(conditionalCard.id !== undefined && conditionalCard.id !== null) ? +conditionalCard.id : null}
-                                    options={conditionalCards}
-                                    onChange={(id) => setConditionalCard(conditionalCards.find(c => c.id === id))}
-                                    style={{width: 360}}
-                                    fieldNames={{
-                                        value: 'id',
-                                        label: 'name',
-                                    }}
-                            />
-
-                        </div>
-                        <div className={styles.sk_info_line}>
-                            <p className={styles.sk_line_label}>Разрешить вход</p>
-                            <Select placeholder="Да / Нет"
-                                    value={(allowEntry.id !== undefined && allowEntry.id !== null) ? +allowEntry.id : null}
-                                    options={allowEntries}
-                                    onChange={(id) => setAllowEntry(allowEntries.find(c => c.id === id))}
-                                    style={{width: 360}}
-                                    fieldNames={{
-                                        value: 'id',
-                                        label: 'name',
-                                    }}
-                                    disabled={IsDisableAllowEntry()}
-                            />
-                        </div>
                     </div>
-                    <div>
+                    <div className={styles.sk_fields_grid}>
+                        {accessFields.map(renderField)}
+                    </div>
+                    <div className={styles.sk_danger_zone}>
                         {currentUser?.user?.super && userIdState !== 'new' && (
-                            <Button style={{width: '200px'}}
+                            <Button
                                  type="primary"
                                  danger
                                  onClick={confirmDeleteUser}
                             >Удалить пользователя</Button>
                         )}
                     </div>
-                </div>
+                </section>
             </div>
             {isAlertVisible && (
                 <Alert
