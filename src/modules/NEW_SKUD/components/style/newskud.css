@@ -69,6 +69,14 @@
 .newskud-page .sk-contend-um {
     min-width: 0;
     overflow-wrap: anywhere;
+    font-style: normal;
+}
+
+.newskud-page .sk-usermonic-comround:empty {
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
 }
 
 .newskud-page .sk-state-intgra-card {
