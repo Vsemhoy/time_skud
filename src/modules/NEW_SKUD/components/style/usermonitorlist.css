@@ -1,4 +1,4 @@
-﻿.sk-usermonic-cardrow-ou:not(.sk-usermonic-crd-divider) {
+.sk-usermonic-cardrow-ou:not(.sk-usermonic-crd-divider) {
     display: grid;
     grid-template-columns: 42px  300px 50px auto 28px 28px 28px 28px 120px;
     border: 1px solid #80808061;
@@ -98,10 +98,6 @@
 }
 
 .sk-usermonic-drawer-row {
-    display: grid;
-    grid-template-columns: minmax(140px, 38%) minmax(0, 1fr);
-    gap: 12px;
-    align-items: start;
     padding-top: 6px;
     padding-bottom: 6px;
     border-bottom: 1px solid rgb(195, 195, 195);
@@ -113,10 +109,8 @@
     padding-bottom: 1px;
 }
 .sk-contend-um {
-    min-width: 0;
     font-size: medium;
     font-style: italic;
-    overflow-wrap: anywhere;
 }
 .sk-boss-wrapper-sf {
     /* background-color: #e7e7e7; */
@@ -221,23 +215,6 @@
     /* border: 1px solid white; */
     display: grid;
     grid-template-columns: 52px auto 32px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.sk-state-intgra-card--empty {
-    grid-template-columns: 1fr;
-    background: var(--drawer-gray-section-color);
-    color: var(--app-text-color);
-}
-
-.sk-state-intgra-card-empty-title {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-align: center;
-    font-weight: 600;
 }
 
 .sk-state-intgra-card-backdrop {
@@ -342,8 +319,6 @@
 
 
 .sk-umsmi-card {
-    width: 100%;
-    box-sizing: border-box;
     background-color: var(--app-surface-color);
     color: var(--app-text-color);
     /* border: 1px solid slateblue; */
@@ -419,7 +394,7 @@
 
 .sk-usermonic-cardrow-ou-test {
     display: grid;
-    grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+    grid-template-columns: 42px 42px minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
     height: 32px;
     border: 1px solid #80808061;
     border-top: none;
@@ -428,13 +403,13 @@
     /*transition: all 0.9s;*/
 }
 .sk-usermonic-cardrow-ou-test.without-id-column {
-    grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+    grid-template-columns: 42px minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
 }
 .sk-usermonic-cardrow-ou-test.extended {
-    grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+    grid-template-columns: 42px 42px minmax(300px, 2.8fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
 }
 .sk-usermonic-cardrow-ou-test.extended.without-id-column {
-    grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+    grid-template-columns: 42px minmax(300px, 2.8fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
 }
 .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-crd-divider):hover > div {
     background: var(--row-hovered-bg-color);
@@ -450,33 +425,29 @@
     overflow: hidden;
 }
 
+.sk-usermonic-cardrow-ou-test > .sk-userlist-phone-cell {
+    order: 2;
+}
+
 .sk-usermonic-cardrow-ou-test > .sk-userlist-id-cell {
     order: 1;
 }
 
 .sk-usermonic-cardrow-ou-test > .sk-userlist-employee-cell {
-    order: 2;
-}
-
-.sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
-    background: color-mix(in srgb, var(--user-status-bg, var(--row-main-bg-color)) 24%, var(--app-surface-color)) !important;
-}
-
-.sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
-    background: color-mix(in srgb, var(--user-status-bg, var(--row-hovered-bg-color)) 34%, var(--app-surface-color)) !important;
+    order: 3;
 }
 
 .sk-usermonic-headerrow > .sk-userlist-employee-cell > div {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content 112px;
+    display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 12px;
     text-align: left !important;
 }
 
 .sk-usermonic-headerrow > .sk-userlist-employee-cell > div::after {
     content: "Статус";
-    width: 112px;
+    width: 118px;
     text-align: center;
 }
 
@@ -484,6 +455,7 @@
     order: 4;
 }
 
+.sk-userlist-legacy-phone-header,
 .sk-userlist-legacy-claims-header {
     display: none;
 }
@@ -507,7 +479,7 @@
 
 .sk-userlist-name-cell {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content max-content;
+    grid-template-columns: minmax(0, 1fr) max-content;
     align-items: center;
     gap: 10px;
     min-width: 0;
@@ -529,7 +501,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    color: color-mix(in srgb, var(--app-text-color) 68%, transparent);
+    color: var(--app-secondary-text-color, #8c8c8c);
     font-size: 12px;
     white-space: nowrap;
 }
@@ -546,7 +518,6 @@
 
 .sk-userlist-status-inline--tag {
     background: var(--user-status-bg);
-    color: var(--app-text-color);
     border-radius: 3px;
     padding: 2px 6px;
 }
@@ -555,8 +526,8 @@
     width: 110px;
     display: flex;
     justify-content: center !important;
-    border: 1px solid color-mix(in srgb, var(--user-status-bg) 72%, #000);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(128, 128, 128, 0.38);
+    box-shadow: 1px 1px 3px #00000021;
 }
 
 .sk-userlist-claims-cell > div,
@@ -643,4 +614,3 @@
 .sk-uml-table-dumper--theme-safe tr:nth-child(even) {
     background-color: var(--tooltip-row-alt-color);
 }
-

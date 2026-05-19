@@ -1166,7 +1166,7 @@ const UserList = (props)=>{
 
 
   return (
-      <div className={'mega-layout'}>
+      <div className={'mega-layout newskud-page'}>
         {isInitialPageLoading && <UserListInitialLoader phase={initialLoaderPhase} />}
         <Layout className={'layout layout--newskud'}>
           <Header className={'header-user-list header-user-list--newskud'}>

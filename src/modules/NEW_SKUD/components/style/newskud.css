@@ -1,0 +1,95 @@
+.newskud-page .sk-usermonic-cardrow-ou-test {
+    grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test.without-id-column {
+    grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test.extended {
+    grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test.extended.without-id-column {
+    grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test > .sk-userlist-employee-cell {
+    order: 2;
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test > .sk-userlist-claims-cell {
+    order: 4;
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
+    background: color-mix(in srgb, var(--user-status-bg, var(--row-main-bg-color)) 24%, var(--app-surface-color)) !important;
+}
+
+.newskud-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
+    background: color-mix(in srgb, var(--user-status-bg, var(--row-hovered-bg-color)) 34%, var(--app-surface-color)) !important;
+}
+
+.newskud-page .sk-usermonic-headerrow > .sk-userlist-employee-cell > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content 112px;
+    align-items: center;
+    gap: 10px;
+    text-align: left !important;
+}
+
+.newskud-page .sk-usermonic-headerrow > .sk-userlist-employee-cell > div::after {
+    content: "Статус";
+    width: 112px;
+    text-align: center;
+}
+
+.newskud-page .sk-userlist-name-cell {
+    grid-template-columns: minmax(0, 1fr) max-content max-content;
+}
+
+.newskud-page .sk-userlist-phone-inline {
+    color: color-mix(in srgb, var(--app-text-color) 68%, transparent);
+}
+
+.newskud-page .sk-userlist-status-inline--tag {
+    color: var(--app-text-color);
+    text-shadow: none;
+}
+
+.newskud-page .sk-usermonic-drawer-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 38%) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+}
+
+.newskud-page .sk-contend-um {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.newskud-page .sk-state-intgra-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.newskud-page .sk-state-intgra-card--empty {
+    grid-template-columns: 1fr;
+    background: var(--drawer-gray-section-color);
+    color: var(--app-text-color);
+}
+
+.newskud-page .sk-state-intgra-card-empty-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.newskud-page .sk-umsmi-card {
+    width: 100%;
+    box-sizing: border-box;
+}

@@ -158,7 +158,7 @@ const UserListToolbar = (props) => {
                     />
                 </div>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
-                    <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['click']}>
+                    <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
                         <Button
                             type="primary"
                             icon={<PlusOutlined />}
