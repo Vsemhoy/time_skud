@@ -255,7 +255,16 @@ const ExtendedInformationSidebar = (props) => {
                                             </table>
                                         </div>
                                     ) : (
-                                        <div style={{padding: '18px'}}>...</div>
+                                        <div className={'sk-w-padding-18 sk-umsmi-card'}>
+                                            <table className="sk-uml-table-dumper"
+                                                   style={{borderCollapse: 'collapse'}}>
+                                                <tbody>
+                                                <tr>
+                                                    <td style={{textAlign: 'center'}}>Нет данных</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     )}</>)}
                             </div>
                             <br/>
@@ -263,6 +272,13 @@ const ExtendedInformationSidebar = (props) => {
                     </div>
 
                     <div className="sk-w-padding-18">
+                        <div className={'sk-usermonic-drawer-row'}>
+                            <div className={'sk-labed-um'}>ФИО</div>
+                            <div
+                                className={'sk-contend-um'}>{targetUserInfo.surname ? targetUserInfo.surname : ''} {targetUserInfo.name ? targetUserInfo.name : ''} {targetUserInfo.patronymic ? targetUserInfo.patronymic : ''}
+                            </div>
+                        </div>
+
                         <div className={'sk-usermonic-drawer-row'}>
                             <div className={'sk-labed-um'}>Должность</div>
                             <div
@@ -273,28 +289,6 @@ const ExtendedInformationSidebar = (props) => {
                             <div className={'sk-labed-um'}>Отдел</div>
                             <div
                                 className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
-                        </div>
-
-                        {/* <div className={'sk-usermonic-drawer-row'}>
-                        <div className={'sk-labed-um'}>Фамилия</div>
-                        <div className={'sk-contend-um'}>{targetUserInfo.user_surname ? targetUserInfo.user_surname : '-'}</div>
-                      </div>
-
-                      <div className={'sk-usermonic-drawer-row'}>
-                        <div className={'sk-labed-um'}>Имя</div>
-                        <div className={'sk-contend-um'}>{targetUserInfo.user_name ? targetUserInfo.user_name : '-'}</div>
-                      </div>
-
-                      <div className={'sk-usermonic-drawer-row'}>
-                        <div className={'sk-labed-um'}>Отчество</div>
-                        <div className={'sk-contend-um'}>{targetUserInfo.user_patronymic ? targetUserInfo.user_patronymic : '-'}</div>
-                      </div> */}
-
-                        <div className={'sk-usermonic-drawer-row'}>
-                            <div className={'sk-labed-um'}>Фамилия Имя Отчество</div>
-                            <div
-                                className={'sk-contend-um'}>{targetUserInfo.surname ? targetUserInfo.surname : ''} {targetUserInfo.name ? targetUserInfo.name : ''} {targetUserInfo.patronymic ? targetUserInfo.patronymic : ''}
-                            </div>
                         </div>
 
 
@@ -326,7 +320,6 @@ const ExtendedInformationSidebar = (props) => {
                                   style={{
                                       background: `${userdata.companies.find((item) => item.id === targetUserInfo.id_company)?.color}`
                                   }}>
-                              {targetUserInfo.id_company}
                             </span>
                                     {userdata.companies.find((item) => item.id === targetUserInfo.id_company)?.name}
                                 </div>
@@ -364,14 +357,14 @@ const ExtendedInformationSidebar = (props) => {
                             >Руководитель</span> <span
                             ></span></div>
                             <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>Должность</div>
-                                <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
+                                <div className={'sk-labed-um'}>ФИО</div>
+                                <div
+                                    className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
                             </div>
 
                             <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>Фио</div>
-                                <div
-                                    className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
+                                <div className={'sk-labed-um'}>Должность</div>
+                                <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
                             </div>
 
                             <div className={'sk-usermonic-drawer-row'}>
