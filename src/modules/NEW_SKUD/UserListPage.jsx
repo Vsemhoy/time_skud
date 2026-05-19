@@ -1363,7 +1363,7 @@ const UserList = (props)=>{
             <Sider width={NEW_SKUD_DETAILS_SIDER_WIDTH}
                    className="sider pl15"
                    style={{
-                     paddingTop: '0',
+                     paddingTop: '5px',
                      visibility: 'visible',
                      pointerEvents: 'auto',
                    }}

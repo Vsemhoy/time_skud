@@ -32,6 +32,13 @@
     background: color-mix(in srgb, var(--user-status-bg, var(--row-hovered-bg-color)) 34%, var(--app-surface-color)) !important;
 }
 
+.newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked > .sk-userlist-id-cell,
+.newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked > .sk-userlist-employee-cell,
+.newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-id-cell,
+.newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
+    background: var(--row-selected-color) !important;
+}
+
 .newskud-page .sk-usermonic-headerrow > .sk-userlist-employee-cell > div {
     display: grid;
     grid-template-columns: minmax(0, 1fr) max-content 112px;
@@ -66,10 +73,24 @@
     align-items: start;
 }
 
+.newskud-page .sk-usermonic-drawer-row:has(.sk-userlist-company-logo) {
+    align-items: center;
+}
+
 .newskud-page .sk-contend-um {
     min-width: 0;
     overflow-wrap: anywhere;
     font-style: normal;
+}
+
+.newskud-page .sk-userlist-details-link {
+    color: var(--app-text-color);
+    cursor: pointer;
+    transition: color 160ms ease;
+}
+
+.newskud-page .sk-userlist-details-link:hover {
+    color: var(--icon-color-std);
 }
 
 .newskud-page .sk-usermonic-comround:empty {
@@ -102,4 +123,118 @@
 .newskud-page .sk-umsmi-card {
     width: 100%;
     box-sizing: border-box;
+}
+
+.newskud-page .sk-userlist-details-panel {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    height: calc(100vh - 46px - 46px - 5px) !important;
+    overflow-y: auto !important;
+}
+
+.newskud-page .sk-userlist-details-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 0 12px;
+}
+
+.newskud-page .sk-userlist-details-card {
+    background: var(--app-surface-color);
+    border: 1px solid var(--table-border-divider-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    transition: grid-template-rows 180ms ease, min-height 180ms ease, max-height 180ms ease, opacity 180ms ease, transform 180ms ease;
+    animation: newskud-details-card-in 180ms ease both;
+}
+
+.newskud-page .sk-userlist-details-card .sk-state-intgra-card-backdrop {
+    padding: 0;
+}
+
+.newskud-page .sk-userlist-details-card .sk-state-intgra-card {
+    border-radius: 0;
+    min-height: 38px;
+}
+
+.newskud-page .sk-userlist-details-card--empty {
+    min-height: 0;
+}
+
+.newskud-page .sk-userlist-details-card--empty .sk-userlist-details-empty {
+    min-height: 92px;
+    padding: 14px 18px 16px;
+}
+
+.newskud-page .sk-userlist-details-card--empty .sk-userlist-details-empty-icon {
+    font-size: 22px;
+}
+
+.newskud-page .sk-userlist-details-card .sk-w-padding-18 {
+    padding: 12px 18px;
+}
+
+.newskud-page .sk-userlist-company-logo {
+    display: block;
+    width: auto;
+    max-width: 160px;
+    max-height: 34px;
+    object-fit: contain;
+}
+
+.newskud-page .sk-userlist-details-card-loader-body {
+    min-height: 96px;
+}
+
+.newskud-page .sk-userlist-details-card .ant-spin-nested-loading,
+.newskud-page .sk-userlist-details-card .ant-spin-container {
+    min-height: inherit;
+}
+
+.newskud-page .sk-userlist-details-card-title,
+.newskud-page .sk-userlist-details-card-subtitle {
+    padding: 9px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--app-text-color);
+    background: var(--drawer-gray-section-color);
+    border-bottom: 1px solid var(--table-border-divider-color);
+}
+
+.newskud-page .sk-userlist-details-card-subtitle {
+    border-top: 1px solid var(--table-border-divider-color);
+}
+
+.newskud-page .sk-userlist-details-schedule-list {
+    display: grid;
+    gap: 8px;
+    padding: 0;
+}
+
+.newskud-page .sk-userlist-details-schedule-list .sk-umsmi-card,
+.newskud-page .sk-userlist-details-card .sk-umsmi-card {
+    box-shadow: none;
+    margin: 0;
+}
+
+.newskud-page .sk-userlist-details-card .sk-boss-guy-card {
+    margin: 0 0 8px;
+}
+
+.newskud-page .sk-userlist-details-card .sk-boss-guy-card:last-child {
+    margin-bottom: 0;
+}
+
+@keyframes newskud-details-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
