@@ -22,10 +22,12 @@
     order: 4;
 }
 
+.newskud-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-id-cell,
 .newskud-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
     background: color-mix(in srgb, var(--user-status-bg, var(--row-main-bg-color)) 24%, var(--app-surface-color)) !important;
 }
 
+.newskud-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-id-cell,
 .newskud-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
     background: color-mix(in srgb, var(--user-status-bg, var(--row-hovered-bg-color)) 34%, var(--app-surface-color)) !important;
 }
