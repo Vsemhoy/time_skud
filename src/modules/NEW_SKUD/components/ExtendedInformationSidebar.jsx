@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
-import {Affix, Drawer, Empty, Spin, Tag} from "antd";
+import {Affix, Button, Drawer, Empty, Spin, Tag, Tooltip} from "antd";
 
 import dayjs from "dayjs";
 import { formatMoscowDateTime, formatMoscowUnix, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
@@ -23,7 +23,8 @@ import {
     MoonOutlined,
     SmileOutlined,
     DollarOutlined,
-    HeatMapOutlined, CloseOutlined, EnterOutlined, IdcardOutlined
+    HeatMapOutlined, CloseOutlined, EnterOutlined, IdcardOutlined,
+    FileWordOutlined, DownloadOutlined, PrinterOutlined
 } from "@ant-design/icons";
 
 const iconMap = {
@@ -73,6 +74,51 @@ const getCompanyLogoSrc = (companyName) => {
     const normalizedName = String(companyName).toLowerCase();
     return COMPANY_LOGOS.find((item) => normalizedName.includes(item.key))?.src ?? null;
 };
+
+const EMPTY_STATE_DOCUMENTS = [
+    {
+        id: 'unpaid-vacation',
+        title: 'Заявление на отпуск за свой счет',
+        size: 'DOC',
+        href: 'http://192.168.1.14/files/docs/svo.doc',
+    },
+    {
+        id: 'vacation',
+        title: 'Заявление на отпуск',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/vacation.docx',
+    },
+    {
+        id: 'vacation-bypass-sheet',
+        title: 'Обходной лист отпуск',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/vacation_bypass_sheet.docx',
+    },
+    {
+        id: 'vacation-transfer',
+        title: 'Заявление на перенос отпуска',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/vacation_transfer.docx',
+    },
+    {
+        id: 'free-form',
+        title: 'Заявление свободная форма',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/free_form.docx',
+    },
+    {
+        id: 'dismissal',
+        title: 'Заявление на увольнение',
+        size: 'DOC',
+        href: 'http://192.168.1.14/files/docs/dismissal.doc',
+    },
+    {
+        id: 'dismissal-clearance-sheet',
+        title: 'Обходной лист увольнение',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/dismissal_clearance_sheet.docx',
+    },
+];
 
 
 
@@ -306,16 +352,61 @@ const ExtendedInformationSidebar = (props) => {
         );
     };
 
+    const handlePrintDocument = (href) => {
+        if (!href) {
+            return;
+        }
+
+        const printWindow = window.open(href, '_blank', 'noopener,noreferrer');
+        printWindow?.addEventListener('load', () => {
+            printWindow.print();
+        });
+    };
+
     return (
         <div>
             {!hasTargetUser && (
-                <section className="sk-userlist-details-card sk-userlist-details-card--empty">
-                    {renderStatusHeader()}
-                    <div className="sk-userlist-details-empty">
-                        <span>Выберите сотрудника для детализации</span>
-                        <EnterOutlined className="sk-userlist-details-empty-icon" />
-                    </div>
-                </section>
+                <div className="sk-userlist-details-scroll">
+                    <section className="sk-userlist-details-card sk-userlist-details-card--empty">
+                        {renderStatusHeader()}
+                        <div className="sk-userlist-details-empty">
+                            <span>Выберите сотрудника для детализации</span>
+                            <EnterOutlined className="sk-userlist-details-empty-icon" />
+                        </div>
+                    </section>
+
+                    <section className="sk-userlist-details-card sk-userlist-details-card--documents">
+                        <div className="sk-userlist-details-card-title">Документы</div>
+                        <div className="sk-userlist-documents-list">
+                            {EMPTY_STATE_DOCUMENTS.map((documentItem) => (
+                                <div className="sk-userlist-document-row" key={documentItem.id}>
+                                    <FileWordOutlined className="sk-userlist-document-icon" />
+                                    <div className="sk-userlist-document-title">{documentItem.title}</div>
+                                    <div className="sk-userlist-document-size">{documentItem.size}</div>
+                                    <Tooltip title={documentItem.href ? 'Скачать' : 'Файл еще не добавлен'}>
+                                        <Button
+                                            type="text"
+                                            size="small"
+                                            icon={<DownloadOutlined />}
+                                            disabled={!documentItem.href}
+                                            href={documentItem.href ?? undefined}
+                                            download={documentItem.href ? true : undefined}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip title={documentItem.href ? 'В печать' : 'Файл еще не добавлен'}>
+                                        <Button
+                                            type="text"
+                                            size="small"
+                                            icon={<PrinterOutlined />}
+                                            disabled={!documentItem.href}
+                                            onClick={() => handlePrintDocument(documentItem.href)}
+                                        />
+                                    </Tooltip>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
             )}
             {openUserInfo && hasTargetUser && (
                 <div className="sk-userlist-details-scroll">
