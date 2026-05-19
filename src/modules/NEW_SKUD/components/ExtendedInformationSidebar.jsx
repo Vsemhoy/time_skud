@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
-import {Affix, Drawer, Empty, Tag} from "antd";
+import {Affix, Drawer, Empty, Spin, Tag} from "antd";
 
 import dayjs from "dayjs";
 import { formatMoscowDateTime, formatMoscowUnix, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
@@ -58,6 +58,22 @@ const getMutedDrawerAccent = (color) => {
     return `color-mix(in srgb, ${color} 38%, var(--app-surface-color))`;
 };
 
+const COMPANY_LOGOS = [
+    { key: 'arstel', src: '/company-logos/arstel.svg' },
+    { key: 'арстел', src: '/company-logos/arstel.svg' },
+    { key: 'rondo', src: '/company-logos/rondo.svg' },
+    { key: 'рондо', src: '/company-logos/rondo.svg' },
+];
+
+const getCompanyLogoSrc = (companyName) => {
+    if (!companyName) {
+        return null;
+    }
+
+    const normalizedName = String(companyName).toLowerCase();
+    return COMPANY_LOGOS.find((item) => normalizedName.includes(item.key))?.src ?? null;
+};
+
 
 
 const ExtendedInformationSidebar = (props) => {
@@ -72,6 +88,7 @@ const ExtendedInformationSidebar = (props) => {
 
     const [baseSchedules, setBaseSchedules] = useState([]);
     const [baseRules, setBaseRules] = useState([]);
+    const [isScheduleLoading, setIsScheduleLoading] = useState(false);
 
     const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -97,6 +114,9 @@ const ExtendedInformationSidebar = (props) => {
                     date: props.target_date,
                     user_id: props.target_user_info.id,
                 };
+                setBaseSchedules([]);
+                setBaseRules([]);
+                setIsScheduleLoading(true);
                 get_user_schedule_and_rules(data);
             //}
             // else {
@@ -108,6 +128,7 @@ const ExtendedInformationSidebar = (props) => {
             setBadger(null);
             setBaseSchedules([]);
             setBaseRules([]);
+            setIsScheduleLoading(false);
         }
     }, [props.target_user_info])
 
@@ -158,7 +179,7 @@ const ExtendedInformationSidebar = (props) => {
         } catch (e) {
             console.log(e)
         } finally {
-            // setLoadingOrgs(false)
+            setIsScheduleLoading(false);
         }
     }
 
@@ -179,223 +200,256 @@ const ExtendedInformationSidebar = (props) => {
     };
 
     const hasTargetUser = Boolean(targetUserInfo);
+    const targetCompany = targetUserInfo?.id_company
+        ? userdata.companies.find((item) => item.id === targetUserInfo.id_company)
+        : null;
+    const targetCompanyLogoSrc = getCompanyLogoSrc(targetCompany?.name);
+    const visibleTargetUserGuys = targetUserInfo
+        ? props.base_user_list_data.filter((item) => item.boss_id === targetUserInfo.id)
+        : targetUserGuys;
 
-    return (
-        <div>
-            <div className="sk-state-intgra-card-backdrop">
-                <div
-                    style={{background: hasTargetUser ? getMutedDrawerAccent(badger?.color) : undefined}}
-                    className={`sk-state-intgra-card ${hasTargetUser ? '' : 'sk-state-intgra-card--empty'}`}
-                >
+    const handleOpenUserDetails = (userId) => {
+        const nextUserInfo = props.base_user_list_data.find((item) => item.id === userId || item.user_id === userId);
 
-                    {hasTargetUser ? (
-                        <>
+        if (!nextUserInfo) {
+            return;
+        }
+
+        setTargetUserInfo(nextUserInfo);
+
+        if (props.on_mark_user) {
+            props.on_mark_user(nextUserInfo.id ?? userId);
+        }
+    };
+
+    const renderStatusHeader = () => (
+        <div className="sk-state-intgra-card-backdrop">
+            <div
+                style={{background: hasTargetUser ? getMutedDrawerAccent(badger?.color) : undefined}}
+                className={`sk-state-intgra-card ${hasTargetUser ? '' : 'sk-state-intgra-card--empty'}`}
+            >
+                {hasTargetUser ? (
+                    <>
                         <span style={{textAlign: 'center', paddingLeft: '4px'}}>{badger?.icon}</span>
                         <span>{badger?.title}</span>
                         <div onClick={() => {
                             setOpenStateInfoSection(!openStateInfoSection)
                         }}>
-                           {/* <Tag>{targetUserInfo?.id}</Tag>*/}
+                            {/* <Tag>{targetUserInfo?.id}</Tag>*/}
                             <CloseOutlined onClick={closeSider}/>
                         </div>
-                        </>
-                    ) : (
-                        <span className="sk-state-intgra-card-empty-title">
-                            <IdcardOutlined />
-                            Детализация по сотруднику
-                        </span>
-                    )}
-                </div>
+                    </>
+                ) : (
+                    <span className="sk-state-intgra-card-empty-title">
+                        <IdcardOutlined />
+                        Детализация по сотруднику
+                    </span>
+                )}
             </div>
-            {!hasTargetUser && (
-                <div className="sk-userlist-details-empty">
-                    <span>Выберите сотрудника для детализации</span>
-                    <EnterOutlined className="sk-userlist-details-empty-icon" />
+        </div>
+    );
+
+    const renderEventInfo = () => {
+        if (targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length) {
+            return <UserlistEventDumpCard data={targetUserInfo.event_dump} themeSafe={true}/>;
+        }
+
+        if (targetUserInfo.state_data != null) {
+            return (
+                <div className={'sk-w-padding-18 sk-umsmi-card'}>
+                    <table className="sk-uml-table-dumper"
+                           style={{borderCollapse: 'collapse'}}>
+                        <tbody>
+                        <tr>
+                            <td style={{textAlign: 'left'}}>Дата и время начала</td>
+                            <td style={{textAlign: 'left'}}>{formatMoscowDateTime(targetUserInfo.state_data.start, "DD-MM-YYYY")} {
+                                formatMoscowDateTime(targetUserInfo.state_data.start) != '00:00' && (
+                                    <span>{formatMoscowDateTime(targetUserInfo.state_data.start)}</span>
+                                )
+                            }</td>
+                        </tr>
+                        <tr>
+                            <td style={{textAlign: 'left'}}>Дата и время завершения</td>
+                            <td style={{textAlign: 'left'}}>{formatMoscowDateTime(targetUserInfo.state_data.end, "DD-MM-YYYY")} {
+                                formatMoscowDateTime(targetUserInfo.state_data.end) != '23:59' && (
+                                    <span>{formatMoscowDateTime(targetUserInfo.state_data.end)}</span>
+                                )
+                            }</td>
+                        </tr>
+                        <tr>
+                            <td style={{textAlign: 'left'}}>Количество дней всего</td>
+                            <td style={{textAlign: 'left'}}>{targetUserInfo.state_data.days_count}</td>
+                        </tr>
+                        <tr>
+                            <td style={{textAlign: 'left'}}>Количество дней осталось
+                            </td>
+                            <td style={{textAlign: 'left'}}>{(moscowDateTime(targetUserInfo.state_data.end)?.diff(moscowDateTime(dayjs()), 'day') ?? 0) > 0 ? moscowDateTime(targetUserInfo.state_data.end)?.diff(moscowDateTime(dayjs()), 'day') : ""}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+            );
+        }
+
+        return (
+            <div className={'sk-w-padding-18 sk-umsmi-card'}>
+                <table className="sk-uml-table-dumper"
+                       style={{borderCollapse: 'collapse'}}>
+                    <tbody>
+                    <tr>
+                        <td style={{textAlign: 'center'}}>Нет данных</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
+
+    return (
+        <div>
+            {!hasTargetUser && (
+                <section className="sk-userlist-details-card sk-userlist-details-card--empty">
+                    {renderStatusHeader()}
+                    <div className="sk-userlist-details-empty">
+                        <span>Выберите сотрудника для детализации</span>
+                        <EnterOutlined className="sk-userlist-details-empty-icon" />
+                    </div>
+                </section>
             )}
             {openUserInfo && hasTargetUser && (
-                <div style={{overflowY: 'scroll', height: 'calc(100vh - 46px - 46px - 37px)'}}>
-                    <div>
-                        <div className="">
-                            <div>
-                                {targetUserInfo && targetUserInfo.event_dump && targetUserInfo.event_dump.length ? (
-                                    <UserlistEventDumpCard data={targetUserInfo.event_dump} themeSafe={true}/>
-                                ) : (
-                                    <>{targetUserInfo.state_data != null ? (
-                                        <div className={'sk-w-padding-18 sk-umsmi-card'}>
-                                            <table className="sk-uml-table-dumper"
-                                                   style={{borderCollapse: 'collapse'}}>
-                                                <tbody>
-                                                <tr>
-                                                    <td style={{textAlign: 'left'}}>Дата и время начала</td>
-                                                    <td style={{textAlign: 'left'}}>{formatMoscowDateTime(targetUserInfo.state_data.start, "DD-MM-YYYY")} {
-                                                        formatMoscowDateTime(targetUserInfo.state_data.start) != '00:00' && (
-                                                            <span>{formatMoscowDateTime(targetUserInfo.state_data.start)}</span>
-                                                        )
-                                                    }</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style={{textAlign: 'left'}}>Дата и время завершения</td>
-                                                    <td style={{textAlign: 'left'}}>{formatMoscowDateTime(targetUserInfo.state_data.end, "DD-MM-YYYY")} {
-                                                        formatMoscowDateTime(targetUserInfo.state_data.end) != '23:59' && (
-                                                            <span>{formatMoscowDateTime(targetUserInfo.state_data.end)}</span>
-                                                        )
-                                                    }</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style={{textAlign: 'left'}}>Количество дней всего</td>
-                                                    <td style={{textAlign: 'left'}}>{targetUserInfo.state_data.days_count}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style={{textAlign: 'left'}}>Количество дней осталось
-                                                    </td>
-                                                    <td style={{textAlign: 'left'}}>{(moscowDateTime(targetUserInfo.state_data.end)?.diff(moscowDateTime(dayjs()), 'day') ?? 0) > 0 ? moscowDateTime(targetUserInfo.state_data.end)?.diff(moscowDateTime(dayjs()), 'day') : ""}</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    ) : (
-                                        <div className={'sk-w-padding-18 sk-umsmi-card'}>
-                                            <table className="sk-uml-table-dumper"
-                                                   style={{borderCollapse: 'collapse'}}>
-                                                <tbody>
-                                                <tr>
-                                                    <td style={{textAlign: 'center'}}>Нет данных</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}</>)}
-                            </div>
-                            <br/>
-                        </div>
-                    </div>
-
-                    <div className="sk-w-padding-18">
-                        <div className={'sk-usermonic-drawer-row'}>
-                            <div className={'sk-labed-um'}>ФИО</div>
-                            <div
-                                className={'sk-contend-um'}>{targetUserInfo.surname ? targetUserInfo.surname : ''} {targetUserInfo.name ? targetUserInfo.name : ''} {targetUserInfo.patronymic ? targetUserInfo.patronymic : ''}
-                            </div>
-                        </div>
-
-                        <div className={'sk-usermonic-drawer-row'}>
-                            <div className={'sk-labed-um'}>Должность</div>
-                            <div
-                                className={'sk-contend-um'}>{targetUserInfo.user_occupy ? capitalize(targetUserInfo.user_occupy) : targetUserInfo.occupy ? capitalize(targetUserInfo.occupy) : '-'}</div>
-                        </div>
-
-                        <div className={'sk-usermonic-drawer-row'}>
-                            <div className={'sk-labed-um'}>Отдел</div>
-                            <div
-                                className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
-                        </div>
-
-
-                        <div className={'sk-usermonic-drawer-row'}>
-                            <div className={'sk-labed-um'}>Внутренний телефон</div>
-                            <div
-                                className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
-                        </div>
-
-                        <div className={'sk-usermonic-drawer-row'}>
-                            <div className={'sk-labed-um'}>E-mail</div>
-                            <div
-                                className={'sk-contend-um'}>{targetUserInfo.email && targetUserInfo.email != 0 ? targetUserInfo.email : "-"}</div>
-                        </div>
-
-                        {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
-                            <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>Работает с</div>
-                                <div
-                                    className={'sk-contend-um'}>{formatMoscowUnix(targetUserInfo.recrut)}</div>
-                            </div>
-                        ) : ""}
-
-                        {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
-                            <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>Компания</div>
-                                <div className={'sk-contend-um'}>
-                            <span className={'sk-usermonic-comround'}
-                                  style={{
-                                      background: `${userdata.companies.find((item) => item.id === targetUserInfo.id_company)?.color}`
-                                  }}>
-                            </span>
-                                    {userdata.companies.find((item) => item.id === targetUserInfo.id_company)?.name}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-
-                    {baseSchedules && baseSchedules.length > 0 && (
-                        <div>
-                            {baseSchedules.map((item, index) => (
-                                <UmScheduleMiniCard
-                                    data={item}
-                                    key={`umscard_${item.id}`}
-                                />
-                            ))}
-                            <br/>
-                            <br/>
-                        </div>
-                    )}
-
-
-                    {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
-                        <div className="sk-boss-wrapper-sf sk-w-padding-18">
-                            <div style={{
-                                fontSize: 'large',
-                                fontWeight: 'bolder',
-                                borderBottom: '1px solid gray'
-                            }}><span
-                                onClick={() => {
-                                    setTargetUserInfo(props.base_user_list_data.find((item) => item.user_id === targetUserInfo.boss_id),
-                                        props.on_mark_user(targetUserInfo.boss_id));
-                                }}
-                                className={'sk-usermonic-drawer-rukop-title'}
-                            >Руководитель</span> <span
-                            ></span></div>
+                <div className="sk-userlist-details-scroll">
+                    <section className="sk-userlist-details-card sk-userlist-details-card--employee">
+                        {renderStatusHeader()}
+                        <div className="sk-w-padding-18">
                             <div className={'sk-usermonic-drawer-row'}>
                                 <div className={'sk-labed-um'}>ФИО</div>
                                 <div
-                                    className={'sk-contend-um'}>{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
+                                    className={'sk-contend-um sk-userlist-details-link'}
+                                    onClick={() => handleOpenUserDetails(targetUserInfo.id)}
+                                >{targetUserInfo.surname ? targetUserInfo.surname : ''} {targetUserInfo.name ? targetUserInfo.name : ''} {targetUserInfo.patronymic ? targetUserInfo.patronymic : ''}
+                                </div>
                             </div>
 
                             <div className={'sk-usermonic-drawer-row'}>
                                 <div className={'sk-labed-um'}>Должность</div>
-                                <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
+                                <div
+                                    className={'sk-contend-um'}>{targetUserInfo.user_occupy ? capitalize(targetUserInfo.user_occupy) : targetUserInfo.occupy ? capitalize(targetUserInfo.occupy) : '-'}</div>
+                            </div>
+
+                            <div className={'sk-usermonic-drawer-row'}>
+                                <div className={'sk-labed-um'}>Отдел</div>
+                                <div
+                                    className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
                             </div>
 
                             <div className={'sk-usermonic-drawer-row'}>
                                 <div className={'sk-labed-um'}>Внутренний телефон</div>
-                                <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
+                                <div
+                                    className={'sk-contend-um'}>{targetUserInfo.phone && targetUserInfo.phone != 0 ? targetUserInfo.phone : "-"}</div>
                             </div>
+
+                            <div className={'sk-usermonic-drawer-row'}>
+                                <div className={'sk-labed-um'}>E-mail</div>
+                                <div
+                                    className={'sk-contend-um'}>{targetUserInfo.email && targetUserInfo.email != 0 ? targetUserInfo.email : "-"}</div>
+                            </div>
+
+                            {targetUserInfo.recrut && targetUserInfo.user_id === 483 ? (
+                                <div className={'sk-usermonic-drawer-row'}>
+                                    <div className={'sk-labed-um'}>Работает с</div>
+                                    <div
+                                        className={'sk-contend-um'}>{formatMoscowUnix(targetUserInfo.recrut)}</div>
+                                </div>
+                            ) : ""}
+
+                            {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
+                                <div className={'sk-usermonic-drawer-row'}>
+                                    <div className={'sk-labed-um'}>Компания</div>
+                                    <div className={'sk-contend-um'}>
+                                        {targetCompanyLogoSrc ? (
+                                            <img
+                                                className="sk-userlist-company-logo"
+                                                src={targetCompanyLogoSrc}
+                                                alt={targetCompany?.name ?? 'Компания'}
+                                            />
+                                        ) : (
+                                            <>
+                                                <span className={'sk-usermonic-comround'}
+                                                      style={{
+                                                          background: `${targetCompany?.color}`
+                                                      }}>
+                                                </span>
+                                                {targetCompany?.name}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
+                    </section>
+
+                    <section className="sk-userlist-details-card sk-userlist-details-card--schedule">
+                        <div className="sk-userlist-details-card-title">График</div>
+                        <Spin spinning={isScheduleLoading}>
+                            <div className="sk-userlist-details-card-loader-body">
+                                {baseSchedules && baseSchedules.length > 0 && (
+                                    <div className="sk-userlist-details-schedule-list">
+                                        {baseSchedules.map((item) => (
+                                            <UmScheduleMiniCard
+                                                data={item}
+                                                key={`umscard_${item.id}`}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                                <div className="sk-userlist-details-card-subtitle">Входы и выходы</div>
+                                {renderEventInfo()}
+                            </div>
+                        </Spin>
+                    </section>
+
+                    {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
+                        <section className="sk-userlist-details-card sk-userlist-details-card--boss">
+                            <div className="sk-userlist-details-card-title">
+                                <span
+                                    onClick={() => handleOpenUserDetails(targetUserInfo.boss_id)}
+                                    className={'sk-usermonic-drawer-rukop-title'}
+                                >Руководитель</span>
+                            </div>
+                            <div className="sk-w-padding-18">
+                                <div className={'sk-usermonic-drawer-row'}>
+                                    <div className={'sk-labed-um'}>ФИО</div>
+                                    <div
+                                        className={'sk-contend-um sk-userlist-details-link'}
+                                        onClick={() => handleOpenUserDetails(targetUserInfo.boss_id)}
+                                    >{targetUserInfo.boss_surname} {targetUserInfo.boss_name} {targetUserInfo.boss_patronymic}</div>
+                                </div>
+
+                                <div className={'sk-usermonic-drawer-row'}>
+                                    <div className={'sk-labed-um'}>Должность</div>
+                                    <div className={'sk-contend-um'}>{targetUserInfo.boss_occupy}</div>
+                                </div>
+
+                                <div className={'sk-usermonic-drawer-row'}>
+                                    <div className={'sk-labed-um'}>Внутренний телефон</div>
+                                    <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
+                                </div>
+                            </div>
+                        </section>
                     ) : ""}
 
-
-                    {targetUserGuys && targetUserGuys.length > 0 && (
-                        <>
-                            <br/>
-                            <div className="sk-boss-wrapper-sf sk-w-padding-18">
-                                <div style={{
-                                    fontSize: 'large',
-                                    fontWeight: 'bolder',
-                                    borderBottom: '1px solid gray'
-                                }}><span>Сотрудники</span></div>
-                                {targetUserGuys.map((item, index) => (
+                    {visibleTargetUserGuys && visibleTargetUserGuys.length > 0 && (
+                        <section className="sk-userlist-details-card sk-userlist-details-card--guys">
+                            <div className="sk-userlist-details-card-title">Сотрудники</div>
+                            <div className="sk-w-padding-18">
+                                {visibleTargetUserGuys.map((item, index) => (
                                     <div className={'sk-boss-guy-card'}
                                          key={`taurkey_${index}`}
-                                         onClick={() => {
-                                             setTargetUserInfo(props.base_user_list_data.find((user) => user.user_id === item.user_id),
-                                                 props.on_mark_user(item.user_id));
-                                         }}
+                                         onClick={() => handleOpenUserDetails(item.user_id)}
                                     >{index + 1} - {item.surname} {item.name} {item.patronymic}</div>
                                 ))}
-
                             </div>
-                        </>
+                        </section>
                     )}
                 </div>
             )}
@@ -404,3 +458,4 @@ const ExtendedInformationSidebar = (props) => {
 }
 
 export default ExtendedInformationSidebar;
+

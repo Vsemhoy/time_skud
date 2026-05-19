@@ -664,7 +664,7 @@ const UserMonitorListCard = (props) => {
         </div>*/
         <div onMouseOver={handleMouseOver}
              id={`row_${content.id}`}
-             onDoubleClick={handleDoubleClickOnRow}
+             onClick={handleDoubleClickOnRow}
         >
             {content.type && content.type === 'header' ? (
                 <div className={`sk-usermonic-cardrow-ou ${content.type === 'header' ? 'sk-usermonic-crd-divider' : ''}
