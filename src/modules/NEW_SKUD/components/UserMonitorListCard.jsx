@@ -22,6 +22,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
 import { getWeekDayString, secondsToTime } from "../../../components/Helpers/TextHelpers";
 import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import './style/usermonitorlist.css';
+import './style/newskud.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
