@@ -372,6 +372,32 @@ td:first-child {
     align-items: center;
 }
 
+.header-user-list--newskud {
+    height: 46px !important;
+    min-height: 46px !important;
+    line-height: 46px !important;
+    padding: 0 !important;
+}
+
+.header-user-list--newskud .sk-userlist-toolbar-top {
+    min-height: 46px;
+    padding: 0;
+}
+
+.header-user-list--newskud .sk-userlist-toolbar-top-left,
+.header-user-list--newskud .sk-userlist-toolbar-top-right {
+    padding: 0 6px;
+}
+
+.header-user-list--newskud .sk-userlist-compact-btn {
+    width: auto;
+    min-width: 128px;
+}
+
+.layout--newskud {
+    border-radius: 0 !important;
+}
+
 .sk-userlist-toolbar-top-left,
 .sk-userlist-toolbar-top-right {
     display: flex;
@@ -436,6 +462,36 @@ td:first-child {
 
 .sk-userlist-employee-search {
     width: 150px;
+}
+
+.sk-userlist-sidebar-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sk-userlist-details-empty {
+    min-height: calc(100vh - 46px - 46px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    color: var(--app-muted-text-color);
+    text-align: center;
+}
+
+.sk-userlist-details-empty-icon {
+    font-size: 28px;
+    color: var(--icon-color-std);
+}
+
+.sk-userlist-details-panel {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 .sk-userlist-toolbar-actions {
@@ -581,6 +637,63 @@ td:first-child {
 
     .sk-userlist-employee-search {
         width: 130px;
+    }
+}
+
+@media screen and (min-width: 901px) and (max-width: 1530px) {
+    .header-user-list--newskud .ant-btn.sk-userlist-compact-btn {
+        width: auto !important;
+        min-width: 128px !important;
+        height: 32px !important;
+        padding-inline: 15px !important;
+    }
+
+    .header-user-list--newskud .ant-btn.sk-userlist-compact-btn .sk-userlist-btn-label {
+        display: inline !important;
+    }
+
+    .header-user-list--newskud .ant-btn.sk-userlist-compact-btn .anticon {
+        margin-inline-end: 8px !important;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .header-user-list--newskud .sk-userlist-toolbar-top {
+        gap: 4px;
+    }
+
+    .header-user-list--newskud .sk-userlist-toolbar-top-left,
+    .header-user-list--newskud .sk-userlist-toolbar-top-right {
+        padding: 0 3px;
+    }
+
+    .header-user-list--newskud .ant-btn.sk-userlist-compact-btn {
+        width: 32px !important;
+        min-width: 32px !important;
+        height: 30px !important;
+        padding-inline: 0 !important;
+    }
+
+    .header-user-list--newskud .ant-btn.sk-userlist-compact-btn .sk-userlist-btn-label {
+        display: none;
+    }
+
+    .header-user-list--newskud .ant-btn.sk-userlist-compact-btn .anticon {
+        margin-inline-end: 0 !important;
+    }
+
+    .header-user-list--newskud .sk-userlist-toolbar-top-center {
+        gap: 6px;
+    }
+}
+
+@media screen and (max-width: 620px) {
+    .header-user-list--newskud .sk-userlist-toolbar-top-center .ant-picker {
+        width: 108px !important;
+    }
+
+    .header-user-list--newskud .sk-userlist-toolbar-status {
+        display: none;
     }
 }
 

@@ -8,7 +8,7 @@ import {
   BrowserRouter
 } from "react-router-dom";
 import UserListPage from './modules/USER_LIST/UserListPage';
-import UserListPage2 from './modules/USER_LIST_2025/UserListPage';
+import NewSkudPage from './modules/NEW_SKUD/UserListPage';
 import {Layout, Menu, Skeleton, Button, Badge, Alert, message} from 'antd';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
@@ -241,8 +241,9 @@ function App() {
           )} 
           <Routes>
               <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
-              <Route path={'/userlist'} element={<UserListPage2 userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+              <Route path={'/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             
             <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/my'} element={<AccountPage userdata={userAct}/>} />
