@@ -1,7 +1,7 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Switch } from 'antd';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
-import {HomeOutlined, LoginOutlined, NotificationOutlined, ThunderboltOutlined, UserOutlined} from '@ant-design/icons';
+import {HomeOutlined, LoginOutlined, NotificationOutlined, ScheduleOutlined, ThunderboltOutlined, UnorderedListOutlined, UserOutlined} from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
@@ -193,12 +193,36 @@ const AppMenu23 = (props) => {
         return [path];
     };
 
+    const isNewSkudPage = location.pathname === '/newskud' || location.pathname.endsWith('/newskud');
+
+    const openNewSkudBillList = () => {
+        window.dispatchEvent(new CustomEvent('newskud:open-bill-list'));
+    };
+
+    const openNewSkudClaimsList = () => {
+        window.dispatchEvent(new CustomEvent('newskud:open-claims-list'));
+    };
+
     // User dropdown menu
     const userMenuItems = [
         {
             key: 'status',
             label: 'Статус: Онлайн',
         },
+        ...(isNewSkudPage ? [
+            {
+                key: 'newskud-bill-list',
+                icon: <ScheduleOutlined />,
+                label: 'Расчетный лист офис',
+                onClick: openNewSkudBillList,
+            },
+            {
+                key: 'newskud-claims-list',
+                icon: <UnorderedListOutlined />,
+                label: 'Список заявок',
+                onClick: openNewSkudClaimsList,
+            },
+        ] : []),
         {
             key: 'theme',
             label: (
@@ -249,10 +273,6 @@ const AppMenu23 = (props) => {
             key: '/',
             label: <NavLink to="/">Сотрудники</NavLink>,
         },
-        /*{
-            key: '/userlist',
-            label: <NavLink to="/userlist">Сотрудники 2025</NavLink>,
-        },*/
         {
             key: 'menu1',
             label: 'Заявки',
