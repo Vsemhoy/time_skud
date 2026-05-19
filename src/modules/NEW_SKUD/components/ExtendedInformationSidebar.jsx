@@ -209,7 +209,8 @@ const ExtendedInformationSidebar = (props) => {
         : targetUserGuys;
 
     const handleOpenUserDetails = (userId) => {
-        const nextUserInfo = props.base_user_list_data.find((item) => item.id === userId || item.user_id === userId);
+        const nextUserInfo = props.base_user_list_data.find((item) => item.id === userId)
+            ?? props.base_user_list_data.find((item) => item.user_id === userId);
 
         if (!nextUserInfo) {
             return;
@@ -445,7 +446,7 @@ const ExtendedInformationSidebar = (props) => {
                                 {visibleTargetUserGuys.map((item, index) => (
                                     <div className={'sk-boss-guy-card'}
                                          key={`taurkey_${index}`}
-                                         onClick={() => handleOpenUserDetails(item.user_id)}
+                                         onClick={() => handleOpenUserDetails(item.id)}
                                     >{index + 1} - {item.surname} {item.name} {item.patronymic}</div>
                                 ))}
                             </div>
