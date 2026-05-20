@@ -14,6 +14,7 @@ import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     SmileOutlined,
     DollarOutlined,
     HeatMapOutlined,
+    GlobalOutlined,
     TruckOutlined,
     FireOutlined,
     FlagOutlined,
@@ -40,7 +41,8 @@ const iconMap = {
     MoonOutlined,
     SmileOutlined,
     DollarOutlined,
-    HeatMapOutlined
+    HeatMapOutlined,
+    GlobalOutlined
   };
 
 const DynamicIcon = ({ iconName, ...props }) => {

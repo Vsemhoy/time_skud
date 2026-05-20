@@ -22,7 +22,8 @@ import { DownOutlined, UpOutlined,
   MoonOutlined,
   SmileOutlined,
   DollarOutlined,
-  HeatMapOutlined
+  HeatMapOutlined,
+  GlobalOutlined
 } from "@ant-design/icons";
 
 const iconMap = {
@@ -37,7 +38,8 @@ const iconMap = {
     MoonOutlined,
     SmileOutlined,
     DollarOutlined,
-    HeatMapOutlined
+    HeatMapOutlined,
+    GlobalOutlined
   };
 
 const DynamicIcon = ({ iconName, ...props }) => {

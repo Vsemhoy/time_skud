@@ -66,6 +66,21 @@
     text-shadow: none;
 }
 
+.newskud-page .sk-userlist-status-inline--tag-new {
+    justify-content: flex-start !important;
+}
+
+.newskud-page .sk-userlist-status-inline--tag-new > .anticon,
+.newskud-page .sk-userlist-status-inline--tag-new > svg {
+    flex: 0 0 auto;
+}
+
+.newskud-page .sk-userlist-status-inline--tag-new > span:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+}
+
 .newskud-page .sk-usermonic-drawer-row {
     display: grid;
     grid-template-columns: minmax(140px, 38%) minmax(0, 1fr);
