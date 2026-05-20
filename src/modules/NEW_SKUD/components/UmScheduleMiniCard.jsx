@@ -32,7 +32,7 @@ const UmScheduleMiniCard = (props) => {
                             Рабочее время
                         </div>
                         <div className={'sk-umsmi-data'}>
-                            {secondsToTime(baseSchedule.start_time)} - {secondsToTime(baseSchedule.end_time)}
+                            {secondsToTime(baseSchedule.start_time)} — {secondsToTime(baseSchedule.end_time)}
                         </div>
                     </div>
 

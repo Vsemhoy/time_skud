@@ -299,7 +299,6 @@
     font-weight: 700;
 }
 
-.newskud-page .sk-userlist-details-claim-period,
 .newskud-page .sk-userlist-details-claim-info {
     min-width: 0;
     overflow: hidden;
@@ -307,6 +306,45 @@
     white-space: nowrap;
     color: var(--app-muted-text-color);
     font-size: 12px;
+}
+
+.newskud-page .sk-userlist-details-claim-period {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    overflow: hidden;
+    color: var(--app-muted-text-color);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-details-claim-date-part {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.newskud-page .sk-userlist-details-claim-date-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.newskud-page .sk-userlist-details-claim-time-value {
+    min-width: 40px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: rgb(22 119 255);
+    background: color-mix(in srgb, rgb(22 119 255) 10%, transparent);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.newskud-page .sk-userlist-details-claim-period-separator {
+    color: var(--app-muted-text-color);
 }
 
 .newskud-page .sk-userlist-details-claim-status.ant-tag {
