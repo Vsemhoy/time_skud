@@ -267,6 +267,52 @@
     display: grid;
 }
 
+.newskud-page .sk-userlist-create-claim-list {
+    display: grid;
+    gap: 5px;
+    padding: 8px 10px;
+}
+
+.newskud-page .sk-userlist-create-claim-button.ant-btn {
+    width: 100%;
+    height: 30px;
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px 0 7px;
+    border-color: color-mix(in srgb, var(--claim-type-color, var(--table-border-divider-color)) 46%, var(--table-border-divider-color));
+    background: color-mix(in srgb, var(--claim-type-color, var(--app-surface-color)) 10%, var(--app-surface-color));
+    color: var(--app-text-color);
+    font-size: 12px;
+    text-align: left;
+}
+
+.newskud-page .sk-userlist-create-claim-button.ant-btn:hover {
+    border-color: var(--claim-type-color, var(--row-selected-color_2));
+    background: color-mix(in srgb, var(--claim-type-color, var(--row-hovered-bg-color)) 18%, var(--app-surface-color));
+    color: var(--app-text-color);
+}
+
+.newskud-page .sk-userlist-create-claim-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+}
+
+.newskud-page .sk-userlist-create-claim-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.newskud-page .sk-userlist-create-claim-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .newskud-page .sk-userlist-details-claim-row {
     display: grid;
     grid-template-columns: 34px minmax(0, 1fr) max-content;
@@ -421,7 +467,7 @@
 
 .newskud-page .sk-userlist-document-icon {
     font-size: 18px;
-    color: #2f7d32;
+    color: #1d5fbf;
 }
 
 .newskud-page .sk-userlist-document-title {

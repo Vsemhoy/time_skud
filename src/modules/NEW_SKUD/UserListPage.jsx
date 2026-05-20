@@ -1379,6 +1379,8 @@ const UserList = (props)=>{
                         open_user_info={true}
                         on_mark_user={handleMarkUser}
                         on_claim_click={handleOpenInfo}
+                        on_create_claim_type={handleEditorOpenCreate}
+                        claim_types={claimTypes}
                         on_clear={handleClearUserInfo}
                         target_date={targetDate}
                     />

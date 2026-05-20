@@ -193,7 +193,7 @@ const AppMenu23 = (props) => {
         return [path];
     };
 
-    const isNewSkudPage = location.pathname === '/newskud' || location.pathname.endsWith('/newskud');
+    const isNewSkudPage = location.pathname === '/' || location.pathname === '/newskud' || location.pathname.endsWith('/newskud');
 
     const openNewSkudBillList = () => {
         window.dispatchEvent(new CustomEvent('newskud:open-bill-list'));
