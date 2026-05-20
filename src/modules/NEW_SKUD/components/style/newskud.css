@@ -176,12 +176,21 @@
     padding: 12px 18px;
 }
 
+.newskud-page .sk-userlist-company-logo-frame {
+    width: 118px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
 .newskud-page .sk-userlist-company-logo {
     display: block;
-    width: auto;
-    max-width: 160px;
-    max-height: 34px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+    object-position: left center;
 }
 
 .newskud-page .sk-userlist-details-card-loader-body {
