@@ -9,6 +9,7 @@ import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import { LIST_SCHED_N_RULES_RESPONSE } from "../../../CONFIG/DEFAULTSTATE";
 import UmScheduleMiniCard from "./UmScheduleMiniCard";
+import StateIconsController from "../../CHARTS/components/StateIconsController";
 import {
     DownOutlined, UpOutlined,
     BarChartOutlined, IssuesCloseOutlined, RobotOutlined,
@@ -358,6 +359,115 @@ const ExtendedInformationSidebar = (props) => {
         );
     };
 
+    const parseClaimInfo = (info) => {
+        if (!info) {
+            return {};
+        }
+
+        if (typeof info === 'object') {
+            return info;
+        }
+
+        try {
+            return JSON.parse(info);
+        } catch (e) {
+            console.log('claim info parse error', e);
+            return {};
+        }
+    };
+
+    const getClaimTitle = (claim) => (
+        claim?.skud_current_state?.title
+        || claim?.skud_current_state?.text
+        || claim?.state_title
+        || claim?.state_text
+        || 'Заявка'
+    );
+
+    const getClaimStatusText = (claim) => {
+        if (Number(claim?.state) === 1) return 'Согласовано';
+        if (Number(claim?.state) === 2) return 'Отклонено';
+        if (Number(claim?.state) === 3) return 'Перенесено';
+        return 'На рассмотрении';
+    };
+
+    const getClaimPeriodText = (claim) => {
+        const start = claim?.start ? formatMoscowDateTime(claim.start, 'DD.MM.YYYY HH:mm') : '';
+        const end = claim?.end ? formatMoscowDateTime(claim.end, 'DD.MM.YYYY HH:mm') : '';
+
+        if (start && end && start !== end) {
+            return `${start} - ${end}`;
+        }
+
+        return start || end || '-';
+    };
+
+    const getClaimInfoText = (claim) => {
+        const info = parseClaimInfo(claim?.info);
+        return info.comment
+            || info.reason
+            || info.target_point
+            || info.task
+            || info.result
+            || info.description
+            || '';
+    };
+
+    const visibleClaims = (targetUserInfo?.claims ?? []).filter((claim) => Number(claim?.state) !== 3);
+
+    const handleClaimClick = (claim) => {
+        if (!props.on_claim_click) {
+            return;
+        }
+
+        props.on_claim_click(claim.id, {
+            ...claim,
+            user_id: claim.user_id ?? targetUserInfo.id,
+            id_company: claim.id_company ?? targetUserInfo.id_company,
+            boss_id: claim.boss_id ?? targetUserInfo.boss_id,
+            usr_surname: claim.usr_surname ?? targetUserInfo.surname,
+            usr_name: claim.usr_name ?? targetUserInfo.name,
+            usr_patronymic: claim.usr_patronymic ?? targetUserInfo.patronymic,
+        });
+    };
+
+    const renderClaimsInfo = () => (
+        <section className="sk-userlist-details-card sk-userlist-details-card--claims">
+            <div className="sk-userlist-details-card-title">Заявки</div>
+            {visibleClaims.length > 0 ? (
+                <div className="sk-userlist-details-claims-list">
+                    {visibleClaims.map((claim) => {
+                        const infoText = getClaimInfoText(claim);
+
+                        return (
+                            <div
+                                key={`details-claim-${claim.id}`}
+                                className="sk-userlist-details-claim-row"
+                                onClick={() => handleClaimClick(claim)}
+                            >
+                                <div className="sk-userlist-details-claim-icon">
+                                    <StateIconsController IdState={claim?.skud_current_state_id} height={'24px'} />
+                                </div>
+                                <div className="sk-userlist-details-claim-main">
+                                    <div className="sk-userlist-details-claim-title">{getClaimTitle(claim)}</div>
+                                    <div className="sk-userlist-details-claim-period">{getClaimPeriodText(claim)}</div>
+                                    {infoText && (
+                                        <div className="sk-userlist-details-claim-info">{infoText}</div>
+                                    )}
+                                </div>
+                                <Tag className={`sk-userlist-details-claim-status sk-userlist-details-claim-status--${Number(claim?.state) || 0}`}>
+                                    {getClaimStatusText(claim)}
+                                </Tag>
+                            </div>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="sk-userlist-details-claims-empty">Нет активных заявок</div>
+            )}
+        </section>
+    );
+
     const handlePrintDocument = (href) => {
         if (!href) {
             return;
@@ -503,6 +613,8 @@ const ExtendedInformationSidebar = (props) => {
                             </div>
                         </Spin>
                     </section>
+
+                    {renderClaimsInfo()}
 
                     {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
                         <section className="sk-userlist-details-card sk-userlist-details-card--boss">
