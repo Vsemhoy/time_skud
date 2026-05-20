@@ -7,6 +7,9 @@
     --accounting-section-border-color: #7fb3e8;
     --accounting-divider-strong-color: #3478bd;
 }
+.sk_accounting_table_wrapper_scroll {
+    overflow-x: auto;
+}
 .sk_accounting_table {
     width: 100%;
     min-width: 0;
@@ -201,4 +204,189 @@
 }
 .sk_staffing_grid_no_id {
     grid-template-columns: minmax(150px, 2fr) minmax(120px, 1.35fr) repeat(8, minmax(72px, 1fr));
+}
+.sk_table_row_surcharges {
+    width: 100%;
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: minmax(220px, 1.2fr) minmax(260px, 2fr) minmax(140px, .7fr);
+    align-items: center;
+    transition: .2s;
+    padding: 0;
+    background: linear-gradient(180deg, #34465b 0%, #26384c 100%);
+    border: 1px solid var(--accounting-cell-border-color);
+    border-radius: 8px 8px 0 0;
+    border-bottom: 2px solid #1b2d42;
+    box-shadow: 0 10px 22px rgba(22, 39, 58, 0.18);
+    overflow: hidden;
+}
+.sk_surcharge_add_row,
+.sk_surcharge_row {
+    width: 100%;
+    min-height: 58px;
+    display: grid;
+    grid-template-columns: minmax(220px, 1.2fr) minmax(260px, 2fr) minmax(140px, .7fr);
+    padding: 0;
+    transition: .2s;
+    background-color: #ffffff;
+    border-left: 1px solid var(--accounting-cell-border-color);
+    border-right: 1px solid var(--accounting-cell-border-color);
+    border-bottom: 1px solid var(--accounting-cell-border-color);
+}
+.sk_surcharge_add_row {
+    min-height: 64px;
+    background: #f6faff;
+    box-shadow: inset 4px 0 0 #3478bd;
+}
+.sk_surcharge_add_row :global(.ant-select),
+.sk_surcharge_add_row :global(.ant-input),
+.sk_surcharge_add_row :global(.ant-input-number) {
+    width: 100%;
+}
+.sk_surcharge_add_row .sk_person_row_content {
+    align-items: stretch;
+    gap: 8px;
+}
+.sk_surcharge_add_row .sk_person_row_content:last-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 34px;
+    align-items: center;
+}
+.sk_surcharge_row:hover {
+    background-color: #f6faff;
+    box-shadow: inset 4px 0 0 #8aa6c1;
+}
+.sk_surcharge_row .sk_person_row_content:first-child,
+.sk_surcharge_row .sk_person_row_content:nth-child(2) {
+    align-items: flex-start;
+}
+.sk_surcharge_price {
+    min-width: 25px;
+    max-width: 100%;
+    margin: 0;
+    text-align: right;
+    color: #172033;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+.sk_surcharge_empty_state {
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid var(--accounting-cell-border-color);
+    border-top: none;
+}
+.sk_surcharge_skeleton {
+    width: 100%;
+}
+.sk_surcharge_skeleton :global(.ant-skeleton-input) {
+    min-width: 0 !important;
+    max-width: 100%;
+}
+.sk_bankcard_days_panel {
+    width: 100%;
+    min-width: 100%;
+    margin-bottom: 16px;
+    border: 1px solid var(--accounting-section-border-color);
+    background: #ffffff;
+    box-shadow: 0 12px 24px rgba(24, 44, 66, 0.07);
+}
+.sk_bankcard_days_months,
+.sk_bankcard_days_rows {
+    display: flex;
+    width: 100%;
+}
+.sk_bankcard_days_month {
+    flex: 0 0 auto;
+    min-width: 37px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    color: #095b9d;
+    font-size: 13px;
+    font-weight: 800;
+    background: linear-gradient(180deg, #e7f2ff 0%, #d5e9fb 100%);
+    border-right: 1px solid var(--accounting-section-border-color);
+}
+.sk_bankcard_days_month:last-child {
+    border-right: none;
+}
+.sk_bankcard_days_group {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 3px;
+    padding: 4px;
+    border-right: 1px solid var(--accounting-section-border-color);
+}
+.sk_bankcard_days_group:last-child {
+    border-right: none;
+}
+.sk_bankcard_day_button {
+    flex: 1 1 34px;
+    min-width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 0;
+    font-weight: 700;
+}
+.sk_bankcard_table {
+    width: max-content;
+    min-width: 100%;
+}
+.sk_table_row_bankcard_title {
+    width: 100%;
+    min-height: 52px;
+    display: grid;
+    align-items: center;
+    transition: .2s;
+    padding: 0;
+    background: linear-gradient(180deg, #34465b 0%, #26384c 100%);
+    border: 1px solid var(--accounting-cell-border-color);
+    border-radius: 8px 8px 0 0;
+    border-bottom: 2px solid #1b2d42;
+    box-shadow: 0 10px 22px rgba(22, 39, 58, 0.18);
+    overflow: hidden;
+}
+.sk_bankcard_row {
+    width: 100%;
+    min-height: 54px;
+    display: grid;
+    padding: 0;
+    transition: .2s;
+    background-color: #ffffff;
+    border-left: 1px solid var(--accounting-cell-border-color);
+    border-right: 1px solid var(--accounting-cell-border-color);
+    border-bottom: 1px solid var(--accounting-cell-border-color);
+}
+.sk_bankcard_row:hover {
+    background-color: #f6faff;
+    box-shadow: inset 4px 0 0 #8aa6c1;
+}
+.sk_bankcard_row .sk_person_row_content:first-child {
+    align-items: flex-start;
+    padding-left: 14px;
+}
+.sk_bankcard_row .sk_person_row_content:nth-child(n + 2) {
+    align-items: center;
+    padding: 0;
+}
+.sk_bankcard_row :global(.ant-input-number) {
+    width: 100%;
+}
+.sk_bankcard_row :global(.ant-input-number-input) {
+    text-align: right;
+    padding-inline: 8px;
+}
+.sk_bankcard_skeleton {
+    width: 100%;
+}
+.sk_bankcard_skeleton :global(.ant-skeleton-input) {
+    min-width: 0 !important;
+    max-width: 100%;
 }
