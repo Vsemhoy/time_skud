@@ -45,6 +45,24 @@ function SchedulesWorkspace(props) {
 
     const [intersections, setIntersections] = useState([]);
 
+    const isEditingActiveSchedule = () => {
+        return editedSchedule.id && +editedSchedule.id === +activeSchedule.id;
+    };
+
+    const isEditingOpenEndedSchedule = () => {
+        return editedSchedule.id && !editedSchedule.end;
+    };
+
+    const getMinEndScheduleDate = () => {
+        return isEditingOpenEndedSchedule()
+            ? dayjs().startOf('day')
+            : dayjs().add(1, 'day').startOf('day');
+    };
+
+    const isDisabledEndScheduleDate = (date) => {
+        return date && date.startOf('day').isBefore(getMinEndScheduleDate());
+    };
+
     useEffect(() => {
         if (!isMounted) {
             fetchInfo().then();
@@ -109,6 +127,9 @@ function SchedulesWorkspace(props) {
     }, [toolbarDateStartSchedule, toolbarDateEndSchedule]);
 
     useEffect(() => {
+        if (isEditingActiveSchedule()) return;
+        if (!toolbarDateStartSchedule) return;
+
         const now = dayjs().startOf('day'); // Обрезаем время, оставляем только дату
         const startDate = dayjs(toolbarDateStartSchedule).startOf('day'); // Аналогично для начальной даты
 
@@ -121,16 +142,17 @@ function SchedulesWorkspace(props) {
     }, [toolbarDateStartSchedule]);
 
     useEffect(() => {
-        const tomorrow = dayjs().add(1, 'day').startOf('day'); // Завтрашняя дата без времени
-        const endDate = dayjs(toolbarDateEndSchedule).startOf('day'); // Конечная дата без времени
+        if (!toolbarDateEndSchedule) return;
 
-        if (endDate.isBefore(tomorrow)) {
-            const newEnd = dayjs().add(1, 'day').startOf('day'); // Завтрашний день (00:00:00)
-            if (!newEnd.isSame(endDate, 'day')) { // Проверяем, отличается ли дата
-                setToolbarDateEndSchedule(newEnd);
+        const minEndDate = getMinEndScheduleDate();
+        const endDate = dayjs(toolbarDateEndSchedule).startOf('day');
+
+        if (endDate.isBefore(minEndDate)) {
+            if (!minEndDate.isSame(endDate, 'day')) {
+                setToolbarDateEndSchedule(minEndDate);
             }
         }
-    }, [toolbarDateEndSchedule]);
+    }, [toolbarDateEndSchedule, editedSchedule]);
 
     useEffect(() => {
         if (userIdState === 'new') {
@@ -702,6 +724,7 @@ function SchedulesWorkspace(props) {
                                         value={toolbarDateEndSchedule}
                                         onChange={(e) => setToolbarDateEndSchedule(e)}
                                         format={"DD.MM.YYYY"}
+                                        disabledDate={isDisabledEndScheduleDate}
                                         style={{width: '100%'}}
                             />
                             <br/>
