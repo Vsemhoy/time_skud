@@ -278,6 +278,11 @@
     justify-content: center;
 }
 
+.newskud-page .sk-userlist-details-claim-icon--future {
+    filter: grayscale(1);
+    opacity: 0.55;
+}
+
 .newskud-page .sk-userlist-details-claim-main {
     min-width: 0;
     display: grid;
