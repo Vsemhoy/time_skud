@@ -131,6 +131,10 @@
     background: color-mix(in srgb, var(--app-surface-color) 66%, var(--row-selected-color_2) 34%);
 }
 
+.sk-claimeditor-drawer-row .sk-contend-um {
+    font-style: normal;
+}
+
 .sk_transport_price_header {
     margin: 0;
     padding: 0;
