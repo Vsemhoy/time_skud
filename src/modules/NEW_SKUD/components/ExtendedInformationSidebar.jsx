@@ -445,7 +445,7 @@ const ExtendedInformationSidebar = (props) => {
                                 className="sk-userlist-details-claim-row"
                                 onClick={() => handleClaimClick(claim)}
                             >
-                                <div className="sk-userlist-details-claim-icon">
+                                <div className={`sk-userlist-details-claim-icon ${claim?.not_today ? 'sk-userlist-details-claim-icon--future' : ''}`}>
                                     <StateIconsController IdState={claim?.skud_current_state_id} height={'24px'} />
                                 </div>
                                 <div className="sk-userlist-details-claim-main">
