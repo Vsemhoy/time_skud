@@ -364,49 +364,24 @@ const ExtendedInformationSidebar = (props) => {
             return;
         }
 
-        const printFrame = document.createElement('iframe');
         const pdfPrintSrc = `${href}#toolbar=0&navpanes=0&scrollbar=0`;
-
-        printFrame.style.position = 'fixed';
-        printFrame.style.right = '0';
-        printFrame.style.bottom = '0';
-        printFrame.style.width = '1px';
-        printFrame.style.height = '1px';
-        printFrame.style.border = '0';
-        printFrame.style.opacity = '0';
-        printFrame.src = pdfPrintSrc;
-
-        let isPrinted = false;
-
-        const cleanup = () => {
-            setTimeout(() => {
-                printFrame.remove();
-            }, 1000);
-        };
+        const printWindow = window.open(pdfPrintSrc, '_blank');
 
         const printPdf = () => {
-            if (isPrinted) {
+            if (!printWindow || printWindow.closed) {
                 return;
             }
 
-            isPrinted = true;
-
             try {
-                printFrame.contentWindow?.focus();
-                printFrame.contentWindow?.print();
+                printWindow.focus();
+                printWindow.print();
             } catch (error) {
-                window.open(pdfPrintSrc, '_blank', 'noopener,noreferrer');
-            } finally {
-                cleanup();
+                console.log(error);
             }
         };
 
-        printFrame.onload = () => {
-            setTimeout(printPdf, 250);
-        };
-
-        document.body.appendChild(printFrame);
-        setTimeout(printPdf, 1800);
+        setTimeout(printPdf, 1200);
+        setTimeout(printPdf, 2400);
     };
 
     return (
