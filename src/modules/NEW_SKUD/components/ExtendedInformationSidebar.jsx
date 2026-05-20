@@ -359,16 +359,20 @@ const ExtendedInformationSidebar = (props) => {
         );
     };
 
-    const handlePrintDocument = (href) => {
+    const handlePrintDocument = async (href) => {
         if (!href) {
             return;
         }
 
-        const pdfPrintSrc = `${href}#toolbar=0&navpanes=0&scrollbar=0`;
-        const printWindow = window.open(pdfPrintSrc, '_blank');
+        const printWindow = window.open('', '_blank');
+
+        if (!printWindow) {
+            window.open(`${href}#toolbar=0&navpanes=0&scrollbar=0`, '_blank', 'noopener,noreferrer');
+            return;
+        }
 
         const printPdf = () => {
-            if (!printWindow || printWindow.closed) {
+            if (printWindow.closed) {
                 return;
             }
 
@@ -380,8 +384,21 @@ const ExtendedInformationSidebar = (props) => {
             }
         };
 
-        setTimeout(printPdf, 1200);
-        setTimeout(printPdf, 2400);
+        try {
+            const response = await fetch(href);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const pdfPrintSrc = `${blobUrl}#toolbar=0&navpanes=0&scrollbar=0`;
+
+            printWindow.location.href = pdfPrintSrc;
+
+            setTimeout(printPdf, 1200);
+            setTimeout(printPdf, 2400);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+        } catch (error) {
+            console.log(error);
+            printWindow.location.href = `${href}#toolbar=0&navpanes=0&scrollbar=0`;
+        }
     };
 
     return (
