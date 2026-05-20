@@ -78,8 +78,8 @@ const EMPTY_STATE_DOCUMENTS = [
     {
         id: 'unpaid-vacation',
         title: 'Заявление на отпуск за свой счет',
-        size: 'DOC',
-        href: 'http://192.168.1.14/files/docs/svo.doc',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/svo.docx',
         printHref: 'http://192.168.1.14/files/docs/svo.pdf',
     },
     {
@@ -113,8 +113,8 @@ const EMPTY_STATE_DOCUMENTS = [
     {
         id: 'dismissal',
         title: 'Заявление на увольнение',
-        size: 'DOC',
-        href: 'http://192.168.1.14/files/docs/dismissal.doc',
+        size: 'DOCX',
+        href: 'http://192.168.1.14/files/docs/dismissal.docx',
         printHref: 'http://192.168.1.14/files/docs/dismissal.pdf',
     },
     {
