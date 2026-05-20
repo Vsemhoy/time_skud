@@ -60,21 +60,20 @@ const getMutedDrawerAccent = (color) => {
 };
 
 const COMPANY_LOGOS = [
-    { key: 'arstel', src: '/company-logos/arstel.svg' },
-    { key: 'арстел', src: '/company-logos/arstel.svg' },
-    { key: 'rondo', src: '/company-logos/rondo.svg' },
-    { key: 'рондо', src: '/company-logos/rondo.svg' },
+    { key: 'arstel', src: '/company-logos/arstel.svg', className: 'sk-userlist-company-logo--arstel' },
+    { key: 'арстел', src: '/company-logos/arstel.svg', className: 'sk-userlist-company-logo--arstel' },
+    { key: 'rondo', src: '/company-logos/rondo.svg', className: 'sk-userlist-company-logo--rondo' },
+    { key: 'рондо', src: '/company-logos/rondo.svg', className: 'sk-userlist-company-logo--rondo' },
 ];
 
-const getCompanyLogoSrc = (companyName) => {
+const getCompanyLogo = (companyName) => {
     if (!companyName) {
         return null;
     }
 
     const normalizedName = String(companyName).toLowerCase();
-    return COMPANY_LOGOS.find((item) => normalizedName.includes(item.key))?.src ?? null;
+    return COMPANY_LOGOS.find((item) => normalizedName.includes(item.key)) ?? null;
 };
-
 const EMPTY_STATE_DOCUMENTS = [
     {
         id: 'unpaid-vacation',
@@ -256,7 +255,7 @@ const ExtendedInformationSidebar = (props) => {
     const targetCompany = targetUserInfo?.id_company
         ? userdata.companies.find((item) => item.id === targetUserInfo.id_company)
         : null;
-    const targetCompanyLogoSrc = getCompanyLogoSrc(targetCompany?.name);
+    const targetCompanyLogo = getCompanyLogo(targetCompany?.name);
     const visibleTargetUserGuys = targetUserInfo
         ? props.base_user_list_data.filter((item) => item.boss_id === targetUserInfo.id)
         : targetUserGuys;
@@ -462,13 +461,14 @@ const ExtendedInformationSidebar = (props) => {
                                 <div className={'sk-usermonic-drawer-row'}>
                                     <div className={'sk-labed-um'}>Компания</div>
                                     <div className={'sk-contend-um'}>
-                                        {targetCompanyLogoSrc ? (
-                                            <img
-                                                className="sk-userlist-company-logo"
-                                                src={targetCompanyLogoSrc}
-                                                alt={targetCompany?.name ?? 'Компания'}
-                                            />
-                                        ) : (
+                                        {targetCompanyLogo ? (
+                                            <span className="sk-userlist-company-logo-frame">
+                                                <img
+                                                    className={`sk-userlist-company-logo ${targetCompanyLogo.className}`}
+                                                    src={targetCompanyLogo.src}
+                                                    alt={targetCompany?.name ?? 'Компания'}
+                                                />
+                                            </span>                                        ) : (
                                             <>
                                                 <span className={'sk-usermonic-comround'}
                                                       style={{
