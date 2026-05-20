@@ -364,56 +364,49 @@ const ExtendedInformationSidebar = (props) => {
             return;
         }
 
-        const printWindow = window.open('', '_blank');
+        const printFrame = document.createElement('iframe');
+        const pdfPrintSrc = `${href}#toolbar=0&navpanes=0&scrollbar=0`;
 
-        if (!printWindow) {
-            window.open(href, '_blank', 'noopener,noreferrer');
-            return;
-        }
+        printFrame.style.position = 'fixed';
+        printFrame.style.right = '0';
+        printFrame.style.bottom = '0';
+        printFrame.style.width = '1px';
+        printFrame.style.height = '1px';
+        printFrame.style.border = '0';
+        printFrame.style.opacity = '0';
+        printFrame.src = pdfPrintSrc;
 
-        printWindow.document.write(`
-            <!doctype html>
-            <html lang="ru">
-                <head>
-                    <title>Печать документа</title>
-                    <style>
-                        html,
-                        body {
-                            width: 100%;
-                            height: 100%;
-                            margin: 0;
-                            overflow: hidden;
-                        }
+        let isPrinted = false;
 
-                        iframe {
-                            width: 100%;
-                            height: 100%;
-                            border: 0;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <iframe id="print-document-frame" src="${href}"></iframe>
-                    <script>
-                        const frame = document.getElementById('print-document-frame');
-                        let isPrinted = false;
-                        const printDocument = () => {
-                            if (isPrinted) {
-                                return;
-                            }
+        const cleanup = () => {
+            setTimeout(() => {
+                printFrame.remove();
+            }, 1000);
+        };
 
-                            isPrinted = true;
-                            window.focus();
-                            setTimeout(() => window.print(), 250);
-                        };
+        const printPdf = () => {
+            if (isPrinted) {
+                return;
+            }
 
-                        frame.addEventListener('load', printDocument);
-                        setTimeout(printDocument, 1800);
-                    </script>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
+            isPrinted = true;
+
+            try {
+                printFrame.contentWindow?.focus();
+                printFrame.contentWindow?.print();
+            } catch (error) {
+                window.open(pdfPrintSrc, '_blank', 'noopener,noreferrer');
+            } finally {
+                cleanup();
+            }
+        };
+
+        printFrame.onload = () => {
+            setTimeout(printPdf, 250);
+        };
+
+        document.body.appendChild(printFrame);
+        setTimeout(printPdf, 1800);
     };
 
     return (
