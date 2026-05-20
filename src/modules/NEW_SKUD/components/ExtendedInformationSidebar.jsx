@@ -500,6 +500,33 @@ const ExtendedInformationSidebar = (props) => {
         </section>
     );
 
+    const renderCreateClaimCard = () => {
+        const claimTypes = props.claim_types ?? [];
+
+        return (
+            <section className="sk-userlist-details-card sk-userlist-details-card--create-claim">
+                <div className="sk-userlist-details-card-title">Создать заявку</div>
+                {claimTypes.length > 0 ? (
+                    <div className="sk-userlist-create-claim-list">
+                        {claimTypes.map((claimType) => (
+                            <Button
+                                key={claimType.key ?? claimType.value}
+                                className="sk-userlist-create-claim-button"
+                                style={{'--claim-type-color': claimType.color}}
+                                onClick={() => props.on_create_claim_type?.(claimType.value)}
+                            >
+                                <span className="sk-userlist-create-claim-icon">{claimType.icon}</span>
+                                <span className="sk-userlist-create-claim-title">{claimType.title || claimType.label}</span>
+                            </Button>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="sk-userlist-details-claims-empty">Нет доступных типов заявок</div>
+                )}
+            </section>
+        );
+    };
+
     const handlePrintDocument = (href) => {
         if (!href) {
             return;
@@ -551,6 +578,8 @@ const ExtendedInformationSidebar = (props) => {
                             ))}
                         </div>
                     </section>
+
+                    {renderCreateClaimCard()}
                 </div>
             )}
             {openUserInfo && hasTargetUser && (

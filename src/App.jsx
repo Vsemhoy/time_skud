@@ -242,9 +242,9 @@ function App() {
             </div>
           )} 
           <Routes>
-              <Route path={'/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+              <Route path={'/'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
               <Route path={'/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
-            <Route path={BASE_ROUTE + '/'} element={<UserListPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             
             <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
