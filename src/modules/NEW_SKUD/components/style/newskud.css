@@ -131,6 +131,26 @@
     background: transparent !important;
     height: calc(100vh - 46px - 46px - 5px) !important;
     overflow-y: auto !important;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--app-text-color) 24%, transparent) transparent;
+}
+
+.newskud-page .sk-userlist-details-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.newskud-page .sk-userlist-details-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.newskud-page .sk-userlist-details-panel::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--app-text-color) 24%, transparent);
+    border-radius: 999px;
+}
+
+.newskud-page .sk-userlist-details-panel::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--app-text-color) 34%, transparent);
 }
 
 .newskud-page .sk-userlist-details-scroll {
