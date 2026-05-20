@@ -367,10 +367,10 @@ const UserMonitorListCard = (props) => {
             <div style={{maxWidth: '320px'}}>
                 <div><strong>{scheduleInfo.name || 'График работы'}</strong></div>
                 {scheduleInfo.start_time != null && scheduleInfo.end_time != null && (
-                    <div>Рабочее время: {secondsToTime(scheduleInfo.start_time)} - {secondsToTime(scheduleInfo.end_time)}</div>
+                    <div>Рабочее время: {secondsToTime(scheduleInfo.start_time)} — {secondsToTime(scheduleInfo.end_time)}</div>
                 )}
                 {scheduleInfo.lunch_start != null && scheduleInfo.lunch_end != null && (
-                    <div>Обед: {secondsToTime(scheduleInfo.lunch_start)} - {secondsToTime(scheduleInfo.lunch_end)}</div>
+                    <div>Обед: {secondsToTime(scheduleInfo.lunch_start)} — {secondsToTime(scheduleInfo.lunch_end)}</div>
                 )}
                 {Number(scheduleInfo.lunch_time) > 0 && (
                     <div>Длительность обеда: {secondsToTime(scheduleInfo.lunch_time)}</div>

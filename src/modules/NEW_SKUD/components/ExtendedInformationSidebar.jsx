@@ -391,15 +391,45 @@ const ExtendedInformationSidebar = (props) => {
         return 'На рассмотрении';
     };
 
-    const getClaimPeriodText = (claim) => {
-        const start = claim?.start ? formatMoscowDateTime(claim.start, 'DD.MM.YYYY HH:mm') : '';
-        const end = claim?.end ? formatMoscowDateTime(claim.end, 'DD.MM.YYYY HH:mm') : '';
+    const shouldShowClaimTime = (time) => Boolean(time && time !== '00:00' && time !== '23:59');
 
-        if (start && end && start !== end) {
-            return `${start} - ${end}`;
+    const renderClaimDate = (value) => {
+        if (!value) {
+            return null;
         }
 
-        return start || end || '-';
+        const date = formatMoscowDateTime(value, 'DD.MM.YYYY');
+        const time = formatMoscowDateTime(value, 'HH:mm');
+
+        return (
+            <span className="sk-userlist-details-claim-date-part">
+                <span className="sk-userlist-details-claim-date-value">{date}</span>
+                {shouldShowClaimTime(time) && (
+                    <span className="sk-userlist-details-claim-time-value">{time}</span>
+                )}
+            </span>
+        );
+    };
+
+    const renderClaimPeriod = (claim) => {
+        const startDate = renderClaimDate(claim?.start);
+        const endDate = renderClaimDate(claim?.end);
+
+        if (startDate && endDate && String(claim.start) !== String(claim.end)) {
+            return (
+                <div className="sk-userlist-details-claim-period">
+                    {startDate}
+                    <span className="sk-userlist-details-claim-period-separator">—</span>
+                    {endDate}
+                </div>
+            );
+        }
+
+        return (
+            <div className="sk-userlist-details-claim-period">
+                {startDate || endDate || <span className="sk-userlist-details-claim-date-value">-</span>}
+            </div>
+        );
     };
 
     const getClaimInfoText = (claim) => {
@@ -450,7 +480,7 @@ const ExtendedInformationSidebar = (props) => {
                                 </div>
                                 <div className="sk-userlist-details-claim-main">
                                     <div className="sk-userlist-details-claim-title">{getClaimTitle(claim)}</div>
-                                    <div className="sk-userlist-details-claim-period">{getClaimPeriodText(claim)}</div>
+                                    {renderClaimPeriod(claim)}
                                     {infoText && (
                                         <div className="sk-userlist-details-claim-info">{infoText}</div>
                                     )}
@@ -542,7 +572,7 @@ const ExtendedInformationSidebar = (props) => {
                             </div>
 
                             <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>Отдел</div>
+                                <div className={'sk-labed-um'}>Подразделение</div>
                                 <div
                                     className={'sk-contend-um'}>{targetUserInfo.department_name ? targetUserInfo.department_name : '-'}</div>
                             </div>
