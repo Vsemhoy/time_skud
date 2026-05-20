@@ -248,6 +248,93 @@
     margin: 0;
 }
 
+.newskud-page .sk-userlist-details-claims-list {
+    display: grid;
+}
+
+.newskud-page .sk-userlist-details-claim-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: 10px;
+    min-height: 58px;
+    padding: 8px 10px 8px 14px;
+    border-bottom: 1px solid var(--table-border-divider-color);
+    cursor: pointer;
+    transition: background 160ms ease;
+}
+
+.newskud-page .sk-userlist-details-claim-row:last-child {
+    border-bottom: 0;
+}
+
+.newskud-page .sk-userlist-details-claim-row:hover {
+    background: var(--row-hovered-bg-color);
+}
+
+.newskud-page .sk-userlist-details-claim-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newskud-page .sk-userlist-details-claim-main {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+}
+
+.newskud-page .sk-userlist-details-claim-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--app-text-color);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.newskud-page .sk-userlist-details-claim-period,
+.newskud-page .sk-userlist-details-claim-info {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--app-muted-text-color);
+    font-size: 12px;
+}
+
+.newskud-page .sk-userlist-details-claim-status.ant-tag {
+    margin-inline-end: 0;
+    max-width: 116px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.newskud-page .sk-userlist-details-claim-status--1.ant-tag {
+    color: #237804;
+    border-color: #b7eb8f;
+    background: #f6ffed;
+}
+
+.newskud-page .sk-userlist-details-claim-status--2.ant-tag {
+    color: #a8071a;
+    border-color: #ffa39e;
+    background: #fff1f0;
+}
+
+.newskud-page .sk-userlist-details-claim-status--0.ant-tag {
+    color: #ad6800;
+    border-color: #ffd591;
+    background: #fff7e6;
+}
+
+.newskud-page .sk-userlist-details-claims-empty {
+    padding: 14px 18px;
+    color: var(--app-muted-text-color);
+    text-align: center;
+}
+
 .newskud-page .sk-userlist-details-card .sk-boss-guy-card {
     margin: 0 0 8px;
 }

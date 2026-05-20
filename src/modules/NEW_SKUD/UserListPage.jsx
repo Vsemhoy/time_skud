@@ -1378,6 +1378,7 @@ const UserList = (props)=>{
                         base_user_list_data={baseUserListData}
                         open_user_info={true}
                         on_mark_user={handleMarkUser}
+                        on_claim_click={handleOpenInfo}
                         on_clear={handleClearUserInfo}
                         target_date={targetDate}
                     />
