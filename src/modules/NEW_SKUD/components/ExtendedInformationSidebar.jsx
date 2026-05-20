@@ -81,42 +81,49 @@ const EMPTY_STATE_DOCUMENTS = [
         title: 'Заявление на отпуск за свой счет',
         size: 'DOC',
         href: 'http://192.168.1.14/files/docs/svo.doc',
+        printHref: 'http://192.168.1.14/files/docs/svo.pdf',
     },
     {
         id: 'vacation',
         title: 'Заявление на отпуск',
         size: 'DOCX',
         href: 'http://192.168.1.14/files/docs/vacation.docx',
+        printHref: 'http://192.168.1.14/files/docs/vacation.pdf',
     },
     {
         id: 'vacation-bypass-sheet',
         title: 'Обходной лист отпуск',
         size: 'DOCX',
         href: 'http://192.168.1.14/files/docs/vacation_bypass_sheet.docx',
+        printHref: 'http://192.168.1.14/files/docs/vacation_bypass_sheet.pdf',
     },
     {
         id: 'vacation-transfer',
         title: 'Заявление на перенос отпуска',
         size: 'DOCX',
         href: 'http://192.168.1.14/files/docs/vacation_transfer.docx',
+        printHref: 'http://192.168.1.14/files/docs/vacation_transfer.pdf',
     },
     {
         id: 'free-form',
         title: 'Заявление свободная форма',
         size: 'DOCX',
         href: 'http://192.168.1.14/files/docs/free_form.docx',
+        printHref: 'http://192.168.1.14/files/docs/free_form.pdf',
     },
     {
         id: 'dismissal',
         title: 'Заявление на увольнение',
         size: 'DOC',
         href: 'http://192.168.1.14/files/docs/dismissal.doc',
+        printHref: 'http://192.168.1.14/files/docs/dismissal.pdf',
     },
     {
         id: 'dismissal-clearance-sheet',
         title: 'Обходной лист увольнение',
         size: 'DOCX',
         href: 'http://192.168.1.14/files/docs/dismissal_clearance_sheet.docx',
+        printHref: 'http://192.168.1.14/files/docs/dismissal_clearance_sheet.pdf',
     },
 ];
 
@@ -393,13 +400,13 @@ const ExtendedInformationSidebar = (props) => {
                                             download={documentItem.href ? true : undefined}
                                         />
                                     </Tooltip>
-                                    <Tooltip title={documentItem.href ? 'В печать' : 'Файл еще не добавлен'}>
+                                    <Tooltip title={documentItem.printHref ? 'В печать' : 'PDF еще не добавлен'}>
                                         <Button
                                             type="text"
                                             size="small"
                                             icon={<PrinterOutlined />}
-                                            disabled={!documentItem.href}
-                                            onClick={() => handlePrintDocument(documentItem.href)}
+                                            disabled={!documentItem.printHref}
+                                            onClick={() => handlePrintDocument(documentItem.printHref)}
                                         />
                                     </Tooltip>
                                 </div>
