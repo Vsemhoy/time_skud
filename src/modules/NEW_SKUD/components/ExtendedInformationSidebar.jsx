@@ -359,46 +359,12 @@ const ExtendedInformationSidebar = (props) => {
         );
     };
 
-    const handlePrintDocument = async (href) => {
+    const handlePrintDocument = (href) => {
         if (!href) {
             return;
         }
 
-        const printWindow = window.open('', '_blank');
-
-        if (!printWindow) {
-            window.open(`${href}#toolbar=0&navpanes=0&scrollbar=0`, '_blank', 'noopener,noreferrer');
-            return;
-        }
-
-        const printPdf = () => {
-            if (printWindow.closed) {
-                return;
-            }
-
-            try {
-                printWindow.focus();
-                printWindow.print();
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        try {
-            const response = await fetch(href);
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            const pdfPrintSrc = `${blobUrl}#toolbar=0&navpanes=0&scrollbar=0`;
-
-            printWindow.location.href = pdfPrintSrc;
-
-            setTimeout(printPdf, 1200);
-            setTimeout(printPdf, 2400);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
-        } catch (error) {
-            console.log(error);
-            printWindow.location.href = `${href}#toolbar=0&navpanes=0&scrollbar=0`;
-        }
+        window.open(href, '_blank', 'noopener,noreferrer');
     };
 
     return (
