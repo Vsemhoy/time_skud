@@ -668,6 +668,33 @@ const ClaimEditorDrawer = (props) => {
     setOpen(false);
   }
 
+  const renderReadDateTime = (value) => {
+    if (!value) {
+      return <span className="sk-claim-read-date-value">-</span>;
+    }
+
+    return (
+      <span className="sk-claim-read-date-time">
+        <span className="sk-claim-read-date-value">{formatMoscowDateTime(value, 'DD.MM.YYYY')}</span>
+        <span className="sk-claim-read-time-value">{formatMoscowDateTime(value, 'HH:mm')}</span>
+      </span>
+    );
+  };
+
+  const renderReadDate = (value) => (
+    <span className="sk-claim-read-date-value">
+      {value ? formatMoscowDateTime(value, 'DD.MM.YYYY') : '-'}
+    </span>
+  );
+
+  const renderReadRange = (start, end, renderValue) => (
+    <div className="sk-claim-read-range">
+      {renderValue(start)}
+      <span className="sk-claim-read-range-separator">—</span>
+      {renderValue(end)}
+    </div>
+  );
+
   return (
     <>
       
@@ -727,10 +754,7 @@ const ClaimEditorDrawer = (props) => {
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Начало и окончание</span>
               <div className={'sk-flex-space'}>
               {editMode === 'read' ? (
-                <div className='sk-flex-space'>
-                  <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[0], 'DD.MM.YYYY  HH:mm')}</div> -
-                  <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[1], 'DD.MM.YYYY  HH:mm')} </div>
-              </div>
+                renderReadRange(formDateRange[0], formDateRange[1], renderReadDateTime)
               ):(
                 <>
                   {isFullWorkDay && isMultiUserFullWorkDay ? (
@@ -785,10 +809,7 @@ const ClaimEditorDrawer = (props) => {
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Начальная и конечная даты</span>
                 <div className={'sk-flex-space'}>
                 {editMode === 'read' ? (
-                <div className='sk-flex-space'>
-                    <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[0], 'DD.MM.YYYY')}</div> -
-                    <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[1], 'DD.MM.YYYY')} </div>
-                </div>
+                renderReadRange(formDateRange[0], formDateRange[1], renderReadDate)
               ):(
                 <>
                   <DatePicker.RangePicker

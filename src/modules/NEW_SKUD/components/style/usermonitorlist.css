@@ -375,6 +375,40 @@
     border-bottom: 1px solid rgb(195, 195, 195);
 }
 
+.sk-claim-read-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sk-claim-read-date-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.sk-claim-read-date-value {
+    color: var(--app-text-color);
+    font-size: 14px;
+}
+
+.sk-claim-read-time-value {
+    min-width: 40px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: rgb(22 119 255);
+    background: color-mix(in srgb, rgb(22 119 255) 10%, transparent);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.sk-claim-read-range-separator {
+    color: var(--app-muted-text-color);
+}
+
 .sk-claimeditor-drawer-row {
     padding-top: 6px;
     padding-bottom: 6px;
