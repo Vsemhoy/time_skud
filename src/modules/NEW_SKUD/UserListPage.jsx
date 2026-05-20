@@ -95,6 +95,7 @@ const UserList = (props)=>{
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
   const effectiveShowIdColumn = showIdColumn || isShowExtendedInfo;
+  const shouldShowExtendedTableColumns = isShowExtendedInfo && !isOpenFilters;
   const [editorMode, setEditorMode] = useState('create');
   const [editorOpened, setEditorOpened] = useState(false);
   const [formType, setFormType] = useState(null);
@@ -1227,7 +1228,7 @@ const UserList = (props)=>{
                         <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
-                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${isShowExtendedInfo ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'}`}>
+                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'}`}>
 
                             {effectiveShowIdColumn && (
                               <div className="sk-userlist-id-cell" onClick={() => {
@@ -1305,21 +1306,21 @@ const UserList = (props)=>{
                             >Потерянное время
                             </div>
 
-                            {isShowExtendedInfo && (
+                            {shouldShowExtendedTableColumns && (
                                 <div title='График работ'
                                      className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
                                 >График работ
                                 </div>
                             )}
 
-                            {isShowExtendedInfo && (
+                            {shouldShowExtendedTableColumns && (
                                 <div title='Правила учёта РВ'
                                      className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
                                 >Правила учёта РВ
                                 </div>
                             )}
 
-                            {isShowExtendedInfo && (
+                            {shouldShowExtendedTableColumns && (
                                 <div>
                                   <div>Руководитель</div>
                                 </div>
@@ -1333,7 +1334,7 @@ const UserList = (props)=>{
                         </div>
                         </Affix>
                         {shouldShowTableSkeleton ? (
-                          <UserListTableSkeleton extendedInfo={isShowExtendedInfo} showIdColumn={effectiveShowIdColumn} />
+                          <UserListTableSkeleton extendedInfo={shouldShowExtendedTableColumns} showIdColumn={effectiveShowIdColumn} />
                         ) : filteredUsers.length === 0 ? (
                           <div className="sk-userlist-empty-state">
                             <Empty description="Нет данных для отображения" />
@@ -1350,7 +1351,7 @@ const UserList = (props)=>{
                                     its_me={userdata.user.id === arche.id}
                                     on_double_click={handleShowUserInfo}
                                     selected_columns={selectedColumns}
-                                    extendedInfo={isShowExtendedInfo}
+                                    extendedInfo={shouldShowExtendedTableColumns}
                                     show_id_column={effectiveShowIdColumn}
                                     current_user_id={userdata.user.id}
                                   />
