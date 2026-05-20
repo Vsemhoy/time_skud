@@ -364,10 +364,56 @@ const ExtendedInformationSidebar = (props) => {
             return;
         }
 
-        const printWindow = window.open(href, '_blank', 'noopener,noreferrer');
-        printWindow?.addEventListener('load', () => {
-            printWindow.print();
-        });
+        const printWindow = window.open('', '_blank');
+
+        if (!printWindow) {
+            window.open(href, '_blank', 'noopener,noreferrer');
+            return;
+        }
+
+        printWindow.document.write(`
+            <!doctype html>
+            <html lang="ru">
+                <head>
+                    <title>Печать документа</title>
+                    <style>
+                        html,
+                        body {
+                            width: 100%;
+                            height: 100%;
+                            margin: 0;
+                            overflow: hidden;
+                        }
+
+                        iframe {
+                            width: 100%;
+                            height: 100%;
+                            border: 0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <iframe id="print-document-frame" src="${href}"></iframe>
+                    <script>
+                        const frame = document.getElementById('print-document-frame');
+                        let isPrinted = false;
+                        const printDocument = () => {
+                            if (isPrinted) {
+                                return;
+                            }
+
+                            isPrinted = true;
+                            window.focus();
+                            setTimeout(() => window.print(), 250);
+                        };
+
+                        frame.addEventListener('load', printDocument);
+                        setTimeout(printDocument, 1800);
+                    </script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
     };
 
     return (
