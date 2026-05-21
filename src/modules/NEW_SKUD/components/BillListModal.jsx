@@ -36,7 +36,7 @@ const SUMMARY_ROWS = [
             'business_trips.long_business_trips',
         ],
     },
-    {key: 'reworkings', label: 'Отработки', color: 'lime'},
+    {key: 'reworkings', label: 'Сверхурочные', color: 'lime'},
     {
         key: 'time_lost',
         label: 'Потерянное время',
@@ -231,10 +231,12 @@ const BillListModal = (props) => {
     }, [isMounted, selectedUser, selectedMonth, selectedYear]);
 
     useEffect(() => {
-        if (props.userdata?.user?.id) {
-            setSelectedUser(props.userdata.user.id);
+        const initialUserId = props.initial_user_id ?? props.userdata?.user?.id;
+
+        if (initialUserId) {
+            setSelectedUser(initialUserId);
         }
-    }, [props.userdata]);
+    }, [props.initial_user_id, props.userdata]);
 
     const fetchFiltersOptions = async () => {
         if (!canSelectAllUsers) {

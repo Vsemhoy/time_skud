@@ -395,7 +395,9 @@ const UserList = (props)=>{
   /*---BILL LIST-------------------------------------------------------------------------------------------------------------------*/
 
   const [isOpenBillListModal, setIsOpenBillListModal] = useState(false);
-  const handleOpenBillListModal = () => {
+  const [billListInitialUserId, setBillListInitialUserId] = useState(null);
+  const handleOpenBillListModal = (userId = null) => {
+    setBillListInitialUserId(userId);
     setIsOpenBillListModal(true);
   };
 
@@ -1383,6 +1385,7 @@ const UserList = (props)=>{
                         claim_types={claimTypes}
                         on_clear={handleClearUserInfo}
                         target_date={targetDate}
+                        on_open_bill_list={handleOpenBillListModal}
                     />
                 </div>
               </Affix>
@@ -1420,6 +1423,7 @@ const UserList = (props)=>{
                          handleCloseBillListModal={handleCloseBillListModal}
                          userdata={userdata}
                          user_list={baseUserListData}
+                         initial_user_id={billListInitialUserId}
           />
         )}
         {isOpenClaimsModal && (
