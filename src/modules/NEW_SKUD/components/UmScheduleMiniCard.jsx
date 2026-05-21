@@ -40,7 +40,7 @@ const UmScheduleMiniCard = (props) => {
 
                     <div className="sk-umsmi-row sk-usmi-dorian-g">
                         <div className={'sk-umsmi-title'}>
-                            График действителелен с
+                            График действителен с
                         </div>
                         <div className={'sk-umsmi-data'}>
                             {dayjs(link.start).format('DD.MM.YYYY')} {link.end === null ? " " : " по " + dayjs(link.end).format('DD.MM.YYYY')}
