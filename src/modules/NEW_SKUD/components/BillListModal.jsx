@@ -4,6 +4,17 @@ import './style/bill_list_modal.css'
 import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import dayjs from "dayjs";
+import {
+    CategoryScale,
+    Chart as ChartJS,
+    LinearScale,
+    LineController,
+    LineElement,
+    PointElement,
+    Tooltip as ChartTooltip,
+} from "chart.js";
+
+ChartJS.register(LineController, LineElement, PointElement, CategoryScale, LinearScale, ChartTooltip);
 
 const SUMMARY_ROWS = [
     {key: 'office', label: 'В офисе', color: 'green'},
@@ -166,12 +177,231 @@ const getSubordinateUsersOptions = (users, currentUser) => {
     return uniqueAndSortUserOptions([currentUserOption, ...subordinates]);
 };
 
+const getTimeValue = (source, keys) => keys
+    .map((key) => source?.[key])
+    .find((value) => value !== null && value !== undefined && value !== '');
+
+const parseTimeToMinutes = (value) => {
+    if (value === null || value === undefined || value === '') {
+        return null;
+    }
+
+    if (typeof value === 'number') {
+        return value > 1440 ? Math.round(value / 60) : value;
+    }
+
+    const stringValue = String(value).trim();
+    const timeMatch = stringValue.match(/(\d{1,2}):(\d{2})(?::\d{2})?/);
+
+    if (timeMatch) {
+        return (Number(timeMatch[1]) * 60) + Number(timeMatch[2]);
+    }
+
+    const dateValue = dayjs(stringValue);
+
+    return dateValue.isValid() ? (dateValue.hour() * 60) + dateValue.minute() : null;
+};
+
+const formatMinutesAsTime = (value) => {
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+};
+
+const normalizeDayNumber = (item, selectedMonth, selectedYear) => {
+    const rawDate = item?.date ?? item?.day_date ?? item?.datetime ?? item?.t;
+
+    if (rawDate) {
+        const parsedDate = dayjs(rawDate);
+
+        if (
+            parsedDate.isValid()
+            && parsedDate.month() + 1 === Number(selectedMonth)
+            && parsedDate.year() === Number(selectedYear)
+        ) {
+            return parsedDate.date();
+        }
+    }
+
+    const rawDay = Number(item?.day);
+
+    return Number.isInteger(rawDay) && rawDay > 0 ? rawDay : null;
+};
+
+const parseEventDump = (value) => {
+    if (!value) {
+        return [];
+    }
+
+    if (Array.isArray(value)) {
+        return value;
+    }
+
+    if (typeof value === 'string') {
+        try {
+            const parsedValue = JSON.parse(value);
+            return Array.isArray(parsedValue) ? parsedValue : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    return [];
+};
+
+const getDayEnterExit = (item, selectedMonth, selectedYear) => {
+    let enter = parseTimeToMinutes(getTimeValue(item, [
+        'enter',
+        'entry',
+        'in',
+        'enter_time',
+        'first_enter',
+        'first_in',
+        'first_enter_time',
+    ]));
+    let exit = parseTimeToMinutes(getTimeValue(item, [
+        'exit',
+        'out',
+        'exit_time',
+        'last_exit',
+        'last_out',
+        'last_exit_time',
+    ]));
+
+    const singleEventTime = parseTimeToMinutes(item?.time ?? item?.datetime ?? item?.datetime_contr ?? item?.t);
+    const singleEventDirection = Number(item?.direction ?? item?.diraction ?? item?.d);
+    const eventDump = [
+        ...(singleEventTime !== null && !Number.isNaN(singleEventDirection)
+            ? [{...item, t: item?.t ?? item?.time ?? item?.datetime ?? item?.datetime_contr}]
+            : []),
+        ...parseEventDump(item?.event_dump ?? item?.enter_exit ?? item?.events),
+    ];
+
+    eventDump.forEach((event) => {
+        const direction = Number(event?.direction ?? event?.diraction ?? event?.d);
+        const eventTime = parseTimeToMinutes(event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t);
+
+        if (eventTime === null) {
+            return;
+        }
+
+        if (direction === 0) {
+            enter = enter === null ? eventTime : Math.min(enter, eventTime);
+        } else {
+            exit = exit === null ? eventTime : Math.max(exit, eventTime);
+        }
+    });
+
+    return {
+        day: normalizeDayNumber(item, selectedMonth, selectedYear),
+        enter,
+        exit,
+    };
+};
+
+const collectAttendanceDays = (source, selectedMonth, selectedYear) => {
+    const result = [];
+    const seen = new Set();
+
+    const walk = (value) => {
+        if (!value || typeof value !== 'object' || seen.has(value)) {
+            return;
+        }
+
+        seen.add(value);
+
+        if (Array.isArray(value)) {
+            value.forEach(walk);
+            return;
+        }
+
+        const dayInfo = getDayEnterExit(value, selectedMonth, selectedYear);
+
+        if (dayInfo.day && (dayInfo.enter !== null || dayInfo.exit !== null)) {
+            result.push(dayInfo);
+        }
+
+        Object.values(value).forEach(walk);
+    };
+
+    walk(source);
+
+    return result;
+};
+
+const getScheduleBounds = (source) => {
+    const seen = new Set();
+    let scheduleStart = null;
+    let scheduleEnd = null;
+
+    const readScheduleValue = (value, keys) => parseTimeToMinutes(getTimeValue(value, keys));
+
+    const walk = (value) => {
+        if (!value || typeof value !== 'object' || seen.has(value) || (scheduleStart !== null && scheduleEnd !== null)) {
+            return;
+        }
+
+        seen.add(value);
+
+        if (Array.isArray(value)) {
+            value.forEach(walk);
+            return;
+        }
+
+        const nextStart = readScheduleValue(value, [
+            'schedule_start_time',
+            'work_start_time',
+            'day_start_time',
+            'start_time',
+        ]);
+        const nextEnd = readScheduleValue(value, [
+            'schedule_end_time',
+            'work_end_time',
+            'day_end_time',
+            'end_time',
+        ]);
+
+        if (nextStart !== null && nextEnd !== null && nextStart !== nextEnd) {
+            scheduleStart = nextStart;
+            scheduleEnd = nextEnd;
+            return;
+        }
+
+        Object.entries(value).forEach(([key, childValue]) => {
+            const normalizedKey = key.toLowerCase();
+
+            if (
+                normalizedKey.includes('schedule')
+                || normalizedKey.includes('calendar')
+                || normalizedKey.includes('work')
+            ) {
+                walk(childValue);
+            }
+        });
+    };
+
+    walk(source);
+
+    return {
+        start: scheduleStart,
+        end: scheduleEnd,
+    };
+};
+
 const BillListModal = (props) => {
     const [isLoadingFilters, setIsLoadingFilters] = useState(false);
     const [isLoadingBillList, setIsLoadingBillList] = useState(false);
+    const [isLoadingAttendance, setIsLoadingAttendance] = useState(false);
     const [isExportingAll, setIsExportingAll] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const billListRequestRef = useRef(0);
+    const attendanceRequestRef = useRef(0);
+    const attendanceChartRef = useRef(null);
 
     const [usersOptions, setUsersOptions] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -179,6 +409,7 @@ const BillListModal = (props) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year());
 
     const [billListInfo, setBillListInfo] = useState(null);
+    const [attendanceInfo, setAttendanceInfo] = useState(null);
 
     const canSelectAllUsers = hasFullUserSelectAccess(props.userdata);
     const subordinateUsersOptions = useMemo(
@@ -224,6 +455,7 @@ const BillListModal = (props) => {
         if (isMounted && selectedUser && selectedMonth && selectedYear) {
             const timer = setTimeout(() => {
                 fetchBillListInfo().then();
+                fetchAttendanceInfo().then();
             }, 200);
 
             return () => clearTimeout(timer);
@@ -353,6 +585,37 @@ const BillListModal = (props) => {
         return `${numericValue.toFixed(2)} ч`;
     };
 
+    const fetchAttendanceInfo = async () => {
+        const requestId = attendanceRequestRef.current + 1;
+        attendanceRequestRef.current = requestId;
+
+        try {
+            setIsLoadingAttendance(true);
+            setAttendanceInfo(null);
+
+            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/employee-month-attendance`, {
+                data: {
+                    user_id: selectedUser,
+                    month: selectedMonth,
+                    year: selectedYear,
+                }
+            });
+
+            if (requestId === attendanceRequestRef.current) {
+                setAttendanceInfo(response?.data?.content ?? response?.data ?? null);
+            }
+        } catch (e) {
+            console.log(e);
+            if (requestId === attendanceRequestRef.current) {
+                setAttendanceInfo(null);
+            }
+        } finally {
+            if (requestId === attendanceRequestRef.current) {
+                setIsLoadingAttendance(false);
+            }
+        }
+    };
+
     const formatMetricTimeValue = (metric) => {
         if (metric?.time) {
             return metric.time;
@@ -409,6 +672,181 @@ const BillListModal = (props) => {
         rows: summaryRows,
     };
     const eventRows = summaryMeta.rows.filter((row) => row.byDays.length > 0);
+    const attendanceChartData = useMemo(() => {
+        const daysCount = dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01`).daysInMonth();
+        const days = Array.from({length: daysCount}, (_, index) => ({
+            day: index + 1,
+            enter: null,
+            exit: null,
+        }));
+
+        collectAttendanceDays(attendanceInfo?.days ?? attendanceInfo, selectedMonth, selectedYear).forEach((item) => {
+            const targetDay = days[item.day - 1];
+
+            if (!targetDay) {
+                return;
+            }
+
+            if (item.enter !== null) {
+                targetDay.enter = targetDay.enter === null ? item.enter : Math.min(targetDay.enter, item.enter);
+            }
+
+            if (item.exit !== null) {
+                targetDay.exit = targetDay.exit === null ? item.exit : Math.max(targetDay.exit, item.exit);
+            }
+        });
+
+        return days;
+    }, [attendanceInfo, selectedMonth, selectedYear]);
+    const scheduleBounds = useMemo(() => getScheduleBounds(attendanceInfo?.days ?? attendanceInfo), [attendanceInfo]);
+
+    useEffect(() => {
+        if (!attendanceChartRef.current || isLoadingAttendance || !attendanceInfo) {
+            return undefined;
+        }
+
+        const textColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--app-text-color')
+            .trim() || '#1f1f1f';
+        const mutedTextColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--app-muted-text-color')
+            .trim() || '#6b7280';
+        const gridColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--table-border-divider-color')
+            .trim() || 'rgba(128, 128, 128, 0.22)';
+        const scheduleLineColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--icon-color-std')
+            .trim() || '#595959';
+        const scheduleBoundsPlugin = {
+            id: 'billListScheduleBounds',
+            afterDraw: (chart) => {
+                const {ctx, chartArea, scales} = chart;
+                const yScale = scales.y;
+                const lines = [
+                    {value: scheduleBounds.start, label: 'Начало графика'},
+                    {value: scheduleBounds.end, label: 'Конец графика'},
+                ].filter((item) => item.value !== null && item.value !== undefined);
+
+                if (!lines.length) {
+                    return;
+                }
+
+                ctx.save();
+                ctx.setLineDash([6, 5]);
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = scheduleLineColor;
+                ctx.fillStyle = scheduleLineColor;
+                ctx.font = '600 11px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'bottom';
+
+                lines.forEach((line) => {
+                    const y = yScale.getPixelForValue(line.value);
+
+                    ctx.beginPath();
+                    ctx.moveTo(chartArea.left, y);
+                    ctx.lineTo(chartArea.right, y);
+                    ctx.stroke();
+                    ctx.fillText(`${line.label} ${formatMinutesAsTime(line.value)}`, chartArea.right - 4, y - 3);
+                });
+
+                ctx.restore();
+            },
+        };
+
+        const chart = new ChartJS(attendanceChartRef.current, {
+            type: 'line',
+            data: {
+                labels: attendanceChartData.map((item) => item.day),
+                datasets: [
+                    {
+                        label: 'Вход',
+                        data: attendanceChartData.map((item) => item.enter),
+                        borderColor: '#1677ff',
+                        backgroundColor: '#1677ff',
+                        spanGaps: true,
+                        tension: 0.18,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    },
+                    {
+                        label: 'Выход',
+                        data: attendanceChartData.map((item) => item.exit),
+                        borderColor: '#52c41a',
+                        backgroundColor: '#52c41a',
+                        spanGaps: true,
+                        tension: 0.18,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor,
+                            boxWidth: 10,
+                            boxHeight: 10,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${formatMinutesAsTime(context.parsed.y)}`,
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: gridColor,
+                            drawTicks: false,
+                        },
+                        ticks: {
+                            color: mutedTextColor,
+                            maxRotation: 0,
+                            autoSkip: false,
+                        },
+                        title: {
+                            display: true,
+                            text: 'Дни месяца',
+                            color: mutedTextColor,
+                        },
+                    },
+                    y: {
+                        min: 0,
+                        max: 1440,
+                        grid: {
+                            color: gridColor,
+                            drawTicks: false,
+                        },
+                        ticks: {
+                            color: mutedTextColor,
+                            stepSize: 120,
+                            callback: (value) => formatMinutesAsTime(value),
+                        },
+                        title: {
+                            display: true,
+                            text: 'Время за день',
+                            color: mutedTextColor,
+                        },
+                    },
+                },
+            },
+            plugins: [scheduleBoundsPlugin],
+        });
+
+        return () => {
+            chart.destroy();
+        };
+    }, [attendanceChartData, attendanceInfo, isLoadingAttendance, scheduleBounds]);
 
     const renderBillListSkeleton = () => (
         <div className={'bill-list-modal-body'}>
@@ -570,6 +1008,7 @@ const BillListModal = (props) => {
 
                         <Collapse
                             className={'bill-list-events-collapse'}
+                            defaultActiveKey={['by-days']}
                             items={[
                                 {
                                     key: 'by-days',
@@ -604,6 +1043,14 @@ const BillListModal = (props) => {
                                 },
                             ]}
                         />
+                        <div className={'bill-list-attendance-chart'}>
+                            <div className={'bill-list-attendance-chart-title'}>График входов и выходов за месяц</div>
+                            <Spin spinning={isLoadingAttendance}>
+                                <div className={'bill-list-attendance-chart-canvas'}>
+                                    <canvas ref={attendanceChartRef}/>
+                                </div>
+                            </Spin>
+                        </div>
                     </div>
                 )}
             </div>

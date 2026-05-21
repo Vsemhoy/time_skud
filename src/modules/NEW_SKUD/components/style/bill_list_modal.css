@@ -256,5 +256,26 @@
                 color: var(--app-muted-text-color);
             }
         }
+
+        .bill-list-attendance-chart {
+            padding: 14px 16px 18px;
+            background-color: var(--app-surface-color);
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 12px;
+        }
+        .bill-list-attendance-chart-title {
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-color);
+        }
+        .bill-list-attendance-chart-canvas {
+            position: relative;
+            height: 320px;
+            min-height: 320px;
+        }
+        .bill-list-attendance-chart-canvas canvas {
+            display: block;
+        }
     }
 }
