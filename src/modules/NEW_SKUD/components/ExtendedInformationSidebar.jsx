@@ -200,6 +200,8 @@ const formatMockMinutes = (value) => {
     return `${hours}\u0447 ${minutes ? `${minutes}\u043c` : ''}`.trim();
 };
 
+const PERSONAL_WEEK_MAX_VISIBLE_MINUTES = 120;
+
 
 
 const ExtendedInformationSidebar = (props) => {
@@ -448,6 +450,9 @@ const ExtendedInformationSidebar = (props) => {
         const mutedTextColor = getComputedStyle(document.documentElement)
             .getPropertyValue('--app-muted-text-color')
             .trim() || '#6b7280';
+        const gridColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--table-border-divider-color')
+            .trim() || 'rgba(128, 128, 128, 0.22)';
 
         const customBarsPlugin = {
             id: 'personalWeekCustomBars',
@@ -465,11 +470,6 @@ const ExtendedInformationSidebar = (props) => {
                     ].filter((metric) => metric.value > 0);
 
                     if (metrics.length === 0) {
-                        ctx.fillStyle = mutedTextColor;
-                        ctx.font = '600 11px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText('нет', xScale.getPixelForValue(index), chartArea.top + (chartArea.height / 2));
                         return;
                     }
 
@@ -480,8 +480,9 @@ const ExtendedInformationSidebar = (props) => {
                     const startX = centerX - (groupWidth / 2);
 
                     metrics.forEach((metric, metricIndex) => {
+                        const visibleValue = Math.min(metric.value, PERSONAL_WEEK_MAX_VISIBLE_MINUTES);
                         const left = startX + (metricIndex * (barWidth + gap));
-                        const top = yScale.getPixelForValue(metric.value);
+                        const top = yScale.getPixelForValue(visibleValue);
                         const height = chartArea.bottom - top;
 
                         ctx.fillStyle = metric.color;
@@ -507,7 +508,7 @@ const ExtendedInformationSidebar = (props) => {
                 labels: days.map((item) => `${item.date.format('dd')} ${item.date.format('DD.MM')}`),
                 datasets: [
                     {
-                        data: days.map((item) => Math.max(item.lost, item.extra, 0)),
+                        data: days.map((item) => Math.min(Math.max(item.lost, item.extra, 0), PERSONAL_WEEK_MAX_VISIBLE_MINUTES)),
                         backgroundColor: 'transparent',
                         borderColor: 'transparent',
                         hoverBackgroundColor: 'transparent',
@@ -537,7 +538,9 @@ const ExtendedInformationSidebar = (props) => {
                 scales: {
                     x: {
                         grid: {
-                            display: false,
+                            display: true,
+                            color: gridColor,
+                            drawTicks: false,
                         },
                         ticks: {
                             color: (context) => {
@@ -558,12 +561,14 @@ const ExtendedInformationSidebar = (props) => {
                     },
                     y: {
                         beginAtZero: true,
-                        grace: '8%',
+                        max: PERSONAL_WEEK_MAX_VISIBLE_MINUTES,
                         ticks: {
                             display: false,
                         },
                         grid: {
-                            display: false,
+                            display: true,
+                            color: gridColor,
+                            drawTicks: false,
                         },
                         border: {
                             display: false,
