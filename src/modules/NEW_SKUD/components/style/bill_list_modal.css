@@ -277,5 +277,11 @@
         .bill-list-attendance-chart-canvas canvas {
             display: block;
         }
+        .bill-list-attendance-chart-empty {
+            margin-top: 8px;
+            color: var(--app-muted-text-color);
+            font-size: 13px;
+            text-align: center;
+        }
     }
 }

@@ -723,9 +723,10 @@ const BillListModal = (props) => {
         return days;
     }, [attendanceInfo, selectedMonth, selectedYear]);
     const scheduleBounds = useMemo(() => getScheduleBounds(attendanceInfo?.days ?? attendanceInfo), [attendanceInfo]);
+    const hasAttendanceChartPoints = attendanceChartData.some((item) => item.enter !== null || item.exit !== null);
 
     useEffect(() => {
-        if (!attendanceChartRef.current || isLoadingAttendance || !attendanceInfo) {
+        if (!attendanceChartRef.current || isLoadingBillList || isLoadingAttendance || !attendanceInfo) {
             return undefined;
         }
 
@@ -870,7 +871,7 @@ const BillListModal = (props) => {
         return () => {
             chart.destroy();
         };
-    }, [attendanceChartData, attendanceInfo, isLoadingAttendance, scheduleBounds]);
+    }, [attendanceChartData, attendanceInfo, isLoadingBillList, isLoadingAttendance, scheduleBounds]);
 
     const renderBillListSkeleton = () => (
         <div className={'bill-list-modal-body'}>
@@ -1074,6 +1075,9 @@ const BillListModal = (props) => {
                                     <canvas ref={attendanceChartRef}/>
                                 </div>
                             </Spin>
+                            {!isLoadingAttendance && attendanceInfo && !hasAttendanceChartPoints && (
+                                <div className={'bill-list-attendance-chart-empty'}>Нет данных входов и выходов за выбранный месяц</div>
+                            )}
                         </div>
                     </div>
                 )}
