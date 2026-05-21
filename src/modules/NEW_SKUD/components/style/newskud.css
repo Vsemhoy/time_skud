@@ -296,8 +296,7 @@
 
 .newskud-page .sk-userlist-create-claim-button.ant-btn {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1;
+    height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
