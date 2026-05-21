@@ -202,6 +202,16 @@ const parseTimeToMinutes = (value) => {
     return dateValue.isValid() ? (dateValue.hour() * 60) + dateValue.minute() : null;
 };
 
+const parseScheduleSecondsToMinutes = (value) => {
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue)) {
+        return parseTimeToMinutes(value);
+    }
+
+    return Math.round(numericValue / 60);
+};
+
 const formatMinutesAsTime = (value) => {
     if (value === null || value === undefined) {
         return '';
@@ -273,18 +283,18 @@ const getDayEnterExit = (item, selectedMonth, selectedYear) => {
         'last_exit_time',
     ]));
 
-    const singleEventTime = parseTimeToMinutes(item?.time ?? item?.datetime ?? item?.datetime_contr ?? item?.t);
+    const singleEventTime = parseTimeToMinutes(item?.time ?? item?.datetime_moscow ?? item?.datetime ?? item?.datetime_contr ?? item?.t);
     const singleEventDirection = Number(item?.direction ?? item?.diraction ?? item?.d);
     const eventDump = [
         ...(singleEventTime !== null && !Number.isNaN(singleEventDirection)
-            ? [{...item, t: item?.t ?? item?.time ?? item?.datetime ?? item?.datetime_contr}]
+            ? [{...item, t: item?.t ?? item?.time ?? item?.datetime_moscow ?? item?.datetime ?? item?.datetime_contr}]
             : []),
         ...parseEventDump(item?.event_dump ?? item?.enter_exit ?? item?.events),
     ];
 
     eventDump.forEach((event) => {
         const direction = Number(event?.direction ?? event?.diraction ?? event?.d);
-        const eventTime = parseTimeToMinutes(event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t);
+        const eventTime = parseTimeToMinutes(event?.time ?? event?.datetime_moscow ?? event?.datetime ?? event?.datetime_contr ?? event?.t);
 
         if (eventTime === null) {
             return;
@@ -302,6 +312,16 @@ const getDayEnterExit = (item, selectedMonth, selectedYear) => {
         enter,
         exit,
     };
+};
+
+const mapAttendanceResponseDays = (days, selectedMonth, selectedYear) => {
+    if (!Array.isArray(days)) {
+        return [];
+    }
+
+    return days
+        .map((item) => getDayEnterExit(item, selectedMonth, selectedYear))
+        .filter((item) => item.day);
 };
 
 const collectAttendanceDays = (source, selectedMonth, selectedYear) => {
@@ -339,7 +359,7 @@ const getScheduleBounds = (source) => {
     let scheduleStart = null;
     let scheduleEnd = null;
 
-    const readScheduleValue = (value, keys) => parseTimeToMinutes(getTimeValue(value, keys));
+    const readScheduleValue = (value, keys) => parseScheduleSecondsToMinutes(getTimeValue(value, keys));
 
     const walk = (value) => {
         if (!value || typeof value !== 'object' || seen.has(value) || (scheduleStart !== null && scheduleEnd !== null)) {
@@ -680,7 +700,11 @@ const BillListModal = (props) => {
             exit: null,
         }));
 
-        collectAttendanceDays(attendanceInfo?.days ?? attendanceInfo, selectedMonth, selectedYear).forEach((item) => {
+        const attendanceDays = Array.isArray(attendanceInfo?.days)
+            ? mapAttendanceResponseDays(attendanceInfo.days, selectedMonth, selectedYear)
+            : collectAttendanceDays(attendanceInfo, selectedMonth, selectedYear);
+
+        attendanceDays.forEach((item) => {
             const targetDay = days[item.day - 1];
 
             if (!targetDay) {
