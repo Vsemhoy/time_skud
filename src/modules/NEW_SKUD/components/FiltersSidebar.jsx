@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Button, Checkbox, Input, Select} from "antd";
 import {DS_DEPARTMENTS, DS_USER} from "../../../CONFIG/DEFAULTSTATE";
 import dayjs from "dayjs";
@@ -6,9 +6,26 @@ import {useNavigate} from "react-router-dom";
 import {StateContext} from "../../../components/ComStateProvider25/ComStateProvider25";
 import {ReloadOutlined, UserOutlined} from "@ant-design/icons";
 
+const FILTERS_STORAGE_KEY = 'time_skud:new_skud:sidebar_filters';
+
+const getSavedFilters = () => {
+    if (typeof window === 'undefined') {
+        return {};
+    }
+
+    try {
+        return JSON.parse(window.localStorage.getItem(FILTERS_STORAGE_KEY)) || {};
+    } catch (e) {
+        console.log('filters localStorage parse error', e);
+        return {};
+    }
+};
+
 const FiltersSidebar = (props) => {
     const { state, setState } = useContext(StateContext);
     const navigate = useNavigate();
+    const savedFiltersRef = useRef(getSavedFilters());
+    const didRestoreSavedFiltersRef = useRef(false);
     const [companies, setCompanies] = useState([
         { key: 'nullCompany', value: 0, label: 'Все компании' },
         ...DS_USER.companies.filter(item => item.id !== 1).map((com) => ({
@@ -17,10 +34,10 @@ const FiltersSidebar = (props) => {
             label: com.name,
         })),
     ]);
-    const [usedCompany, setUsedCompany] = useState(0); // Default to 0 initially
-    const [usedSort, setUsedSort] = useState(0);
+    const [usedCompany, setUsedCompany] = useState(Number(savedFiltersRef.current.usedCompany ?? 0)); // Default to 0 initially
+    const [usedSort, setUsedSort] = useState(savedFiltersRef.current.usedSort ?? 0);
     const [usedDate, setUsedDate] = useState(dayjs());
-    const [usedDepartment, setUsedDepartment] = useState(0);
+    const [usedDepartment, setUsedDepartment] = useState(Number(savedFiltersRef.current.usedDepartment ?? 0));
 
     const [activeCompany, setActiveCompany] = useState(0);
 
@@ -34,6 +51,36 @@ const FiltersSidebar = (props) => {
             })
         )
     ]);
+
+    useEffect(() => {
+        if (didRestoreSavedFiltersRef.current) {
+            return;
+        }
+
+        didRestoreSavedFiltersRef.current = true;
+
+        if (typeof savedFiltersRef.current.extendedInfo === 'boolean' && props.isShowExtended) {
+            props.isShowExtended(savedFiltersRef.current.extendedInfo);
+        }
+
+        if (typeof savedFiltersRef.current.employeeSearchValue === 'string' && props.onEmployeeSearchChange) {
+            props.onEmployeeSearchChange(savedFiltersRef.current.employeeSearchValue);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        window.localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify({
+            usedCompany,
+            usedDepartment,
+            usedSort,
+            extendedInfo: Boolean(props.extendedInfo),
+            employeeSearchValue: props.employeeSearchValue ?? '',
+        }));
+    }, [usedCompany, usedDepartment, usedSort, props.extendedInfo, props.employeeSearchValue]);
 
     const [sortByValues, setSortByValues] = useState([
         {
@@ -250,6 +297,12 @@ const FiltersSidebar = (props) => {
                             setUsedCompany(0);
                             setUsedDepartment(0);
                             setUsedSort('department_asc');
+                            if (props.onEmployeeSearchChange) {
+                                props.onEmployeeSearchChange('');
+                            }
+                            if (props.isShowExtended) {
+                                props.isShowExtended(false);
+                            }
                         }}
                     >
                         Очистить фильтры
