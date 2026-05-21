@@ -284,6 +284,11 @@
     white-space: nowrap;
 }
 
+.newskud-page .sk-userlist-personal-week-title .ant-btn {
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
 .newskud-page .sk-userlist-personal-week-body {
     padding: 10px 12px 12px;
 }

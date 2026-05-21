@@ -36,7 +36,7 @@ const SUMMARY_ROWS = [
             'business_trips.long_business_trips',
         ],
     },
-    {key: 'reworkings', label: 'Отработки', color: 'lime'},
+    {key: 'reworkings', label: 'Сверхурочные', color: 'lime'},
     {
         key: 'time_lost',
         label: 'Потерянное время',

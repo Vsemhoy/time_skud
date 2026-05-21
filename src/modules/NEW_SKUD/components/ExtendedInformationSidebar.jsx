@@ -34,7 +34,8 @@ import {
     DollarOutlined,
     HeatMapOutlined,
     GlobalOutlined, CloseOutlined, IdcardOutlined,
-    FileWordOutlined, DownloadOutlined, PrinterOutlined
+    FileWordOutlined, DownloadOutlined, PrinterOutlined,
+    ScheduleOutlined
 } from "@ant-design/icons";
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, ChartTooltip);
@@ -875,12 +876,21 @@ const ExtendedInformationSidebar = (props) => {
 
     const renderMockPersonalWeekChartJsCard = () => {
         const shouldShowChartError = personalWeekError || (!isPersonalWeekLoading && personalWeekData.length === 0);
+        const currentUserId = userdata?.user?.id;
 
         return (
             <section className="sk-userlist-details-card sk-userlist-details-card--personal-week">
                 <div className="sk-userlist-details-card-title sk-userlist-personal-week-title">
                     <IdcardOutlined />
                     <span>{currentUserFullName || userdata?.user?.email || 'Пользователь'}</span>
+                    <Button
+                        size="small"
+                        icon={<ScheduleOutlined />}
+                        disabled={!currentUserId}
+                        onClick={() => props.on_open_bill_list?.(currentUserId)}
+                    >
+                        Расчетный лист офис
+                    </Button>
                 </div>
                 <div className="sk-userlist-personal-week-body">
                     {isPersonalWeekLoading ? (
