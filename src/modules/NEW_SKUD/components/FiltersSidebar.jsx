@@ -160,6 +160,10 @@ const FiltersSidebar = (props) => {
 
     useEffect(() => {
         if (props.activeCompany) {
+            if (savedFiltersRef.current.usedCompany !== undefined) {
+                return;
+            }
+
             setActiveCompany(props.activeCompany);
             setUsedCompany(props.activeCompany);
         }
