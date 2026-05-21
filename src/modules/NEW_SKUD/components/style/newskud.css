@@ -271,6 +271,378 @@
     border-top: 1px solid var(--table-border-divider-color);
 }
 
+.newskud-page .sk-userlist-personal-week-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.newskud-page .sk-userlist-personal-week-title span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-body {
+    padding: 10px 12px 12px;
+}
+
+.newskud-page .sk-userlist-personal-week-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: var(--app-muted-text-color);
+}
+
+.newskud-page .sk-userlist-personal-week-legend-item {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-legend-item::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 2px;
+}
+
+.newskud-page .sk-userlist-personal-week-legend-item--lost::before {
+    background: #cf1322;
+}
+
+.newskud-page .sk-userlist-personal-week-legend-item--extra::before {
+    background: #237804;
+}
+
+.newskud-page .sk-userlist-personal-week-list {
+    display: grid;
+    gap: 8px;
+}
+
+.newskud-page .sk-userlist-personal-week-row {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+}
+
+.newskud-page .sk-userlist-personal-week-day {
+    display: grid;
+    gap: 1px;
+    color: var(--app-muted-text-color);
+    font-size: 11px;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.newskud-page .sk-userlist-personal-week-day strong {
+    color: var(--app-text-color);
+    font-size: 12px;
+}
+
+.newskud-page .sk-userlist-personal-week-day--inline {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-day--weekend,
+.newskud-page .sk-userlist-personal-week-day--weekend strong {
+    color: #cf1322;
+}
+
+.newskud-page .sk-userlist-personal-week-bars {
+    display: grid;
+    gap: 4px;
+}
+
+.newskud-page .sk-userlist-personal-week-bar-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    align-items: center;
+    gap: 8px;
+    min-height: 14px;
+    font-size: 11px;
+    color: var(--app-muted-text-color);
+}
+
+.newskud-page .sk-userlist-personal-week-bar-row > span {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-bar {
+    height: 10px;
+    min-width: 0;
+    border-radius: 3px;
+}
+
+.newskud-page .sk-userlist-personal-week-bar--lost {
+    background: linear-gradient(90deg, #ff7875, #cf1322);
+}
+
+.newskud-page .sk-userlist-personal-week-bar--extra {
+    background: linear-gradient(90deg, #95de64, #237804);
+}
+
+.newskud-page .sk-userlist-personal-week-compact-bars {
+    display: grid;
+    gap: 4px;
+}
+
+.newskud-page .sk-userlist-personal-week-compact-item {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    align-items: center;
+    gap: 8px;
+    min-height: 14px;
+    font-size: 11px;
+    color: var(--app-muted-text-color);
+}
+
+.newskud-page .sk-userlist-personal-week-compact-item > span {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-axis {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+    align-items: end;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-day {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: 150px auto;
+    gap: 8px;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-bars {
+    height: 150px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 2px;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-metric {
+    height: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-metric > span {
+    max-width: 48px;
+    min-height: 34px;
+    color: var(--app-text-color);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.12;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-bar {
+    width: 22px;
+    min-height: 0;
+    border-radius: 3px 3px 0 0;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-bar--lost {
+    background: linear-gradient(180deg, #ff7875, #cf1322);
+}
+
+.newskud-page .sk-userlist-personal-week-axis-bar--extra {
+    background: linear-gradient(180deg, #95de64, #237804);
+}
+
+.newskud-page .sk-userlist-personal-week-axis-empty {
+    align-self: center;
+    color: var(--app-muted-text-color);
+    font-size: 11px;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-label {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--app-muted-text-color);
+    font-size: 9px;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-label strong {
+    min-width: 0;
+    color: var(--app-text-color);
+    font-size: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.newskud-page .sk-userlist-personal-week-axis-label.sk-userlist-personal-week-day--weekend,
+.newskud-page .sk-userlist-personal-week-axis-label.sk-userlist-personal-week-day--weekend span,
+.newskud-page .sk-userlist-personal-week-axis-label.sk-userlist-personal-week-day--weekend strong {
+    color: #cf1322;
+}
+
+.newskud-page .sk-userlist-personal-week-chartjs {
+    height: 184px;
+    position: relative;
+}
+
+.newskud-page .sk-userlist-personal-week-skeleton {
+    min-height: 210px;
+    display: flex;
+    align-items: center;
+}
+
+.newskud-page .sk-userlist-personal-week-chartjs canvas {
+    display: block;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+    align-items: end;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-day {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: 72px auto;
+    gap: 6px;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-bars {
+    height: 72px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 3px;
+    padding: 5px 4px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--drawer-gray-section-color) 72%, transparent);
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-bar {
+    min-height: 0;
+    border-radius: 3px 3px 0 0;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-bar--lost {
+    background: linear-gradient(180deg, #ff7875, #cf1322);
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-bar--extra {
+    background: linear-gradient(180deg, #95de64, #237804);
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-label {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+    color: var(--app-muted-text-color);
+    font-size: 10px;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-label strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--app-text-color);
+    font-size: 11px;
+    text-overflow: ellipsis;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal--bottom-labels .sk-userlist-personal-week-horizontal-day {
+    grid-template-rows: 72px auto;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-label--inline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    font-size: 9px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-label--inline span,
+.newskud-page .sk-userlist-personal-week-horizontal-label--inline strong {
+    min-width: 0;
+    overflow: visible;
+    font-size: inherit;
+    line-height: 1.1;
+}
+
+.newskud-page .sk-userlist-personal-week-horizontal-label.sk-userlist-personal-week-day--weekend,
+.newskud-page .sk-userlist-personal-week-horizontal-label.sk-userlist-personal-week-day--weekend span,
+.newskud-page .sk-userlist-personal-week-horizontal-label.sk-userlist-personal-week-day--weekend strong {
+    color: #cf1322;
+}
+
+.newskud-page .sk-userlist-personal-week-stacked-track {
+    height: 72px;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    padding: 5px 4px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--drawer-gray-section-color) 72%, transparent);
+}
+
+.newskud-page .sk-userlist-personal-week-stacked-bar {
+    width: min(100%, 16px);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--table-border-divider-color) 70%, transparent);
+}
+
+.newskud-page .sk-userlist-personal-week-stacked-part {
+    min-height: 0;
+    flex: 0 0 auto;
+}
+
+.newskud-page .sk-userlist-personal-week-stacked-part--lost {
+    background: linear-gradient(180deg, #ff7875, #cf1322);
+}
+
+.newskud-page .sk-userlist-personal-week-stacked-part--extra {
+    background: linear-gradient(180deg, #95de64, #237804);
+}
+
 .newskud-page .sk-userlist-details-schedule-list {
     display: grid;
     gap: 8px;
