@@ -77,6 +77,55 @@ const getCompanyLogo = (companyName) => {
     const normalizedName = String(companyName).toLowerCase();
     return COMPANY_LOGOS.find((item) => normalizedName.includes(item.key)) ?? null;
 };
+
+const getCompanyLogoByCompany = (company) => {
+    if (!company) {
+        return null;
+    }
+
+    const companyId = Number(company.id);
+    if (companyId === 2) {
+        return {
+            src: '/company-logos/arstel.svg',
+            className: 'sk-userlist-company-logo--arstel'
+        };
+    }
+
+    if (companyId === 3) {
+        return {
+            src: '/company-logos/rondo.svg',
+            className: 'sk-userlist-company-logo--rondo'
+        };
+    }
+
+    const normalizedCompanyText = [
+        company.name,
+        company.description,
+        company.folder,
+        company.template_prefix,
+        company.path_logo,
+    ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+    if (normalizedCompanyText.includes('rondo') || normalizedCompanyText.includes('rond')) {
+        return {
+            src: '/company-logos/rondo.svg',
+            className: 'sk-userlist-company-logo--rondo'
+        };
+    }
+
+    if (normalizedCompanyText.includes('arstel') || normalizedCompanyText.includes('ars')) {
+        return {
+            src: '/company-logos/arstel.svg',
+            className: 'sk-userlist-company-logo--arstel'
+        };
+    }
+
+    return null;
+};
+
 const EMPTY_STATE_DOCUMENTS = [
     {
         id: 'unpaid-vacation',
@@ -255,10 +304,14 @@ const ExtendedInformationSidebar = (props) => {
     };
 
     const hasTargetUser = Boolean(targetUserInfo);
-    const targetCompany = targetUserInfo?.id_company
-        ? userdata.companies.find((item) => item.id === targetUserInfo.id_company)
+    const targetCompanyId = Number(targetUserInfo?.id_company);
+    const targetCompany = targetCompanyId
+        ? userdata.companies.find((item) => Number(item.id) === targetCompanyId)
         : null;
-    const targetCompanyLogo = getCompanyLogo(targetCompany?.name);
+    const targetCompanyLogo = getCompanyLogoByCompany(targetCompany ?? { id: targetCompanyId });
+    const targetUserFullName = hasTargetUser
+        ? [targetUserInfo.surname, targetUserInfo.name, targetUserInfo.patronymic].filter(Boolean).join(' ')
+        : '';
     const visibleTargetUserGuys = targetUserInfo
         ? props.base_user_list_data.filter((item) => item.boss_id === targetUserInfo.id)
         : targetUserGuys;
@@ -286,8 +339,8 @@ const ExtendedInformationSidebar = (props) => {
             >
                 {hasTargetUser ? (
                     <>
-                        <span style={{textAlign: 'center', paddingLeft: '4px'}}>{badger?.icon}</span>
-                        <span>{badger?.title}</span>
+                        <span style={{textAlign: 'center', paddingLeft: '4px'}}><IdcardOutlined /></span>
+                        <span>{targetUserFullName || 'Сотрудник'}</span>
                         <div onClick={() => {
                             setOpenStateInfoSection(!openStateInfoSection)
                         }}>
@@ -500,6 +553,33 @@ const ExtendedInformationSidebar = (props) => {
         </section>
     );
 
+    const renderEventInfoCard = () => (
+        <section className="sk-userlist-details-card sk-userlist-details-card--events">
+            <div className="sk-userlist-details-card-title">Входы и выходы</div>
+            {renderEventInfo()}
+        </section>
+    );
+
+    const renderScheduleInfoCard = () => (
+        <section className="sk-userlist-details-card sk-userlist-details-card--schedule">
+            <div className="sk-userlist-details-card-title">График</div>
+            <Spin spinning={isScheduleLoading}>
+                <div className="sk-userlist-details-card-loader-body">
+                    {baseSchedules && baseSchedules.length > 0 && (
+                        <div className="sk-userlist-details-schedule-list">
+                            {baseSchedules.map((item) => (
+                                <UmScheduleMiniCard
+                                    data={item}
+                                    key={`umscard_${item.id}`}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </Spin>
+        </section>
+    );
+
     const renderCreateClaimCard = () => {
         const claimTypes = props.claim_types ?? [];
 
@@ -509,15 +589,19 @@ const ExtendedInformationSidebar = (props) => {
                 {claimTypes.length > 0 ? (
                     <div className="sk-userlist-create-claim-list">
                         {claimTypes.map((claimType) => (
-                            <Button
+                            <Tooltip
                                 key={claimType.key ?? claimType.value}
-                                className="sk-userlist-create-claim-button"
-                                style={{'--claim-type-color': claimType.color}}
-                                onClick={() => props.on_create_claim_type?.(claimType.value)}
+                                title={claimType.title || claimType.label}
                             >
-                                <span className="sk-userlist-create-claim-icon">{claimType.icon}</span>
-                                <span className="sk-userlist-create-claim-title">{claimType.title || claimType.label}</span>
-                            </Button>
+                                <Button
+                                    className="sk-userlist-create-claim-button"
+                                    style={{'--claim-type-color': claimType.color}}
+                                    aria-label={claimType.title || claimType.label}
+                                    onClick={() => props.on_create_claim_type?.(claimType.value)}
+                                >
+                                    <span className="sk-userlist-create-claim-icon">{claimType.icon}</span>
+                                </Button>
+                            </Tooltip>
                         ))}
                     </div>
                 ) : (
@@ -546,6 +630,8 @@ const ExtendedInformationSidebar = (props) => {
                             <EnterOutlined className="sk-userlist-details-empty-icon" />
                         </div>
                     </section>
+
+                    {renderCreateClaimCard()}
 
                     <section className="sk-userlist-details-card sk-userlist-details-card--documents">
                         <div className="sk-userlist-details-card-title">Документы</div>
@@ -578,8 +664,6 @@ const ExtendedInformationSidebar = (props) => {
                             ))}
                         </div>
                     </section>
-
-                    {renderCreateClaimCard()}
                 </div>
             )}
             {openUserInfo && hasTargetUser && (
@@ -588,11 +672,16 @@ const ExtendedInformationSidebar = (props) => {
                         {renderStatusHeader()}
                         <div className="sk-w-padding-18">
                             <div className={'sk-usermonic-drawer-row'}>
-                                <div className={'sk-labed-um'}>ФИО</div>
-                                <div
-                                    className={'sk-contend-um sk-userlist-details-link'}
-                                    onClick={() => handleOpenUserDetails(targetUserInfo.id)}
-                                >{targetUserInfo.surname ? targetUserInfo.surname : ''} {targetUserInfo.name ? targetUserInfo.name : ''} {targetUserInfo.patronymic ? targetUserInfo.patronymic : ''}
+                                <div className={'sk-labed-um'}>Статус</div>
+                                <div className={'sk-contend-um'}>
+                                    <span
+                                        className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
+                                        style={{'--user-status-bg': getMutedDrawerAccent(badger?.color)}}
+                                        title={badger?.title}
+                                    >
+                                        {badger?.icon}
+                                        <span>{badger?.text}</span>
+                                    </span>
                                 </div>
                             </div>
 
@@ -628,7 +717,7 @@ const ExtendedInformationSidebar = (props) => {
                                 </div>
                             ) : ""}
 
-                            {targetUserInfo.id_company && targetUserInfo.id_company > 1 && (
+                            {targetCompanyId > 1 && (
                                 <div className={'sk-usermonic-drawer-row'}>
                                     <div className={'sk-labed-um'}>Компания</div>
                                     <div className={'sk-contend-um'}>
@@ -655,27 +744,11 @@ const ExtendedInformationSidebar = (props) => {
                         </div>
                     </section>
 
-                    <section className="sk-userlist-details-card sk-userlist-details-card--schedule">
-                        <div className="sk-userlist-details-card-title">График</div>
-                        <Spin spinning={isScheduleLoading}>
-                            <div className="sk-userlist-details-card-loader-body">
-                                {baseSchedules && baseSchedules.length > 0 && (
-                                    <div className="sk-userlist-details-schedule-list">
-                                        {baseSchedules.map((item) => (
-                                            <UmScheduleMiniCard
-                                                data={item}
-                                                key={`umscard_${item.id}`}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-                                <div className="sk-userlist-details-card-subtitle">Входы и выходы</div>
-                                {renderEventInfo()}
-                            </div>
-                        </Spin>
-                    </section>
-
                     {renderClaimsInfo()}
+
+                    {renderEventInfoCard()}
+
+                    {renderScheduleInfoCard()}
 
                     {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
                         <section className="sk-userlist-details-card sk-userlist-details-card--boss">
@@ -715,7 +788,7 @@ const ExtendedInformationSidebar = (props) => {
                                     <div className={'sk-boss-guy-card'}
                                          key={`taurkey_${index}`}
                                          onClick={() => handleOpenUserDetails(item.id)}
-                                    >{index + 1} - {item.surname} {item.name} {item.patronymic}</div>
+                                    >{item.surname} {item.name} {item.patronymic}</div>
                                 ))}
                             </div>
                         </section>
@@ -727,4 +800,3 @@ const ExtendedInformationSidebar = (props) => {
 }
 
 export default ExtendedInformationSidebar;
-
