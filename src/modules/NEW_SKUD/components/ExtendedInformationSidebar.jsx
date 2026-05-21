@@ -423,11 +423,23 @@ const ExtendedInformationSidebar = (props) => {
             return undefined;
         }
 
-        const days = personalWeekData.map((item, index) => ({
-            ...item,
-            date: item.date ? dayjs(item.date) : dayjs().subtract(personalWeekData.length - index - 1, 'day'),
-            is_weekend: item.is_weekend,
-        }));
+        const dataByDate = new Map(
+            personalWeekData
+                .filter((item) => item.date)
+                .map((item) => [dayjs(item.date).format('YYYY-MM-DD'), item])
+        );
+        const days = Array.from({length: 7}).map((_, index) => {
+            const date = dayjs().subtract(6 - index, 'day');
+            const dateKey = date.format('YYYY-MM-DD');
+            const item = dataByDate.get(dateKey) ?? {};
+
+            return {
+                date,
+                lost: Number(item.lost ?? 0),
+                extra: Number(item.extra ?? 0),
+                is_weekend: item.is_weekend ?? [0, 6].includes(date.day()),
+            };
+        });
 
         const textColor = getComputedStyle(document.documentElement)
             .getPropertyValue('--app-text-color')
@@ -436,28 +448,51 @@ const ExtendedInformationSidebar = (props) => {
             .getPropertyValue('--app-muted-text-color')
             .trim() || '#6b7280';
 
-        const valueLabelsPlugin = {
-            id: 'personalWeekValueLabels',
+        const customBarsPlugin = {
+            id: 'personalWeekCustomBars',
             afterDatasetsDraw: (chart) => {
-                const {ctx} = chart;
+                const {ctx, chartArea, scales} = chart;
+                const xScale = scales.x;
+                const yScale = scales.y;
 
                 ctx.save();
-                ctx.fillStyle = textColor;
-                ctx.font = '700 11px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'bottom';
 
-                chart.data.datasets.forEach((dataset, datasetIndex) => {
-                    const meta = chart.getDatasetMeta(datasetIndex);
+                days.forEach((item, index) => {
+                    const metrics = [
+                        {value: item.lost, color: '#cf1322'},
+                        {value: item.extra, color: '#237804'},
+                    ].filter((metric) => metric.value > 0);
 
-                    meta.data.forEach((bar, index) => {
-                        const value = dataset.data[index];
+                    if (metrics.length === 0) {
+                        ctx.fillStyle = mutedTextColor;
+                        ctx.font = '600 11px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('нет', xScale.getPixelForValue(index), chartArea.top + (chartArea.height / 2));
+                        return;
+                    }
 
-                        if (!value) {
-                            return;
-                        }
+                    const centerX = xScale.getPixelForValue(index);
+                    const barWidth = 22;
+                    const gap = 1;
+                    const groupWidth = (metrics.length * barWidth) + ((metrics.length - 1) * gap);
+                    const startX = centerX - (groupWidth / 2);
 
-                        ctx.fillText(formatMockMinutes(value), bar.x, bar.y - 4);
+                    metrics.forEach((metric, metricIndex) => {
+                        const left = startX + (metricIndex * (barWidth + gap));
+                        const top = yScale.getPixelForValue(metric.value);
+                        const height = chartArea.bottom - top;
+
+                        ctx.fillStyle = metric.color;
+                        ctx.beginPath();
+                        ctx.roundRect(left, top, barWidth, height, 3);
+                        ctx.fill();
+
+                        ctx.fillStyle = textColor;
+                        ctx.font = '700 11px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillText(formatMockMinutes(metric.value), left + (barWidth / 2), top - 5);
                     });
                 });
 
@@ -471,20 +506,10 @@ const ExtendedInformationSidebar = (props) => {
                 labels: days.map((item) => `${item.date.format('dd')} ${item.date.format('DD.MM')}`),
                 datasets: [
                     {
-                        label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f',
-                        data: days.map((item) => item.lost || null),
-                        backgroundColor: '#cf1322',
-                        borderRadius: 3,
-                        barPercentage: 0.92,
-                        categoryPercentage: 0.76,
-                    },
-                    {
-                        label: '\u0421\u0432\u0435\u0440\u0445\u0443\u0440\u043e\u0447\u043d\u044b\u0435',
-                        data: days.map((item) => item.extra || null),
-                        backgroundColor: '#237804',
-                        borderRadius: 3,
-                        barPercentage: 0.92,
-                        categoryPercentage: 0.76,
+                        data: days.map((item) => Math.max(item.lost, item.extra, 0)),
+                        backgroundColor: 'transparent',
+                        borderColor: 'transparent',
+                        hoverBackgroundColor: 'transparent',
                     },
                 ],
             },
@@ -505,9 +530,7 @@ const ExtendedInformationSidebar = (props) => {
                         display: false,
                     },
                     tooltip: {
-                        callbacks: {
-                            label: (context) => `${context.dataset.label}: ${formatMockMinutes(context.parsed.y)}`,
-                        },
+                        enabled: false,
                     },
                 },
                 scales: {
@@ -547,7 +570,7 @@ const ExtendedInformationSidebar = (props) => {
                     },
                 },
             },
-            plugins: [valueLabelsPlugin],
+            plugins: [customBarsPlugin],
         });
 
         return () => {
