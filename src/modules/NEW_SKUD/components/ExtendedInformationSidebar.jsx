@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
-import {Affix, Button, Drawer, Empty, Spin, Tag, Tooltip} from "antd";
+import {Affix, Alert, Button, Drawer, Empty, Skeleton, Spin, Tag, Tooltip} from "antd";
 
 import dayjs from "dayjs";
+import {
+    BarController,
+    BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    LinearScale,
+    Tooltip as ChartTooltip,
+} from "chart.js";
 import { formatMoscowDateTime, formatMoscowUnix, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
@@ -25,9 +33,11 @@ import {
     SmileOutlined,
     DollarOutlined,
     HeatMapOutlined,
-    GlobalOutlined, CloseOutlined, EnterOutlined, IdcardOutlined,
+    GlobalOutlined, CloseOutlined, IdcardOutlined,
     FileWordOutlined, DownloadOutlined, PrinterOutlined
 } from "@ant-design/icons";
+
+ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, ChartTooltip);
 
 const iconMap = {
     MinusCircleOutlined,
@@ -178,6 +188,17 @@ const EMPTY_STATE_DOCUMENTS = [
     },
 ];
 
+const formatMockMinutes = (value) => {
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+
+    if (hours === 0) {
+        return `${minutes}\u043c`;
+    }
+
+    return `${hours}\u0447 ${minutes ? `${minutes}\u043c` : ''}`.trim();
+};
+
 
 
 const ExtendedInformationSidebar = (props) => {
@@ -197,6 +218,10 @@ const ExtendedInformationSidebar = (props) => {
     const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
     const [openStateInfoSection, setOpenStateInfoSection] = useState(false);
+    const chartCanvasRef = React.useRef(null);
+    const [personalWeekData, setPersonalWeekData] = useState([]);
+    const [isPersonalWeekLoading, setIsPersonalWeekLoading] = useState(true);
+    const [personalWeekError, setPersonalWeekError] = useState(null);
 
     useEffect(() => {
         setTargetUserGuys(props.target_user_guys);
@@ -312,9 +337,223 @@ const ExtendedInformationSidebar = (props) => {
     const targetUserFullName = hasTargetUser
         ? [targetUserInfo.surname, targetUserInfo.name, targetUserInfo.patronymic].filter(Boolean).join(' ')
         : '';
+    const currentUserFullName = [
+        userdata?.user?.surname,
+        userdata?.user?.name,
+        userdata?.user?.patronymic,
+    ].filter(Boolean).join(' ');
     const visibleTargetUserGuys = targetUserInfo
         ? props.base_user_list_data.filter((item) => item.boss_id === targetUserInfo.id)
         : targetUserGuys;
+
+    useEffect(() => {
+        if (hasTargetUser) {
+            return undefined;
+        }
+
+        const currentUserId = userdata?.user?.id;
+
+        if (!currentUserId) {
+            setPersonalWeekData([]);
+            setPersonalWeekError('Не удалось определить текущего пользователя');
+            setIsPersonalWeekLoading(false);
+            return undefined;
+        }
+
+        let isCancelled = false;
+
+        setIsPersonalWeekLoading(true);
+        setPersonalWeekError(null);
+        setPersonalWeekData([]);
+
+        const fetchPersonalWeekData = async () => {
+            try {
+                const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/lost-overtime-last-days`, {
+                    user_id: currentUserId,
+                    date_to: dayjs().format('YYYY-MM-DD'),
+                    days: 7,
+                    _token: CSRF_TOKEN,
+                });
+
+                if (isCancelled) {
+                    return;
+                }
+
+                const responseData = response?.data;
+
+                if (responseData?.success === false) {
+                    throw new Error(responseData?.message || 'Не удалось загрузить данные графика');
+                }
+
+                const days = responseData?.content?.days ?? responseData?.days ?? [];
+
+                setPersonalWeekData(days.map((item) => ({
+                    date: item.date,
+                    lost: Number(item.lost_minutes ?? item.lost ?? 0),
+                    extra: Number(item.overtime_minutes ?? item.extra ?? 0),
+                    is_weekend: Boolean(item.is_weekend),
+                })));
+            } catch (e) {
+                if (!isCancelled) {
+                    console.log('personal week chart load error', e);
+                    setPersonalWeekError(e?.message || 'Не удалось загрузить данные графика');
+                }
+            } finally {
+                if (!isCancelled) {
+                    setIsPersonalWeekLoading(false);
+                }
+            }
+        };
+
+        fetchPersonalWeekData();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [hasTargetUser, userdata?.user?.id]);
+
+    useEffect(() => {
+        if (
+            hasTargetUser
+            || isPersonalWeekLoading
+            || personalWeekError
+            || personalWeekData.length === 0
+            || !chartCanvasRef.current
+        ) {
+            return undefined;
+        }
+
+        const days = personalWeekData.map((item, index) => ({
+            ...item,
+            date: item.date ? dayjs(item.date) : dayjs().subtract(personalWeekData.length - index - 1, 'day'),
+            is_weekend: item.is_weekend,
+        }));
+
+        const textColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--app-text-color')
+            .trim() || '#1f1f1f';
+        const mutedTextColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--app-muted-text-color')
+            .trim() || '#6b7280';
+
+        const valueLabelsPlugin = {
+            id: 'personalWeekValueLabels',
+            afterDatasetsDraw: (chart) => {
+                const {ctx} = chart;
+
+                ctx.save();
+                ctx.fillStyle = textColor;
+                ctx.font = '700 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+
+                chart.data.datasets.forEach((dataset, datasetIndex) => {
+                    const meta = chart.getDatasetMeta(datasetIndex);
+
+                    meta.data.forEach((bar, index) => {
+                        const value = dataset.data[index];
+
+                        if (!value) {
+                            return;
+                        }
+
+                        ctx.fillText(formatMockMinutes(value), bar.x, bar.y - 4);
+                    });
+                });
+
+                ctx.restore();
+            },
+        };
+
+        const chart = new ChartJS(chartCanvasRef.current, {
+            type: 'bar',
+            data: {
+                labels: days.map((item) => `${item.date.format('dd')} ${item.date.format('DD.MM')}`),
+                datasets: [
+                    {
+                        label: '\u041f\u043e\u0442\u0435\u0440\u044f\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f',
+                        data: days.map((item) => item.lost || null),
+                        backgroundColor: '#cf1322',
+                        borderRadius: 3,
+                        barPercentage: 0.92,
+                        categoryPercentage: 0.76,
+                    },
+                    {
+                        label: '\u0421\u0432\u0435\u0440\u0445\u0443\u0440\u043e\u0447\u043d\u044b\u0435',
+                        data: days.map((item) => item.extra || null),
+                        backgroundColor: '#237804',
+                        borderRadius: 3,
+                        barPercentage: 0.92,
+                        categoryPercentage: 0.76,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                layout: {
+                    padding: {
+                        top: 28,
+                        right: 2,
+                        bottom: 0,
+                        left: 2,
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${formatMockMinutes(context.parsed.y)}`,
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            color: (context) => {
+                                const chartDay = days[context.index];
+                                const isWeekend = chartDay?.is_weekend ?? [0, 6].includes(chartDay?.date.day());
+                                return isWeekend ? '#cf1322' : mutedTextColor;
+                            },
+                            font: {
+                                size: 9,
+                                weight: '600',
+                            },
+                            maxRotation: 0,
+                            minRotation: 0,
+                        },
+                        border: {
+                            display: false,
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grace: '8%',
+                        ticks: {
+                            display: false,
+                        },
+                        grid: {
+                            display: false,
+                        },
+                        border: {
+                            display: false,
+                        },
+                    },
+                },
+            },
+            plugins: [valueLabelsPlugin],
+        });
+
+        return () => {
+            chart.destroy();
+        };
+    }, [hasTargetUser, isPersonalWeekLoading, personalWeekData, personalWeekError]);
 
     const handleOpenUserDetails = (userId) => {
         const nextUserInfo = props.base_user_list_data.find((item) => item.id === userId)
@@ -611,6 +850,43 @@ const ExtendedInformationSidebar = (props) => {
         );
     };
 
+    const renderMockPersonalWeekChartJsCard = () => {
+        const shouldShowChartError = personalWeekError || (!isPersonalWeekLoading && personalWeekData.length === 0);
+
+        return (
+            <section className="sk-userlist-details-card sk-userlist-details-card--personal-week">
+                <div className="sk-userlist-details-card-title sk-userlist-personal-week-title">
+                    <IdcardOutlined />
+                    <span>{currentUserFullName || userdata?.user?.email || 'Пользователь'}</span>
+                </div>
+                <div className="sk-userlist-personal-week-body">
+                    {isPersonalWeekLoading ? (
+                        <div className="sk-userlist-personal-week-skeleton">
+                            <Skeleton active title={false} paragraph={{rows: 5}} />
+                        </div>
+                    ) : shouldShowChartError ? (
+                        <Alert
+                            type="error"
+                            showIcon
+                            message="Не удалось загрузить график"
+                            description={personalWeekError || 'Данные по потерянному времени и сверхурочным не получены.'}
+                        />
+                    ) : (
+                        <>
+                            <div className="sk-userlist-personal-week-legend">
+                                <span className="sk-userlist-personal-week-legend-item sk-userlist-personal-week-legend-item--lost">Потерянное время</span>
+                                <span className="sk-userlist-personal-week-legend-item sk-userlist-personal-week-legend-item--extra">Сверхурочные</span>
+                            </div>
+                            <div className="sk-userlist-personal-week-chartjs">
+                                <canvas ref={chartCanvasRef} />
+                            </div>
+                        </>
+                    )}
+                </div>
+            </section>
+        );
+    };
+
     const handlePrintDocument = (href) => {
         if (!href) {
             return;
@@ -623,13 +899,7 @@ const ExtendedInformationSidebar = (props) => {
         <div>
             {!hasTargetUser && (
                 <div className="sk-userlist-details-scroll">
-                    <section className="sk-userlist-details-card sk-userlist-details-card--empty">
-                        {renderStatusHeader()}
-                        <div className="sk-userlist-details-empty">
-                            <span>Выберите сотрудника для детализации</span>
-                            <EnterOutlined className="sk-userlist-details-empty-icon" />
-                        </div>
-                    </section>
+                    {renderMockPersonalWeekChartJsCard()}
 
                     {renderCreateClaimCard()}
 
