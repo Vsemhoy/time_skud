@@ -269,7 +269,7 @@ const UserMonitorListCard = (props) => {
         }
 
         if (Number(approvalState) === 1) {
-            return 'Согласована';
+            return 'Согласовано';
         }
 
         if (Number(approvalState) === 2 || Number(approvalState) === -1) {
@@ -837,6 +837,5 @@ const UserMonitorListCard = (props) => {
 }
 
 export default UserMonitorListCard;
-
 
 
