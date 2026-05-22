@@ -790,6 +790,14 @@ const BillListModal = (props) => {
             && scheduleBounds.end !== null
             && item.exit < scheduleBounds.end
         );
+        const segmentTouchesLateEnter = (context) => (
+            isLateEnter(attendanceChartData[context.p0DataIndex])
+            || isLateEnter(attendanceChartData[context.p1DataIndex])
+        );
+        const segmentTouchesEarlyExit = (context) => (
+            isEarlyExit(attendanceChartData[context.p0DataIndex])
+            || isEarlyExit(attendanceChartData[context.p1DataIndex])
+        );
         const scheduleBoundsPlugin = {
             id: 'billListScheduleBounds',
             afterDraw: (chart) => {
@@ -854,13 +862,7 @@ const BillListModal = (props) => {
                         label: 'Вход',
                         data: attendanceChartData.map((item) => item.enter),
                         segment: {
-                            borderColor: (context) => (
-                                context.p0.raw !== null
-                                && context.p1.raw !== null
-                                && (isLateEnter(attendanceChartData[context.p0DataIndex]) || isLateEnter(attendanceChartData[context.p1DataIndex]))
-                                    ? violationColor
-                                    : enterColor
-                            ),
+                            borderColor: (context) => segmentTouchesLateEnter(context) ? violationColor : enterColor,
                         },
                         borderColor: enterColor,
                         backgroundColor: enterColor,
@@ -875,13 +877,7 @@ const BillListModal = (props) => {
                         label: 'Выход',
                         data: attendanceChartData.map((item) => item.exit),
                         segment: {
-                            borderColor: (context) => (
-                                context.p0.raw !== null
-                                && context.p1.raw !== null
-                                && (isEarlyExit(attendanceChartData[context.p0DataIndex]) || isEarlyExit(attendanceChartData[context.p1DataIndex]))
-                                    ? violationColor
-                                    : exitColor
-                            ),
+                            borderColor: (context) => segmentTouchesEarlyExit(context) ? violationColor : exitColor,
                         },
                         borderColor: exitColor,
                         backgroundColor: exitColor,
