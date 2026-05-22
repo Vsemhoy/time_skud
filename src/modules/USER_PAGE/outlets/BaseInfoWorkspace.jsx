@@ -13,7 +13,7 @@ import {
     Radio,
     message,
     Modal,
-    notification
+    notification, Checkbox
 } from "antd";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
@@ -107,6 +107,7 @@ const BaseInfoWorkspace = (props) => {
         id: null,
         name: '',
     });
+    const [isBoss, setIsBoss] = useState(false);
     const [occupy, setOccupy] = useState('');
     const [innerPhone, setInnerPhone] = useState(0);
     const [telegramID, setTelegramID] = useState('');
@@ -133,6 +134,7 @@ const BaseInfoWorkspace = (props) => {
         id: null,
         name: '',
     });
+    const [visible, setVisible] = useState(true);
 
     useEffect(() => {
         if (!isMounted) {
@@ -270,6 +272,7 @@ const BaseInfoWorkspace = (props) => {
         setPatronymic(content?.patronymic);
         setDepartment(content?.departament);
         setOccupy(content?.occupy);
+        setIsBoss(content?.is_boss);
         setInnerPhone(content?.innerPhone);
         setTelegramID(content?.telegramID);
         setEmail(content?.email);
@@ -277,6 +280,7 @@ const BaseInfoWorkspace = (props) => {
         setDateEnter(content.dateEnter ? dayjs(content.dateEnter, 'DD.MM.YYYY') : null);
         setRating(content?.rating);
         setStatus(content?.status);
+        setVisible(content?.visible);
         setRole(
             content?.role
             ?? USER_ROLES.find((item) => Number(item.id) === Number(content?.sales_role))
@@ -363,7 +367,7 @@ const BaseInfoWorkspace = (props) => {
                 const data = {
                     sex, company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, sales_role, boss, login, password, cardNumber, conditionalCard, allowEntry
+                    rating, status, sales_role, boss, login, password, cardNumber, conditionalCard, allowEntry, visible, isBoss
                 }
                 console.log(data);
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/updateuserbaseinfo/${userIdState}`,
@@ -445,10 +449,13 @@ const BaseInfoWorkspace = (props) => {
         setAlertDescription(description);
     };*/
 
-    const renderField = ({key, label, control, tooltip, wide}) => {
+    const renderField = ({key, label, control, tooltip, wide, labelExtra}) => {
         const row = (
             <div className={`${styles.sk_info_line} ${wide ? styles.sk_info_line_wide : ''}`}>
-                <p className={styles.sk_line_label}>{label}</p>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <p className={styles.sk_line_label} style={{margin: 0}}>{label}</p>
+                    {labelExtra && labelExtra}
+                </div>
                 <div className={styles.sk_field_control}>{control}</div>
             </div>
         );
@@ -551,11 +558,20 @@ const BaseInfoWorkspace = (props) => {
         {
             key: 'occupy',
             label: 'Должность',
+            labelExtra: (
+                <Checkbox
+                    checked={isBoss}
+                    onChange={(e) => setIsBoss(e.target.checked)}
+                >
+                    Руководитель
+                </Checkbox>
+            ),
             control: (
-                <Input placeholder="Должность"
-                       value={occupy}
-                       onChange={(e) => setOccupy(e.target.value)}
-                       status="warning"
+                <Input
+                    placeholder="Должность"
+                    value={occupy}
+                    onChange={(e) => setOccupy(e.target.value)}
+                    status="warning"
                 />
             ),
         },
@@ -750,6 +766,22 @@ const BaseInfoWorkspace = (props) => {
                 />
             ),
         },
+        {
+            key: 'visible',
+            label: 'Видимость в СКУДе',
+            control: (
+                <Select placeholder="Да / Нет"
+                        value={visible}
+                        options={allowEntries}
+                        onChange={(id) => setVisible(id)}
+                        style={FIELD_CONTROL_STYLE}
+                        fieldNames={{
+                            value: 'id',
+                            label: 'name',
+                        }}
+                />
+            ),
+        },
     ];
 
     return (
@@ -786,7 +818,7 @@ const BaseInfoWorkspace = (props) => {
                         {accessFields.map(renderField)}
                     </div>
                     <div className={styles.sk_danger_zone}>
-                        {currentUser?.user?.super && userIdState !== 'new' && (
+                        {!!(currentUser?.user?.super && userIdState !== 'new') && (
                             <Button
                                  type="primary"
                                  danger

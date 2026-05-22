@@ -886,11 +886,14 @@ const UserList = (props)=>{
   };
 
   const prioritizeBossInDepartment = (a, b) => {
-    if (a.department_id === b.department_id) {
-      if (a.id === 46) {
+    if (Number(a.department_id) === Number(b.department_id)) {
+      const isABoss = isTruthyFlag(a.is_boss);
+      const isBBoss = isTruthyFlag(b.is_boss);
+
+      if (isABoss && !isBBoss) {
         return -1;
       }
-      if (b.id === 46) {
+      if (!isABoss && isBBoss) {
         return 1;
       }
     }
