@@ -416,19 +416,6 @@ const UserList = (props)=>{
     setIsOpenClaimsModal(false);
   };
 
-  useEffect(() => {
-    const handleOpenBillList = () => handleOpenBillListModal();
-    const handleOpenClaimsList = () => handleOpenClaimsModal();
-
-    window.addEventListener('newskud:open-bill-list', handleOpenBillList);
-    window.addEventListener('newskud:open-claims-list', handleOpenClaimsList);
-
-    return () => {
-      window.removeEventListener('newskud:open-bill-list', handleOpenBillList);
-      window.removeEventListener('newskud:open-claims-list', handleOpenClaimsList);
-    };
-  }, []);
-
   const handleOpenInfo = (id, obj) => {
     let type = obj.skud_current_state_id;
     setEditedClaim(obj);

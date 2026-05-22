@@ -54,6 +54,10 @@ import AccountingBankCardsPage from "./modules/ACCOUNTING/AccountingBankCardsPag
 import AccountingSurchargesPage from "./modules/ACCOUNTING/AccountingSurchargesPage";
 import {USDA} from "./modules/CHARTS/mock/mock";
 import ClaimSettingsPage from "./modules/CLAIM_SETTINGS/ClaimSettingsPage";
+import ClaimListModal from "./modules/NEW_SKUD/components/ClaimListModal";
+import BillListModal from "./modules/NEW_SKUD/components/BillListModal";
+import ClaimEditorDrawer from "./modules/CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
+import StateIconsController from "./modules/CHARTS/components/StateIconsController";
 
 const { Header, Content, Footer } = Layout;
 
@@ -88,6 +92,16 @@ function App() {
   const [pageLoaded, setPageLoaded] = useState(false);
 
   const [actionUpdateEvents, setActionUpdateEvents] = useState(null);
+  const [globalUserList, setGlobalUserList] = useState([]);
+  const [globalAclBase, setGlobalAclBase] = useState({});
+  const [globalClaimTypes, setGlobalClaimTypes] = useState([]);
+  const [isGlobalBillListOpen, setIsGlobalBillListOpen] = useState(false);
+  const [isGlobalClaimsListOpen, setIsGlobalClaimsListOpen] = useState(false);
+  const [globalEditorOpened, setGlobalEditorOpened] = useState(false);
+  const [globalEditorMode, setGlobalEditorMode] = useState('read');
+  const [globalEditedClaim, setGlobalEditedClaim] = useState(null);
+  const [globalFormType, setGlobalFormType] = useState(null);
+  const [globalClaimsUpdateToken, setGlobalClaimsUpdateToken] = useState(null);
 
 /** ------------------ FETCHES ---------------- */
     /**
@@ -111,11 +125,197 @@ function App() {
         }
   }
 
+  const fetchGlobalUsers = async () => {
+    try {
+      const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getusers`, {
+        data: {},
+        _token: CSRF_TOKEN
+      });
+      setGlobalUserList(response.data.content ?? []);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const fetchGlobalAclBase = async () => {
+    try {
+      const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/aclskud/getMyAcls`, {
+        data: [],
+        _token: CSRF_TOKEN
+      });
+      setGlobalAclBase(response.data.content ?? {});
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const prepareGlobalClaimTypes = (states) => states
+    .filter((state) => state.fillable)
+    .map((state) => ({
+      key: `clt_${state.id}`,
+      value: state.id,
+      label: state.text,
+      title: state.title,
+      color: state.color,
+      badge: state.badge,
+      icon: <StateIconsController IdState={state.id} />
+    }));
+
+  const fetchGlobalClaimTypes = async () => {
+    try {
+      const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getstates`, {
+        _token: CSRF_TOKEN
+      });
+      const states = response.data.content ?? [];
+      setGlobalClaimTypes(prepareGlobalClaimTypes(states));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const ensureGlobalModalData = async () => {
+    await Promise.all([
+      globalUserList.length > 0 ? Promise.resolve() : fetchGlobalUsers(),
+      Object.keys(globalAclBase ?? {}).length > 0 ? Promise.resolve() : fetchGlobalAclBase(),
+      globalClaimTypes.length > 0 ? Promise.resolve() : fetchGlobalClaimTypes(),
+    ]);
+  };
+
+  const handleOpenGlobalBillList = async () => {
+    await ensureGlobalModalData();
+    setIsGlobalBillListOpen(true);
+  };
+
+  const handleOpenGlobalClaimsList = async () => {
+    await ensureGlobalModalData();
+    setIsGlobalClaimsListOpen(true);
+  };
+
+  const closeGlobalClaimEditor = () => {
+    setGlobalEditorOpened(false);
+    setGlobalEditorMode('read');
+    setTimeout(() => {
+      setGlobalEditedClaim(null);
+    }, 555);
+  };
+
+  const createGlobalClaim = async (claimObj) => {
+    try {
+      if (Array.isArray(claimObj)) {
+        await Promise.all(claimObj.map((claim) => PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`, {
+          data: claim,
+          _token: CSRF_TOKEN
+        })));
+      } else {
+        await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/createclaim`, {
+          data: claimObj,
+          _token: CSRF_TOKEN
+        });
+      }
+      setGlobalClaimsUpdateToken(dayjs().unix());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const updateGlobalClaim = async (claimObj) => {
+    try {
+      await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updateclaim`, {
+        data: claimObj,
+        _token: CSRF_TOKEN
+      });
+      setGlobalClaimsUpdateToken(dayjs().unix());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const updateGlobalClaimState = async (claimObj) => {
+    try {
+      await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/updatestate`, {
+        data: claimObj,
+        _token: CSRF_TOKEN
+      });
+      setGlobalClaimsUpdateToken(dayjs().unix());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const deleteGlobalClaim = async (claimId) => {
+    try {
+      await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/deleteclaim`, {
+        data: {id: claimId},
+        _token: CSRF_TOKEN
+      });
+      setGlobalClaimsUpdateToken(dayjs().unix());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleGlobalSaveClaim = async (claim, editMode) => {
+    if (editMode === 'create') {
+      await createGlobalClaim(claim);
+    } else if (editMode === 'update') {
+      await updateGlobalClaim(claim);
+    } else if (editMode === 'transfer') {
+      await updateGlobalClaimState({
+        id: claim.update.id,
+        state: 3,
+      });
+      await createGlobalClaim(claim.create);
+    }
+    closeGlobalClaimEditor();
+  };
+
+  const handleGlobalOpenClaim = (id, claim) => {
+    setGlobalEditedClaim(claim);
+    setGlobalFormType(claim.skud_current_state_id ?? claim.skud_current_state?.id);
+    setGlobalEditorMode('read');
+    setGlobalEditorOpened(true);
+  };
+
+  const handleGlobalEditClaim = (id, claim) => {
+    setGlobalEditedClaim(claim);
+    setGlobalFormType(claim.skud_current_state_id ?? claim.skud_current_state?.id);
+    setGlobalEditorMode('update');
+    setGlobalEditorOpened(true);
+  };
+
+  const handleGlobalApproveClaim = (id) => {
+    updateGlobalClaimState({id, state: 1});
+    closeGlobalClaimEditor();
+  };
+
+  const handleGlobalDeclineClaim = (id) => {
+    updateGlobalClaimState({id, state: 2});
+    closeGlobalClaimEditor();
+  };
+
+  const handleGlobalGetBackClaim = (id) => {
+    deleteGlobalClaim(id);
+    closeGlobalClaimEditor();
+  };
+
   /** ------------------ FETCHES END ---------------- */
 
   useEffect(() => {
     get_userdata().then();
   }, []);
+
+  useEffect(() => {
+    const handleOpenBillList = () => handleOpenGlobalBillList();
+    const handleOpenClaimsList = () => handleOpenGlobalClaimsList();
+
+    window.addEventListener('newskud:open-bill-list', handleOpenBillList);
+    window.addEventListener('newskud:open-claims-list', handleOpenClaimsList);
+
+    return () => {
+      window.removeEventListener('newskud:open-bill-list', handleOpenBillList);
+      window.removeEventListener('newskud:open-claims-list', handleOpenClaimsList);
+    };
+  }, [globalUserList, globalAclBase, globalClaimTypes]);
 
   const normalizeSkudTime = (time) => {
     if (!time) {
@@ -332,6 +532,46 @@ function App() {
           is_open={notificatorOpened}
           on_close={handleNotificatorClosed}
           on_count_change={setCountOfNotifications}
+        />
+
+        {isGlobalBillListOpen && (
+          <BillListModal
+            isOpenBillListModal={isGlobalBillListOpen}
+            handleCloseBillListModal={() => setIsGlobalBillListOpen(false)}
+            userdata={userAct}
+            user_list={globalUserList}
+          />
+        )}
+
+        {isGlobalClaimsListOpen && (
+          <ClaimListModal
+            isOpenClaimsModal={isGlobalClaimsListOpen}
+            handleCloseClaimModal={() => setIsGlobalClaimsListOpen(false)}
+            userData={userAct}
+            on_click={handleGlobalOpenClaim}
+            on_approve={handleGlobalApproveClaim}
+            on_decline={handleGlobalDeclineClaim}
+            on_edit={handleGlobalEditClaim}
+            on_get_back={handleGlobalGetBackClaim}
+            doUpdateModal={globalClaimsUpdateToken}
+          />
+        )}
+
+        <ClaimEditorDrawer
+          data={globalEditedClaim}
+          mode={globalEditorMode}
+          acl_base={globalAclBase}
+          user_list={globalUserList}
+          opened={globalEditorOpened}
+          claim_type={globalFormType}
+          on_close={closeGlobalClaimEditor}
+          claim_types={globalClaimTypes}
+          on_send={handleGlobalSaveClaim}
+          my_id={userAct?.user?.id}
+          on_get_back={handleGlobalGetBackClaim}
+          on_approve={handleGlobalApproveClaim}
+          on_decline={handleGlobalDeclineClaim}
+          current_user={userAct?.user}
         />
 
     </Layout>

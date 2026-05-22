@@ -357,9 +357,12 @@ const UserMonitorListCard = (props) => {
         if (props.on_claim_click) {
             const normalizedClaim = {
                 ...claim,
-                user_id: claim.user_id ?? content.id,
+                user_id: claim.user_id ?? claim.skud_user_id ?? content.id,
                 id_company: claim.id_company ?? content.id_company,
                 boss_id: claim.boss_id ?? content.boss_id,
+                state: claim.state ?? claim.is_approved ?? claim.approved ?? 0,
+                need_approved: claim.need_approved ?? claim.skud_current_state?.need_approved ?? 0,
+                skud_current_state_id: claim.skud_current_state_id ?? claim.skud_current_state?.id,
                 usr_surname: claim.usr_surname ?? content.surname,
                 usr_name: claim.usr_name ?? content.name,
                 usr_patronymic: claim.usr_patronymic ?? content.patronymic,
@@ -845,4 +848,3 @@ const UserMonitorListCard = (props) => {
 }
 
 export default UserMonitorListCard;
-
