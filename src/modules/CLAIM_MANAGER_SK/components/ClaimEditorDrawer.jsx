@@ -113,6 +113,7 @@ const ClaimEditorDrawer = (props) => {
       && selectedFullDayUsers.every(userHasValidSchedule)
   );
   const effectiveItemId = itemId ?? props.data?.id;
+  const isLocalTripClaim = Number(formType) === 8;
   const isLongVacationClaim = [
     formType,
     props.data?.skud_current_state_id,
@@ -494,6 +495,48 @@ const ClaimEditorDrawer = (props) => {
     setFormDateRange([dates[0].startOf('day'), dates[1].endOf('day')]);
   };
 
+  const handleLocalTripDateChange = (date) => {
+    if (!date) {
+      setFormDateRange([null, null]);
+      return;
+    }
+
+    const currentStart = formDateRange?.[0] ?? dayjs();
+    const currentEnd = formDateRange?.[1] ?? currentStart;
+
+    setFormDateRange([
+      date.hour(currentStart.hour()).minute(currentStart.minute()).second(0),
+      date.hour(currentEnd.hour()).minute(currentEnd.minute()).second(0),
+    ]);
+  };
+
+  const handleLocalTripStartTimeChange = (time) => {
+    if (!time) {
+      return;
+    }
+
+    const baseDate = formDateRange?.[0] ?? dayjs();
+    const currentEnd = formDateRange?.[1] ?? baseDate;
+
+    setFormDateRange([
+      baseDate.hour(time.hour()).minute(time.minute()).second(0),
+      currentEnd,
+    ]);
+  };
+
+  const handleLocalTripEndTimeChange = (time) => {
+    if (!time) {
+      return;
+    }
+
+    const baseDate = formDateRange?.[0] ?? dayjs();
+
+    setFormDateRange([
+      formDateRange?.[0] ?? baseDate,
+      baseDate.hour(time.hour()).minute(time.minute()).second(0),
+    ]);
+  };
+
   const handleToggleFullWorkDay = () => {
     if (isFullWorkDay) {
       setIsFullWorkDay(false);
@@ -749,7 +792,7 @@ const ClaimEditorDrawer = (props) => {
             </div>
 
             {/* Диапазон дат с временем */}
-            {(formType === 7 || formType === 8 || formType === 9) && (
+            {(formType === 7 || formType === 9) && (
             <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Начало и окончание</span>
               <div className={'sk-flex-space'}>
@@ -804,6 +847,54 @@ const ClaimEditorDrawer = (props) => {
 
 
             {/* Диапазон дат */}
+            {isLocalTripClaim && (
+              <div className={'sk-claimeditor-drawer-row '}>
+                <div className={'sk-flex-space'}>
+                  {editMode === 'read' ? (
+                    renderReadRange(formDateRange[0], formDateRange[1], renderReadDateTime)
+                  ) : (
+                    <div style={{display: 'grid', gridTemplateColumns: '48% 48%', gridGap: '0px 4%', width: '100%'}}>
+                      <div>
+                        <span className={'sk-usp-filter-col-label sk-labed-um'}>Дата</span>
+                        <DatePicker
+                          format="DD.MM.YYYY"
+                          style={{ width: '100%' }}
+                          value={formDateRange?.[0]}
+                          onChange={handleLocalTripDateChange}
+                        />
+                      </div>
+                      <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
+                        <div>
+                          <span className={'sk-usp-filter-col-label sk-labed-um'}>Начало</span>
+                          <TimePicker
+                            format="HH:mm"
+                            showSecond={false}
+                            minuteStep={5}
+                            needConfirm={false}
+                            style={{ width: '100%' }}
+                            value={formDateRange?.[0]}
+                            onChange={handleLocalTripStartTimeChange}
+                          />
+                        </div>
+                        <div>
+                          <span className={'sk-usp-filter-col-label sk-labed-um'}>Окончание</span>
+                          <TimePicker
+                            format="HH:mm"
+                            showSecond={false}
+                            minuteStep={5}
+                            needConfirm={false}
+                            style={{ width: '100%' }}
+                            value={formDateRange?.[1]}
+                            onChange={handleLocalTripEndTimeChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {(formType === 10 || formType === 6) && (
               <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Начальная и конечная даты</span>

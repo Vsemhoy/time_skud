@@ -331,13 +331,23 @@ const UserMonitorListCard = (props) => {
         return classNames.join(' ');
     };
 
+    const formatClaimTooltipDate = (claim, fieldName) => {
+        const value = claim?.[fieldName];
+        if (!value) {
+            return '-';
+        }
+
+        const shouldShowTime = [8, 9].includes(Number(claim?.skud_current_state_id));
+        return formatMoscowDateTime(value, shouldShowTime ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY');
+    };
+
     const renderClaimTooltip = (claim) => {
         return (
             <div style={{maxWidth: '320px'}}>
                 <div><strong>{claim?.skud_current_state?.title || claim?.skud_current_state?.text || 'Заявка'}</strong></div>
                 <div>Статус: {getClaimStatusText(claim)}</div>
-                <div>Начало: {claim?.start ? formatMoscowDateTime(claim.start, 'DD.MM.YYYY HH:mm') : '-'}</div>
-                <div>Конец: {claim?.end ? formatMoscowDateTime(claim.end, 'DD.MM.YYYY HH:mm') : '-'}</div>
+                <div>Начало: {formatClaimTooltipDate(claim, 'start')}</div>
+                <div>Конец: {formatClaimTooltipDate(claim, 'end')}</div>
             </div>
         );
     };
@@ -835,5 +845,4 @@ const UserMonitorListCard = (props) => {
 }
 
 export default UserMonitorListCard;
-
 
