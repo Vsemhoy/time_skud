@@ -844,6 +844,11 @@ const UserList = (props)=>{
 
   const handleShowUserInfo = (user_id)=>{
     console.log('user_id', user_id)
+    if (markedUsersRef.current.length === 1 && Number(markedUsersRef.current[0]) === Number(user_id)) {
+      handleClearUserInfo();
+      return;
+    }
+
     handleMarkUser(user_id);
     setOpenUserInfo(true);
     let usr = baseUserListData.find((item)=> item.id === user_id);
