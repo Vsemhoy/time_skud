@@ -88,6 +88,8 @@ const MONTH_NAMES_RU = [
     'декабрь',
 ];
 
+const WEEKDAY_SHORT_NAMES_RU = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
 const yearsOptions = Array.from({length: 8}, (_, index) => {
     const year = dayjs().subtract(5, 'year').add(index, 'year').year();
 
@@ -248,6 +250,12 @@ const formatAxisMinutesAsTime = (value) => {
     const minutes = value % 60;
 
     return `${hours}:${String(minutes).padStart(2, '0')}`;
+};
+
+const formatAttendanceDayLabel = (day, selectedMonth, selectedYear) => {
+    const date = dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
+
+    return [String(day), WEEKDAY_SHORT_NAMES_RU[date.day()]];
 };
 
 const normalizeDayNumber = (item, selectedMonth, selectedYear) => {
@@ -838,7 +846,7 @@ const BillListModal = (props) => {
         const chart = new ChartJS(attendanceChartRef.current, {
             type: 'line',
             data: {
-                labels: attendanceChartData.map((item) => item.day),
+                labels: attendanceChartData.map((item) => formatAttendanceDayLabel(item.day, selectedMonth, selectedYear)),
                 datasets: [
                     {
                         label: 'начало рабочего дня',
@@ -935,7 +943,7 @@ const BillListModal = (props) => {
                         },
                     },
                     y: {
-                        min: 360,
+                        min: 420,
                         max: 1320,
                         grid: {
                             color: gridColor,

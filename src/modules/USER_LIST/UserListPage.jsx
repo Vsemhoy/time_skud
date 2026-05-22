@@ -285,6 +285,7 @@ const UserList = (props)=>{
       });
       await create_claim(claim.create);
     }
+    get_users(extFiltersRef.current, { showSkeleton: false });
     setEditorOpened(false);
     setTimeout(() => {
       setSelectedClaimId(0);
@@ -329,36 +330,39 @@ const UserList = (props)=>{
     }
   };
 
-  const handleApproveEvent = (id, type)=> {
+  const handleApproveEvent = async (id, type)=> {
     const obj = {
       id: id,
       state: 1,
     };
-    update_claim_state(obj)
+    await update_claim_state(obj);
+    get_users(extFiltersRef.current, { showSkeleton: false });
     setEditorOpened(false);
     setTimeout(() => {
       console.log(888888333333);
     }, 555);
   };
 
-  const handleDeclineEvent = (id, type)=> {
+  const handleDeclineEvent = async (id, type)=> {
     const obj = {
       id: id,
       state: 2,
     };
-    update_claim_state(obj);
+    await update_claim_state(obj);
+    get_users(extFiltersRef.current, { showSkeleton: false });
     setEditorOpened(false);
     setTimeout(() => {
       console.log(555555555555);
     }, 555);
   };
 
-  const handleGetBackEvent = (id)=> {
+  const handleGetBackEvent = async (id)=> {
     setTimeout(() => {
       console.log(1111111111111);
     }, 555);
     setEditorOpened(false);
-    delete_claim(id);
+    await delete_claim(id);
+    get_users(extFiltersRef.current, { showSkeleton: false });
   };
 
   const update_claim_state = async (claimObj) => {
