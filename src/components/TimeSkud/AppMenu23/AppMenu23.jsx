@@ -213,7 +213,7 @@ const AppMenu23 = (props) => {
             {
                 key: 'newskud-bill-list',
                 icon: <ScheduleOutlined />,
-                label: 'Расчетный лист офис',
+                label: 'Расчетный лист',
                 onClick: openNewSkudBillList,
             },
             {

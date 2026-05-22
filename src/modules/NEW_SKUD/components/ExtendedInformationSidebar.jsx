@@ -894,7 +894,7 @@ const ExtendedInformationSidebar = (props) => {
                         disabled={!currentUserId}
                         onClick={() => props.on_open_bill_list?.(currentUserId)}
                     >
-                        Расчетный лист офис
+                        Расчетный лист
                     </Button>
                 </div>
                 <div className="sk-userlist-personal-week-body">

@@ -72,6 +72,22 @@ const monthsOptions = [
     {id: 12, name: 'Декабрь'},
 ];
 
+const MONTH_NAMES_RU = [
+    '',
+    'январь',
+    'февраль',
+    'март',
+    'апрель',
+    'май',
+    'июнь',
+    'июль',
+    'август',
+    'сентябрь',
+    'октябрь',
+    'ноябрь',
+    'декабрь',
+];
+
 const yearsOptions = Array.from({length: 8}, (_, index) => {
     const year = dayjs().subtract(5, 'year').add(index, 'year').year();
 
@@ -223,6 +239,17 @@ const formatMinutesAsTime = (value) => {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
 
+const formatAxisMinutesAsTime = (value) => {
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+};
+
 const normalizeDayNumber = (item, selectedMonth, selectedYear) => {
     const rawDate = item?.date ?? item?.day_date ?? item?.datetime ?? item?.t;
 
@@ -311,6 +338,7 @@ const getDayEnterExit = (item, selectedMonth, selectedYear) => {
         day: normalizeDayNumber(item, selectedMonth, selectedYear),
         enter,
         exit,
+        isWorkday: item?.schedule?.is_workday ?? item?.is_workday ?? null,
     };
 };
 
@@ -698,6 +726,7 @@ const BillListModal = (props) => {
             day: index + 1,
             enter: null,
             exit: null,
+            isWorkday: ![0, 6].includes(dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}`).day()),
         }));
 
         const attendanceDays = Array.isArray(attendanceInfo?.days)
@@ -717,6 +746,10 @@ const BillListModal = (props) => {
 
             if (item.exit !== null) {
                 targetDay.exit = targetDay.exit === null ? item.exit : Math.max(targetDay.exit, item.exit);
+            }
+
+            if (item.isWorkday !== null && item.isWorkday !== undefined) {
+                targetDay.isWorkday = Boolean(item.isWorkday);
             }
         });
 
@@ -742,14 +775,29 @@ const BillListModal = (props) => {
         const scheduleLineColor = getComputedStyle(document.documentElement)
             .getPropertyValue('--icon-color-std')
             .trim() || '#595959';
+        const violationColor = '#cf1322';
+        const enterColor = '#1677ff';
+        const exitColor = '#52c41a';
+        const isLateEnter = (item) => (
+            item?.isWorkday !== false
+            && item?.enter !== null
+            && scheduleBounds.start !== null
+            && item.enter > scheduleBounds.start
+        );
+        const isEarlyExit = (item) => (
+            item?.isWorkday !== false
+            && item?.exit !== null
+            && scheduleBounds.end !== null
+            && item.exit < scheduleBounds.end
+        );
         const scheduleBoundsPlugin = {
             id: 'billListScheduleBounds',
             afterDraw: (chart) => {
                 const {ctx, chartArea, scales} = chart;
                 const yScale = scales.y;
                 const lines = [
-                    {value: scheduleBounds.start, label: 'Начало графика'},
-                    {value: scheduleBounds.end, label: 'Конец графика'},
+                    {value: scheduleBounds.start, label: 'начало рабочего дня'},
+                    {value: scheduleBounds.end, label: 'окончание рабочего дня'},
                 ].filter((item) => item.value !== null && item.value !== undefined);
 
                 if (!lines.length) {
@@ -757,7 +805,7 @@ const BillListModal = (props) => {
                 }
 
                 ctx.save();
-                ctx.setLineDash([6, 5]);
+                ctx.setLineDash([18, 12]);
                 ctx.lineWidth = 1.5;
                 ctx.strokeStyle = scheduleLineColor;
                 ctx.fillStyle = scheduleLineColor;
@@ -772,7 +820,7 @@ const BillListModal = (props) => {
                     ctx.moveTo(chartArea.left, y);
                     ctx.lineTo(chartArea.right, y);
                     ctx.stroke();
-                    ctx.fillText(`${line.label} ${formatMinutesAsTime(line.value)}`, chartArea.right - 4, y - 3);
+                    ctx.fillText(`${line.label} ${formatAxisMinutesAsTime(line.value)}`, chartArea.right - 4, y - 3);
                 });
 
                 ctx.restore();
@@ -785,24 +833,64 @@ const BillListModal = (props) => {
                 labels: attendanceChartData.map((item) => item.day),
                 datasets: [
                     {
+                        label: 'начало рабочего дня',
+                        data: attendanceChartData.map(() => scheduleBounds.start),
+                        borderColor: 'transparent',
+                        backgroundColor: 'transparent',
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        borderWidth: 0,
+                    },
+                    {
+                        label: 'окончание рабочего дня',
+                        data: attendanceChartData.map(() => scheduleBounds.end),
+                        borderColor: 'transparent',
+                        backgroundColor: 'transparent',
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        borderWidth: 0,
+                    },
+                    {
                         label: 'Вход',
                         data: attendanceChartData.map((item) => item.enter),
-                        borderColor: '#1677ff',
-                        backgroundColor: '#1677ff',
+                        segment: {
+                            borderColor: (context) => (
+                                context.p0.raw !== null
+                                && context.p1.raw !== null
+                                && (isLateEnter(attendanceChartData[context.p0DataIndex]) || isLateEnter(attendanceChartData[context.p1DataIndex]))
+                                    ? violationColor
+                                    : enterColor
+                            ),
+                        },
+                        borderColor: enterColor,
+                        backgroundColor: enterColor,
                         spanGaps: true,
                         tension: 0.18,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
+                        pointRadius: (context) => isLateEnter(attendanceChartData[context.dataIndex]) ? 4 : 3,
+                        pointBackgroundColor: (context) => isLateEnter(attendanceChartData[context.dataIndex]) ? violationColor : enterColor,
+                        pointBorderColor: (context) => isLateEnter(attendanceChartData[context.dataIndex]) ? violationColor : enterColor,
+                        pointHoverRadius: (context) => isLateEnter(attendanceChartData[context.dataIndex]) ? 6 : 5,
                     },
                     {
                         label: 'Выход',
                         data: attendanceChartData.map((item) => item.exit),
-                        borderColor: '#52c41a',
-                        backgroundColor: '#52c41a',
+                        segment: {
+                            borderColor: (context) => (
+                                context.p0.raw !== null
+                                && context.p1.raw !== null
+                                && (isEarlyExit(attendanceChartData[context.p0DataIndex]) || isEarlyExit(attendanceChartData[context.p1DataIndex]))
+                                    ? violationColor
+                                    : exitColor
+                            ),
+                        },
+                        borderColor: exitColor,
+                        backgroundColor: exitColor,
                         spanGaps: true,
                         tension: 0.18,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
+                        pointRadius: (context) => isEarlyExit(attendanceChartData[context.dataIndex]) ? 4 : 3,
+                        pointBackgroundColor: (context) => isEarlyExit(attendanceChartData[context.dataIndex]) ? violationColor : exitColor,
+                        pointBorderColor: (context) => isEarlyExit(attendanceChartData[context.dataIndex]) ? violationColor : exitColor,
+                        pointHoverRadius: (context) => isEarlyExit(attendanceChartData[context.dataIndex]) ? 6 : 5,
                     },
                 ],
             },
@@ -816,6 +904,10 @@ const BillListModal = (props) => {
                 },
                 plugins: {
                     legend: {
+                        filter: (item) => ![
+                            'начало рабочего дня',
+                            'окончание рабочего дня',
+                        ].includes(item.text),
                         labels: {
                             color: textColor,
                             boxWidth: 10,
@@ -823,6 +915,7 @@ const BillListModal = (props) => {
                         },
                     },
                     tooltip: {
+                        filter: (context) => ['Вход', 'Выход'].includes(context.dataset.label),
                         callbacks: {
                             label: (context) => `${context.dataset.label}: ${formatMinutesAsTime(context.parsed.y)}`,
                         },
@@ -835,31 +928,32 @@ const BillListModal = (props) => {
                             drawTicks: false,
                         },
                         ticks: {
-                            color: mutedTextColor,
+                            color: (context) => attendanceChartData[context.index]?.isWorkday === false ? '#cf1322' : mutedTextColor,
                             maxRotation: 0,
                             autoSkip: false,
                         },
                         title: {
                             display: true,
-                            text: 'Дни месяца',
+                            text: 'Даты',
                             color: mutedTextColor,
                         },
                     },
                     y: {
-                        min: 0,
-                        max: 1440,
+                        min: 360,
+                        max: 1320,
                         grid: {
                             color: gridColor,
                             drawTicks: false,
                         },
                         ticks: {
                             color: mutedTextColor,
-                            stepSize: 120,
-                            callback: (value) => formatMinutesAsTime(value),
+                            stepSize: 60,
+                            autoSkip: false,
+                            callback: (value) => formatAxisMinutesAsTime(value),
                         },
                         title: {
-                            display: true,
-                            text: 'Время за день',
+                            display: false,
+                            text: '',
                             color: mutedTextColor,
                         },
                     },
@@ -921,7 +1015,7 @@ const BillListModal = (props) => {
 
     return (
         <Modal
-            title={'Расчетный лист офис'}
+            title={'Расчетный лист'}
             closable={{'aria-label': 'Custom Close Button'}}
             footer={null}
             open={props?.isOpenBillListModal}
@@ -1069,7 +1163,7 @@ const BillListModal = (props) => {
                             ]}
                         />
                         <div className={'bill-list-attendance-chart'}>
-                            <div className={'bill-list-attendance-chart-title'}>График входов и выходов за месяц</div>
+                            <div className={'bill-list-attendance-chart-title'}>Рабочий график за {MONTH_NAMES_RU[selectedMonth] ?? ''}</div>
                             <Spin spinning={isLoadingAttendance}>
                                 <div className={'bill-list-attendance-chart-canvas'}>
                                     <canvas ref={attendanceChartRef}/>

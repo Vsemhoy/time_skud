@@ -456,7 +456,7 @@ const BillListModal = (props) => {
 
     return (
         <Modal
-            title={'Расчетный лист офис'}
+            title={'Расчетный лист'}
             closable={{'aria-label': 'Custom Close Button'}}
             footer={null}
             open={props?.isOpenBillListModal}

@@ -196,9 +196,9 @@ const UserListToolbar = (props) => {
                             variant={'outlined'}
                             icon={<ScheduleOutlined />}
                             className={'sk-userlist-compact-btn'}
-                            title={'Расчетный лист офис'}
+                            title={'Расчетный лист'}
                             onClick={openBillListModal}
-                    ><span className={'sk-userlist-btn-label'}>Расчетный лист офис</span></Button>
+                    ><span className={'sk-userlist-btn-label'}>Расчетный лист</span></Button>
                 </div>
             </div>
             <div className={'sk-userlist-toolbar-currentdate sk-userlist-toolbar-currentdate--employees'}>
