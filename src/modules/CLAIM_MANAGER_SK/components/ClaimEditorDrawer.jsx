@@ -304,8 +304,10 @@ const ClaimEditorDrawer = (props) => {
       return;
     }
     const claimUserId = userCard.user_id ?? userCard.id;
+    const claimTypeId = userCard.skud_current_state_id ?? userCard.skud_current_state?.id;
+    const needApproved = Number(userCard.need_approved ?? userCard.skud_current_state?.need_approved ?? 0);
     const companyAcls = props.acl_base?.[userCard.id_company];
-    const stateAcls = companyAcls?.[userCard.skud_current_state_id];
+    const stateAcls = companyAcls?.[claimTypeId];
     if  (userCard.evaluated === 0 && Number(claimUserId) === Number(MYID) &&
         stateAcls &&
         stateAcls.includes('PERS_CLAIM_CREATE')
@@ -339,7 +341,7 @@ const ClaimEditorDrawer = (props) => {
       setAllowEdit(true);
     }
 
-    if (userCard.need_approved === 1)
+    if (needApproved === 1)
     {
         // Согласовываем только те, что требуют согласования
         if (stateAcls &&
@@ -927,7 +929,7 @@ const ClaimEditorDrawer = (props) => {
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Дата события</span>
               {editMode === 'read' ? (
                 <>
-                    <div className={'sk-contend-um'}>{formatMoscowDateTime(formDateRange[0], 'DD-MM-YY')} </div>
+                    <div className={'sk-contend-um'}>{renderReadDate(formDateRange[0])}</div>
                 </>
               ):(
                 <>

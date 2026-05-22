@@ -193,8 +193,6 @@ const AppMenu23 = (props) => {
         return [path];
     };
 
-    const isNewSkudPage = location.pathname === '/' || location.pathname === '/newskud' || location.pathname.endsWith('/newskud');
-
     const openNewSkudBillList = () => {
         window.dispatchEvent(new CustomEvent('newskud:open-bill-list'));
     };
@@ -209,7 +207,7 @@ const AppMenu23 = (props) => {
             key: 'status',
             label: 'Статус: Онлайн',
         },
-        ...(isNewSkudPage ? [
+        ...[
             {
                 key: 'newskud-bill-list',
                 icon: <ScheduleOutlined />,
@@ -222,7 +220,7 @@ const AppMenu23 = (props) => {
                 label: 'Список заявок',
                 onClick: openNewSkudClaimsList,
             },
-        ] : []),
+        ],
         {
             key: 'theme',
             label: (
