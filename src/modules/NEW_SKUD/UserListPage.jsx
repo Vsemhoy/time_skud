@@ -889,7 +889,15 @@ const UserList = (props)=>{
     if (Number(a.department_id) === Number(b.department_id)) {
       const isABoss = isTruthyFlag(a.is_boss);
       const isBBoss = isTruthyFlag(b.is_boss);
+      const isASuper = isTruthyFlag(a.super);
+      const isBSuper = isTruthyFlag(b.super);
 
+      if (isASuper && !isBSuper) {
+        return -1;
+      }
+      if (!isASuper && isBSuper) {
+        return 1;
+      }
       if (isABoss && !isBBoss) {
         return -1;
       }
