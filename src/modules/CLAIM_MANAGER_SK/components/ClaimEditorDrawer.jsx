@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Drawer, Form, Input, Popover, Row, Select, Space, TimePicker, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
+import UserStatusLucideIconsController from "../../CHARTS/components/UserStatusLucideIconsController";
 const { Option } = Select;
 
 
@@ -740,11 +741,34 @@ const ClaimEditorDrawer = (props) => {
     </div>
   );
 
+  const drawerTitleText = `${itemId ? ("Заявка #" + itemId) : 'Новая заявка'}:  ${pageTitle}`;
+  const drawerStatusIconName = props.data?.skud_current_state?.icon ?? props.data?.state_icon;
+
   return (
     <>
       
       <Drawer
-        title={`${itemId ? ("Заявка #" + itemId) : 'Новая заявка'}:  ${pageTitle}`} //props.claim_type
+        title={(
+          <span className="sk-claimeditor-drawer-title">
+            <UserStatusLucideIconsController
+              IdState={formType}
+              IconName={drawerStatusIconName}
+              size={19}
+              strokeWidth={2.2}
+            />
+            <span>{drawerTitleText}</span>
+          </span>
+        )} //props.claim_type
+        closable={false}
+        extra={(
+          <Button
+            type="text"
+            icon={<CloseOutlined />}
+            onClick={onClose}
+            className="sk-claimeditor-drawer-close"
+            aria-label="Close"
+          />
+        )}
         width={720}
         onClose={onClose}
         open={open}

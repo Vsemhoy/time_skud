@@ -135,6 +135,20 @@
     font-style: normal;
 }
 
+.sk-claimeditor-drawer-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sk-claimeditor-drawer-title svg {
+    flex: 0 0 auto;
+}
+
+.sk-claimeditor-drawer-close {
+    color: var(--app-text-color);
+}
+
 .sk_transport_price_header {
     margin: 0;
     padding: 0;
