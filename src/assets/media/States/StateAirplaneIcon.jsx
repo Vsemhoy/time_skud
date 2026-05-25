@@ -8,7 +8,7 @@ const StateAirplaneIcon = ({ height = '100%' }) => (
     id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    viewBox="0 0 512.001 512.001"
+    viewBox="0 60 512.001 390"
     xmlSpace="preserve"
   >
     <path
