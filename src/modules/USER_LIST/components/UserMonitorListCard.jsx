@@ -25,6 +25,8 @@ import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helper
 import './style/usermonitorlist.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
+import StateLucideIconsController, { hasLucideStateIcon } from "../../CHARTS/components/StateLucideIconsController";
+import UserStatusLucideIconsController, { hasUserStatusLucideIcon } from "../../CHARTS/components/UserStatusLucideIconsController";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
 
 
@@ -49,6 +51,40 @@ const DynamicIcon = ({ iconName, ...props }) => {
     const IconComponent = iconMap[iconName];
     return IconComponent ? <IconComponent {...props} /> : null;
   };
+
+const getUserStatusId = (data) => {
+    const currentState = Number(data?.current_state);
+    const localState = Number(data?.local_state);
+    const globalState = Number(data?.global_state);
+
+    if (Number.isFinite(currentState) && currentState !== 0) {
+        return currentState;
+    }
+
+    if (Number.isFinite(localState) && localState !== 0) {
+        return localState;
+    }
+
+    if (Number.isFinite(globalState) && globalState !== 0) {
+        return globalState;
+    }
+
+    return 0;
+};
+
+const getStatusIcon = (data) => {
+    const localStatusId = getUserStatusId(data);
+
+    if (hasUserStatusLucideIcon(localStatusId)) {
+        return <UserStatusLucideIconsController IdState={localStatusId} size={14} strokeWidth={2.2} />;
+    }
+
+    if (Number(localStatusId) === 0 && hasLucideStateIcon(data?.global_state)) {
+        return <StateLucideIconsController IdState={data.global_state} size={14} strokeWidth={2.2} />;
+    }
+
+    return <DynamicIcon iconName={data?.state_icon} />;
+};
 
 const formatPhone = (phone) => (phone && phone !== 0 && phone !== '0' ? phone : '-');
 
@@ -200,9 +236,10 @@ const UserMonitorListCard = (props) => {
 
     useEffect(()=> {
         setContent(props.data);
-        if (props.data.current_state !== 0)
+        const localStatusId = getUserStatusId(props.data);
+        if (hasUserStatusLucideIcon(localStatusId) || (Number(localStatusId) === 0 && hasLucideStateIcon(props.data?.global_state)) || props.data.current_state !== 0)
         {
-            setBadger({ title: props.data.state_text, text: props.data.state_title, text_w: props.data.state_title_w, color: props.data.state_color, icon: <DynamicIcon iconName={props.data.state_icon} />});
+            setBadger({ title: props.data.state_text, text: props.data.state_title, text_w: props.data.state_title_w, color: props.data.state_color, icon: getStatusIcon(props.data)});
         } else {
             setBadger(USER_STATE_PLACES[0]);
         }

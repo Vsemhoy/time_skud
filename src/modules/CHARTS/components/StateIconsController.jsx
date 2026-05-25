@@ -1,5 +1,5 @@
 import React from 'react';
-import StateTrainIcon from "../../../assets/media/States/StateTrainIcon";
+import StateAirplaneIcon from "../../../assets/media/States/StateAirplaneIcon";
 import StateLongVacationIcon from "../../../assets/media/States/StateLongVacationIcon";
 import StateSickleaveIcon from "../../../assets/media/States/StateSickleaveIcon";
 import StateContainerIcon from "../../../assets/media/States/StateContainerIcon";
@@ -14,7 +14,7 @@ const StateIconsController = (props) => {
         8:  <StateSuitcaseIcon     height={props.height ? props.height : '25px'}/>,
         9:  <StateHomeIcon         height={props.height ? props.height : '25px'}/>,
         11: <StopwatchPlusIcon     height={props.height ? props.height : '25px'}/>,
-        7:  <StateTrainIcon        height={props.height ? props.height : '25px'}/>,
+        7:  <StateAirplaneIcon     height={props.height ? props.height : '25px'}/>,
         10: <StateLongVacationIcon height={props.height ? props.height : '25px'}/>,
         6:  <StateSickleaveIcon    height={props.height ? props.height : '25px'}/>,
         13: <StateContainerIcon    height={props.height ? props.height : '25px'}/>,
