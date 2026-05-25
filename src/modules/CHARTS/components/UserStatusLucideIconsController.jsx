@@ -52,6 +52,28 @@ const userStatusIcons = {
 };
 
 const legacyStatusIcons = {
+    OctagonMinus,
+    Apple,
+    Footprints,
+    Check,
+    ShieldCheck,
+    BriefcaseMedical,
+    Plane,
+    BriefcaseBusiness,
+    House,
+    TreePalm,
+    ClockPlus,
+    Map,
+    Forklift,
+    LogIn,
+    TriangleAlert,
+    Flame,
+    CircleAlert,
+    LogOut,
+    Coffee,
+    DoorOpen,
+    Coins,
+    Globe,
     MinusCircleOutlined: OctagonMinus,
     AppleOutlined: Apple,
     RestOutlined: Footprints,
@@ -79,10 +101,11 @@ const legacyStatusIcons = {
 };
 
 export const hasUserStatusLucideIcon = (idState) => Boolean(userStatusIcons[Number(idState)]);
-export const hasUserStatusLucideIconName = (iconName) => Boolean(legacyStatusIcons[iconName]);
+export const hasUserStatusLucideIconName = (iconName) => Boolean(legacyStatusIcons[String(iconName ?? '').trim()]);
 
 const UserStatusLucideIconsController = ({ IdState, IconName, size = 16, strokeWidth = 2, ...props }) => {
-    const IconComponent = legacyStatusIcons[IconName] || userStatusIcons[Number(IdState)];
+    const normalizedIconName = String(IconName ?? '').trim();
+    const IconComponent = legacyStatusIcons[normalizedIconName] || userStatusIcons[Number(IdState)];
 
     if (!IconComponent) {
         return null;
