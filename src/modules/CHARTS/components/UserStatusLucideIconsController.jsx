@@ -51,10 +51,38 @@ const userStatusIcons = {
     23: Globe,
 };
 
-export const hasUserStatusLucideIcon = (idState) => Boolean(userStatusIcons[Number(idState)]);
+const legacyStatusIcons = {
+    MinusCircleOutlined: OctagonMinus,
+    AppleOutlined: Apple,
+    RestOutlined: Footprints,
+    CheckOutlined: Check,
+    SafetyCertificateOutlined: ShieldCheck,
+    MedicineBoxOutlined: BriefcaseMedical,
+    RocketOutlined: Plane,
+    CarOutlined: BriefcaseBusiness,
+    MoonOutlined: House,
+    SmileOutlined: TreePalm,
+    DollarOutlined: ClockPlus,
+    HeatMapOutlined: Map,
+    TruckOutlined: Forklift,
+    LoginOutlined: LogIn,
+    WarningOutlined: TriangleAlert,
+    FireOutlined: Flame,
+    ExlamationCircleOutlined: CircleAlert,
+    ExclamationCircleOutlined: CircleAlert,
+    Logoutoutlined: LogOut,
+    LogoutOutlined: LogOut,
+    JavaOutlined: Coffee,
+    TwitterOutlined: DoorOpen,
+    GoldOutlined: Coins,
+    GlobalOutlined: Globe,
+};
 
-const UserStatusLucideIconsController = ({ IdState, size = 16, strokeWidth = 2, ...props }) => {
-    const IconComponent = userStatusIcons[Number(IdState)];
+export const hasUserStatusLucideIcon = (idState) => Boolean(userStatusIcons[Number(idState)]);
+export const hasUserStatusLucideIconName = (iconName) => Boolean(legacyStatusIcons[iconName]);
+
+const UserStatusLucideIconsController = ({ IdState, IconName, size = 16, strokeWidth = 2, ...props }) => {
+    const IconComponent = legacyStatusIcons[IconName] || userStatusIcons[Number(IdState)];
 
     if (!IconComponent) {
         return null;

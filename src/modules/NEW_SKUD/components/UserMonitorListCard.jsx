@@ -27,7 +27,7 @@ import './style/newskud.css';
 import { USER_STATE_PLACES } from "../../../CONFIG/DEFFORMS";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
 import StateLucideIconsController, { hasLucideStateIcon } from "../../CHARTS/components/StateLucideIconsController";
-import UserStatusLucideIconsController, { hasUserStatusLucideIcon } from "../../CHARTS/components/UserStatusLucideIconsController";
+import UserStatusLucideIconsController, { hasUserStatusLucideIcon, hasUserStatusLucideIconName } from "../../CHARTS/components/UserStatusLucideIconsController";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
 
 
@@ -75,6 +75,10 @@ const getUserStatusId = (data) => {
 
 const getStatusIcon = (data) => {
     const localStatusId = getUserStatusId(data);
+
+    if (hasUserStatusLucideIconName(data?.state_icon)) {
+        return <UserStatusLucideIconsController IconName={data.state_icon} size={14} strokeWidth={2.2} />;
+    }
 
     if (hasUserStatusLucideIcon(localStatusId)) {
         return <UserStatusLucideIconsController IdState={localStatusId} size={14} strokeWidth={2.2} />;
@@ -238,7 +242,7 @@ const UserMonitorListCard = (props) => {
     useEffect(()=> {
         setContent(props.data);
         const localStatusId = getUserStatusId(props.data);
-        if (hasUserStatusLucideIcon(localStatusId) || (Number(localStatusId) === 0 && hasLucideStateIcon(props.data?.global_state)) || props.data.current_state !== 0)
+        if (hasUserStatusLucideIconName(props.data?.state_icon) || hasUserStatusLucideIcon(localStatusId) || (Number(localStatusId) === 0 && hasLucideStateIcon(props.data?.global_state)) || props.data.current_state !== 0)
         {
             setBadger({ title: props.data.state_text, text: props.data.state_title, text_w: props.data.state_title_w, color: props.data.state_color, icon: getStatusIcon(props.data)});
         } else {
