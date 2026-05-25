@@ -84,6 +84,7 @@ const DynamicIcon = ({ iconName, ...props }) => {
 
 
 const ClaimManagerPage = (props) => {
+    const initialClaimId = Number(new URLSearchParams(window.location.search).get('id'));
     const [userData, setUserData] = useState(null);
     const [typeSelect, setTypeSelect] = useState(0);
     const [editorOpened, setEditorOpened] = useState(false);
@@ -126,6 +127,8 @@ const ClaimManagerPage = (props) => {
     const [claimsLoading, setClaimsLoading] = useState(false);
 
     const [selectedClaimId, setSelectedClaimId] = useState(0);
+    const [routeClaimId, setRouteClaimId] = useState(Number.isFinite(initialClaimId) ? initialClaimId : 0);
+    const [routeClaimHandled, setRouteClaimHandled] = useState(false);
 
     const onShowSizeChange = (current, pageSize) => {
         setOnPage(pageSize);
@@ -299,6 +302,33 @@ const ClaimManagerPage = (props) => {
             console.log(e)
         } finally {
             setClaimsLoading(false);
+        }
+    }
+
+    const get_claimById = async (claimId) => {
+        if (!claimId) {
+            return null;
+        }
+
+        try {
+            let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`,
+                {
+                    data: {
+                        id: claimId,
+                        claim_id: claimId,
+                    },
+                    _token: CSRF_TOKEN
+                });
+            const content = response?.data?.content;
+
+            if (Array.isArray(content)) {
+                return content.find((claim) => Number(claim?.id) === Number(claimId)) ?? content[0] ?? null;
+            }
+
+            return content ?? null;
+        } catch (e) {
+            console.log(e);
+            return null;
         }
     }
 
@@ -540,6 +570,56 @@ const ClaimManagerPage = (props) => {
         setEditorOpened(true);
         setSelectedClaimId(id);
     }
+
+    useEffect(() => {
+        const handlePopState = () => {
+            const claimId = Number(new URLSearchParams(window.location.search).get('id'));
+            setRouteClaimId(Number.isFinite(claimId) ? claimId : 0);
+            setRouteClaimHandled(false);
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!routeClaimId || routeClaimHandled || claimsLoading) {
+            return;
+        }
+
+        const claimFromList = baseClaimList.find((claim) => Number(claim?.id) === Number(routeClaimId));
+
+        if (claimFromList) {
+            handleOpenInfo(claimFromList.id, claimFromList);
+            setRouteClaimHandled(true);
+            return;
+        }
+
+        let isCancelled = false;
+
+        const openRouteClaim = async () => {
+            const claim = await get_claimById(routeClaimId);
+
+            if (isCancelled) {
+                return;
+            }
+
+            if (claim) {
+                handleOpenInfo(claim.id, claim);
+            }
+
+            setRouteClaimHandled(true);
+        };
+
+        openRouteClaim();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [routeClaimId, routeClaimHandled, claimsLoading, baseClaimList]);
 
     const handleEditEvent = (id, obj)=> {
         let type = obj.skud_current_state_id;
