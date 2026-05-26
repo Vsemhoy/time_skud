@@ -430,6 +430,7 @@ td:first-child {
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
+    cursor: pointer;
 }
 
 .sk-userlist-toolbar-status-dot {
@@ -437,6 +438,12 @@ td:first-child {
     height: 10px;
     border-radius: 50%;
     display: block;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sk-userlist-toolbar-status:hover .sk-userlist-toolbar-status-dot,
+.sk-userlist-toolbar-status:focus-visible .sk-userlist-toolbar-status-dot {
+    transform: scale(1.18);
 }
 
 .sk-userlist-toolbar-status-dot--loading {
