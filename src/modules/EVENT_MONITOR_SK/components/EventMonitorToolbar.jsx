@@ -1,6 +1,6 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { selectWord } from "@uiw/react-md-editor";
-import { Button, DatePicker, Drawer, Pagination, Select, TimePicker } from "antd";
+import { Affix, Button, DatePicker, Drawer, Layout, Pagination, Select, TimePicker } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
 import dayjs from "dayjs";
@@ -8,6 +8,8 @@ import React, { useState, useEffect } from "react";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { DS_DEFAULT_USERS } from "../../../CONFIG/DEFAULTSTATE";
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
+
+const { Content, Sider } = Layout;
 
 const EventMonitorToolbar = (props)=>
 {
@@ -393,107 +395,118 @@ const EventMonitorToolbar = (props)=>
 
 
     return (
-        <div className={'sk-event-monitor-toolbar'}>
-            <div className={'sk-flex'}>
-                <Select
-                disabled
-                    style={{width: '160px'}}
-                    placeholder={'Контроллер'}
-                    value={selectedController}
-                    options={controllers}
-                    onChange={(va)=>{setSelectedController(va)}}
-                    />
-                <Search
-                    placeholder="Поиск по имени, фамилии или должности"
-                    value={targetString}
-                    onChange={(ev)=>{setTargetString(ev.target.value)}}
-                />
-                <Select
-                    style={{width: '220px'}}
-                    placeholder={'Где событие создано'}
-                    value={selectedSource}
-                    options={sources}
-                    onChange={(va)=>{setSelectedSource(va)}}
-                    />
-            </div>
-            <br />
-            <div className={'sk-flex-space'}>
-            <div className={'sk-flex'}>
-                </div>
-                <div className={'sk-flex'}>
-                <Select
-                    style={{width: '160px'}}
-                    placeholder={'Диапазон времени'}
-                    value={selectedDateUnit}
-                    options={dateunits}
-                    onChange={(va)=>{setSelectedDateUnit(va)}}
-                    />
-                <Button
-                    onClick={()=>{handleMoveDate(0)}}
-                title="Смещение на диапазон в прошлое"
-                ><LeftOutlined /></Button>
-                {selectedDateUnit === 'day' && (
-                    <DatePicker onChange={onChange}
-                        format={"DD-MM-YYYY"}
-                        value={targetStartDate}
-                    />
-                )}
-                    {selectedDateUnit === 'week' && (
-                    <DatePicker
-                    value={targetStartDate}
-                    onChange={onChange} picker="week" />
-                )}
-                    {selectedDateUnit === 'month' && (
-                    <DatePicker
-                    value={targetStartDate}
-                    onChange={onChange} picker="month" />
-                )}
-                {selectedDateUnit === 'quart' && (
-                    <DatePicker
-                    value={targetStartDate}
-                    onChange={onChange} picker="quarter" />
-                )}
-                {selectedDateUnit === 'year' && (
-                    <DatePicker
-                    value={targetStartDate}
-                    onChange={onChange} picker="year" />
-                )}
-                <Button
-                onClick={()=>{handleMoveDate(1)}}
-                title="Смещение на диапазон в будущее"
-                ><RightOutlined /></Button>
-                </div>
-                {props.can_create_event && (
-                    <div className={'sk-flex'}>
-                        <Button color="cyan" variant="solid"
-                            onClick={()=> {setOpenCustomDrawer(true)}}
-                        >
-                            Создать событие
-                        </Button>
+        <Layout className="sk-event-monitor-page">
+            <Sider width={330} className="sk-event-monitor-sider">
+                <Affix offsetTop={0}>
+                    <div className="sk-event-monitor-sidebar">
+                        <div className="sk-event-monitor-sidebar-title">Монитор событий СКУД</div>
+                        <div className={'sk-event-monitor-toolbar'}>
+                            <div className="sk-event-monitor-filter-stack">
+                                <label className="sk-event-monitor-filter-label">Контроллер</label>
+                                <Select
+                                    disabled
+                                    style={{width: '100%'}}
+                                    placeholder={'Контроллер'}
+                                    value={selectedController}
+                                    options={controllers}
+                                    onChange={(va)=>{setSelectedController(va)}}
+                                />
+                                <label className="sk-event-monitor-filter-label">Поиск</label>
+                                <Search
+                                    placeholder="Поиск по имени, фамилии или должности"
+                                    value={targetString}
+                                    onChange={(ev)=>{setTargetString(ev.target.value)}}
+                                />
+                                <label className="sk-event-monitor-filter-label">Источник</label>
+                                <Select
+                                    style={{width: '100%'}}
+                                    placeholder={'Где событие создано'}
+                                    value={selectedSource}
+                                    options={sources}
+                                    onChange={(va)=>{setSelectedSource(va)}}
+                                />
+                            </div>
+                        </div>
                     </div>
-                )}
-            </div>
-
-            <div className={'sk-flex'} style={{justifyContent:'center', padding: '18px'}}>
-            <Pagination
-                showQuickJumper
-                defaultCurrent={paginatorPage} total={paginatorTotal}
-                onChange={handlePaginationChange} 
-                pageSize={paginatorOnPage}
-                pageSizeOptions={[
-                    100, 200, 500, 1000, 10000
-                ]}
-
-            />
-
-            </div>
-
-
+                </Affix>
+            </Sider>
+            <Content className="sk-event-monitor-content">
+                {props.header}
+                <div className="sk-event-monitor-table-toolbar">
+                    <div />
+                    <div className="sk-event-monitor-table-toolbar-center">
+                        <Select
+                            style={{width: '140px'}}
+                            placeholder={'Диапазон времени'}
+                            value={selectedDateUnit}
+                            options={dateunits}
+                            onChange={(va)=>{setSelectedDateUnit(va)}}
+                        />
+                        <div className="sk-event-monitor-date-row">
+                            <Button
+                                onClick={()=>{handleMoveDate(0)}}
+                                title="Смещение на диапазон в прошлое"
+                            ><LeftOutlined /></Button>
+                            {selectedDateUnit === 'day' && (
+                                <DatePicker onChange={onChange}
+                                    format={"DD-MM-YYYY"}
+                                    value={targetStartDate}
+                                />
+                            )}
+                            {selectedDateUnit === 'week' && (
+                                <DatePicker
+                                value={targetStartDate}
+                                onChange={onChange} picker="week" />
+                            )}
+                            {selectedDateUnit === 'month' && (
+                                <DatePicker
+                                value={targetStartDate}
+                                onChange={onChange} picker="month" />
+                            )}
+                            {selectedDateUnit === 'quart' && (
+                                <DatePicker
+                                value={targetStartDate}
+                                onChange={onChange} picker="quarter" />
+                            )}
+                            {selectedDateUnit === 'year' && (
+                                <DatePicker
+                                value={targetStartDate}
+                                onChange={onChange} picker="year" />
+                            )}
+                            <Button
+                            onClick={()=>{handleMoveDate(1)}}
+                            title="Смещение на диапазон в будущее"
+                            ><RightOutlined /></Button>
+                        </div>
+                        <Pagination
+                            showQuickJumper
+                            current={paginatorPage}
+                            total={paginatorTotal}
+                            onChange={handlePaginationChange}
+                            pageSize={paginatorOnPage}
+                            pageSizeOptions={[
+                                100, 200, 500, 1000, 10000
+                            ]}
+                        />
+                    </div>
+                    <div className="sk-event-monitor-table-toolbar-actions">
+                        {props.can_create_event && (
+                            <Button color="cyan" variant="solid"
+                                onClick={()=> {setOpenCustomDrawer(true)}}
+                            >
+                                Создать событие
+                            </Button>
+                        )}
+                    </div>
+                </div>
+                {props.children}
+            </Content>
 
 
             <Drawer
                 closable
                 destroyOnClose
+                rootClassName="sk-event-monitor-create-drawer"
                 title={<span>Ручное дабовление записи</span>}
                 placement="right"
                 open={openCustomDrawer}
@@ -589,7 +602,7 @@ const EventMonitorToolbar = (props)=>
             </Drawer>
 
 
-        </div>
+        </Layout>
     )
 }
 

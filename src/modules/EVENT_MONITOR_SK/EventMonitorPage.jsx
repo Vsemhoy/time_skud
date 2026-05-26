@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { DatePicker, Empty } from 'antd';
+import { Empty, Skeleton } from 'antd';
 import EventMonitorToolbar from './components/EventMonitorToolbar';
-import { data } from 'react-router-dom';
 
 import './components/style/eventmonitor.css';
 import { PROD_AXIOS_INSTANCE } from '../../API/API';
@@ -22,6 +21,7 @@ const EventMonitorPage = (props) => {
     const [userToSearch, setUserToSearch] = useState(null);
 
     const [totalRowsInQuery, setTotalRowsInQuery] = useState(0);
+    const [eventsLoading, setEventsLoading] = useState(false);
     const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
     const canCreateEvent = Boolean(
         isTruthyFlag(props.userdata?.user?.super)
@@ -50,6 +50,7 @@ const EventMonitorPage = (props) => {
      * @param {*} res 
      */
     const get_arch_events = async (data, req, res) => {
+        setEventsLoading(true);
         try {
             let response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/eventmonitor/getevents`, 
                 {
@@ -62,7 +63,7 @@ const EventMonitorPage = (props) => {
         } catch (e) {
             console.log(e)
         } finally {
-            
+            setEventsLoading(false);
         }
     }
 
@@ -78,43 +79,61 @@ const EventMonitorPage = (props) => {
     
 
 return (
-    <div className={'sk-mw-1400'} style={{padding: '12px'}}>
-    <br/>
-    <h2>Монитор событий СКУД</h2>
-
-    <EventMonitorToolbar 
+    <EventMonitorToolbar
         on_chang_query_params={(data)=>{setQueryParams(data)}}
         pagination_total={totalRowsInQuery}
         on_create_event={handleCustomEventCreation}
         user_to_search={userToSearch}
         can_create_event={canCreateEvent}
-    />
-    
-    <div className={'sk-arche-stack'}>
-        {baseArchEvents.length == 0 ? (
-            <Empty />
-        ):(
-            <>
-            <div className={`sk-evemonic-cardrow`}>
+        header={(
+            <div className="sk-event-monitor-content-header">
+                <h2>Монитор событий СКУД</h2>
+                <span>Найдено: {totalRowsInQuery}</span>
+            </div>
+        )}
+    >
+        <div className={'sk-arche-stack sk-event-monitor-table'}>
+            <div className={`sk-evemonic-cardrow sk-evemonic-headerrow`}>
                 <div>id</div>
                 <div>src</div>
-                <div>Имя сотрудника</div>
+                <div>Сотрудник</div>
                 <div>Причина</div>
                 <div>Время события</div>
                 <div>День</div>
                 <div>Тип</div>
             </div>
-                {baseArchEvents.map((arche)=>(
-                    <EventMonitorListCard
-                        data={arche}
-                        setUserToSearch={(name)=>{setUserToSearch(name)}}
-                    />
-                ))}
-            </>
+            {eventsLoading ? (
+                <div className="sk-event-monitor-skeleton">
+                    {Array.from({length: 12}).map((_, index) => (
+                        <div className="sk-evemonic-cardrow sk-evemonic-skeleton-row" key={`event-monitor-skeleton-${index}`}>
+                            <div><Skeleton.Input active size="small" /></div>
+                            <div><Skeleton.Avatar active size="small" shape="circle" /></div>
+                            <div><Skeleton.Input active size="small" /></div>
+                            <div><Skeleton.Input active size="small" /></div>
+                            <div><Skeleton.Input active size="small" /></div>
+                            <div><Skeleton.Input active size="small" /></div>
+                            <div><Skeleton.Button active size="small" /></div>
+                        </div>
+                    ))}
+                </div>
+            ) : baseArchEvents.length == 0 ? (
+                <div className="sk-event-monitor-empty">
+                    <Empty />
+                </div>
+            ):(
+                <>
+                    {baseArchEvents.map((arche)=>(
+                        <EventMonitorListCard
+                            key={`${arche.user_id}-${arche.pkey}-${arche.datetime_contr}`}
+                            data={arche}
+                            setUserToSearch={(name)=>{setUserToSearch(name)}}
+                        />
+                    ))}
+                </>
 
-        )}
-    </div>
-    </div>
+            )}
+        </div>
+    </EventMonitorToolbar>
 );
 
 };
