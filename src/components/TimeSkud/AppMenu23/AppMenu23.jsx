@@ -369,6 +369,10 @@ const AppMenu23 = (props) => {
                     key: '/accounting/surcharges',
                     label: <NavLink to="/accounting/surcharges">Доплаты</NavLink>,
                 },
+                {
+                    key: '/monitor/events',
+                    label: <NavLink to="/monitor/events">Монитор событий</NavLink>,
+                },
             ]
         },
         {
