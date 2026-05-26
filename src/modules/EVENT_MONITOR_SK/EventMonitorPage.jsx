@@ -91,8 +91,7 @@ return (
                 <span>Найдено: {totalRowsInQuery}</span>
             </div>
         )}
-    >
-        <div className={'sk-arche-stack sk-event-monitor-table'}>
+        table_header={(
             <div className={`sk-evemonic-cardrow sk-evemonic-headerrow`}>
                 <div>id</div>
                 <div>src</div>
@@ -102,6 +101,9 @@ return (
                 <div>День</div>
                 <div>Тип</div>
             </div>
+        )}
+    >
+        <div className={'sk-arche-stack sk-event-monitor-table'}>
             {eventsLoading ? (
                 <div className="sk-event-monitor-skeleton">
                     {Array.from({length: 12}).map((_, index) => (
