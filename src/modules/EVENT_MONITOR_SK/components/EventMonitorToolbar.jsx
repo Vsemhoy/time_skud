@@ -431,74 +431,79 @@ const EventMonitorToolbar = (props)=>
                 </Affix>
             </Sider>
             <Content className="sk-event-monitor-content">
-                {props.header}
-                <div className="sk-event-monitor-table-toolbar">
-                    <div />
-                    <div className="sk-event-monitor-table-toolbar-center">
-                        <Select
-                            style={{width: '140px'}}
-                            placeholder={'Диапазон времени'}
-                            value={selectedDateUnit}
-                            options={dateunits}
-                            onChange={(va)=>{setSelectedDateUnit(va)}}
-                        />
-                        <div className="sk-event-monitor-date-row">
-                            <Button
-                                onClick={()=>{handleMoveDate(0)}}
-                                title="Смещение на диапазон в прошлое"
-                            ><LeftOutlined /></Button>
-                            {selectedDateUnit === 'day' && (
-                                <DatePicker onChange={onChange}
-                                    format={"DD-MM-YYYY"}
-                                    value={targetStartDate}
+                <Affix offsetTop={0}>
+                    <div className="sk-event-monitor-affix-head">
+                        {props.header}
+                        <div className="sk-event-monitor-table-toolbar">
+                            <div />
+                            <div className="sk-event-monitor-table-toolbar-center">
+                                <Select
+                                    style={{width: '140px'}}
+                                    placeholder={'Диапазон времени'}
+                                    value={selectedDateUnit}
+                                    options={dateunits}
+                                    onChange={(va)=>{setSelectedDateUnit(va)}}
                                 />
-                            )}
-                            {selectedDateUnit === 'week' && (
-                                <DatePicker
-                                value={targetStartDate}
-                                onChange={onChange} picker="week" />
-                            )}
-                            {selectedDateUnit === 'month' && (
-                                <DatePicker
-                                value={targetStartDate}
-                                onChange={onChange} picker="month" />
-                            )}
-                            {selectedDateUnit === 'quart' && (
-                                <DatePicker
-                                value={targetStartDate}
-                                onChange={onChange} picker="quarter" />
-                            )}
-                            {selectedDateUnit === 'year' && (
-                                <DatePicker
-                                value={targetStartDate}
-                                onChange={onChange} picker="year" />
-                            )}
-                            <Button
-                            onClick={()=>{handleMoveDate(1)}}
-                            title="Смещение на диапазон в будущее"
-                            ><RightOutlined /></Button>
+                                <div className="sk-event-monitor-date-row">
+                                    <Button
+                                        onClick={()=>{handleMoveDate(0)}}
+                                        title="Смещение на диапазон в прошлое"
+                                    ><LeftOutlined /></Button>
+                                    {selectedDateUnit === 'day' && (
+                                        <DatePicker onChange={onChange}
+                                            format={"DD-MM-YYYY"}
+                                            value={targetStartDate}
+                                        />
+                                    )}
+                                    {selectedDateUnit === 'week' && (
+                                        <DatePicker
+                                        value={targetStartDate}
+                                        onChange={onChange} picker="week" />
+                                    )}
+                                    {selectedDateUnit === 'month' && (
+                                        <DatePicker
+                                        value={targetStartDate}
+                                        onChange={onChange} picker="month" />
+                                    )}
+                                    {selectedDateUnit === 'quart' && (
+                                        <DatePicker
+                                        value={targetStartDate}
+                                        onChange={onChange} picker="quarter" />
+                                    )}
+                                    {selectedDateUnit === 'year' && (
+                                        <DatePicker
+                                        value={targetStartDate}
+                                        onChange={onChange} picker="year" />
+                                    )}
+                                    <Button
+                                    onClick={()=>{handleMoveDate(1)}}
+                                    title="Смещение на диапазон в будущее"
+                                    ><RightOutlined /></Button>
+                                </div>
+                                <Pagination
+                                    showQuickJumper
+                                    current={paginatorPage}
+                                    total={paginatorTotal}
+                                    onChange={handlePaginationChange}
+                                    pageSize={paginatorOnPage}
+                                    pageSizeOptions={[
+                                        100, 200, 500, 1000, 10000
+                                    ]}
+                                />
+                            </div>
+                            <div className="sk-event-monitor-table-toolbar-actions">
+                                {props.can_create_event && (
+                                    <Button color="cyan" variant="solid"
+                                        onClick={()=> {setOpenCustomDrawer(true)}}
+                                    >
+                                        Создать событие
+                                    </Button>
+                                )}
+                            </div>
                         </div>
-                        <Pagination
-                            showQuickJumper
-                            current={paginatorPage}
-                            total={paginatorTotal}
-                            onChange={handlePaginationChange}
-                            pageSize={paginatorOnPage}
-                            pageSizeOptions={[
-                                100, 200, 500, 1000, 10000
-                            ]}
-                        />
+                        {props.table_header}
                     </div>
-                    <div className="sk-event-monitor-table-toolbar-actions">
-                        {props.can_create_event && (
-                            <Button color="cyan" variant="solid"
-                                onClick={()=> {setOpenCustomDrawer(true)}}
-                            >
-                                Создать событие
-                            </Button>
-                        )}
-                    </div>
-                </div>
+                </Affix>
                 {props.children}
             </Content>
 

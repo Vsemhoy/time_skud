@@ -27,6 +27,13 @@
     background: var(--app-bg-color);
 }
 
+.sk-event-monitor-affix-head {
+    position: relative;
+    z-index: 5;
+    padding-bottom: 0;
+    background: var(--app-bg-color);
+}
+
 .sk-event-monitor-table-toolbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -55,7 +62,7 @@
     justify-content: space-between;
     gap: 12px;
     min-height: 46px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: var(--app-text-color);
 }
 
@@ -100,10 +107,11 @@
 }
 
 .sk-arche-stack.sk-event-monitor-table {
-    min-height: calc(100vh - 130px);
+    min-height: calc(100vh - 180px);
     overflow: auto;
     background-color: var(--app-soft-surface-color);
     border: 1px solid var(--table-border-divider-color);
+    border-top: 0;
 }
 
 .sk-evemonic-cardrow {
@@ -130,14 +138,13 @@
 }
 
 .sk-evemonic-headerrow {
-    position: sticky;
-    top: 0;
-    z-index: 2;
     min-height: 34px;
     font-size: 12px;
     font-weight: 700;
     color: var(--app-muted-text-color);
     background: var(--drawer-gray-section-color);
+    border: 1px solid var(--table-border-divider-color);
+    border-bottom: 0;
 }
 
 .sk-evemonic-headerrow > div {
