@@ -463,13 +463,15 @@ const EventMonitorToolbar = (props)=>
                 title="Смещение на диапазон в будущее"
                 ><RightOutlined /></Button>
                 </div>
-                <div className={'sk-flex'}>
-                    <Button color="cyan" variant="solid"
-                        onClick={()=> {setOpenCustomDrawer(true)}}
-                    >
-                        Создать событие
-                    </Button>
-                </div>
+                {props.can_create_event && (
+                    <div className={'sk-flex'}>
+                        <Button color="cyan" variant="solid"
+                            onClick={()=> {setOpenCustomDrawer(true)}}
+                        >
+                            Создать событие
+                        </Button>
+                    </div>
+                )}
             </div>
 
             <div className={'sk-flex'} style={{justifyContent:'center', padding: '18px'}}>

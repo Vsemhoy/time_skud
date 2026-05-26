@@ -22,6 +22,15 @@ const EventMonitorPage = (props) => {
     const [userToSearch, setUserToSearch] = useState(null);
 
     const [totalRowsInQuery, setTotalRowsInQuery] = useState(0);
+    const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
+    const canCreateEvent = Boolean(
+        isTruthyFlag(props.userdata?.user?.super)
+        || isTruthyFlag(props.userdata?.user?.is_admin)
+        || (
+            Array.isArray(props.userdata?.acls)
+            && props.userdata.acls.some((acl) => [71, 77].includes(Number(acl)))
+        )
+    );
 
 
     useEffect(()=>{
@@ -78,6 +87,7 @@ return (
         pagination_total={totalRowsInQuery}
         on_create_event={handleCustomEventCreation}
         user_to_search={userToSearch}
+        can_create_event={canCreateEvent}
     />
     
     <div className={'sk-arche-stack'}>
