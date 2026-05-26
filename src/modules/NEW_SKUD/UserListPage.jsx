@@ -1197,6 +1197,7 @@ const UserList = (props)=>{
                 setIsOpenFilters={(value) => setIsOpenFilters(value)}
                 handleEditorOpenCreate={handleEditorOpenCreate}
                 menuProps={menuProps}
+                onRefresh={handleRefreshUsers}
               />
             </Affix>
           </Header>

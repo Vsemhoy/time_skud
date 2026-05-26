@@ -65,6 +65,12 @@ const UserListToolbar = (props) => {
         setUsedDate(value);
     }
 
+    const handleRefresh = () => {
+        if (props.onRefresh) {
+            props.onRefresh();
+        }
+    }
+
     useEffect(() => {
         if (props.command === "add_day"){
             setUsedDate(usedDate.add(1, 'day'));
@@ -132,12 +138,21 @@ const UserListToolbar = (props) => {
                         />
                         <span
                             className="sk-userlist-toolbar-status"
+                            role="button"
+                            tabIndex={0}
+                            onClick={handleRefresh}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    handleRefresh();
+                                }
+                            }}
                             title={
                                 props.isLoadError
-                                    ? 'Ошибка подгрузки данных'
+                                    ? 'Ошибка подгрузки данных. Нажмите, чтобы обновить данные'
                                     : props.isLoading
-                                        ? 'Данные подгружаются'
-                                        : 'Данные актуальны'
+                                        ? 'Данные подгружаются. Нажмите, чтобы обновить данные'
+                                        : 'Данные актуальны. Нажмите, чтобы обновить данные'
                             }
                         >
                             <span
