@@ -23,13 +23,19 @@ const EventMonitorPage = (props) => {
     const [totalRowsInQuery, setTotalRowsInQuery] = useState(0);
     const [eventsLoading, setEventsLoading] = useState(false);
     const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
-    const canCreateEvent = Boolean(
+    const getAclId = (acl) => Number(acl?.id ?? acl?.acl_id ?? acl);
+    const hasAcl = (aclId) => (
+        Array.isArray(props.userdata?.acls)
+        && props.userdata.acls.some((acl) => getAclId(acl) === aclId)
+    );
+    const hasFullEventUserAccess = Boolean(
         isTruthyFlag(props.userdata?.user?.super)
         || isTruthyFlag(props.userdata?.user?.is_admin)
-        || (
-            Array.isArray(props.userdata?.acls)
-            && props.userdata.acls.some((acl) => [71, 77].includes(Number(acl)))
-        )
+        || hasAcl(71)
+    );
+    const canCreateEvent = Boolean(
+        hasFullEventUserAccess
+        || hasAcl(77)
     );
 
 
@@ -85,6 +91,7 @@ return (
         on_create_event={handleCustomEventCreation}
         user_to_search={userToSearch}
         can_create_event={canCreateEvent}
+        event_user_scope={hasFullEventUserAccess ? 'all' : 'warehouse'}
         header={(
             <div className="sk-event-monitor-content-header">
                 <h2>Монитор событий СКУД</h2>

@@ -1,6 +1,5 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { selectWord } from "@uiw/react-md-editor";
-import { Affix, Button, DatePicker, Drawer, Layout, Pagination, Select, TimePicker } from "antd";
+import { Affix, Button, DatePicker, Drawer, Layout, Pagination, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
 import dayjs from "dayjs";
@@ -38,6 +37,10 @@ const EventMonitorToolbar = (props)=>
     const [formValid, setFormValid] = useState(false);
 
     const [currentTextVariant, setCurrentTextVariant] = useState(0);
+    const getDepartmentId = (user) => Number(user?.department_id ?? user?.id_departament ?? user?.id_department);
+    const filteredFormUsers = props.event_user_scope === 'warehouse'
+        ? baseUserlist.filter((user) => getDepartmentId(user) === 9)
+        : baseUserlist;
     const textVariants = [
         "Ещё не получил пропуск",
         "Забыл пропуск",
@@ -399,7 +402,7 @@ const EventMonitorToolbar = (props)=>
             <Sider width={330} className="sk-event-monitor-sider">
                 <Affix offsetTop={0}>
                     <div className="sk-event-monitor-sidebar">
-                        <div className="sk-event-monitor-sidebar-title">Монитор событий СКУД</div>
+                        <div className="sk-event-monitor-sidebar-title">Фильтры</div>
                         <div className={'sk-event-monitor-toolbar'}>
                             <div className="sk-event-monitor-filter-stack">
                                 <label className="sk-event-monitor-filter-label">Контроллер</label>
@@ -528,7 +531,7 @@ const EventMonitorToolbar = (props)=>
                         allowClear
                         style={{ width: '100%' }}
                         options={
-                            baseUserlist.map((item)=>{return {
+                            filteredFormUsers.map((item)=>{return {
                                 key: `usrke_${item.id}`,
                                 value: item.id,
                                 label: (item.id).toString().padStart(4, '0') + " -  " + item.surname + " " + item.name + " " + item.patronymic
