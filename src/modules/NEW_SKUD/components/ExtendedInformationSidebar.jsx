@@ -18,6 +18,7 @@ import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 import { LIST_SCHED_N_RULES_RESPONSE } from "../../../CONFIG/DEFAULTSTATE";
 import UmScheduleMiniCard from "./UmScheduleMiniCard";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
+import UserStatusLucideIconsController, { hasUserStatusLucideIcon, hasUserStatusLucideIconName } from "../../CHARTS/components/UserStatusLucideIconsController";
 import {
     DownOutlined, UpOutlined,
     BarChartOutlined, IssuesCloseOutlined, RobotOutlined,
@@ -59,6 +60,40 @@ const iconMap = {
 const DynamicIcon = ({ iconName, ...props }) => {
     const IconComponent = iconMap[iconName];
     return IconComponent ? <IconComponent {...props} /> : null;
+};
+
+const getUserStatusId = (data) => {
+    const currentState = Number(data?.current_state);
+    const localState = Number(data?.local_state);
+    const globalState = Number(data?.global_state);
+
+    if (Number.isFinite(currentState) && currentState !== 0) {
+        return currentState;
+    }
+
+    if (Number.isFinite(localState) && localState !== 0) {
+        return localState;
+    }
+
+    if (Number.isFinite(globalState) && globalState !== 0) {
+        return globalState;
+    }
+
+    return 0;
+};
+
+const getStatusIcon = (data) => {
+    const statusId = getUserStatusId(data);
+
+    if (hasUserStatusLucideIconName(data?.state_icon)) {
+        return <UserStatusLucideIconsController IconName={data.state_icon} size={14} strokeWidth={2.2} />;
+    }
+
+    if (hasUserStatusLucideIcon(statusId)) {
+        return <UserStatusLucideIconsController IdState={statusId} size={14} strokeWidth={2.2} />;
+    }
+
+    return <DynamicIcon iconName={data?.state_icon} />;
 };
 
 const getMutedDrawerAccent = (color) => {
@@ -234,9 +269,9 @@ const ExtendedInformationSidebar = (props) => {
         if (props.target_user_info){
             setTargetUserInfo(props.target_user_info);
 
-            if (props.target_user_info.current_state != 0)
+            if (getUserStatusId(props.target_user_info) !== 0 || hasUserStatusLucideIconName(props.target_user_info.state_icon))
             {
-                setBadger({ title: props.target_user_info.state_text, text: props.target_user_info.state_title, color: props.target_user_info?.state_color, icon: <DynamicIcon iconName={props.target_user_info.state_icon} />});
+                setBadger({ title: props.target_user_info.state_text, text: props.target_user_info.state_title, color: props.target_user_info?.state_color, icon: getStatusIcon(props.target_user_info)});
             } else {
                 setBadger(USER_STATE_PLACES[0]);
             }
@@ -933,6 +968,76 @@ const ExtendedInformationSidebar = (props) => {
         window.open(href, '_blank', 'noopener,noreferrer');
     };
 
+    const getDocumentFileFormat = (href, fallback = '') => {
+        if (!href) {
+            return fallback;
+        }
+
+        const cleanHref = String(href).split(/[?#]/)[0];
+        const extension = cleanHref.split('.').pop();
+
+        return extension ? extension.toUpperCase() : fallback;
+    };
+
+    const getDownloadTooltip = (documentItem) => (
+        documentItem.href
+            ? `\u0421\u043a\u0430\u0447\u0430\u0442\u044c (${getDocumentFileFormat(documentItem.href, documentItem.size)})`
+            : '\u0424\u0430\u0439\u043b \u0435\u0449\u0435 \u043d\u0435 \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d'
+    );
+
+    const getPrintTooltip = (documentItem) => (
+        documentItem.printHref
+            ? `\u0412 \u043f\u0435\u0447\u0430\u0442\u044c (${getDocumentFileFormat(documentItem.printHref, 'PDF')})`
+            : 'PDF \u0435\u0449\u0435 \u043d\u0435 \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d'
+    );
+
+    const renderAccountingDocumentsCard = () => (
+        <section className="sk-userlist-details-card sk-userlist-details-card--documents">
+            <div className="sk-userlist-details-card-title">Документы</div>
+            <div className="sk-userlist-documents-list">
+                {EMPTY_STATE_DOCUMENTS.map((documentItem) => (
+                    <div className="sk-userlist-document-row" key={documentItem.id}>
+                        <Tooltip title={getDownloadTooltip(documentItem)}>
+                            {documentItem.href ? (
+                                <a
+                                    className="sk-userlist-document-icon-link"
+                                    href={documentItem.href}
+                                    download
+                                >
+                                    <FileWordOutlined className="sk-userlist-document-icon" />
+                                </a>
+                            ) : (
+                                <span className="sk-userlist-document-icon-link sk-userlist-document-icon-link--disabled">
+                                    <FileWordOutlined className="sk-userlist-document-icon" />
+                                </span>
+                            )}
+                        </Tooltip>
+                        <div className="sk-userlist-document-title">{documentItem.title}</div>
+                        <Tooltip title={getDownloadTooltip(documentItem)}>
+                            <Button
+                                type="text"
+                                size="small"
+                                icon={<DownloadOutlined />}
+                                disabled={!documentItem.href}
+                                href={documentItem.href ?? undefined}
+                                download={documentItem.href ? true : undefined}
+                            />
+                        </Tooltip>
+                        <Tooltip title={getPrintTooltip(documentItem)}>
+                            <Button
+                                type="text"
+                                size="small"
+                                icon={<PrinterOutlined />}
+                                disabled={!documentItem.printHref}
+                                onClick={() => handlePrintDocument(documentItem.printHref)}
+                            />
+                        </Tooltip>
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+
     return (
         <div>
             {!hasTargetUser && (
@@ -941,37 +1046,7 @@ const ExtendedInformationSidebar = (props) => {
 
                     {renderCreateClaimCard()}
 
-                    <section className="sk-userlist-details-card sk-userlist-details-card--documents">
-                        <div className="sk-userlist-details-card-title">Документы</div>
-                        <div className="sk-userlist-documents-list">
-                            {EMPTY_STATE_DOCUMENTS.map((documentItem) => (
-                                <div className="sk-userlist-document-row" key={documentItem.id}>
-                                    <FileWordOutlined className="sk-userlist-document-icon" />
-                                    <div className="sk-userlist-document-title">{documentItem.title}</div>
-                                    <div className="sk-userlist-document-size">{documentItem.size}</div>
-                                    <Tooltip title={documentItem.href ? 'Скачать' : 'Файл еще не добавлен'}>
-                                        <Button
-                                            type="text"
-                                            size="small"
-                                            icon={<DownloadOutlined />}
-                                            disabled={!documentItem.href}
-                                            href={documentItem.href ?? undefined}
-                                            download={documentItem.href ? true : undefined}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title={documentItem.printHref ? 'В печать' : 'PDF еще не добавлен'}>
-                                        <Button
-                                            type="text"
-                                            size="small"
-                                            icon={<PrinterOutlined />}
-                                            disabled={!documentItem.printHref}
-                                            onClick={() => handlePrintDocument(documentItem.printHref)}
-                                        />
-                                    </Tooltip>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                    {renderAccountingDocumentsCard()}
                 </div>
             )}
             {openUserInfo && hasTargetUser && (

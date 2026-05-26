@@ -861,7 +861,7 @@
 
 .newskud-page .sk-userlist-document-row {
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr) max-content 28px 28px;
+    grid-template-columns: 24px minmax(0, 1fr) 28px 28px;
     align-items: center;
     gap: 8px;
     min-height: 42px;
@@ -878,18 +878,24 @@
     color: #1d5fbf;
 }
 
+.newskud-page .sk-userlist-document-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+.newskud-page .sk-userlist-document-icon-link--disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 .newskud-page .sk-userlist-document-title {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--app-text-color);
-}
-
-.newskud-page .sk-userlist-document-size {
-    color: var(--app-muted-text-color);
-    font-size: 12px;
-    white-space: nowrap;
 }
 
 @keyframes newskud-details-card-in {

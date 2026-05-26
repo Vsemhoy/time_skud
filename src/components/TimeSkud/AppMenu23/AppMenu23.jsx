@@ -392,6 +392,7 @@ const AppMenu23 = (props) => {
     }, [props.user_act]);
 
     const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
+    const isAccountingUser = (user) => Number(user?.sales_role) === 3;
 
     const getMenuItems = () => {
         console.log(props.user_act)
@@ -402,7 +403,7 @@ const AppMenu23 = (props) => {
             const shouldShowItem = (() => {
                 switch (item.key) {
                     case 'menu2': return hasFullMenuAccess || (currentUser && currentUser.id_departament === 2);
-                    case 'menu3': return isTruthyFlag(currentUser?.is_admin) || isTruthyFlag(currentUser?.super);
+                    case 'menu3': return hasFullMenuAccess || isAccountingUser(currentUser);
                     case '/admin/aclskud': return hasFullMenuAccess;
                     default: return true;
                 }
