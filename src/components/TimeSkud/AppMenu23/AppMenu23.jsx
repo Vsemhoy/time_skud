@@ -372,6 +372,14 @@ const AppMenu23 = (props) => {
             ]
         },
         {
+            key: '/kpp-schedule',
+            label: <NavLink to="/kpp-schedule">График КПП</NavLink>,
+        },
+        {
+            key: '/builders-schedule',
+            label: <NavLink to="/builders-schedule">График строителей</NavLink>,
+        },
+        {
             key: '/admin/aclskud',
             label: <NavLink to="admin/aclskud">Доступы СКУД</NavLink>,
         },
@@ -393,9 +401,10 @@ const AppMenu23 = (props) => {
 
     const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
     const isAccountingUser = (user) => Number(user?.sales_role) === 3;
+    const getAclId = (acl) => Number(acl?.id ?? acl?.acl_id ?? acl);
     const hasAnyAcl = (acls, aclIds) => (
         Array.isArray(acls)
-        && acls.some((acl) => aclIds.includes(Number(acl)))
+        && acls.some((acl) => aclIds.includes(getAclId(acl)))
     );
 
     const getMenuItems = () => {
@@ -416,6 +425,8 @@ const AppMenu23 = (props) => {
                     case 'menu2': return hasPersonnelAccess;
                     case '/monitor/events': return hasEventMonitorAccess;
                     case 'menu3': return hasFullMenuAccess || isAccountingUser(currentUser);
+                    case '/kpp-schedule': return hasFullMenuAccess || hasAnyAcl(currentAcls, [95]);
+                    case '/builders-schedule': return hasFullMenuAccess || hasAnyAcl(currentAcls, [96]);
                     case '/admin/aclskud': return hasFullMenuAccess;
                     default: return true;
                 }
