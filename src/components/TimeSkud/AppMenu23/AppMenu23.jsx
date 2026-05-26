@@ -190,6 +190,9 @@ const AppMenu23 = (props) => {
         if (matchPath('/hr/usermanager/*', path)) {
             return ['/hr/usermanager'];
         }
+        if (path === '/monitor/events' && location.state?.menuKey) {
+            return [location.state.menuKey];
+        }
         return [path];
     };
 
@@ -370,8 +373,8 @@ const AppMenu23 = (props) => {
                     label: <NavLink to="/accounting/surcharges">Доплаты</NavLink>,
                 },
                 {
-                    key: '/monitor/events',
-                    label: <NavLink to="/monitor/events">Монитор событий</NavLink>,
+                    key: '/accounting/monitor/events',
+                    label: <NavLink to="/monitor/events" state={{menuKey: '/accounting/monitor/events'}}>Монитор событий</NavLink>,
                 },
             ]
         },
