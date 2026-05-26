@@ -52,6 +52,7 @@ import NotifierDrawer from './components/Notifyer/NotifierDrawer';
 import AccountingPage from "./modules/ACCOUNTING/AccountingPage";
 import AccountingBankCardsPage from "./modules/ACCOUNTING/AccountingBankCardsPage";
 import AccountingSurchargesPage from "./modules/ACCOUNTING/AccountingSurchargesPage";
+import KppSchedulePage from "./modules/KPP_SCHEDULE/KppSchedulePage";
 import {USDA} from "./modules/CHARTS/mock/mock";
 import ClaimSettingsPage from "./modules/CLAIM_SETTINGS/ClaimSettingsPage";
 import ClaimListModal from "./modules/NEW_SKUD/components/ClaimListModal";
@@ -476,6 +477,7 @@ function App() {
             <Route path={BASE_ROUTE + '/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/kpp-schedule'} element={<KppSchedulePage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
 
             <Route path={BASE_ROUTE + '/accounting/timesheet'} element={<AccountingPage userdata={userAct}/>} />
@@ -514,6 +516,7 @@ function App() {
             <Route path={'/grotpuckov'} element={<GrotpuckovPage userdata={userAct}/>} />
             <Route path={'/monitor/events'} element={<EventMonitorPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={'/monitor/stat'} element={<UserStatisticsPage userdata={userAct}/>} />
+            <Route path={'/kpp-schedule'} element={<KppSchedulePage userdata={userAct}/>} />
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
 
             <Route path={'/accounting/staffingschedule'} element={<AccountingPage userdata={userAct}/>} />
