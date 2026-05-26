@@ -190,9 +190,6 @@ const AppMenu23 = (props) => {
         if (matchPath('/hr/usermanager/*', path)) {
             return ['/hr/usermanager'];
         }
-        if (path === '/monitor/events' && location.state?.menuKey) {
-            return [location.state.menuKey];
-        }
         return [path];
     };
 
@@ -275,6 +272,10 @@ const AppMenu23 = (props) => {
             label: <NavLink to="/">Сотрудники</NavLink>,
         },
         {
+            key: '/monitor/events',
+            label: <NavLink to="/monitor/events">Монитор событий</NavLink>,
+        },
+        {
             key: 'menu1',
             label: 'Заявки',
             children: [
@@ -350,10 +351,6 @@ const AppMenu23 = (props) => {
                     key: '/hr/groups',
                     label: <NavLink to="/hr/groups">Группы пользователей</NavLink>,
                 },
-                {
-                    key: '/monitor/events',
-                    label: <NavLink to="/monitor/events">Монитор событий</NavLink>,
-                },
             ],
         },
         {
@@ -371,10 +368,6 @@ const AppMenu23 = (props) => {
                 {
                     key: '/accounting/surcharges',
                     label: <NavLink to="/accounting/surcharges">Доплаты</NavLink>,
-                },
-                {
-                    key: '/accounting/monitor/events',
-                    label: <NavLink to="/monitor/events" state={{menuKey: '/accounting/monitor/events'}}>Монитор событий</NavLink>,
                 },
             ]
         },
@@ -400,16 +393,28 @@ const AppMenu23 = (props) => {
 
     const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
     const isAccountingUser = (user) => Number(user?.sales_role) === 3;
+    const hasAnyAcl = (acls, aclIds) => (
+        Array.isArray(acls)
+        && acls.some((acl) => aclIds.includes(Number(acl)))
+    );
 
     const getMenuItems = () => {
         console.log(props.user_act)
         const currentUser = props.user_act?.user;
+        const currentAcls = props.user_act?.acls;
         const hasFullMenuAccess = isTruthyFlag(currentUser?.super) || isTruthyFlag(currentUser?.is_admin);
+        const hasPersonnelAccess = hasFullMenuAccess || (currentUser && currentUser.id_departament === 2);
+        const hasEventMonitorAccess = (
+            hasPersonnelAccess
+            || isAccountingUser(currentUser)
+            || hasAnyAcl(currentAcls, [152, 71, 77])
+        );
 
         return mainMenuItems.filter(item => {
             const shouldShowItem = (() => {
                 switch (item.key) {
-                    case 'menu2': return hasFullMenuAccess || (currentUser && currentUser.id_departament === 2);
+                    case 'menu2': return hasPersonnelAccess;
+                    case '/monitor/events': return hasEventMonitorAccess;
                     case 'menu3': return hasFullMenuAccess || isAccountingUser(currentUser);
                     case '/admin/aclskud': return hasFullMenuAccess;
                     default: return true;
