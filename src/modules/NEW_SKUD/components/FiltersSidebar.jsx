@@ -4,7 +4,7 @@ import {DS_DEPARTMENTS, DS_USER} from "../../../CONFIG/DEFAULTSTATE";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
 import {StateContext} from "../../../components/ComStateProvider25/ComStateProvider25";
-import {ReloadOutlined, UserOutlined} from "@ant-design/icons";
+import {ReloadOutlined} from "@ant-design/icons";
 
 const FILTERS_STORAGE_KEY = 'time_skud:new_skud:sidebar_filters';
 
@@ -199,11 +199,6 @@ const FiltersSidebar = (props) => {
             props.onEmployeeSearchChange(event.target.value);
         }
     };
-    const handleFindMyself = () => {
-        if (props.onFindMe) {
-            props.onFindMe();
-        }
-    };
     const handleRefresh = () => {
         if (props.onRefresh) {
             props.onRefresh();
@@ -220,15 +215,6 @@ const FiltersSidebar = (props) => {
                     value={props.employeeSearchValue ?? ''}
                     onChange={handleEmployeeSearchChange}
                 />
-                {props.imExist && (
-                    <Button
-                        block
-                        icon={<UserOutlined />}
-                        onClick={handleFindMyself}
-                    >
-                        Найти себя
-                    </Button>
-                )}
                 <Button
                     block
                     icon={<ReloadOutlined />}

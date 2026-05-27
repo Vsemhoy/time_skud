@@ -148,10 +148,16 @@
     padding: 2px;
 }
 
-.sk-builders-schedule-select {
+.sk-builders-schedule-select,
+.sk-builders-schedule-input {
     width: 100%;
     min-width: 28px;
     max-width: 42px;
+}
+
+.sk-builders-schedule-input {
+    padding: 0 4px;
+    text-align: center;
 }
 
 .sk-builders-schedule-select .ant-select-selector {

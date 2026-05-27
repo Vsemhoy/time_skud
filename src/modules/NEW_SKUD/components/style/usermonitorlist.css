@@ -288,9 +288,10 @@
 .sk-move-to-me {
     background-color: color-mix(in srgb, #58b368 22%, var(--app-surface-color)) !important;
     transition: background-color 0.2s ease;
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, #58b368 70%, transparent);
-    outline: 2px solid color-mix(in srgb, #58b368 48%, transparent);
-    outline-offset: -2px;
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, #58b368 86%, transparent);
+    outline: 3px solid color-mix(in srgb, #58b368 68%, transparent);
+    outline-offset: -3px;
+    animation: sk-move-to-me-pulse 3s ease-in-out;
 }
 
 .sk-move-to-me > div {
@@ -300,9 +301,25 @@
 .sk-usermonic-cardrow-ou-test.sk-move-to-me,
 .sk-usermonic-cardrow-ou.sk-move-to-me {
     background-color: color-mix(in srgb, #58b368 22%, var(--app-surface-color)) !important;
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, #58b368 70%, transparent);
-    outline: 2px solid color-mix(in srgb, #58b368 48%, transparent);
-    outline-offset: -2px;
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, #58b368 86%, transparent);
+    outline: 3px solid color-mix(in srgb, #58b368 68%, transparent);
+    outline-offset: -3px;
+    animation: sk-move-to-me-pulse 3s ease-in-out;
+}
+
+@keyframes sk-move-to-me-pulse {
+    0% {
+        box-shadow: inset 0 0 0 3px color-mix(in srgb, #58b368 86%, transparent), 0 0 0 0 color-mix(in srgb, #58b368 52%, transparent);
+        outline-color: color-mix(in srgb, #58b368 72%, transparent);
+    }
+    45% {
+        box-shadow: inset 0 0 0 4px color-mix(in srgb, #58b368 96%, transparent), 0 0 0 6px color-mix(in srgb, #58b368 18%, transparent);
+        outline-color: color-mix(in srgb, #58b368 96%, transparent);
+    }
+    100% {
+        box-shadow: inset 0 0 0 3px color-mix(in srgb, #58b368 86%, transparent), 0 0 0 0 color-mix(in srgb, #58b368 0%, transparent);
+        outline-color: color-mix(in srgb, #58b368 68%, transparent);
+    }
 }
 
 .sk-bg-white {

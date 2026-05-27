@@ -394,6 +394,16 @@ td:first-child {
     min-width: 128px;
 }
 
+.header-user-list--newskud .ant-btn.sk-userlist-compact-btn.sk-userlist-icon-only-btn {
+    width: 34px !important;
+    min-width: 34px !important;
+    padding-inline: 8px !important;
+}
+
+.header-user-list--newskud .ant-btn.sk-userlist-compact-btn.sk-userlist-icon-only-btn .anticon {
+    margin-inline-end: 0 !important;
+}
+
 .layout--newskud {
     border-radius: 0 !important;
 }

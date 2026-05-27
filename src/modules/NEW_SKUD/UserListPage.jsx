@@ -477,6 +477,7 @@ const UserList = (props)=>{
   const socketRef = useRef(null);
   const extFiltersRef = useRef(extFilters);
   const initialLoaderSuccessStartedRef = useRef(false);
+  const findMeAnimationTimeoutRef = useRef(null);
 
   const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -820,12 +821,21 @@ const UserList = (props)=>{
   const handleFindMe = ()=>{
     const elementdiv = document.querySelector('#row_' + userdata.user.id);
     if (elementdiv){
-      elementdiv.classList.add('sk-move-to-me');
+      const animatedElements = [elementdiv, elementdiv.firstElementChild].filter(Boolean);
+      if (findMeAnimationTimeoutRef.current) {
+        clearTimeout(findMeAnimationTimeoutRef.current);
+      }
+      animatedElements.forEach((element) => {
+        element.classList.remove('sk-move-to-me');
+        void element.offsetWidth;
+        element.classList.add('sk-move-to-me');
+      });
       elementdiv.scrollIntoView({ block: "center", behavior: "smooth" });
 
-      setTimeout(() => {
-        elementdiv.classList.remove('sk-move-to-me');
-      }, 1000);
+      findMeAnimationTimeoutRef.current = setTimeout(() => {
+        animatedElements.forEach((element) => element.classList.remove('sk-move-to-me'));
+        findMeAnimationTimeoutRef.current = null;
+      }, 3000);
     }
   }
 
@@ -1198,6 +1208,8 @@ const UserList = (props)=>{
                 handleEditorOpenCreate={handleEditorOpenCreate}
                 menuProps={menuProps}
                 onRefresh={handleRefreshUsers}
+                imExist={userListData.find((item)=>  item.id === userdata.user.id) != null}
+                onFindMe={handleFindMe}
               />
             </Affix>
           </Header>
@@ -1220,8 +1232,6 @@ const UserList = (props)=>{
                                     activeCompany={(userData && userData.user && !userData.user.super) ? userData.user.active_company : 0}
                                     employeeSearchValue={employeeSearchValue}
                                     onEmployeeSearchChange={setEmployeeSearchValue}
-                                    imExist={userListData.find((item)=>  item.id === userdata.user.id) != null}
-                                    onFindMe={handleFindMe}
                                     onRefresh={handleRefreshUsers}
                                     isLoading={isLoading}
                     />

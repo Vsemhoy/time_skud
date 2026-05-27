@@ -1,18 +1,11 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Button, DatePicker, Empty, Select, Skeleton, message} from 'antd';
+import {Button, DatePicker, Empty, Input, Select, Skeleton, message} from 'antd';
 import dayjs from 'dayjs';
 import {ROUTE_PREFIX} from '../../CONFIG/config';
 import {PROD_AXIOS_INSTANCE} from '../../API/API';
 import './buildersschedule.css';
 
-const BUILDERS_DEPARTMENT_ID = 11;
-
-const shiftOptions = [
-    {value: 0, label: ''},
-    {value: 1, label: '24'},
-    {value: 2, label: 'от'},
-    {value: 3, label: '12'},
-];
+const BUILDERS_DEPARTMENT_ID = 18;
 
 const monthOptions = [
     {value: 0, label: 'Январь'},
@@ -245,13 +238,11 @@ const BuildersSchedulePage = () => {
                                 </div>
                                 {days.map((day) => (
                                     <div className="sk-builders-schedule-cell" key={`${userId}_${day.format('YYYY-MM-DD')}`}>
-                                        <Select
+                                        <Input
                                             value={getCellValue(userId, day)}
-                                            options={shiftOptions}
-                                            onChange={(value) => handleCellChange(userId, day, value)}
+                                            onChange={(event) => handleCellChange(userId, day, event.target.value)}
                                             size="small"
-                                            popupMatchSelectWidth={false}
-                                            className="sk-builders-schedule-select"
+                                            className="sk-builders-schedule-input"
                                         />
                                     </div>
                                 ))}
