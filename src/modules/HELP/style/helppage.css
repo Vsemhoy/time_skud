@@ -119,6 +119,69 @@
     gap: 16px;
 }
 
+.sk-help-status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.sk-help-status-card {
+    border-color: var(--table-border-divider-color);
+    border-radius: 8px;
+    background: var(--app-surface-color);
+}
+
+.sk-help-status-card .ant-card-body {
+    display: grid;
+    gap: 10px;
+    height: 100%;
+    padding: 14px;
+}
+
+.sk-help-status-card p.ant-typography {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.sk-help-status-head {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+}
+
+.sk-help-status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    color: var(--app-text-color);
+    background: color-mix(in srgb, var(--status-color) 72%, var(--app-surface-color));
+    border: 1px solid color-mix(in srgb, var(--status-color) 58%, var(--table-border-divider-color));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #ffffff 34%, transparent);
+}
+
+.sk-help-status-label {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--app-text-color);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sk-help-status-title {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--app-muted-text-color);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .sk-help-section-link {
     display: block;
     color: inherit;
@@ -298,6 +361,10 @@
     .sk-help-steps {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .sk-help-status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media screen and (max-width: 760px) {
@@ -314,7 +381,8 @@
     }
 
     .sk-help-steps,
-    .sk-help-feature-grid {
+    .sk-help-feature-grid,
+    .sk-help-status-grid {
         grid-template-columns: 1fr;
     }
 

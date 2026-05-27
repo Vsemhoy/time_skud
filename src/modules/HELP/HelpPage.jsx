@@ -17,6 +17,7 @@ import {
     TeamOutlined,
     ToolOutlined,
 } from "@ant-design/icons";
+import UserStatusLucideIconsController from "../CHARTS/components/UserStatusLucideIconsController";
 import "./style/helppage.css";
 
 const { Title, Paragraph, Text } = Typography;
@@ -38,6 +39,33 @@ const quickStartItems = [
         title: "Сверяйте расчетный лист",
         text: "Расчетный лист собирает рабочее время, отклонения, заявки и события, которые влияют на итоговые данные за период.",
     },
+];
+
+const employeeStatusItems = [
+    { id: 0, label: "Не приходил", title: "Не приходил в офис", color: "#ff8f8f", description: "За выбранную дату нет отметок входа и нет активного рабочего статуса." },
+    { id: 1, label: "Не пришел", title: "Сотрудник не приходил в офис", color: "#f29595", description: "Система явно определила отсутствие в офисе." },
+    { id: 2, label: "Обед", title: "Вышел на обед", color: "#82e769", description: "Последнее событие или правило показывает обеденный перерыв." },
+    { id: 3, label: "Перерыв", title: "Вышел на перерыв", color: "#fae5a9", description: "Сотрудник находится на кратковременном перерыве." },
+    { id: 4, label: "На месте", title: "На работе", color: "#d0f5a5", description: "Есть актуальная отметка входа, рабочий день продолжается." },
+    { id: 5, label: "Ушел", title: "Рабочий день закончен", color: "#e4e4e4", description: "Последняя отметка выглядит как выход, рабочий день закрыт." },
+    { id: 6, label: "Больничный", title: "На больничном", color: "#ffa8a8", description: "Действует заявка или состояние больничного." },
+    { id: 7, label: "Командировка", title: "Длительная командировка", color: "#ff996a", description: "Сотрудник находится в согласованной командировке." },
+    { id: 8, label: "Местн. команд.", title: "Кратковременная местная командировка", color: "#95bbcd", description: "Оформлен короткий выезд по работе в пределах дня или периода." },
+    { id: 9, label: "Неопл. отпуск", title: "Отпуск за свой счет", color: "#cbb9a2", description: "Действует неоплачиваемый отпуск." },
+    { id: 10, label: "Отпуск", title: "Плановый отпуск", color: "#7adcdf", description: "Сотрудник находится в плановом отпуске." },
+    { id: 11, label: "Сверхурочные", title: "Работа вне установленного графика", color: "#81e59b", description: "Оформлена или учитывается работа сверх обычного графика." },
+    { id: 12, label: "Опоздание", title: "Опоздание или ранний выход", color: "#ddd7b5", description: "Факт отличается от границ рабочего времени по графику." },
+    { id: 13, label: "Контейнеры", title: "Разгрузка контейнеров", color: "#e3d97c", description: "Сотрудник задействован в работах по контейнерам." },
+    { id: 14, label: "Рабоч. время", title: "Рабочее время", color: "#85FF93", description: "Период засчитывается как рабочее время." },
+    { id: 15, label: "Ранний приход", title: "Пришел раньше", color: "#85E7FF", description: "Вход зафиксирован раньше установленного времени начала." },
+    { id: 16, label: "Опоздал", title: "Опоздал", color: "#fb5656", description: "Вход зафиксирован позже установленного времени начала." },
+    { id: 17, label: "Отработка ПВ", title: "Рабочее время для отработки ПВ", color: "#0077EE", description: "Время относится к отработке производственного времени." },
+    { id: 18, label: "Ранний уход", title: "Ушел раньше", color: "#fb5656", description: "Выход произошел раньше планового окончания рабочего дня." },
+    { id: 19, label: "Поздн. уход", title: "Ушел позже", color: "#85E7FF", description: "Выход произошел позже планового окончания рабочего дня." },
+    { id: 20, label: "Обед. перерыв", title: "Обеденное время", color: "#85A3FF", description: "Период учитывается как обеденный перерыв." },
+    { id: 21, label: "Своб. выход", title: "Свободный выход на перерыв", color: "#b7a882", description: "Разрешенный свободный выход на перерыв." },
+    { id: 22, label: "Накопление вр.", title: "Накопление запаса времени", color: "#447799", description: "Время используется для накопления или компенсации рабочего запаса." },
+    { id: 23, label: "Удаленно", title: "Сотрудник работает удаленно", color: "#bbaff4", description: "Рабочий день проходит вне офиса, но статус считается рабочим." },
 ];
 
 const sectionGuides = [
@@ -304,6 +332,34 @@ const HelpPage = () => (
                         <div className="sk-help-step-number">{index + 1}</div>
                         <Title level={4}>{item.title}</Title>
                         <Paragraph>{item.text}</Paragraph>
+                    </Card>
+                ))}
+            </div>
+        </section>
+
+        <section className="sk-help-section">
+            <Title level={2}>Статусы на главной странице</Title>
+            <Paragraph>
+                Статус в строке сотрудника собирается из фактических событий СКУД, активных заявок,
+                назначенного графика и правил учета рабочего времени. Если одновременно есть несколько источников,
+                система выбирает наиболее актуальное состояние для выбранной даты.
+            </Paragraph>
+            <div className="sk-help-status-grid">
+                {employeeStatusItems.map((status) => (
+                    <Card key={status.id} className="sk-help-status-card">
+                        <div className="sk-help-status-head">
+                            <span
+                                className="sk-help-status-icon"
+                                style={{ "--status-color": status.color }}
+                            >
+                                <UserStatusLucideIconsController IdState={status.id} size={18} strokeWidth={2.2} />
+                            </span>
+                            <div>
+                                <div className="sk-help-status-label">{status.label}</div>
+                                <div className="sk-help-status-title">{status.title}</div>
+                            </div>
+                        </div>
+                        <Paragraph>{status.description}</Paragraph>
                     </Card>
                 ))}
             </div>
