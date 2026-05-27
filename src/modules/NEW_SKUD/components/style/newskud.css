@@ -14,6 +14,57 @@
     grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
 }
 
+.newskud-page .sk-userlist-skeleton-row {
+    grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+    gap: 0;
+    padding: 0;
+    min-height: 42px;
+    overflow: hidden;
+}
+
+.newskud-page .sk-userlist-skeleton-row.without-id-column {
+    grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
+}
+
+.newskud-page .sk-userlist-skeleton-row.extended {
+    grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+}
+
+.newskud-page .sk-userlist-skeleton-row.extended.without-id-column {
+    grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
+}
+
+.newskud-page .sk-userlist-skeleton-row > * {
+    min-width: 0;
+    padding: 6px 8px;
+    border-right: 1px solid var(--app-skeleton-border-color);
+}
+
+.newskud-page .sk-userlist-skeleton-row > *:last-child {
+    border-right: none;
+}
+
+.newskud-page .sk-userlist-skeleton-employee {
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) minmax(72px, 96px) minmax(86px, 112px);
+    align-items: center;
+    gap: 12px;
+}
+
+.newskud-page .sk-userlist-skeleton-employee .sk-userlist-skeleton-name {
+    min-width: 0;
+}
+
+.newskud-page .sk-userlist-skeleton-employee .sk-userlist-skeleton-phone {
+    min-width: 0;
+    width: 100%;
+}
+
+.newskud-page .sk-userlist-skeleton-employee .sk-userlist-skeleton-status {
+    min-width: 0;
+    width: 100%;
+}
+
 .newskud-page .sk-usermonic-cardrow-ou-test > .sk-userlist-employee-cell {
     order: 2;
 }

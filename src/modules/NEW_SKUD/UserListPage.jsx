@@ -47,9 +47,12 @@ const UserListTableSkeleton = ({extendedInfo, showIdColumn = true}) => (
         className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'}`}
         key={`userlist-skeleton-${index}`}
       >
-        <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
         {showIdColumn && <Skeleton.Button active size="small" className="sk-userlist-skeleton-id" />}
-        <Skeleton.Input active size="small" className="sk-userlist-skeleton-name" />
+        <div className="sk-userlist-skeleton-employee">
+          <Skeleton.Input active size="small" className="sk-userlist-skeleton-name" />
+          <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
+          <Skeleton.Button active size="small" className="sk-userlist-skeleton-status" />
+        </div>
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
