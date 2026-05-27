@@ -145,18 +145,20 @@
     align-items: center;
     justify-content: center;
     min-height: 38px;
-    padding: 2px;
+    padding: 0;
 }
 
 .sk-builders-schedule-select,
 .sk-builders-schedule-input {
     width: 100%;
     min-width: 28px;
-    max-width: 42px;
 }
 
 .sk-builders-schedule-input {
+    align-self: stretch;
+    min-height: 38px;
     padding: 0 4px;
+    border-radius: 0;
     text-align: center;
 }
 

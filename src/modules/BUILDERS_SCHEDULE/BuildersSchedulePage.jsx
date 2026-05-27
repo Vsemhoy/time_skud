@@ -110,6 +110,12 @@ const BuildersSchedulePage = () => {
         scheduleValues[getCellKey(userId, day)] ?? 0
     );
 
+    const getCellInputValue = (userId, day) => {
+        const value = getCellValue(userId, day);
+
+        return Number(value) === 0 ? '' : value;
+    };
+
     const handleCellChange = (userId, day, value) => {
         setScheduleValues((prev) => ({
             ...prev,
@@ -126,7 +132,7 @@ const BuildersSchedulePage = () => {
                 const day = {};
 
                 days.forEach((date) => {
-                    day[String(date.date())] = String(getCellValue(userId, date));
+                    day[String(date.date())] = String(getCellValue(userId, date) || 0);
                 });
 
                 return {
@@ -239,7 +245,7 @@ const BuildersSchedulePage = () => {
                                 {days.map((day) => (
                                     <div className="sk-builders-schedule-cell" key={`${userId}_${day.format('YYYY-MM-DD')}`}>
                                         <Input
-                                            value={getCellValue(userId, day)}
+                                            value={getCellInputValue(userId, day)}
                                             onChange={(event) => handleCellChange(userId, day, event.target.value)}
                                             size="small"
                                             className="sk-builders-schedule-input"
