@@ -60,6 +60,7 @@ import ClaimListModal from "./modules/NEW_SKUD/components/ClaimListModal";
 import BillListModal from "./modules/NEW_SKUD/components/BillListModal";
 import ClaimEditorDrawer from "./modules/CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
 import StateIconsController from "./modules/CHARTS/components/StateIconsController";
+import HelpPage from "./modules/HELP/HelpPage";
 
 const { Header, Content, Footer } = Layout;
 
@@ -481,6 +482,7 @@ function App() {
             <Route path={BASE_ROUTE + '/kpp-schedule'} element={<KppSchedulePage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/builders-schedule'} element={<BuildersSchedulePage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
+            <Route path={BASE_ROUTE + '/help'} element={<HelpPage userdata={userAct}/>} />
 
             <Route path={BASE_ROUTE + '/accounting/timesheet'} element={<AccountingPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/accounting/bankcard'} element={<AccountingBankCardsPage userdata={userAct}/>} />
@@ -521,6 +523,7 @@ function App() {
             <Route path={'/kpp-schedule'} element={<KppSchedulePage userdata={userAct}/>} />
             <Route path={'/builders-schedule'} element={<BuildersSchedulePage userdata={userAct}/>} />
             <Route path={'/admin/aclskud'} element={<AclSkudPage2 userdata={userAct}/>} />
+            <Route path={'/help'} element={<HelpPage userdata={userAct}/>} />
 
             <Route path={'/accounting/staffingschedule'} element={<AccountingPage userdata={userAct}/>} />
             <Route path={'/accounting/bankcard'} element={<AccountingBankCardsPage userdata={userAct}/>} />

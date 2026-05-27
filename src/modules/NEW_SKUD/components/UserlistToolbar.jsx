@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import '../../../assets/timeskud.css'
 import {
     CaretLeftOutlined, CaretRightOutlined,
-    FilterOutlined, PlusOutlined
+    FilterOutlined, PlusOutlined, UserOutlined
 } from "@ant-design/icons";
 import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
@@ -71,6 +71,12 @@ const UserListToolbar = (props) => {
         }
     }
 
+    const handleFindMyself = () => {
+        if (props.onFindMe) {
+            props.onFindMe();
+        }
+    }
+
     useEffect(() => {
         if (props.command === "add_day"){
             setUsedDate(usedDate.add(1, 'day'));
@@ -117,6 +123,17 @@ const UserListToolbar = (props) => {
                             title={'Фильтры'}
                             onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
                     ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
+                    {props.imExist && (
+                        <Button
+                            color={'default'}
+                            variant={'outlined'}
+                            icon={<UserOutlined />}
+                            className={'sk-userlist-compact-btn sk-userlist-icon-only-btn'}
+                            title={'Найти себя в списке'}
+                            aria-label={'Найти себя в списке'}
+                            onClick={handleFindMyself}
+                        />
+                    )}
                 </div>
                 <div className="sk-flex sk-userlist-toolbar-top-center">
                     <CaretLeftOutlined

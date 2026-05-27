@@ -380,6 +380,10 @@ const AppMenu23 = (props) => {
             label: <NavLink to="/builders-schedule">График строителей</NavLink>,
         },
         {
+            key: '/help',
+            label: <NavLink to="/help">Справка</NavLink>,
+        },
+        {
             key: '/admin/aclskud',
             label: <NavLink to="admin/aclskud">Доступы СКУД</NavLink>,
         },
