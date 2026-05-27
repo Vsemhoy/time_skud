@@ -1,4 +1,4 @@
-import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Switch } from 'antd';
+import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Skeleton, Switch } from 'antd';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
 import {HomeOutlined, LoginOutlined, NotificationOutlined, ScheduleOutlined, ThunderboltOutlined, UnorderedListOutlined, UserOutlined} from '@ant-design/icons';
@@ -449,56 +449,75 @@ const AppMenu23 = (props) => {
     return (
         <div>
             <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={'sk-main-menu'}>
-                <Menu
-                    mode="horizontal"
-                    style={{ background: '#00000000', flex: 1 }}
-                    selectedKeys={getSelectedKeys()}
-                    items={getMenuItems()}
-                />
+                {props.is_loading ? (
+                    <div className="sk-appmenu-skeleton" aria-hidden="true">
+                        <Skeleton.Button active size="small" className="sk-appmenu-skeleton-home" />
+                        <Skeleton.Button active size="small" className="sk-appmenu-skeleton-link" />
+                        <Skeleton.Button active size="small" className="sk-appmenu-skeleton-link sk-appmenu-skeleton-link--wide" />
+                        <Skeleton.Button active size="small" className="sk-appmenu-skeleton-link" />
+                    </div>
+                ) : (
+                    <Menu
+                        mode="horizontal"
+                        style={{ background: '#00000000', flex: 1 }}
+                        selectedKeys={getSelectedKeys()}
+                        items={getMenuItems()}
+                    />
+                )}
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
 
-                    <Chat userdata={props.user_act}
-                          httpParams={{
-                              HTTP_HOST: HTTP_HOST,
-                              BFF_PORT: BFF_PORT,
-                              CSRF_TOKEN: CSRF_TOKEN,
-                              PRODMODE: PRODMODE,
-                              PROD_AXIOS_INSTANCE: null,
-                          }}
-                          fetchParams={{
-                              fetchChatsListPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms`,
-                              fetchChatMessagesPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms`,
-                              sendSmsPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms/create/sms`,
-                              markMessagesAsReadPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms/read`,
-                          }}
-                          socketSubscribe={{
-                              subscribeToChat: 'subscribeToChat'
-                          }}
-                          socketActions={{
-                              newSms: 'new:sms',
-                              updateSms: 'update:sms',
-                          }}
-                          onNewMessage={handleNewChatMessage}
-                    />
+                    {props.is_loading ? (
+                        <div className="sk-appmenu-skeleton-right" aria-hidden="true">
+                            <Skeleton.Avatar active size={28} />
+                            <Skeleton.Avatar active size={28} />
+                            <Skeleton.Input active size="small" className="sk-appmenu-skeleton-user" />
+                        </div>
+                    ) : (
+                        <>
+                            <Chat userdata={props.user_act}
+                                  httpParams={{
+                                      HTTP_HOST: HTTP_HOST,
+                                      BFF_PORT: BFF_PORT,
+                                      CSRF_TOKEN: CSRF_TOKEN,
+                                      PRODMODE: PRODMODE,
+                                      PROD_AXIOS_INSTANCE: null,
+                                  }}
+                                  fetchParams={{
+                                      fetchChatsListPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms`,
+                                      fetchChatMessagesPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms`,
+                                      sendSmsPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms/create/sms`,
+                                      markMessagesAsReadPath: `${HTTP_HOST}${ROUTE_PREFIX}/sms/read`,
+                                  }}
+                                  socketSubscribe={{
+                                      subscribeToChat: 'subscribeToChat'
+                                  }}
+                                  socketActions={{
+                                      newSms: 'new:sms',
+                                      updateSms: 'update:sms',
+                                  }}
+                                  onNewMessage={handleNewChatMessage}
+                            />
 
-                    <Notificator userdata={props.user_act}
-                                 httpParams={{
-                                     HTTP_HOST: HTTP_HOST,
-                                     BFF_PORT: BFF_PORT,
-                                     CSRF_TOKEN: CSRF_TOKEN,
-                                     PRODMODE: PRODMODE,
-                                     PROD_AXIOS_INSTANCE: null,
-                                 }}
-                                 socketSubscribe={{
-                                     subscribeToNotification: 'subscribe:notification'
-                                 }}
-                                 socketActions={{
-                                     newNotification: 'new:notification',
-                                     readNotification: 'read:notification',
-                                 }}
-                                 onNewNotification={handleNewNotification}
-                    />
+                            <Notificator userdata={props.user_act}
+                                         httpParams={{
+                                             HTTP_HOST: HTTP_HOST,
+                                             BFF_PORT: BFF_PORT,
+                                             CSRF_TOKEN: CSRF_TOKEN,
+                                             PRODMODE: PRODMODE,
+                                             PROD_AXIOS_INSTANCE: null,
+                                         }}
+                                         socketSubscribe={{
+                                             subscribeToNotification: 'subscribe:notification'
+                                         }}
+                                         socketActions={{
+                                             newNotification: 'new:notification',
+                                             readNotification: 'read:notification',
+                                         }}
+                                         onNewNotification={handleNewNotification}
+                            />
+                        </>
+                    )}
 
                     {/*<div onClick={showNotyBar} style={{ cursor: "pointer", width: '46px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         <Badge count={countOfNotifications} offset={[4, 32]}>
@@ -508,7 +527,7 @@ const AppMenu23 = (props) => {
                         </Badge>
                     </div>*/}
 
-                    <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
+                    {!props.is_loading && <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
                         <div
                             style={{
                                 cursor: 'pointer',
@@ -539,7 +558,7 @@ const AppMenu23 = (props) => {
                                 <span>Пользователь</span>
                             )}
                         </div>
-                    </Dropdown>
+                    </Dropdown>}
                 </div>
             </Header>
 

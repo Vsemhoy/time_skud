@@ -412,6 +412,7 @@ function App() {
         user_act={userAct}
         on_open_notificator={handleNotificatorOpened}
         count_of_notifications={countOfNotifications}
+        is_loading={!pageLoaded}
        />
    
 
