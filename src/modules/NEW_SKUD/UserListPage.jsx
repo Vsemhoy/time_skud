@@ -82,7 +82,6 @@ const UserListInitialLoader = ({phase}) => (
   </div>
 );
 
-
 const UserList = (props)=>{
   const { userdata } = props;
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);

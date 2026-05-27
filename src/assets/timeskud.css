@@ -365,6 +365,51 @@ td:first-child {
     display: none;
 }
 
+.sk-appmenu-skeleton {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.sk-appmenu-skeleton .ant-skeleton-element,
+.sk-appmenu-skeleton-right .ant-skeleton-element {
+    line-height: 1;
+}
+
+.sk-appmenu-skeleton-home.ant-skeleton-button {
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+}
+
+.sk-appmenu-skeleton-link.ant-skeleton-button {
+    width: 112px !important;
+    min-width: 112px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+}
+
+.sk-appmenu-skeleton-link--wide.ant-skeleton-button {
+    width: 156px !important;
+    min-width: 156px !important;
+}
+
+.sk-appmenu-skeleton-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sk-appmenu-skeleton-user.ant-skeleton-input {
+    width: 172px !important;
+    min-width: 172px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+}
+
 .sk-userlist-toolbar-top {
     height: auto;
     min-height: 44px;
@@ -1168,7 +1213,7 @@ font-size: smaller;
 
 .sk-userlist-initial-loader {
     position: fixed;
-    inset: 0;
+    inset: 46px 0 0;
     z-index: 1200;
     display: flex;
     align-items: center;
