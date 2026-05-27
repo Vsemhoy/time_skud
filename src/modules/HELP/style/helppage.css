@@ -119,6 +119,28 @@
     gap: 16px;
 }
 
+.sk-help-section-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.sk-help-section-link:hover,
+.sk-help-section-link:focus {
+    color: inherit;
+}
+
+.sk-help-section-link .sk-help-feature-card {
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.sk-help-section-link:hover .sk-help-feature-card,
+.sk-help-section-link:focus .sk-help-feature-card {
+    border-color: color-mix(in srgb, #1677ff 45%, var(--table-border-divider-color));
+    box-shadow: 0 12px 24px rgba(22, 119, 255, 0.12);
+    transform: translateY(-1px);
+}
+
 .sk-help-feature-title {
     display: flex;
     align-items: center;
@@ -147,6 +169,66 @@
     padding-left: 20px;
     color: var(--app-text-color);
     line-height: 1.7;
+}
+
+.sk-help-details-list {
+    display: grid;
+    gap: 18px;
+}
+
+.sk-help-detail-card {
+    scroll-margin-top: 68px;
+    border-color: var(--table-border-divider-color);
+    border-radius: 8px;
+    background: var(--app-surface-color);
+}
+
+.sk-help-detail-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.sk-help-detail-head h3.ant-typography {
+    margin: 0 0 8px;
+}
+
+.sk-help-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.sk-help-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.sk-help-detail-grid > div {
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--table-border-divider-color);
+    border-radius: 8px;
+    background: var(--app-soft-surface-color);
+}
+
+.sk-help-detail-grid h4.ant-typography {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.sk-help-detail-grid ul {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--app-text-color);
+    line-height: 1.65;
+}
+
+.sk-help-detail-grid li + li {
+    margin-top: 7px;
 }
 
 .sk-help-two-columns {
@@ -193,6 +275,11 @@
     line-height: 1.6;
 }
 
+.sk-help-final-note > .anticon {
+    margin-top: 3px;
+    color: #1677ff;
+}
+
 .sk-theme-dark .sk-help-hero,
 .sk-theme-dark .sk-help-step-card,
 .sk-theme-dark .sk-help-feature-card,
@@ -203,7 +290,8 @@
 
 @media screen and (max-width: 1100px) {
     .sk-help-hero,
-    .sk-help-two-columns {
+    .sk-help-two-columns,
+    .sk-help-detail-grid {
         grid-template-columns: 1fr;
     }
 
@@ -228,6 +316,10 @@
     .sk-help-steps,
     .sk-help-feature-grid {
         grid-template-columns: 1fr;
+    }
+
+    .sk-help-detail-head {
+        flex-direction: column;
     }
 
     .sk-help-final-note {
