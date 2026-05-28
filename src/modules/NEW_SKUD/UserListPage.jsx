@@ -88,6 +88,9 @@ const UserListInitialLoader = ({phase}) => (
 const UserList = (props)=>{
   const { userdata } = props;
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
+  const isSuperUser = isTruthyFlag(userdata?.user?.super);
+  const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
+  const isSuperCompactMode = isSuperUser && !isSuperListExpanded;
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
   const LIMITED_USER_ID = 583;
@@ -96,8 +99,10 @@ const UserList = (props)=>{
   /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
-  const effectiveShowIdColumn = showIdColumn || isShowExtendedInfo;
+  const effectiveShowIdColumn = !isSuperCompactMode && (showIdColumn || isShowExtendedInfo);
   const shouldShowExtendedTableColumns = isShowExtendedInfo && !isOpenFilters;
+  const shouldShowFilterSidebar = !isSuperUser && isOpenFilters;
+  const shouldShowDetailsSidebar = true;
   const [editorMode, setEditorMode] = useState('create');
   const [editorOpened, setEditorOpened] = useState(false);
   const [formType, setFormType] = useState(null);
@@ -966,6 +971,27 @@ const UserList = (props)=>{
     });
   };
 
+  const filterSuperUsers = (userList) => {
+    return (userList ?? []).filter((user) => isTruthyFlag(user?.for_super));
+  };
+
+  const handleHideSuperUser = async (userId) => {
+    try {
+      await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/set-for-super`, {
+        data: {
+          user_id: userId,
+          for_super: 0,
+        },
+        _token: CSRF_TOKEN
+      });
+      message.success('Сотрудник скрыт');
+      get_users(extFiltersRef.current, { showSkeleton: false });
+    } catch (e) {
+      console.log(e);
+      message.error('Не удалось скрыть сотрудника');
+    }
+  };
+
   const customRow = (dep_id) => {
     return {
     id: `custom_row_dep_${dep_id}`,
@@ -1053,6 +1079,9 @@ const UserList = (props)=>{
         userList = filterUserListByDepartment(userList, departFilter.value);
       }
       userList = filterVisibleUsers(userList);
+      if (isSuperCompactMode) {
+        userList = filterSuperUsers(userList);
+      }
       userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
 
       // SortData
@@ -1069,7 +1098,9 @@ const UserList = (props)=>{
                 }
                 return compareDepartmentOrder(a, b, 'asc');
               });
-              sortedData = insertDepartmentNames(sortedData);
+              if (!isSuperCompactMode) {
+                sortedData = insertDepartmentNames(sortedData);
+              }
               break;
 
           case "department_desc":
@@ -1121,14 +1152,16 @@ const UserList = (props)=>{
             }
             return compareDepartmentOrder(a, b, 'asc');
           });
-          sortedData = insertDepartmentNames(sortedData);
+          if (!isSuperCompactMode) {
+            sortedData = insertDepartmentNames(sortedData);
+          }
           break;
       }
 
 
     console.log('sorted', sortedData)
       return sortedData;
-  }, [userListData, innerSortByValue, innerFilters, employeeSearchValue]);
+  }, [userListData, innerSortByValue, innerFilters, employeeSearchValue, isSuperCompactMode, userdata?.user?.id]);
 
   const navigableUsers = useMemo(() => {
     return filteredUsers.filter((item) => item?.id != null && item?.type !== 'header');
@@ -1188,7 +1221,7 @@ const UserList = (props)=>{
 
 
   return (
-      <div className={'mega-layout newskud-page'}>
+      <div className={`mega-layout newskud-page ${isSuperUser ? 'newskud-page--super' : ''}`}>
         {isInitialPageLoading && <UserListInitialLoader phase={initialLoaderPhase} />}
         <Layout className={'layout layout--newskud'}>
           <Header className={'header-user-list header-user-list--newskud'}>
@@ -1204,6 +1237,7 @@ const UserList = (props)=>{
                 command={toolbarCommand}
                 isLoading={isLoading}
                 isLoadError={isLoadError}
+                isInitialLoading={isInitialPageLoading}
 
                 isOpenFilters={isOpenFilters}
                 setIsOpenFilters={(value) => setIsOpenFilters(value)}
@@ -1212,16 +1246,20 @@ const UserList = (props)=>{
                 onRefresh={handleRefreshUsers}
                 imExist={userListData.find((item)=>  item.id === userdata.user.id) != null}
                 onFindMe={handleFindMe}
+                isSuperUser={isSuperUser}
+                superMode={isSuperCompactMode}
+                isSuperListExpanded={isSuperListExpanded}
+                onToggleSuperListExpanded={() => setIsSuperListExpanded((value) => !value)}
               />
             </Affix>
           </Header>
           <Layout className="sk-layout-center">
-            <Sider width={isOpenFilters ? "330px" : 0}
-                   className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
+            <Sider width={shouldShowFilterSidebar ? "330px" : 0}
+                   className={`sider ${shouldShowFilterSidebar ? '' : 'sider-hidden'} pr15`}
                    style={{
                      paddingTop: '0',
-                     visibility: isOpenFilters ? 'visible' : 'hidden',
-                     pointerEvents: isOpenFilters ? 'auto' : 'none',
+                     visibility: shouldShowFilterSidebar ? 'visible' : 'hidden',
+                     pointerEvents: shouldShowFilterSidebar ? 'auto' : 'none',
                    }}
             >
               <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
@@ -1250,7 +1288,7 @@ const UserList = (props)=>{
                         <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
-                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'}`}>
+                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'} ${isSuperCompactMode ? 'super-mode' : ''}`}>
 
                             {effectiveShowIdColumn && (
                               <div className="sk-userlist-id-cell" onClick={() => {
@@ -1272,6 +1310,18 @@ const UserList = (props)=>{
                                 <PhoneOutlined title="Телефон" />
                               </div>
                             </div>
+
+                            {isSuperCompactMode && (
+                              <div className="sk-userlist-phone-cell">
+                                Телефон
+                              </div>
+                            )}
+
+                            {isSuperCompactMode && (
+                              <div className="sk-userlist-status-cell">
+                                Статус
+                              </div>
+                            )}
 
                             <div
                                 className="sk-userlist-claims-cell"
@@ -1376,6 +1426,8 @@ const UserList = (props)=>{
                                     extendedInfo={shouldShowExtendedTableColumns}
                                     show_id_column={effectiveShowIdColumn}
                                     current_user_id={userdata.user.id}
+                                    super_mode={isSuperCompactMode}
+                                    on_hide_super_user={handleHideSuperUser}
                                   />
                             ))
                         )}
@@ -1383,7 +1435,7 @@ const UserList = (props)=>{
                   )}
               </div>
             </Content>
-            <Sider width={NEW_SKUD_DETAILS_SIDER_WIDTH}
+            {shouldShowDetailsSidebar && <Sider width={NEW_SKUD_DETAILS_SIDER_WIDTH}
                    className="sider pl15"
                    style={{
                      paddingTop: '5px',
@@ -1409,7 +1461,7 @@ const UserList = (props)=>{
                     />
                 </div>
               </Affix>
-            </Sider>
+            </Sider>}
           </Layout>
         </Layout>
 

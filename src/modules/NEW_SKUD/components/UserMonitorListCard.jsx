@@ -1,5 +1,6 @@
 ﻿import { Tag, Tooltip } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
+import { Dropdown } from "antd";
 
 import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
     MinusCircleOutlined,
@@ -283,6 +284,19 @@ const UserMonitorListCard = (props) => {
         }
     }
 
+    const superContextMenu = {
+        items: [
+            {
+                key: 'hide',
+                label: 'Скрыть',
+                onClick: ({ domEvent }) => {
+                    domEvent.stopPropagation();
+                    props.on_hide_super_user?.(content.id);
+                },
+            },
+        ],
+    };
+
     const handleMouseOver = () => {};
 
     const parseClaimInfo = (info) => {
@@ -538,6 +552,7 @@ const UserMonitorListCard = (props) => {
     const displayedEnterTime = hasEnterExitField ? enterExitTimes.enter : enterExitTimes.enter ?? content.enter_time;
     const displayedExitTime = hasEnterExitField ? enterExitTimes.exit : enterExitTimes.exit ?? content.exit_time;
     const isLateEnter = isEnterLaterThanSchedule(displayedEnterTime, content.schedule);
+    const isSuperMode = props.super_mode === true;
 
     const shouldHideExitTime = useMemo(() => {
         if (!normalizedEnterExitData.length) {
@@ -549,6 +564,23 @@ const UserMonitorListCard = (props) => {
 
         return lastDirection === 0;
     }, [normalizedEnterExitData]);
+
+    const employeePresenceClassName = useMemo(() => {
+        const hasEnter = Boolean(displayedEnterTime);
+        const hasExit = Boolean(displayedExitTime);
+        const enterMoment = displayedEnterTime ? moscowDateTime(displayedEnterTime) : null;
+        const exitMoment = displayedExitTime ? moscowDateTime(displayedExitTime) : null;
+
+        if (!hasEnter) {
+            return 'sk-userlist-employee-cell--absent';
+        }
+
+        if (!hasExit || shouldHideExitTime || (enterMoment?.isValid?.() && exitMoment?.isValid?.() && enterMoment.isAfter(exitMoment))) {
+            return 'sk-userlist-employee-cell--office';
+        }
+
+        return 'sk-userlist-employee-cell--left';
+    }, [displayedEnterTime, displayedExitTime, shouldHideExitTime]);
 
     const visibleClaims = useMemo(() => {
         return (content?.claims ?? []).filter((claim) => Number(claim?.state) !== 3);
@@ -718,6 +750,10 @@ const UserMonitorListCard = (props) => {
                 </div>
             )}
         </div>*/
+        <Dropdown
+            menu={superContextMenu}
+            trigger={isSuperMode && content.type !== 'header' ? ['contextMenu'] : []}
+        >
         <div onMouseOver={handleMouseOver}
              id={`row_${content.id}`}
              onClick={handleDoubleClickOnRow}
@@ -745,6 +781,7 @@ const UserMonitorListCard = (props) => {
                 <div className={`sk-usermonic-cardrow-ou-test 
                      ${props?.extendedInfo ? 'extended' : ''}
                      ${showIdColumn ? '' : 'without-id-column'}
+                     ${isSuperMode ? 'super-mode' : ''}
                      ${content.type === 'header' ? 'sk-usermonic-crd-divider' : ''}
                      ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${markedCard ? 'sk-usermonic-crd-marked' : ''}
                      ${itsMe ? 'sk-usermonic-crd-mine' : ''} ${currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
@@ -761,17 +798,17 @@ const UserMonitorListCard = (props) => {
 
                     <div
                         title={content.user_occupy}
-                        className="sk-userlist-name-status-cell sk-userlist-employee-cell"
+                        className={`sk-userlist-name-status-cell sk-userlist-employee-cell ${isSuperMode ? employeePresenceClassName : ''}`}
                     >
                         <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}>
                             <div className="sk-userlist-name-cell">
                                 <span className="sk-userlist-name-text">
                                     {content.surname} {content.name} {content.patronymic}
                                 </span>
-                                <span className="sk-userlist-phone-inline">
+                                {!isSuperMode && <span className="sk-userlist-phone-inline">
                                     {formatPhone(content.phone)}
-                                </span>
-                                {badger && (
+                                </span>}
+                                {!isSuperMode && badger && (
                                     <span
                                         className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
                                         title={badger.title}
@@ -784,6 +821,26 @@ const UserMonitorListCard = (props) => {
                         </div>
                     </div>
 
+                    {isSuperMode && (
+                        <div className="sk-userlist-phone-cell">
+                            {formatPhone(content.phone)}
+                        </div>
+                    )}
+
+                    {isSuperMode && (
+                        <div className="sk-userlist-status-cell">
+                            {badger && (
+                                <span
+                                    className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
+                                    title={badger.title}
+                                >
+                                    {badger.icon}
+                                    <span>{badger.text}</span>
+                                </span>
+                            )}
+                        </div>
+                    )}
+
                     <div className={`sk-userlist-enter-cell ${isLateEnter ? 'sk-userlist-enter-cell--late' : ''} ${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
                         {renderEventDumpCell(displayedEnterTime)}
                     </div>
@@ -792,13 +849,13 @@ const UserMonitorListCard = (props) => {
                         {shouldHideExitTime ? '' : renderEventDumpCell(displayedExitTime)}
                     </div>
 
-                    <div className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
+                    {!isSuperMode && <div className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
                         {formatDurationFromMinute(content.lunch_time)}
-                    </div>
+                    </div>}
 
-                    <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
+                    {!isSuperMode && <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
                         {formatDurationFromMinute(content.exit_time_count)}
-                    </div>
+                    </div>}
 
                     <div className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}>
                         {formatDurationFromMinute(content.lost_time_count)}
@@ -885,6 +942,7 @@ const UserMonitorListCard = (props) => {
                 </div>
             )}
         </div>
+        </Dropdown>
     )
 }
 

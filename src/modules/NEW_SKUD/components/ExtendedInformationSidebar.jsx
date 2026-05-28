@@ -108,6 +108,139 @@ const getMutedDrawerAccent = (color) => {
     return `color-mix(in srgb, ${color} 38%, var(--app-surface-color))`;
 };
 
+const parseEnterExitData = (data) => {
+    if (!data) {
+        return [];
+    }
+
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    if (typeof data === 'string') {
+        try {
+            const parsedData = JSON.parse(data);
+            return Array.isArray(parsedData) ? parsedData : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    return [];
+};
+
+const getEventDirection = (event) => Number(event?.direction ?? event?.diraction ?? event?.d);
+const getEventTime = (event) => event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t;
+
+const getEnterExitTimes = (user) => {
+    const hasEnterExitField = Object.prototype.hasOwnProperty.call(user ?? {}, 'enter_exit');
+    const rawEnterExitData = hasEnterExitField ? user?.enter_exit : user?.event_dump;
+    const enterExitData = parseEnterExitData(rawEnterExitData);
+    const result = {
+        enter: null,
+        exit: null,
+        shouldHideExitTime: false,
+    };
+
+    for (let index = 0; index < enterExitData.length; index += 1) {
+        const event = enterExitData[index];
+        const direction = getEventDirection(event);
+        const eventTime = getEventTime(event);
+
+        if (!eventTime || Number.isNaN(direction)) {
+            continue;
+        }
+
+        if (direction === 0) {
+            const currentEnter = result.enter ? moscowDateTime(result.enter) : null;
+            const nextEnter = moscowDateTime(eventTime);
+
+            if (!result.enter || (nextEnter.isValid() && currentEnter?.isValid() && nextEnter.isBefore(currentEnter))) {
+                result.enter = eventTime;
+            }
+        }
+
+        if (direction !== 0) {
+            const currentExit = result.exit ? moscowDateTime(result.exit) : null;
+            const nextExit = moscowDateTime(eventTime);
+
+            if (!result.exit || (nextExit.isValid() && currentExit?.isValid() && nextExit.isAfter(currentExit))) {
+                result.exit = eventTime;
+            }
+        }
+    }
+
+    if (enterExitData.length > 0) {
+        result.shouldHideExitTime = getEventDirection(enterExitData[enterExitData.length - 1]) === 0;
+    }
+
+    return {
+        enter: hasEnterExitField ? result.enter : result.enter ?? user?.enter_time,
+        exit: hasEnterExitField ? result.exit : result.exit ?? user?.exit_time,
+        shouldHideExitTime: result.shouldHideExitTime,
+    };
+};
+
+const getEmployeePresenceClassName = (user) => {
+    const { enter, exit, shouldHideExitTime } = getEnterExitTimes(user);
+    const hasEnter = Boolean(enter);
+    const hasExit = Boolean(exit);
+    const enterMoment = enter ? moscowDateTime(enter) : null;
+    const exitMoment = exit ? moscowDateTime(exit) : null;
+
+    if (!hasEnter) {
+        return 'sk-userlist-details-card--absent';
+    }
+
+    if (!hasExit || shouldHideExitTime || (enterMoment?.isValid?.() && exitMoment?.isValid?.() && enterMoment.isAfter(exitMoment))) {
+        return 'sk-userlist-details-card--office';
+    }
+
+    return 'sk-userlist-details-card--left';
+};
+
+const getClaimApprovalState = (claim) => claim?.is_approved ?? claim?.approved ?? claim?.state;
+
+const isClaimPendingApproval = (claim) => {
+    const needApproved = Number(claim?.need_approved ?? claim?.skud_current_state?.need_approved ?? 0);
+    const approvalState = getClaimApprovalState(claim);
+
+    if ([1, 2, 3, -1].includes(Number(approvalState))) {
+        return false;
+    }
+
+    return needApproved === 1 || Number(approvalState) === 0;
+};
+
+const isVacationClaim = (claim) => {
+    const claimTypeId = Number(claim?.skud_current_state_id ?? claim?.skud_current_state?.id);
+    const claimText = [
+        claim?.skud_current_state?.name,
+        claim?.skud_current_state?.title,
+        claim?.skud_current_state?.text,
+        claim?.state_title,
+        claim?.state_text,
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    return [9, 10].includes(claimTypeId) || claimText.includes('отпуск');
+};
+
+const isClaimInMonth = (claim, monthSource) => {
+    const monthDate = moscowDateTime(monthSource || dayjs());
+    const start = moscowDateTime(claim?.start);
+    const end = moscowDateTime(claim?.end ?? claim?.start);
+
+    if (!monthDate?.isValid?.() || !start?.isValid?.()) {
+        return false;
+    }
+
+    const monthStart = monthDate.startOf('month');
+    const monthEnd = monthDate.endOf('month');
+    const claimEnd = end?.isValid?.() ? end : start;
+
+    return start.isBefore(monthEnd) && claimEnd.isAfter(monthStart);
+};
+
 const COMPANY_LOGOS = [
     { key: 'arstel', src: '/company-logos/arstel.svg', className: 'sk-userlist-company-logo--arstel' },
     { key: 'арстел', src: '/company-logos/arstel.svg', className: 'sk-userlist-company-logo--arstel' },
@@ -242,6 +375,7 @@ const PERSONAL_WEEK_MAX_VISIBLE_MINUTES = 120;
 const ExtendedInformationSidebar = (props) => {
 
     const userdata = props.userdata;
+    const isSuperMode = userdata?.user?.super === true || userdata?.user?.super === 1 || userdata?.user?.super === '1';
     const [isMounted, setIsMounted] = useState(false);
     const [targetUserGuys, setTargetUserGuys] = useState([]);
     const [openUserInfo, setOpenUserInfo] = useState(false);
@@ -252,6 +386,8 @@ const ExtendedInformationSidebar = (props) => {
     const [baseSchedules, setBaseSchedules] = useState([]);
     const [baseRules, setBaseRules] = useState([]);
     const [isScheduleLoading, setIsScheduleLoading] = useState(false);
+    const [superClaims, setSuperClaims] = useState([]);
+    const [isSuperClaimsLoading, setIsSuperClaimsLoading] = useState(false);
 
     const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -264,6 +400,40 @@ const ExtendedInformationSidebar = (props) => {
     useEffect(() => {
         setTargetUserGuys(props.target_user_guys);
     }, [props.target_user_guys])
+
+    const fetchSuperClaims = async () => {
+        if (!isSuperMode) {
+            return;
+        }
+
+        setIsSuperClaimsLoading(true);
+        try {
+            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`, {
+                data: {
+                    type: 0,
+                    page: 1,
+                    onPage: 5000,
+                    boss_id: null,
+                    user_id: null,
+                },
+                _token: CSRF_TOKEN
+            });
+            setSuperClaims(response.data.content ?? []);
+        } catch (e) {
+            console.log(e);
+            setSuperClaims([]);
+        } finally {
+            setIsSuperClaimsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!isSuperMode || props.target_user_info) {
+            return;
+        }
+
+        fetchSuperClaims();
+    }, [isSuperMode, props.target_user_info, props.target_date]);
 
     useEffect(() => {
         if (props.target_user_info){
@@ -637,8 +807,8 @@ const ExtendedInformationSidebar = (props) => {
     const renderStatusHeader = () => (
         <div className="sk-state-intgra-card-backdrop">
             <div
-                style={{background: hasTargetUser ? getMutedDrawerAccent(badger?.color) : undefined}}
-                className={`sk-state-intgra-card ${hasTargetUser ? '' : 'sk-state-intgra-card--empty'}`}
+                style={{background: hasTargetUser && !isSuperMode ? getMutedDrawerAccent(badger?.color) : undefined}}
+                className={`sk-state-intgra-card ${hasTargetUser ? '' : 'sk-state-intgra-card--empty'} ${hasTargetUser && isSuperMode ? getEmployeePresenceClassName(targetUserInfo) : ''}`}
             >
                 {hasTargetUser ? (
                     <>
@@ -749,6 +919,27 @@ const ExtendedInformationSidebar = (props) => {
         return 'На рассмотрении';
     };
 
+    const getClaimUserFullName = (claim) => [
+        claim?.usr_surname ?? claim?.user?.surname,
+        claim?.usr_name ?? claim?.user?.name,
+        claim?.usr_patronymic ?? claim?.user?.patronymic,
+    ].filter(Boolean).join(' ') || 'Сотрудник';
+
+    const superPendingApprovalClaims = superClaims
+        .filter((claim) => Number(claim?.state) !== 3)
+        .filter((claim) => Number(claim?.boss_id) === Number(userdata?.user?.id))
+        .filter(isClaimPendingApproval);
+
+    const superMonthVacationClaims = superClaims
+        .filter((claim) => Number(claim?.state) !== 3)
+        .filter((claim) => isVacationClaim(claim) && isClaimInMonth(claim, targetDate));
+
+    const handleSuperClaimClick = (claim) => {
+        if (props.on_claim_click) {
+            props.on_claim_click(claim.id, claim);
+        }
+    };
+
     const shouldShowClaimTime = (time) => Boolean(time && time !== '00:00' && time !== '23:59');
 
     const renderClaimDate = (value) => {
@@ -854,6 +1045,59 @@ const ExtendedInformationSidebar = (props) => {
                 <div className="sk-userlist-details-claims-empty">Нет активных заявок</div>
             )}
         </section>
+    );
+
+    const renderSuperSummaryClaimList = (items, emptyText) => {
+        if (isSuperClaimsLoading) {
+            return (
+                <div className="sk-userlist-super-summary-body sk-userlist-personal-week-skeleton">
+                    <Skeleton active title={false} paragraph={{rows: 4}} />
+                </div>
+            );
+        }
+
+        if (items.length === 0) {
+            return <div className="sk-userlist-super-summary-body sk-userlist-details-claims-empty">{emptyText}</div>;
+        }
+
+        return (
+            <div className="sk-userlist-super-summary-body">
+                <div className="sk-userlist-super-summary-list">
+                    {items.map((claim) => (
+                        <div
+                            key={`super-summary-${claim.id}`}
+                            className="sk-userlist-super-summary-row"
+                            onClick={() => handleSuperClaimClick(claim)}
+                        >
+                            <div className="sk-userlist-super-summary-icon">
+                                <StateIconsController IdState={claim?.skud_current_state_id} height={'22px'} />
+                            </div>
+                            <div className="sk-userlist-super-summary-main">
+                                <div className="sk-userlist-super-summary-name">{getClaimUserFullName(claim)}</div>
+                                <div className="sk-userlist-super-summary-meta">
+                                    <span>{getClaimTitle(claim)}</span>
+                                    <span>{renderClaimPeriod(claim)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    const renderSuperEmptyState = () => (
+        <div className="sk-userlist-details-scroll sk-userlist-super-summary-scroll">
+            <section className="sk-userlist-details-card sk-userlist-details-card--super-summary">
+                <div className="sk-userlist-details-card-title">Заявки ожидающие согласования</div>
+                {renderSuperSummaryClaimList(superPendingApprovalClaims, 'Нет заявок ожидающих согласования')}
+            </section>
+
+            <section className="sk-userlist-details-card sk-userlist-details-card--super-summary">
+                <div className="sk-userlist-details-card-title">В этом месяце отпуск запланирован</div>
+                {renderSuperSummaryClaimList(superMonthVacationClaims, 'Нет запланированных отпусков в этом месяце')}
+            </section>
+        </div>
     );
 
     const renderEventInfoCard = () => (
@@ -1041,13 +1285,15 @@ const ExtendedInformationSidebar = (props) => {
     return (
         <div>
             {!hasTargetUser && (
-                <div className="sk-userlist-details-scroll">
-                    {renderMockPersonalWeekChartJsCard()}
+                isSuperMode ? renderSuperEmptyState() : (
+                    <div className="sk-userlist-details-scroll">
+                        {renderMockPersonalWeekChartJsCard()}
 
-                    {renderCreateClaimCard()}
+                        {renderCreateClaimCard()}
 
-                    {renderAccountingDocumentsCard()}
-                </div>
+                        {renderAccountingDocumentsCard()}
+                    </div>
+                )
             )}
             {openUserInfo && hasTargetUser && (
                 <div className="sk-userlist-details-scroll">

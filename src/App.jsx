@@ -413,6 +413,7 @@ function App() {
         on_open_notificator={handleNotificatorOpened}
         count_of_notifications={countOfNotifications}
         is_loading={!pageLoaded}
+        hidden={userAct?.user?.super === true || userAct?.user?.super === 1 || userAct?.user?.super === '1'}
        />
    
 

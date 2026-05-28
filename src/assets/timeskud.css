@@ -463,6 +463,68 @@ td:first-child {
     align-items: center;
 }
 
+.sk-userlist-toolbar-top--skeleton {
+    pointer-events: none;
+    align-items: center;
+}
+
+.sk-userlist-toolbar-top--skeleton .ant-skeleton-element,
+.sk-userlist-toolbar-top--skeleton .ant-skeleton-input,
+.sk-userlist-toolbar-top--skeleton .ant-skeleton-button {
+    width: 100% !important;
+    vertical-align: middle !important;
+}
+
+.sk-userlist-toolbar-top--skeleton .ant-skeleton-element {
+    display: inline-flex !important;
+    align-items: center;
+}
+
+.sk-userlist-toolbar-skeleton-button.ant-skeleton-button {
+    width: 94px !important;
+    min-width: 94px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+}
+
+.sk-userlist-toolbar-skeleton-icon.ant-skeleton-button,
+.sk-userlist-toolbar-skeleton-arrow.ant-skeleton-button,
+.sk-userlist-toolbar-skeleton-dot.ant-skeleton-button {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+}
+
+.sk-userlist-toolbar-skeleton-dot.ant-skeleton-button {
+    width: 16px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+}
+
+.sk-userlist-toolbar-skeleton-date.ant-skeleton-input {
+    width: 130px !important;
+    min-width: 130px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+}
+
+.sk-userlist-toolbar-skeleton-create.ant-skeleton-button {
+    width: 132px !important;
+    min-width: 132px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+}
+
+.sk-userlist-toolbar-skeleton-user.ant-skeleton-button {
+    width: 220px !important;
+    min-width: 160px !important;
+    max-width: 260px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+}
+
 .sk-userlist-toolbar-currentdate--employees {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -520,6 +582,33 @@ td:first-child {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.sk-userlist-lucide-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    height: 1em;
+}
+
+.sk-userlist-lucide-btn-icon svg {
+    display: block;
+    flex: 0 0 auto;
+    transform: translateY(0.5px);
+}
+
+.sk-userlist-toolbar-top .ant-btn .ant-btn-icon:has(.sk-userlist-lucide-btn-icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sk-userlist-add-super-popover {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) auto;
+    gap: 8px;
+    align-items: center;
 }
 
 .sk-userlist-employee-search {

@@ -446,6 +446,10 @@ const AppMenu23 = (props) => {
         });
     };
 
+    if (props.hidden) {
+        return null;
+    }
+
     return (
         <div>
             <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={'sk-main-menu'}>
