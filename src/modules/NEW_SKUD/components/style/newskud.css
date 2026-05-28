@@ -6,6 +6,121 @@
     grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
 }
 
+.newskud-page--super .layout--newskud {
+    min-height: 100vh;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
+    grid-template-columns:
+        minmax(260px, 2.4fr)
+        minmax(96px, 0.8fr)
+        minmax(130px, 1fr)
+        minmax(90px, 0.8fr)
+        minmax(86px, 0.8fr)
+        minmax(86px, 0.8fr)
+        minmax(120px, 1fr);
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-employee-cell {
+    order: 1;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-phone-cell {
+    order: 2;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
+    order: 3;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-claims-cell {
+    order: 4;
+}
+
+.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div {
+    display: block;
+}
+
+.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell svg,
+.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div::after {
+    display: none;
+}
+
+.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(7),
+.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(8) {
+    display: none;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-inline--tag-new {
+    width: min(118px, 100%);
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
+    background: color-mix(in srgb, #ff4d4f 30%, var(--app-surface-color)) !important;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office {
+    background: color-mix(in srgb, #52c41a 30%, var(--app-surface-color)) !important;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
+    background: color-mix(in srgb, #fadb14 36%, var(--app-surface-color)) !important;
+}
+
+.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--absent {
+    background: color-mix(in srgb, #ff4d4f 30%, var(--app-surface-color));
+}
+
+.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--office {
+    background: color-mix(in srgb, #52c41a 30%, var(--app-surface-color));
+}
+
+.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--left {
+    background: color-mix(in srgb, #fadb14 36%, var(--app-surface-color));
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked > .sk-userlist-employee-cell,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
+    background: var(--row-selected-color) !important;
+}
+
+.sk-userlist-toolbar-user {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    max-width: 260px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--app-text-color) 18%, var(--table-border-divider-color));
+    background: color-mix(in srgb, var(--app-surface-gray-color) 88%, var(--app-text-color));
+    box-shadow: 0 6px 18px rgba(34, 60, 80, 0.08);
+    backdrop-filter: blur(6px);
+    box-sizing: border-box;
+    color: var(--app-text-color);
+    font-weight: 500;
+    line-height: 1;
+}
+
+.sk-userlist-toolbar-user > span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .newskud-page .sk-usermonic-cardrow-ou-test.extended {
     grid-template-columns: 42px minmax(360px, 3.2fr) minmax(90px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(72px, 1fr) minmax(130px, 1.2fr) minmax(135px, 1.2fr) minmax(120px, 1fr) minmax(150px, 1.2fr) minmax(110px, 1fr);
 }
@@ -87,6 +202,15 @@
 .newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked > .sk-userlist-employee-cell,
 .newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-id-cell,
 .newskud-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
+    background: var(--row-selected-color) !important;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
     background: var(--row-selected-color) !important;
 }
 
@@ -713,6 +837,84 @@
 
 .newskud-page .sk-userlist-details-claims-list {
     display: grid;
+}
+
+.newskud-page .sk-userlist-super-summary-list {
+    display: grid;
+    gap: 8px;
+}
+
+.newskud-page--super .sk-userlist-super-summary-scroll {
+    height: calc(100vh - 46px - 46px - 5px);
+    min-height: 0;
+    overflow: hidden;
+}
+
+.newskud-page--super .sk-userlist-details-card--super-summary {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    max-height: 40vh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.newskud-page--super .sk-userlist-super-summary-body {
+    overflow-y: auto;
+    min-height: 0;
+    padding: 10px 7px 12px;
+}
+
+.newskud-page--super .sk-userlist-details-card--super-summary .sk-userlist-details-card-title {
+    min-height: 0;
+}
+
+.newskud-page .sk-userlist-super-summary-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--table-border-divider-color);
+    border-radius: 6px;
+    background: var(--row-main-bg-color);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.newskud-page .sk-userlist-super-summary-row:hover {
+    background: var(--row-hovered-bg-color);
+    border-color: var(--row-selected-color_2);
+}
+
+.newskud-page .sk-userlist-super-summary-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newskud-page .sk-userlist-super-summary-main {
+    min-width: 0;
+}
+
+.newskud-page .sk-userlist-super-summary-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--app-text-color);
+}
+
+.newskud-page .sk-userlist-super-summary-meta {
+    display: grid;
+    gap: 3px;
+    margin-top: 3px;
+    color: var(--app-secondary-text-color, #8c8c8c);
+    font-size: 12px;
+}
+
+.newskud-page .sk-userlist-super-summary-meta .sk-userlist-details-claim-period {
+    justify-content: flex-start;
+    gap: 6px;
 }
 
 .newskud-page .sk-userlist-create-claim-list {

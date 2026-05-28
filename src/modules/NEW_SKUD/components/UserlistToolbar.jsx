@@ -1,5 +1,6 @@
 ﻿import {Button, DatePicker, Dropdown} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
+import {Avatar, Skeleton, Switch} from "antd";
 
 
 import dayjs from "dayjs";
@@ -9,8 +10,13 @@ import {
     CaretLeftOutlined, CaretRightOutlined,
     FilterOutlined, PlusOutlined, UserOutlined
 } from "@ant-design/icons";
+import {LoginOutlined, ScheduleOutlined, UnorderedListOutlined} from "@ant-design/icons";
+import {ListChevronsDownUp, ListChevronsUpDown} from "lucide-react";
 import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
+import {message, Popover, Select} from "antd";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
+import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 
 
@@ -19,6 +25,17 @@ const UserListToolbar = (props) => {
     const {onChange, userData} = props;
 
     const [imExist, setImExist] = useState(false);
+    const isSuperUser = props.isSuperUser === true;
+    const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+    const [selectedSuperUserId, setSelectedSuperUserId] = useState(null);
+    const [isAddingSuperUser, setIsAddingSuperUser] = useState(false);
+    const [themeMode, setThemeMode] = useState(() => {
+        if (typeof window === 'undefined') {
+            return 'light';
+        }
+
+        return window.localStorage.getItem('skud_theme') === 'dark' ? 'dark' : 'light';
+    });
 
 
 
@@ -77,6 +94,106 @@ const UserListToolbar = (props) => {
         }
     }
 
+    const handleThemeChange = (checked) => {
+        const nextThemeMode = checked ? 'dark' : 'light';
+        setThemeMode(nextThemeMode);
+        window.localStorage.setItem('skud_theme', nextThemeMode);
+        window.location.reload();
+    };
+
+    const userMenuItems = [
+        {
+            key: 'newskud-bill-list',
+            icon: <ScheduleOutlined />,
+            label: 'Расчетный лист',
+            onClick: () => window.dispatchEvent(new CustomEvent('newskud:open-bill-list')),
+        },
+        {
+            key: 'newskud-claims-list',
+            icon: <UnorderedListOutlined />,
+            label: 'Список заявок',
+            onClick: () => window.dispatchEvent(new CustomEvent('newskud:open-claims-list')),
+        },
+        {
+            key: 'theme',
+            label: (
+                <div
+                    onClick={(event) => event.stopPropagation()}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minWidth: '160px' }}
+                >
+                    <span>Темная тема</span>
+                    <Switch
+                        size="small"
+                        checked={themeMode === 'dark'}
+                        onChange={handleThemeChange}
+                    />
+                </div>
+            ),
+        },
+        {
+            key: 'logout',
+            icon: <LoginOutlined />,
+            label: <a href="/logout">Выйти</a>,
+        },
+    ];
+
+    const addUserOptions = (props.baseUsers ?? [])
+        .filter((user) => user?.id != null && user?.type !== 'header')
+        .map((user) => ({
+            value: user.id,
+            label: [user.surname, user.name, user.patronymic].filter(Boolean).join(' ') || `ID ${user.id}`,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+    const handleAddSuperUser = async () => {
+        if (!selectedSuperUserId) {
+            return;
+        }
+
+        setIsAddingSuperUser(true);
+        try {
+            await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/set-for-super`, {
+                data: {
+                    user_id: selectedSuperUserId,
+                    for_super: 1,
+                },
+                _token: CSRF_TOKEN,
+            });
+            message.success('Сотрудник добавлен');
+            setSelectedSuperUserId(null);
+            setIsAddUserOpen(false);
+            props.onRefresh?.();
+        } catch (e) {
+            console.log(e);
+            message.error('Не удалось добавить сотрудника');
+        } finally {
+            setIsAddingSuperUser(false);
+        }
+    };
+
+    const addUserPopoverContent = (
+        <div className="sk-userlist-add-super-popover">
+            <Select
+                showSearch
+                allowClear
+                placeholder="Выберите сотрудника"
+                value={selectedSuperUserId}
+                options={addUserOptions}
+                optionFilterProp="label"
+                onChange={setSelectedSuperUserId}
+                style={{width: '260px'}}
+            />
+            <Button
+                type="primary"
+                loading={isAddingSuperUser}
+                disabled={!selectedSuperUserId}
+                onClick={handleAddSuperUser}
+            >
+                Добавить
+            </Button>
+        </div>
+    );
+
     useEffect(() => {
         if (props.command === "add_day"){
             setUsedDate(usedDate.add(1, 'day'));
@@ -111,19 +228,85 @@ const UserListToolbar = (props) => {
 
     const months = ['Января','Февраля','Марта','Апреля','Мая','Июня','Июля','Августа','Сентября','Октября','Ноября','Декабря']
 
+    if (props.isInitialLoading) {
+        return (
+            <div style={{width: '100%'}}>
+                <div className={'sk-header-container sk-userlist-toolbar-top sk-userlist-toolbar-top--skeleton'}>
+                    <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
+                        {isSuperUser ? (
+                            <>
+                                <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-button" />
+                                <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-create" />
+                            </>
+                        ) : (
+                            <>
+                                <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-button" />
+                                <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-icon" />
+                            </>
+                        )}
+                    </div>
+                    <div className="sk-flex sk-userlist-toolbar-top-center">
+                        <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-arrow" />
+                        <Skeleton.Input active size="small" className="sk-userlist-toolbar-skeleton-date" />
+                        <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-dot" />
+                        <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-arrow" />
+                    </div>
+                    <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
+                        <Skeleton.Button active size="small" className={isSuperUser ? 'sk-userlist-toolbar-skeleton-user' : 'sk-userlist-toolbar-skeleton-create'} />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
 
     return (
         <div style={{width: '100%'}}>
             <div className={'sk-header-container sk-userlist-toolbar-top'}>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
-                    <Button color={'default'}
-                            variant={props.isOpenFilters ? 'solid' : 'outlined'}
-                            icon={<FilterOutlined />}
-                            className={'sk-userlist-compact-btn'}
-                            title={'Фильтры'}
-                            onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
-                    ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
-                    {props.imExist && (
+                    {isSuperUser ? (
+                        <>
+                            <Popover
+                                trigger="click"
+                                placement="bottomLeft"
+                                open={isAddUserOpen}
+                                onOpenChange={setIsAddUserOpen}
+                                content={addUserPopoverContent}
+                            >
+                                <Button
+                                    type="primary"
+                                    icon={<PlusOutlined />}
+                                    className={'sk-userlist-compact-btn'}
+                                    title={'Добавить'}
+                                >
+                                    <span className={'sk-userlist-btn-label'}>Добавить</span>
+                                </Button>
+                            </Popover>
+                            <Button
+                                color={'default'}
+                                variant={'outlined'}
+                                className={'sk-userlist-compact-btn'}
+                                icon={props.isSuperListExpanded
+                                    ? <span className="sk-userlist-lucide-btn-icon"><ListChevronsDownUp size={16} strokeWidth={2.1} /></span>
+                                    : <span className="sk-userlist-lucide-btn-icon"><ListChevronsUpDown size={16} strokeWidth={2.1} /></span>}
+                                onClick={props.onToggleSuperListExpanded}
+                                title={props.isSuperListExpanded ? 'Свернуть список' : 'Раскрыть весь список'}
+                            >
+                                <span className={'sk-userlist-btn-label'}>
+                                    {props.isSuperListExpanded ? 'Свернуть' : 'Раскрыть весь список'}
+                                </span>
+                            </Button>
+                        </>
+                    ) : (
+                        <Button color={'default'}
+                                variant={props.isOpenFilters ? 'solid' : 'outlined'}
+                                icon={<FilterOutlined />}
+                                className={'sk-userlist-compact-btn'}
+                                title={'Фильтры'}
+                                onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
+                        ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
+                    )}
+                    {!isSuperUser && props.imExist && (
                         <Button
                             color={'default'}
                             variant={'outlined'}
@@ -190,16 +373,38 @@ const UserListToolbar = (props) => {
                     />
                 </div>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
-                    <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
-                        <Button
-                            type="primary"
-                            icon={<PlusOutlined />}
-                            className={'sk-userlist-compact-btn'}
-                            title={'Создать заявку'}
-                        >
-                            <span className={'sk-userlist-btn-label'}>Создать заявку</span>
-                        </Button>
-                    </Dropdown>
+                    {isSuperUser ? (
+                        <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
+                            <div
+                                className="sk-userlist-toolbar-user"
+                                title="Пользователь"
+                                role="button"
+                                tabIndex={0}
+                            >
+                                <Avatar
+                                    size={22}
+                                    style={{ backgroundColor: 'var(--app-soft-surface-color)', color: 'var(--app-text-color)' }}
+                                    icon={<UserOutlined />}
+                                />
+                                <span>
+                                    {props.userData?.user
+                                        ? `${props.userData.user.surname} ${props.userData.user.name}`
+                                        : 'Пользователь'}
+                                </span>
+                            </div>
+                        </Dropdown>
+                    ) : (
+                        <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                className={'sk-userlist-compact-btn'}
+                                title={'Создать заявку'}
+                            >
+                                <span className={'sk-userlist-btn-label'}>Создать заявку</span>
+                            </Button>
+                        </Dropdown>
+                    )}
                 </div>
             </div>
             {/*
