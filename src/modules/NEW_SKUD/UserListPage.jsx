@@ -87,6 +87,8 @@ const UserListInitialLoader = ({phase}) => (
 
 const UserList = (props)=>{
   const { userdata } = props;
+    console.log('userdata', userdata);
+    console.log('userdata.user', userdata?.user);
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const isSuperUser = isTruthyFlag(userdata?.user?.super);
   const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
