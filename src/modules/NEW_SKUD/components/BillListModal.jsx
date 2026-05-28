@@ -154,14 +154,67 @@ const downloadBlob = (blob, filename) => {
 };
 
 const BILL_LIST_USER_SELECT_ACL = 88;
+const BILL_LIST_FILTERS_ONLY_DEPARTMENT_IDS = [17, 18];
+const BILL_LIST_EMPLOYEE_GROUP_OPTIONS = [
+    {id: 'office', name: 'Офис'},
+    {id: 'kpp', name: 'КПП'},
+    {id: 'builders', name: 'Строители'},
+];
 
 const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
 
 const hasFullUserSelectAccess = (userdata) => (
     isTruthyFlag(userdata?.user?.super)
     || isTruthyFlag(userdata?.user?.is_admin)
+    || Number(userdata?.user?.sales_role) === 3
     || (Array.isArray(userdata?.acls) && userdata.acls.some((acl) => Number(acl) === BILL_LIST_USER_SELECT_ACL))
 );
+
+const hasEmployeeGroupFilterAccess = (userdata) => (
+    isTruthyFlag(userdata?.user?.super)
+    || isTruthyFlag(userdata?.user?.is_admin)
+    || Number(userdata?.user?.sales_role) === 3
+);
+
+const getUserDepartmentId = (user) => (
+    user?.department_id
+    ?? user?.department
+    ?? user?.depart_id
+    ?? user?.id_department
+    ?? user?.department?.id
+);
+
+const isBillListFiltersOnlyUser = (user) => (
+    BILL_LIST_FILTERS_ONLY_DEPARTMENT_IDS.includes(Number(getUserDepartmentId(user)))
+);
+
+const getBillListStatsRoute = (user) => {
+    const departmentId = Number(getUserDepartmentId(user));
+
+    if (departmentId === 18) {
+        return `${ROUTE_PREFIX}/timeskud/employee-builder-month-stats`;
+    }
+
+    if (departmentId === 17) {
+        return `${ROUTE_PREFIX}/timeskud/employee-kpp-month-stats`;
+    }
+
+    return `${ROUTE_PREFIX}/timeskud/employee-month-stats`;
+};
+
+const isUserInEmployeeGroup = (user, group) => {
+    const departmentId = Number(getUserDepartmentId(user));
+
+    if (group === 'kpp') {
+        return departmentId === 17;
+    }
+
+    if (group === 'builders') {
+        return departmentId === 18;
+    }
+
+    return !BILL_LIST_FILTERS_ONLY_DEPARTMENT_IDS.includes(departmentId);
+};
 
 const getUserId = (user) => user?.id ?? user?.user_id;
 
@@ -172,7 +225,20 @@ const getUserFullName = (user) => (
 const prepareUserOption = (user) => ({
     id: getUserId(user),
     name: getUserFullName(user) || `#${getUserId(user)}`,
+    department_id: getUserDepartmentId(user),
 });
+
+const findSelectedUser = (selectedUserId, userList, usersOptions, currentUser) => {
+    if (!selectedUserId) {
+        return null;
+    }
+
+    return [
+        ...(Array.isArray(userList) ? userList : []),
+        ...(Array.isArray(usersOptions) ? usersOptions : []),
+        currentUser,
+    ].find((user) => Number(getUserId(user)) === Number(selectedUserId)) ?? null;
+};
 
 const uniqueAndSortUserOptions = (users) => users
     .filter((user) => user?.id != null)
@@ -251,6 +317,10 @@ const formatAxisMinutesAsTime = (value) => {
 
     return `${hours}:${String(minutes).padStart(2, '0')}`;
 };
+
+const getFirstPresentValue = (source, keys) => keys
+    .map((key) => getValueByPath(source, key))
+    .find((value) => value !== null && value !== undefined && value !== '');
 
 const formatAttendanceDayLabel = (day, selectedMonth, selectedYear) => {
     const date = dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
@@ -461,6 +531,7 @@ const BillListModal = (props) => {
 
     const [usersOptions, setUsersOptions] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedEmployeeGroup, setSelectedEmployeeGroup] = useState('office');
     const [selectedMonth, setSelectedMonth] = useState(dayjs().month() + 1);
     const [selectedYear, setSelectedYear] = useState(dayjs().year());
 
@@ -468,11 +539,21 @@ const BillListModal = (props) => {
     const [attendanceInfo, setAttendanceInfo] = useState(null);
 
     const canSelectAllUsers = hasFullUserSelectAccess(props.userdata);
+    const selectedUserInfo = findSelectedUser(selectedUser, props.user_list, usersOptions, props.userdata?.user);
+    const usesSpecialBillListEndpoint = isBillListFiltersOnlyUser(selectedUserInfo);
+    const isSelectedKppUser = Number(getUserDepartmentId(selectedUserInfo)) === 17;
+    const shouldUseWorkLabels = usesSpecialBillListEndpoint;
     const subordinateUsersOptions = useMemo(
         () => getSubordinateUsersOptions(props.user_list, props.userdata?.user),
         [props.user_list, props.userdata?.user]
     );
     const canSelectUser = canSelectAllUsers || subordinateUsersOptions.length > 1;
+    const canFilterEmployeeGroup = canSelectUser && hasEmployeeGroupFilterAccess(props.userdata);
+    const filteredUsersOptions = useMemo(() => (
+        canFilterEmployeeGroup
+            ? (usersOptions ?? []).filter((user) => isUserInEmployeeGroup(user, selectedEmployeeGroup))
+            : usersOptions
+    ), [canFilterEmployeeGroup, selectedEmployeeGroup, usersOptions]);
     const currentUserName = getUserFullName(props.userdata?.user) || `#${props.userdata?.user?.id ?? ''}`;
 
     useEffect(() => {
@@ -508,15 +589,30 @@ const BillListModal = (props) => {
     }, [canSelectAllUsers, subordinateUsersOptions]);
 
     useEffect(() => {
+        if (!canFilterEmployeeGroup || !Array.isArray(filteredUsersOptions) || filteredUsersOptions.length === 0) {
+            return;
+        }
+
+        if (!filteredUsersOptions.some((user) => Number(user.id) === Number(selectedUser))) {
+            setSelectedUser(filteredUsersOptions[0].id);
+        }
+    }, [canFilterEmployeeGroup, filteredUsersOptions, selectedUser]);
+
+    useEffect(() => {
         if (isMounted && selectedUser && selectedMonth && selectedYear) {
             const timer = setTimeout(() => {
                 fetchBillListInfo().then();
-                fetchAttendanceInfo().then();
+                if (usesSpecialBillListEndpoint) {
+                    setAttendanceInfo(null);
+                    setIsLoadingAttendance(false);
+                } else {
+                    fetchAttendanceInfo().then();
+                }
             }, 200);
 
             return () => clearTimeout(timer);
         }
-    }, [isMounted, selectedUser, selectedMonth, selectedYear]);
+    }, [isMounted, selectedUser, selectedMonth, selectedYear, usesSpecialBillListEndpoint]);
 
     useEffect(() => {
         const initialUserId = props.initial_user_id ?? props.userdata?.user?.id;
@@ -556,7 +652,7 @@ const BillListModal = (props) => {
             setIsLoadingBillList(true);
             setBillListInfo(null);
 
-            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/employee-month-stats`, {
+            const response = await PROD_AXIOS_INSTANCE.post(getBillListStatsRoute(selectedUserInfo), {
                 data: {
                     user_id: selectedUser,
                     month: selectedMonth,
@@ -641,6 +737,23 @@ const BillListModal = (props) => {
         return `${numericValue.toFixed(2)} ч`;
     };
 
+    const formatMoneyValue = (value) => {
+        if (value === null || value === undefined || value === '') {
+            return 'вЂ”';
+        }
+
+        const numericValue = Number(value);
+
+        if (Number.isNaN(numericValue)) {
+            return String(value);
+        }
+
+        return new Intl.NumberFormat('ru-RU', {
+            minimumFractionDigits: Number.isInteger(numericValue) ? 0 : 2,
+            maximumFractionDigits: 2,
+        }).format(numericValue);
+    };
+
     const fetchAttendanceInfo = async () => {
         const requestId = attendanceRequestRef.current + 1;
         attendanceRequestRef.current = requestId;
@@ -714,8 +827,11 @@ const BillListModal = (props) => {
 
             return {
                 ...row,
+                label: row.key === 'office' && shouldUseWorkLabels ? 'Работа' : row.label,
+                eventLabel: row.key === 'office' && shouldUseWorkLabels ? 'Рабочие дни' : row.label,
                 days: formatDaysValue(metric?.days),
                 hours: formatMetricTimeValue(metric),
+                rateSum: formatMoneyValue(metric?.rate_sum),
                 byDays: Array.isArray(metric?.by_days) ? metric.by_days : [],
                 hasData: hasMetricData(metric),
             };
@@ -723,10 +839,27 @@ const BillListModal = (props) => {
         .filter((row) => row.hasData);
 
     const summaryMeta = {
-        workDays: formatDaysValue(billListInfo?.calendar_info?.days),
-        normHours: formatMetricTimeValue(billListInfo?.calendar_info),
+        workDays: usesSpecialBillListEndpoint
+            ? formatDaysValue(billListInfo?.worked_days_total)
+            : formatDaysValue(billListInfo?.calendar_info?.days),
+        normHours: usesSpecialBillListEndpoint
+            ? formatHoursValue(billListInfo?.worked_hours_total)
+            : formatMetricTimeValue(billListInfo?.calendar_info),
+        bet: formatMoneyValue(billListInfo?.rate?.bet),
+        moneyTotal: formatMoneyValue(getFirstPresentValue(billListInfo, [
+            'total',
+            'alltotal',
+            'worked.rate_sum',
+            'office.rate_sum',
+            'rate_sum_total',
+        ])),
         rows: summaryRows,
     };
+    const bankPaymentRows = Array.isArray(billListInfo?.oplatanabankday)
+        ? billListInfo.oplatanabankday
+        : [];
+    const bankPaymentRemainder = bankPaymentRows.at(-1)?.is_remainder ? bankPaymentRows.at(-1) : null;
+    const visibleBankPaymentRows = bankPaymentRemainder ? bankPaymentRows.slice(0, -1) : bankPaymentRows;
     const eventRows = summaryMeta.rows.filter((row) => row.byDays.length > 0);
     const attendanceChartData = useMemo(() => {
         const daysCount = dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01`).daysInMonth();
@@ -1041,7 +1174,7 @@ const BillListModal = (props) => {
                                 <Select
                                     placeholder={'Сотрудник'}
                                     style={{width: '300px'}}
-                                    options={prepareOptions(usersOptions) ?? []}
+                                    options={prepareOptions(filteredUsersOptions) ?? []}
                                     showSearch
                                     optionFilterProp="label"
                                     filterOption={(input, option) =>
@@ -1054,6 +1187,15 @@ const BillListModal = (props) => {
                                 <div className={'bill-list-current-user'}>
                                     <div className={'bill-list-current-user-name'}>{currentUserName}</div>
                                 </div>
+                            )}
+                            {canFilterEmployeeGroup && (
+                                <Select
+                                    placeholder={'Группа'}
+                                    style={{width: '150px'}}
+                                    options={prepareOptions(BILL_LIST_EMPLOYEE_GROUP_OPTIONS) ?? []}
+                                    value={selectedEmployeeGroup}
+                                    onChange={setSelectedEmployeeGroup}
+                                />
                             )}
                             <Select
                                 placeholder={'Месяц'}
@@ -1070,7 +1212,7 @@ const BillListModal = (props) => {
                                 onChange={setSelectedYear}
                             />
                         </div>
-                        {canSelectUser && (
+                        {canSelectUser && !usesSpecialBillListEndpoint && (
                             <Tooltip title={'По выбранному году и месяцу'}>
                                 <Button
                                     className={'bill-list-export-button'}
@@ -1088,7 +1230,7 @@ const BillListModal = (props) => {
                 {isLoadingBillList ? renderBillListSkeleton() : (
                     <div className={'bill-list-modal-body'}>
                         <div className={'bill-list-summary'}>
-                            <div className={'bill-list-summary-cards'}>
+                            <div className={`bill-list-summary-cards ${usesSpecialBillListEndpoint ? 'bill-list-summary-cards--special bill-list-summary-cards--four' : ''}`}>
                                 <div className={'bill-list-summary-card'}>
                                     <div className={'bill-list-summary-card-label'}>
                                         {'Рабочих дней в месяце'}
@@ -1099,15 +1241,31 @@ const BillListModal = (props) => {
                                     <div className={'bill-list-summary-card-label'}>
                                         {'Норма часов'}
                                     </div>
+                                    {usesSpecialBillListEndpoint && (
+                                        <div className={'bill-list-summary-card-label'}>{'Рабочих часов в месяц'}</div>
+                                    )}
                                     <div className={'bill-list-summary-card-value'}>{summaryMeta.normHours}</div>
                                 </div>
+                                {usesSpecialBillListEndpoint && (
+                                    <div className={'bill-list-summary-card'}>
+                                        <div className={'bill-list-summary-card-label'}>{'Ставка'}</div>
+                                        <div className={'bill-list-summary-card-value'}>{summaryMeta.bet}</div>
+                                    </div>
+                                )}
+                                {usesSpecialBillListEndpoint && (
+                                    <div className={'bill-list-summary-card'}>
+                                        <div className={'bill-list-summary-card-label'}>{'Сумма'}</div>
+                                        <div className={'bill-list-summary-card-value'}>{summaryMeta.moneyTotal}</div>
+                                    </div>
+                                )}
                             </div>
 
-                            <div className={'bill-list-summary-table'}>
+                            <div className={`bill-list-summary-table ${usesSpecialBillListEndpoint ? 'bill-list-summary-table--with-money' : ''}`}>
                                 <div className={'bill-list-summary-table-header'}>
                                     <div>{'Показатель'}</div>
                                     <div>{'Дней'}</div>
                                     <div>{'Часов'}</div>
+                                    {usesSpecialBillListEndpoint && <div>{'₽'}</div>}
                                 </div>
                                 {summaryMeta.rows.map((row) => {
                                     const rowContent = (
@@ -1115,6 +1273,7 @@ const BillListModal = (props) => {
                                             <div>{row.label}</div>
                                             <div>{row.days}</div>
                                             <div>{row.hours}</div>
+                                            {usesSpecialBillListEndpoint && <div>{row.rateSum}</div>}
                                         </div>
                                     );
 
@@ -1127,6 +1286,25 @@ const BillListModal = (props) => {
                                     );
                                 })}
                             </div>
+                            {bankPaymentRows.length > 0 && (
+                                <div className={'bill-list-summary-table bill-list-bank-payments'}>
+                                    <div className={'bill-list-bank-payments-title'}>{'Выплаты на банковскую карту'}</div>
+                                    <div className={'bill-list-summary-table-header'}>
+                                        <div>{'Дата'}</div>
+                                        <div>{'₽'}</div>
+                                    </div>
+                                    {visibleBankPaymentRows.map((payment, index) => (
+                                        <div className={'bill-list-summary-table-row'} key={`${payment?.date_unix ?? payment?.date ?? index}-${index}`}>
+                                            <div>{payment?.date_text ?? payment?.day ?? payment?.date_time ?? 'вЂ”'}</div>
+                                            <div>{formatMoneyValue(payment?.sum)}</div>
+                                        </div>
+                                    ))}
+                                    <div className={'bill-list-summary-table-row bill-list-summary-table-row--total'}>
+                                        <div>{'К выплате'}</div>
+                                        <div>{formatMoneyValue(bankPaymentRemainder?.sum)}</div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <Collapse
@@ -1145,7 +1323,7 @@ const BillListModal = (props) => {
                                                             <Tooltip title={row.tooltip}>
                                                                 <span>{row.label}</span>
                                                             </Tooltip>
-                                                        ) : row.label}
+                                                        ) : (row.eventLabel ?? row.label)}
                                                     </div>
                                                     <div className={'days-cell'}>
                                                         {row.byDays.length > 0 ? row.byDays.map((item) => (
@@ -1166,6 +1344,7 @@ const BillListModal = (props) => {
                                 },
                             ]}
                         />
+                        {!usesSpecialBillListEndpoint && (
                         <div className={'bill-list-attendance-chart'}>
                             <div className={'bill-list-attendance-chart-title'}>Рабочий график за {MONTH_NAMES_RU[selectedMonth] ?? ''}</div>
                             <Spin spinning={isLoadingAttendance}>
@@ -1177,6 +1356,7 @@ const BillListModal = (props) => {
                                 <div className={'bill-list-attendance-chart-empty'}>Нет данных входов и выходов за выбранный месяц</div>
                             )}
                         </div>
+                        )}
                     </div>
                 )}
             </div>

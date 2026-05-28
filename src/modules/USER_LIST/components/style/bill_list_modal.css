@@ -60,6 +60,18 @@
             gap: 12px;
         }
 
+        .bill-list-summary-cards--three {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .bill-list-summary-cards--four {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .bill-list-summary-cards--special .bill-list-summary-card:nth-child(2) > .bill-list-summary-card-label:first-child {
+            display: none;
+        }
+
         .bill-list-summary-card {
             padding: 14px 16px;
             background-color: var(--app-soft-surface-color);
@@ -99,6 +111,11 @@
             align-items: center;
         }
 
+        .bill-list-summary-table--with-money .bill-list-summary-table-header,
+        .bill-list-summary-table--with-money .bill-list-summary-table-row {
+            grid-template-columns: minmax(180px, 1.5fr) 120px 160px 120px;
+        }
+
         .bill-list-summary-table-header {
             min-height: 40px;
             padding: 0 14px;
@@ -120,6 +137,35 @@
             background-color: var(--row-second-bg-color);
         }
 
+        .bill-list-bank-payments {
+            gap: 1px;
+        }
+
+        .bill-list-bank-payments-title {
+            min-height: 40px;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: var(--app-soft-surface-color);
+            border-bottom: 1px solid var(--table-border-divider-color);
+        }
+
+        .bill-list-bank-payments .bill-list-summary-table-header,
+        .bill-list-bank-payments .bill-list-summary-table-row {
+            grid-template-columns: minmax(180px, 1fr) 160px;
+        }
+
+        .bill-list-bank-payments .bill-list-summary-table-header > div:nth-child(2),
+        .bill-list-bank-payments .bill-list-summary-table-row > div:nth-child(2) {
+            text-align: center;
+        }
+
+        .bill-list-summary-table-row--total {
+            font-weight: 600;
+        }
+
         .bill-list-summary-table-row--danger {
             color: #cf1322;
             font-weight: 600;
@@ -127,8 +173,10 @@
 
         .bill-list-summary-table-header > div:nth-child(2),
         .bill-list-summary-table-header > div:nth-child(3),
+        .bill-list-summary-table-header > div:nth-child(4),
         .bill-list-summary-table-row > div:nth-child(2),
-        .bill-list-summary-table-row > div:nth-child(3) {
+        .bill-list-summary-table-row > div:nth-child(3),
+        .bill-list-summary-table-row > div:nth-child(4) {
             text-align: center;
         }
 

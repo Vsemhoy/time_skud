@@ -145,21 +145,27 @@
     align-items: center;
     justify-content: center;
     min-height: 38px;
-    padding: 2px;
+    padding: 0;
 }
 
 .sk-kpp-schedule-select {
     width: 100%;
     min-width: 28px;
-    max-width: 42px;
+    align-self: stretch;
+    min-height: 38px;
 }
 
 .sk-kpp-schedule-select .ant-select-selector {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 38px !important;
     padding: 0 2px !important;
+    border-radius: 0 !important;
 }
 
 .sk-kpp-schedule-select .ant-select-selection-item {
     padding-inline-end: 10px !important;
+    line-height: 36px !important;
     text-align: center;
 }
 
