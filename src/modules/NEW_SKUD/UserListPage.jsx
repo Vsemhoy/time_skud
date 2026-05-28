@@ -87,8 +87,6 @@ const UserListInitialLoader = ({phase}) => (
 
 const UserList = (props)=>{
   const { userdata } = props;
-    console.log('userdata', userdata);
-    console.log('userdata.user', userdata?.user);
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const isSuperUser = isTruthyFlag(userdata?.user?.super);
   const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
@@ -1068,102 +1066,106 @@ const UserList = (props)=>{
       : a.department_id - b.department_id;
   };
 
-  const filteredUsers = useMemo(() => {
-      if (!userListData || userListData.length === 0) return [];
-      let userList = JSON.parse(JSON.stringify(userListData));
+    const filteredUsers = useMemo(() => {
+        if (!userListData || userListData.length === 0) return [];
+        let userList = JSON.parse(JSON.stringify(userListData));
 
-      let companyFilter = innerFilters.find((item)=> item.key === 'id_company');
-      if (companyFilter) {
-        userList = filterUserListByCompany(userList, companyFilter.value);
-      }
-      let departFilter = innerFilters.find((item)=> item.key === 'depart_id');
-      if (departFilter){
-        userList = filterUserListByDepartment(userList, departFilter.value);
-      }
-      userList = filterVisibleUsers(userList);
-      if (isSuperCompactMode) {
-        userList = filterSuperUsers(userList);
-      }
-      userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
+        userList = filterVisibleUsers(userList);
 
-      // SortData
-      let sortedData = userList ?? [];
-      switch (innerSortByValue) {
-          case "department_asc":
-              sortedData.sort((a, b) => {
-                const prioritySort = prioritizeBossInDepartment(a, b);
-                if (prioritySort !== null) {
-                  return prioritySort;
-                }
-                if (a.department_id === b.department_id) {
-                  return b.rang - a.rang;
-                }
-                return compareDepartmentOrder(a, b, 'asc');
-              });
-              if (!isSuperCompactMode) {
+        if (isSuperCompactMode) {
+            userList = filterSuperUsers(userList);
+            userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
+            userList.sort((a, b) => {
+                const aIsMe = Number(a.id) === Number(userdata?.user?.id);
+                const bIsMe = Number(b.id) === Number(userdata?.user?.id);
+                if (aIsMe) return -1;
+                if (bIsMe) return 1;
+                return (a.rang ?? 0) - (b.rang ?? 0);
+            });
+            return userList;
+        }
+
+        let companyFilter = innerFilters.find((item) => item.key === 'id_company');
+        if (companyFilter) {
+            userList = filterUserListByCompany(userList, companyFilter.value);
+        }
+        let departFilter = innerFilters.find((item) => item.key === 'depart_id');
+        if (departFilter) {
+            userList = filterUserListByDepartment(userList, departFilter.value);
+        }
+        userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
+
+        let sortedData = userList ?? [];
+        switch (innerSortByValue) {
+            case "department_asc":
+                sortedData.sort((a, b) => {
+                    const prioritySort = prioritizeBossInDepartment(a, b);
+                    if (prioritySort !== null) {
+                        return prioritySort;
+                    }
+                    if (a.department_id === b.department_id) {
+                        return b.rang - a.rang;
+                    }
+                    return compareDepartmentOrder(a, b, 'asc');
+                });
                 sortedData = insertDepartmentNames(sortedData);
-              }
-              break;
+                break;
 
-          case "department_desc":
-              sortedData.sort((a, b) => {
-                const prioritySort = prioritizeBossInDepartment(a, b);
-                if (prioritySort !== null) {
-                  return prioritySort;
-                }
-                if (a.department_id === b.department_id) {
-                  return b.rang - a.rang;
-                }
-                return compareDepartmentOrder(a, b, 'desc');
-              });
-              break;
+            case "department_desc":
+                sortedData.sort((a, b) => {
+                    const prioritySort = prioritizeBossInDepartment(a, b);
+                    if (prioritySort !== null) {
+                        return prioritySort;
+                    }
+                    if (a.department_id === b.department_id) {
+                        return b.rang - a.rang;
+                    }
+                    return compareDepartmentOrder(a, b, 'desc');
+                });
+                break;
 
-          case "name_asc":
-              sortedData.sort((a, b) => a.name.localeCompare(b.name));
-              break;
+            case "name_asc":
+                sortedData.sort((a, b) => a.name.localeCompare(b.name));
+                break;
 
-          case "name_desc":
-              sortedData.sort((a, b) => b.name.localeCompare(a.name));
-              break;
+            case "name_desc":
+                sortedData.sort((a, b) => b.name.localeCompare(a.name));
+                break;
 
-          case "surname_asc":
-              sortedData.sort((a, b) => a.surname.localeCompare(b.surname));
-              break;
+            case "surname_asc":
+                sortedData.sort((a, b) => a.surname.localeCompare(b.surname));
+                break;
 
-          case "surname_desc":
-              sortedData.sort((a, b) => b.surname.localeCompare(a.surname));
-              break;
+            case "surname_desc":
+                sortedData.sort((a, b) => b.surname.localeCompare(a.surname));
+                break;
 
-          case "state_asc":
-              sortedData.sort((a, b) => a.current_state - b.current_state);
-              break;
+            case "state_asc":
+                sortedData.sort((a, b) => a.current_state - b.current_state);
+                break;
 
-          case "state_desc":
-            sortedData.sort((a, b) => b.current_state - a.current_state);
-          //   console.log( sortedData);
-            break;
+            case "state_desc":
+                sortedData.sort((a, b) => b.current_state - a.current_state);
+                break;
 
-        default:
-          sortedData.sort((a, b) => {
-            const prioritySort = prioritizeBossInDepartment(a, b);
-            if (prioritySort !== null) {
-              return prioritySort;
-            }
-            if (a.department_id === b.department_id) {
-              return b.rang - a.rang;
-            }
-            return compareDepartmentOrder(a, b, 'asc');
-          });
-          if (!isSuperCompactMode) {
-            sortedData = insertDepartmentNames(sortedData);
-          }
-          break;
-      }
+            default:
+                sortedData.sort((a, b) => {
+                    const prioritySort = prioritizeBossInDepartment(a, b);
+                    if (prioritySort !== null) {
+                        return prioritySort;
+                    }
+                    if (a.department_id === b.department_id) {
+                        return b.rang - a.rang;
+                    }
+                    return compareDepartmentOrder(a, b, 'asc');
+                });
+                sortedData = insertDepartmentNames(sortedData);
+                break;
+        }
 
-
-    console.log('sorted', sortedData)
-      return sortedData;
-  }, [userListData, innerSortByValue, innerFilters, employeeSearchValue, isSuperCompactMode, userdata?.user?.id]);
+        console.log('sorted', sortedData);
+        return sortedData;
+    }, [userListData, innerSortByValue, innerFilters, employeeSearchValue, isSuperCompactMode, userdata?.user?.id]);
 
   const navigableUsers = useMemo(() => {
     return filteredUsers.filter((item) => item?.id != null && item?.type !== 'header');
