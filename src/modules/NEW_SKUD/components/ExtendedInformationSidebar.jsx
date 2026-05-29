@@ -222,7 +222,11 @@ const isVacationClaim = (claim) => {
         claim?.state_text,
     ].filter(Boolean).join(' ').toLowerCase();
 
-    return [9, 10].includes(claimTypeId) || claimText.includes('отпуск');
+    if (claimTypeId === 9 || claimText.includes('за свой') || claimText.includes('неоплач')) {
+        return false;
+    }
+
+    return claimTypeId === 10 || claimText.includes('плановый отпуск') || claimText.includes('очередные отпуска');
 };
 
 const isClaimInMonth = (claim, monthSource) => {
