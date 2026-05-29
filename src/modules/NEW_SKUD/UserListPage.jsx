@@ -1097,10 +1097,11 @@ const UserList = (props)=>{
 
       let sortedData = userList ?? [];
       if (isSuperCompactMode) {
+        const ruCollator = new Intl.Collator('ru', {sensitivity: 'base', numeric: true});
         sortedData.sort((a, b) => {
           const currentSuperId = Number(userdata?.user?.id);
-          const isASuper = Number(a?.id) === currentSuperId || isTruthyFlag(a?.super);
-          const isBSuper = Number(b?.id) === currentSuperId || isTruthyFlag(b?.super);
+          const isASuper = Number(a?.id) === currentSuperId;
+          const isBSuper = Number(b?.id) === currentSuperId;
 
           if (isASuper && !isBSuper) {
             return -1;
@@ -1113,7 +1114,7 @@ const UserList = (props)=>{
           const nameA = [a?.surname, a?.name, a?.patronymic].filter(Boolean).join(' ');
           const nameB = [b?.surname, b?.name, b?.patronymic].filter(Boolean).join(' ');
 
-          return nameA.localeCompare(nameB, 'ru');
+          return ruCollator.compare(nameA, nameB);
         });
 
         return sortedData;
