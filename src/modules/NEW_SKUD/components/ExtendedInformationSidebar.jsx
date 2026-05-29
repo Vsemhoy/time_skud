@@ -216,13 +216,27 @@ const isVacationClaim = (claim) => {
     const claimTypeId = Number(claim?.skud_current_state_id ?? claim?.skud_current_state?.id);
     const claimText = [
         claim?.skud_current_state?.name,
+        claim?.skud_current_state?.badge,
         claim?.skud_current_state?.title,
         claim?.skud_current_state?.text,
+        claim?.state_name,
+        claim?.state_badge,
         claim?.state_title,
         claim?.state_text,
+        claim?.badge,
+        claim?.title,
+        claim?.text,
     ].filter(Boolean).join(' ').toLowerCase();
 
-    if (claimTypeId === 9 || claimText.includes('за свой') || claimText.includes('неоплач')) {
+    if (
+        claimTypeId === 9
+        || claimText.includes('за свой')
+        || claimText.includes('свой сч')
+        || claimText.includes('свой счет')
+        || claimText.includes('свой счёт')
+        || claimText.includes('неоплач')
+        || claimText.includes('св.отпуск')
+    ) {
         return false;
     }
 
