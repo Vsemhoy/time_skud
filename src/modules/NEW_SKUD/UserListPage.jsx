@@ -1073,14 +1073,25 @@ const UserList = (props)=>{
         userList = filterVisibleUsers(userList);
 
         if (isSuperCompactMode) {
+            const ruCollator = new Intl.Collator('ru', {sensitivity: 'base', numeric: true});
             userList = filterSuperUsers(userList);
             userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
             userList.sort((a, b) => {
-                const aIsMe = Number(a.id) === Number(userdata?.user?.id);
-                const bIsMe = Number(b.id) === Number(userdata?.user?.id);
-                if (aIsMe) return -1;
-                if (bIsMe) return 1;
-                return (a.rang ?? 0) - (b.rang ?? 0);
+                const aIsMe = Number(a?.id) === Number(userdata?.user?.id);
+                const bIsMe = Number(b?.id) === Number(userdata?.user?.id);
+
+                if (aIsMe && !bIsMe) {
+                    return -1;
+                }
+
+                if (!aIsMe && bIsMe) {
+                    return 1;
+                }
+
+                const nameA = [a?.surname, a?.name, a?.patronymic].filter(Boolean).join(' ');
+                const nameB = [b?.surname, b?.name, b?.patronymic].filter(Boolean).join(' ');
+
+                return ruCollator.compare(nameA, nameB);
             });
             return userList;
         }
@@ -1096,30 +1107,6 @@ const UserList = (props)=>{
         userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
 
       let sortedData = userList ?? [];
-      if (isSuperCompactMode) {
-        const ruCollator = new Intl.Collator('ru', {sensitivity: 'base', numeric: true});
-        sortedData.sort((a, b) => {
-          const currentSuperId = Number(userdata?.user?.id);
-          const isASuper = Number(a?.id) === currentSuperId;
-          const isBSuper = Number(b?.id) === currentSuperId;
-
-          if (isASuper && !isBSuper) {
-            return -1;
-          }
-
-          if (!isASuper && isBSuper) {
-            return 1;
-          }
-
-          const nameA = [a?.surname, a?.name, a?.patronymic].filter(Boolean).join(' ');
-          const nameB = [b?.surname, b?.name, b?.patronymic].filter(Boolean).join(' ');
-
-          return ruCollator.compare(nameA, nameB);
-        });
-
-        return sortedData;
-      }
-
       switch (innerSortByValue) {
             case "department_asc":
                 sortedData.sort((a, b) => {
