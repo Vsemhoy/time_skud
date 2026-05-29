@@ -1095,8 +1095,31 @@ const UserList = (props)=>{
         }
         userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
 
-        let sortedData = userList ?? [];
-        switch (innerSortByValue) {
+      let sortedData = userList ?? [];
+      if (isSuperCompactMode) {
+        sortedData.sort((a, b) => {
+          const currentSuperId = Number(userdata?.user?.id);
+          const isASuper = Number(a?.id) === currentSuperId || isTruthyFlag(a?.super);
+          const isBSuper = Number(b?.id) === currentSuperId || isTruthyFlag(b?.super);
+
+          if (isASuper && !isBSuper) {
+            return -1;
+          }
+
+          if (!isASuper && isBSuper) {
+            return 1;
+          }
+
+          const nameA = [a?.surname, a?.name, a?.patronymic].filter(Boolean).join(' ');
+          const nameB = [b?.surname, b?.name, b?.patronymic].filter(Boolean).join(' ');
+
+          return nameA.localeCompare(nameB, 'ru');
+        });
+
+        return sortedData;
+      }
+
+      switch (innerSortByValue) {
             case "department_asc":
                 sortedData.sort((a, b) => {
                     const prioritySort = prioritizeBossInDepartment(a, b);
