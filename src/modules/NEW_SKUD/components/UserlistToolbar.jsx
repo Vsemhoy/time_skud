@@ -8,14 +8,14 @@ import dayjs from "dayjs";
 import '../../../assets/timeskud.css'
 import {
     CaretLeftOutlined, CaretRightOutlined,
-    FilterOutlined, PlusOutlined, UserOutlined
+    FilterOutlined, HomeOutlined, PlusOutlined, UserOutlined
 } from "@ant-design/icons";
 import {LoginOutlined, ScheduleOutlined, UnorderedListOutlined} from "@ant-design/icons";
 import {ListChevronsDownUp, ListChevronsUpDown} from "lucide-react";
 import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
 import {message, Popover, Select} from "antd";
-import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config";
+import {CSRF_TOKEN, HTTP_HOST, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
 
@@ -102,6 +102,13 @@ const UserListToolbar = (props) => {
     };
 
     const userMenuItems = [
+        ...(isSuperUser ? [
+            {
+                key: 'home',
+                icon: <HomeOutlined />,
+                label: <a href={HTTP_HOST}>Домой</a>,
+            },
+        ] : []),
         {
             key: 'newskud-bill-list',
             icon: <ScheduleOutlined />,
@@ -114,7 +121,7 @@ const UserListToolbar = (props) => {
             label: 'Список заявок',
             onClick: () => window.dispatchEvent(new CustomEvent('newskud:open-claims-list')),
         },
-        {
+        ...(!isSuperUser ? [{
             key: 'theme',
             label: (
                 <div
@@ -129,11 +136,11 @@ const UserListToolbar = (props) => {
                     />
                 </div>
             ),
-        },
+        }] : []),
         {
             key: 'logout',
             icon: <LoginOutlined />,
-            label: <a href="/logout">Выйти</a>,
+            label: <a href={`${HTTP_HOST}/logout`}>Выйти</a>,
         },
     ];
 
