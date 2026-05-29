@@ -405,6 +405,7 @@ const ExtendedInformationSidebar = (props) => {
     const [baseRules, setBaseRules] = useState([]);
     const [isScheduleLoading, setIsScheduleLoading] = useState(false);
     const [superClaims, setSuperClaims] = useState([]);
+    const [superVacationClaims, setSuperVacationClaims] = useState([]);
     const [isSuperClaimsLoading, setIsSuperClaimsLoading] = useState(false);
 
     const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
@@ -426,20 +427,34 @@ const ExtendedInformationSidebar = (props) => {
 
         setIsSuperClaimsLoading(true);
         try {
-            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`, {
-                data: {
-                    type: 0,
-                    page: 1,
-                    onPage: 5000,
-                    boss_id: null,
-                    user_id: null,
-                },
-                _token: CSRF_TOKEN
-            });
-            setSuperClaims(response.data.content ?? []);
+            const requestBase = {
+                page: 1,
+                onPage: 5000,
+                boss_id: null,
+                user_id: null,
+            };
+            const [claimsResponse, vacationResponse] = await Promise.all([
+                PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`, {
+                    data: {
+                        ...requestBase,
+                        type: 0,
+                    },
+                    _token: CSRF_TOKEN
+                }),
+                PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`, {
+                    data: {
+                        ...requestBase,
+                        type: 10,
+                    },
+                    _token: CSRF_TOKEN
+                }),
+            ]);
+            setSuperClaims(claimsResponse.data.content ?? []);
+            setSuperVacationClaims(vacationResponse.data.content ?? []);
         } catch (e) {
             console.log(e);
             setSuperClaims([]);
+            setSuperVacationClaims([]);
         } finally {
             setIsSuperClaimsLoading(false);
         }
@@ -948,9 +963,9 @@ const ExtendedInformationSidebar = (props) => {
         .filter((claim) => Number(claim?.boss_id) === Number(userdata?.user?.id))
         .filter(isClaimPendingApproval);
 
-    const superMonthVacationClaims = superClaims
+    const superMonthVacationClaims = superVacationClaims
         .filter((claim) => Number(claim?.state) !== 3)
-        .filter((claim) => isVacationClaim(claim) && isClaimInMonth(claim, targetDate));
+        .filter((claim) => isClaimInMonth(claim, targetDate));
 
     const handleSuperClaimClick = (claim) => {
         if (props.on_claim_click) {
