@@ -199,7 +199,7 @@ const getEmployeePresenceClassName = (user) => {
     return 'sk-userlist-details-card--left';
 };
 
-const getClaimApprovalState = (claim) => claim?.is_approved ?? claim?.approved ?? claim?.state;
+const getClaimApprovalState = (claim) => claim?.state ?? claim?.is_approved ?? claim?.approved;
 
 const isClaimPendingApproval = (claim) => {
     const needApproved = Number(claim?.need_approved ?? claim?.skud_current_state?.need_approved ?? 0);

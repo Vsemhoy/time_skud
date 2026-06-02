@@ -317,7 +317,7 @@ const UserMonitorListCard = (props) => {
     };
 
     const getClaimStatusText = (claim) => {
-        const approvalState = claim?.is_approved ?? claim?.approved ?? claim?.state;
+        const approvalState = claim?.state ?? claim?.is_approved ?? claim?.approved;
         const needApproved = Number(claim?.need_approved ?? claim?.skud_current_state?.need_approved ?? 0);
 
         if (!needApproved && approvalState == null) {
@@ -360,7 +360,7 @@ const UserMonitorListCard = (props) => {
     };
 
     const isClaimPendingApproval = (claim) => {
-        const approvalState = claim?.is_approved ?? claim?.approved ?? claim?.state;
+        const approvalState = claim?.state ?? claim?.is_approved ?? claim?.approved;
         const needApproved = Number(claim?.need_approved ?? claim?.skud_current_state?.need_approved ?? 0);
 
         if (Number(approvalState) === 1 || Number(approvalState) === 2 || Number(approvalState) === -1) {
