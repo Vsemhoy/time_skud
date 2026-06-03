@@ -1210,7 +1210,7 @@ const UserList = (props)=>{
                   {filteredUsers.length === 0 && !isLoading && !isSkeletonLoading ? (
                       <Empty />
                   ):(
-                      <div>
+                      <div className="sk-userlist-table-frame">
                         <Affix offsetTop={80}>
                           <div className="sk-userlist-table-header-wrap">
                             <div

@@ -426,6 +426,29 @@
     width: 100%;
 }
 
+.sk-userlist-table-frame {
+    margin-top: 5px;
+    border: 1px solid #80808061;
+    border-radius: 6px;
+    background: var(--row-main-bg-color);
+    box-shadow: 0px 0px 30px -23px black;
+    overflow: hidden;
+}
+
+.sk-userlist-table-frame .sk-usermonic-cardrow-ou-test {
+    border-left: 0;
+    border-right: 0;
+}
+
+.sk-userlist-table-frame .sk-usermonic-headerrow {
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+}
+
+.sk-userlist-table-frame > div:last-child .sk-usermonic-cardrow-ou-test {
+    border-bottom: 0;
+}
+
 .sk-usermonic-cardrow-ou-test {
     display: grid;
     grid-template-columns: 42px 42px minmax(300px, 2.8fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
