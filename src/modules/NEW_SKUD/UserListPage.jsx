@@ -1272,7 +1272,7 @@ const UserList = (props)=>{
             <Sider width={shouldShowFilterSidebar ? "330px" : 0}
                    className={`sider ${shouldShowFilterSidebar ? '' : 'sider-hidden'} pr15`}
                    style={{
-                     paddingTop: '0',
+                     paddingTop: '5px',
                      visibility: shouldShowFilterSidebar ? 'visible' : 'hidden',
                      pointerEvents: shouldShowFilterSidebar ? 'auto' : 'none',
                    }}
