@@ -3,11 +3,10 @@ import './components/style/aclskud2.css';
 import { BarsOutlined, BuildOutlined, CheckCircleOutlined, CheckOutlined, ClearOutlined, CloseCircleOutlined, CloseOutlined, ClusterOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DiffOutlined, DownSquareOutlined, EditOutlined, EyeOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 import { Affix, Checkbox, Dropdown, Radio, Select, Tabs } from 'antd';
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
+import {CSRF_TOKEN, ROUTE_PREFIX} from '../../../CONFIG/config';
 import { DS_DEPARTMENTS, DS_USERLIST_USERS } from '../../../CONFIG/DEFAULTSTATE';
 import AclSkudCardRow from './components/AclSkudCardRow';
 import { PROD_AXIOS_INSTANCE } from '../../../API/API';
-import { ACL_ACTUAL_USERS, ACL_COLUMNS, ACL_DEPARTS, ACL_DEPARTS_WITH_COUNT, ACL_SK_USERS, ACL_STATES } from './components/AclSkudData';
 import AclSkudChecker from './components/AclSkudChecker';
 import AclCheckbox from './components/AclSkudCheckbox';
 
@@ -147,24 +146,10 @@ const AclSkudPage2 = (props) => {
 
 
     useEffect(() => {
-      if (PRODMODE){
-        //   get_departments();
-        //   get_users();
-        //   get_departs2();
-        //   get_departtemplates();
-        //   get_states();
-        //   get_departusers();
-        get_departs2();
-        get_columns();
-        get_states();
-        get_users();
-      } else {
-          setDepartments(ACL_DEPARTS_WITH_COUNT);
-          setEventTypes(ACL_STATES);
-          setAclColumns(ACL_COLUMNS);
-          setBaseUserCollection(ACL_ACTUAL_USERS);
-
-      }
+      get_departs2();
+      get_columns();
+      get_states();
+      get_users();
     }, []);
 
     useEffect(() => {

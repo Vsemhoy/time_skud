@@ -6,6 +6,7 @@ import {
     Forklift,
     House,
     Plane,
+    RockingChair,
     TreePalm,
 } from 'lucide-react';
 
@@ -17,6 +18,7 @@ const lucideStateIcons = {
     10: TreePalm,
     6: BriefcaseMedical,
     13: Forklift,
+    24: RockingChair,
 };
 
 export const hasLucideStateIcon = (idState) => Boolean(lucideStateIcons[Number(idState)]);
