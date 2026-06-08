@@ -6,18 +6,21 @@ import StateContainerIcon from "../../../assets/media/States/StateContainerIcon"
 import StateSuitcaseIcon from "../../../assets/media/States/StateSuitcaseAction";
 import StateHomeIcon from "../../../assets/media/States/StateHomeIcon";
 import StopwatchPlusIcon from "../../../assets/media/States/StopwatchPlusIcon";
+import StateRockingChairIcon from "../../../assets/media/States/StateRockingChairIcon";
 import {AppstoreFilled} from "@ant-design/icons";
 
 const StateIconsController = (props) => {
+    const iconSize = props.height ? props.height : '25px';
     const stateIcons = {
         0:  <AppstoreFilled        style={{fontSize: '22px'}}/>,
-        8:  <StateSuitcaseIcon     height={props.height ? props.height : '25px'}/>,
-        9:  <StateHomeIcon         height={props.height ? props.height : '25px'}/>,
-        11: <StopwatchPlusIcon     height={props.height ? props.height : '25px'}/>,
-        7:  <StateAirplaneIcon     height={props.height ? props.height : '25px'}/>,
-        10: <StateLongVacationIcon height={props.height ? props.height : '25px'}/>,
-        6:  <StateSickleaveIcon    height={props.height ? props.height : '25px'}/>,
-        13: <StateContainerIcon    height={props.height ? props.height : '25px'}/>,
+        8:  <StateSuitcaseIcon     height={iconSize}/>,
+        9:  <StateHomeIcon         height={iconSize}/>,
+        11: <StopwatchPlusIcon     height={iconSize}/>,
+        7:  <StateAirplaneIcon     height={iconSize}/>,
+        10: <StateLongVacationIcon height={iconSize}/>,
+        6:  <StateSickleaveIcon    height={iconSize}/>,
+        13: <StateContainerIcon    height={iconSize}/>,
+        24: <StateRockingChairIcon height={iconSize}/>,
     };
     const icon = stateIcons[props.IdState] || null;
     return (

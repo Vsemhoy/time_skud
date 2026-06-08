@@ -19,6 +19,7 @@ import {
     Map,
     OctagonMinus,
     Plane,
+    RockingChair,
     ShieldCheck,
     TreePalm,
     TriangleAlert,
@@ -49,6 +50,7 @@ const userStatusIcons = {
     21: DoorOpen,
     22: Coins,
     23: Globe,
+    24: RockingChair,
 };
 
 const legacyStatusIcons = {
@@ -74,6 +76,7 @@ const legacyStatusIcons = {
     DoorOpen,
     Coins,
     Globe,
+    RockingChair,
     MinusCircleOutlined: OctagonMinus,
     AppleOutlined: Apple,
     RestOutlined: Footprints,
@@ -98,6 +101,7 @@ const legacyStatusIcons = {
     TwitterOutlined: DoorOpen,
     GoldOutlined: Coins,
     GlobalOutlined: Globe,
+    RockingChairOutlined: RockingChair,
 };
 
 export const hasUserStatusLucideIcon = (idState) => Boolean(userStatusIcons[Number(idState)]);

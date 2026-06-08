@@ -598,7 +598,7 @@ const ClaimEditorDrawer = (props) => {
   const buildClaimPayload = (dateRange = formDateRange, users = effectiveFormUsers) => {
     let result = {};
     result.start = dateRange[0].format('YYYY-MM-DD HH:mm:ss');
-    if (formType === 11 || formType === 13){
+    if (formType === 11 || formType === 13 || formType === 24){
       result.end = dateRange[1].clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
     } else {
       result.end = dateRange[1].format('YYYY-MM-DD HH:mm:ss');
@@ -948,7 +948,7 @@ const ClaimEditorDrawer = (props) => {
 
 
             {/* Просто дата */}
-            {(formType === 11 || formType === 13) && (
+            {(formType === 11 || formType === 13 || formType === 24) && (
               <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Дата события</span>
               {editMode === 'read' ? (
@@ -961,7 +961,7 @@ const ClaimEditorDrawer = (props) => {
                   readOnly={editMode === 'read'}
                   style={{ width: '100%' }}
                   value={formDateRange[0]}
-                  onChange={(date)=>{setFormDateRange([date, date.clone().endOf('day')])}}
+                  onChange={(date)=>{date && setFormDateRange([date, date.clone().endOf('day')])}}
                   format="DD.MM.YYYY"
                 />
                 </>
