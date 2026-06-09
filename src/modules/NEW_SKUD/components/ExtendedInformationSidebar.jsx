@@ -1317,7 +1317,7 @@ const ExtendedInformationSidebar = (props) => {
         <section className="sk-userlist-details-card sk-userlist-details-card--documents">
             <div className="sk-userlist-details-card-title">Документы</div>
             <div className="sk-userlist-documents-list">
-                {EMPTY_STATE_DOCUMENTS(props.userdata).map((documentItem) => (
+                {EMPTY_STATE_DOCUMENTS(props.userdata?.user?.active_company).map((documentItem) => (
                     <div className="sk-userlist-document-row" key={documentItem.id}>
                         <Tooltip title={getDownloadTooltip(documentItem)}>
                             {documentItem.href ? (
