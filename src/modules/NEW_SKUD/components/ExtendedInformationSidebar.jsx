@@ -332,58 +332,92 @@ const companyName = (idCompany) => {
     }
 };
 
-const EMPTY_STATE_DOCUMENTS = (userData) => {
-    return [
-        {
-            id: 'unpaid-vacation',
-            title: 'Заявление на отпуск за свой счет',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/svo.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/svo.pdf`,
-        },
-        {
-            id: 'vacation',
-            title: 'Заявление на отпуск',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation.pdf`,
-        },
-        {
-            id: 'vacation-bypass-sheet',
-            title: 'Обходной лист отпуск',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_bypass_sheet.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_bypass_sheet.pdf`,
-        },
-        {
-            id: 'vacation-transfer',
-            title: 'Заявление на перенос отпуска',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_transfer.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_transfer.pdf`,
-        },
-        {
-            id: 'free-form',
-            title: 'Заявление свободная форма',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/free_form.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/free_form.pdf`,
-        },
-        {
-            id: 'dismissal',
-            title: 'Заявление на увольнение',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal.pdf`,
-        },
-        {
-            id: 'dismissal-clearance-sheet',
-            title: 'Обходной лист увольнение',
-            size: 'DOCX',
-            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal_clearance_sheet.docx`,
-            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal_clearance_sheet.pdf`,
-        },
-    ];
+const EMPTY_STATE_DOCUMENTS = (active_company) => {
+    switch (active_company) {
+        case 2:
+            return [
+                {
+                    id: 'unpaid-vacation',
+                    title: 'Заявление на отпуск за свой счет',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/svo.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/svo.pdf`,
+                },
+                {
+                    id: 'vacation',
+                    title: 'Заявление на отпуск',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/vacation.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/vacation.pdf`,
+                },
+                {
+                    id: 'vacation-bypass-sheet',
+                    title: 'Обходной лист отпуск',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/vacation_bypass_sheet.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/vacation_bypass_sheet.pdf`,
+                },
+                {
+                    id: 'vacation-transfer',
+                    title: 'Заявление на перенос отпуска',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/vacation_transfer.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/vacation_transfer.pdf`,
+                },
+                {
+                    id: 'free-form',
+                    title: 'Заявление свободная форма',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/free_form.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/free_form.pdf`,
+                },
+                {
+                    id: 'dismissal',
+                    title: 'Заявление на увольнение',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/dismissal.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/dismissal.pdf`,
+                },
+                {
+                    id: 'dismissal-clearance-sheet',
+                    title: 'Обходной лист увольнение',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/arstel/dismissal_clearance_sheet.docx`,
+                    printHref: `http://192.168.1.14/files/docs/arstel/dismissal_clearance_sheet.pdf`,
+                },
+            ];
+        case 3:
+            return [
+                {
+                    id: 'unpaid-vacation',
+                    title: 'Заявление на отпуск за свой счет',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/rondo/svo.docx`,
+                    printHref: `http://192.168.1.14/files/docs/rondo/svo.pdf`,
+                },
+                {
+                    id: 'vacation',
+                    title: 'Заявление на отпуск',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/rondo/vacation.docx`,
+                    printHref: `http://192.168.1.14/files/docs/rondo/vacation.pdf`,
+                },
+                {
+                    id: 'vacation-transfer',
+                    title: 'Заявление на перенос отпуска',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/rondo/vacation_transfer.docx`,
+                    printHref: `http://192.168.1.14/files/docs/rondo/vacation_transfer.pdf`,
+                },
+                {
+                    id: 'dismissal',
+                    title: 'Заявление на увольнение',
+                    size: 'DOCX',
+                    href: `http://192.168.1.14/files/docs/rondo/dismissal.docx`,
+                    printHref: `http://192.168.1.14/files/docs/rondo/dismissal.pdf`,
+                },
+            ];
+    }
 }
 
 const formatMockMinutes = (value) => {
