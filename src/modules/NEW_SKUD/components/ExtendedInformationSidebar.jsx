@@ -323,57 +323,68 @@ const getCompanyLogoByCompany = (company) => {
     return null;
 };
 
-const EMPTY_STATE_DOCUMENTS = [
-    {
-        id: 'unpaid-vacation',
-        title: 'Заявление на отпуск за свой счет',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/svo.docx',
-        printHref: 'http://192.168.1.14/files/docs/svo.pdf',
-    },
-    {
-        id: 'vacation',
-        title: 'Заявление на отпуск',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/vacation.docx',
-        printHref: 'http://192.168.1.14/files/docs/vacation.pdf',
-    },
-    {
-        id: 'vacation-bypass-sheet',
-        title: 'Обходной лист отпуск',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/vacation_bypass_sheet.docx',
-        printHref: 'http://192.168.1.14/files/docs/vacation_bypass_sheet.pdf',
-    },
-    {
-        id: 'vacation-transfer',
-        title: 'Заявление на перенос отпуска',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/vacation_transfer.docx',
-        printHref: 'http://192.168.1.14/files/docs/vacation_transfer.pdf',
-    },
-    {
-        id: 'free-form',
-        title: 'Заявление свободная форма',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/free_form.docx',
-        printHref: 'http://192.168.1.14/files/docs/free_form.pdf',
-    },
-    {
-        id: 'dismissal',
-        title: 'Заявление на увольнение',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/dismissal.docx',
-        printHref: 'http://192.168.1.14/files/docs/dismissal.pdf',
-    },
-    {
-        id: 'dismissal-clearance-sheet',
-        title: 'Обходной лист увольнение',
-        size: 'DOCX',
-        href: 'http://192.168.1.14/files/docs/dismissal_clearance_sheet.docx',
-        printHref: 'http://192.168.1.14/files/docs/dismissal_clearance_sheet.pdf',
-    },
-];
+const companyName = (idCompany) => {
+    switch (idCompany) {
+        case 2:
+            return 'arstel';
+        case 3:
+            return 'rondo';
+    }
+};
+
+const EMPTY_STATE_DOCUMENTS = (userData) => {
+    return [
+        {
+            id: 'unpaid-vacation',
+            title: 'Заявление на отпуск за свой счет',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/svo.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/svo.pdf`,
+        },
+        {
+            id: 'vacation',
+            title: 'Заявление на отпуск',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation.pdf`,
+        },
+        {
+            id: 'vacation-bypass-sheet',
+            title: 'Обходной лист отпуск',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_bypass_sheet.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_bypass_sheet.pdf`,
+        },
+        {
+            id: 'vacation-transfer',
+            title: 'Заявление на перенос отпуска',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_transfer.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/vacation_transfer.pdf`,
+        },
+        {
+            id: 'free-form',
+            title: 'Заявление свободная форма',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/free_form.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/free_form.pdf`,
+        },
+        {
+            id: 'dismissal',
+            title: 'Заявление на увольнение',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal.pdf`,
+        },
+        {
+            id: 'dismissal-clearance-sheet',
+            title: 'Обходной лист увольнение',
+            size: 'DOCX',
+            href: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal_clearance_sheet.docx`,
+            printHref: `http://192.168.1.14/files/docs/${companyName(userData?.user?.active_company)}/dismissal_clearance_sheet.pdf`,
+        },
+    ];
+}
 
 const formatMockMinutes = (value) => {
     const hours = Math.floor(value / 60);
@@ -1272,7 +1283,7 @@ const ExtendedInformationSidebar = (props) => {
         <section className="sk-userlist-details-card sk-userlist-details-card--documents">
             <div className="sk-userlist-details-card-title">Документы</div>
             <div className="sk-userlist-documents-list">
-                {EMPTY_STATE_DOCUMENTS.map((documentItem) => (
+                {EMPTY_STATE_DOCUMENTS(props.userdata).map((documentItem) => (
                     <div className="sk-userlist-document-row" key={documentItem.id}>
                         <Tooltip title={getDownloadTooltip(documentItem)}>
                             {documentItem.href ? (

@@ -238,23 +238,12 @@ const ClaimManagerCard = (props) => {
     //     console.log(info);
     // }
 
-    const shouldShowTime = (time) => (
-        time !== '00:00'
-        && props.data.skud_current_state_id !== 7
-        && props.data.skud_current_state_id !== 6
-        && props.data.skud_current_state_id !== 10
-        && props.data.skud_current_state_id !== 13
-        && props.data.skud_current_state_id !== 11
-    );
-
     const clearTimeString = (str) => {
         if (str) {
             const date = formatMoscowDateTime(str, 'DD.MM.YYYY');
-            const time = formatMoscowDateTime(str, 'HH:mm');
             return (
                 <div className="sk-claim-date">
                     <span className="sk-claim-date-value">{date}</span>
-                    {shouldShowTime(time) && <span className="sk-claim-time-value">{time}</span>}
                 </div>
             );
         }
