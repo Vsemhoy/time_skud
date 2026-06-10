@@ -315,13 +315,20 @@ function SchedulesWorkspace(props) {
     const toEditSchedule = (id) => {
         setEditedSchedule(schedules.find(schedule => +schedule.id === +id));
     };
+    const getSelectedScheduleTypeId = () => {
+        if (toolbarTypeScheduleId) return toolbarTypeScheduleId;
+
+        return scheduleNames.find(name => +name.id === +toolbarNameScheduleId)?.skud_schedule_type_id || null;
+    };
+
     const isCantAddSchedule = () => {
-        if (scheduleTypeFilter) return true;
+        const selectedScheduleTypeId = getSelectedScheduleTypeId();
+
         if (editedSchedule.id === activeSchedule.id) {
             if (nextSchedule.id) {
                 return (
                     (dayjs(toolbarDateEndSchedule) >= dayjs(nextSchedule.start)) ||
-                    !toolbarTypeScheduleId ||
+                    !selectedScheduleTypeId ||
                     !toolbarNameScheduleId ||
                     !toolbarDateStartSchedule ||
                     !toolbarDateEndSchedule ||
@@ -329,21 +336,21 @@ function SchedulesWorkspace(props) {
                 );
             }
             return (
-                !toolbarTypeScheduleId ||
+                !selectedScheduleTypeId ||
                 !toolbarNameScheduleId ||
                 !toolbarDateStartSchedule ||
                 intersections.length
             );
         } else if (editedSchedule.id === nextSchedule.id) {
             return (
-                !toolbarTypeScheduleId ||
+                !selectedScheduleTypeId ||
                 !toolbarNameScheduleId ||
                 !toolbarDateStartSchedule ||
                 intersections.length
             );
         } else {
             return (
-                !toolbarTypeScheduleId ||
+                !selectedScheduleTypeId ||
                 !toolbarNameScheduleId ||
                 !toolbarDateStartSchedule ||
                 nextSchedule.id ||
@@ -374,7 +381,7 @@ function SchedulesWorkspace(props) {
                         data: {
                             userId: userIdState,
                             editedSchedule,
-                            toolbarTypeScheduleId,
+                            toolbarTypeScheduleId: getSelectedScheduleTypeId(),
                             toolbarNameScheduleId,
                             toolbarDateStartSchedule,
                             toolbarDateEndSchedule,
@@ -407,7 +414,7 @@ function SchedulesWorkspace(props) {
                     {
                         data: {
                             userId: userIdState,
-                            toolbarTypeScheduleId,
+                            toolbarTypeScheduleId: getSelectedScheduleTypeId(),
                             toolbarNameScheduleId,
                             toolbarDateStartSchedule,
                             toolbarDateEndSchedule,
