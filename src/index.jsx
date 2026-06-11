@@ -42,6 +42,7 @@ const customLocale = {
 
 const THEME_STORAGE_KEY = 'skud_theme';
 const THEME_CHANGE_EVENT = 'skud-theme-change';
+const APP_PRIMARY_COLOR = '#6b829d';
 
 const getSavedThemeMode = () => {
     if (typeof window === 'undefined') {
@@ -92,6 +93,9 @@ const BrowserThemeProvider = () => {
 
     const antdTheme = useMemo(() => ({
         algorithm: themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+            colorPrimary: APP_PRIMARY_COLOR,
+        },
     }), [themeMode]);
 
     return (

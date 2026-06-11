@@ -10,6 +10,8 @@
     --app-skeleton-surface-color: #f6f8fb;
     --app-skeleton-surface-color-2: #eef2f7;
     --app-skeleton-border-color: rgba(193, 202, 214, 0.7);
+    --app-primary-color: #6b829d;
+    --app-primary-soft-color: #8595a8;
     --badge-text-color: #1f2328;
     --header-gradient-start: #eeeeee;
     --header-gradient-mid: #f2f2f2;
@@ -70,6 +72,8 @@
     --app-skeleton-surface-color: #1a212b;
     --app-skeleton-surface-color-2: #222b36;
     --app-skeleton-border-color: rgba(86, 102, 122, 0.75);
+    --app-primary-color: #6b829d;
+    --app-primary-soft-color: #8595a8;
     --badge-text-color: #f8fafc;
     --header-gradient-start: #18202a;
     --header-gradient-mid: #1e2935;
@@ -1336,8 +1340,8 @@ font-size: smaller;
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 16px solid #8595a8;
-    border-top-color: #6b829d;
+    border: 16px solid var(--app-primary-soft-color);
+    border-top-color: var(--app-primary-color);
     animation: sk-userlist-loader-spin 1.15s linear infinite;
     transition: opacity 0.3s ease, border-color 0.3s ease;
 }
@@ -1368,7 +1372,7 @@ font-size: smaller;
     bottom: 0;
     height: 17px;
     border-radius: 3px;
-    background: #6b829d;
+    background: var(--app-primary-color);
     box-shadow: 0 0 18px rgba(107, 130, 157, 0.4);
     transform-origin: left center;
 }
@@ -1389,7 +1393,7 @@ font-size: smaller;
 
 .sk-userlist-initial-loader.is-success .sk-userlist-initial-loader__ring {
     animation: none;
-    border-color: #6b829d;
+    border-color: var(--app-primary-color);
 }
 
 .sk-userlist-initial-loader.is-success .sk-userlist-initial-loader__tick {
