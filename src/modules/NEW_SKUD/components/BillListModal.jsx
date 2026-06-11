@@ -1070,7 +1070,7 @@ const BillListModal = (props) => {
                             autoSkip: false,
                         },
                         title: {
-                            display: true,
+                            display: false,
                             text: 'Даты',
                             color: mutedTextColor,
                         },
