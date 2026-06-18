@@ -383,6 +383,30 @@
     text-align: right;
     padding-inline: 8px;
 }
+.sk_bankcard_total_row {
+    min-height: 50px;
+    background: #eef6ff;
+    box-shadow: inset 4px 0 0 #3478bd;
+}
+.sk_bankcard_total_row:hover {
+    background: #eef6ff;
+    box-shadow: inset 4px 0 0 #3478bd;
+}
+.sk_bankcard_total_name,
+.sk_bankcard_total_sum {
+    min-width: 25px;
+    max-width: 100%;
+    margin: 0;
+    color: #172033;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+.sk_bankcard_total_sum {
+    width: 100%;
+    padding-inline: 8px;
+    text-align: right;
+}
 .sk_bankcard_skeleton {
     width: 100%;
 }

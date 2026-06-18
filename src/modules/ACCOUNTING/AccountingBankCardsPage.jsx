@@ -173,6 +173,23 @@ const AccountingBankCardsPage = () => {
         return period?.sum ?? null;
     };
 
+    const parseBankCardSum = (value) => {
+        if (value === null || value === undefined || value === '') return 0;
+
+        const parsedValue = Number(String(value).replace(/\s/g, '').replace(',', '.'));
+        return Number.isFinite(parsedValue) ? parsedValue : 0;
+    };
+
+    const formatBankCardTotal = (value) => value.toLocaleString('ru-RU', {
+        minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+        maximumFractionDigits: 2,
+    });
+
+    const bankCardColumnTotals = useMemo(() => selectedDayObjects.map((day) => bankUsers.reduce(
+        (total, user) => total + parseBankCardSum(getPeriodValue(user, day.date_unix)),
+        0,
+    )), [bankUsers, selectedDayObjects]);
+
     const updatePeriodValue = (userId, dateUnix, sum) => {
         setBankUsers((currentUsers) => currentUsers.map((user) => {
             if (String(user.id) !== String(userId)) {
@@ -405,6 +422,25 @@ const AccountingBankCardsPage = () => {
                                                     )}
                                                 </div>
                                             ))}
+                                            {bankUsers.length > 0 && (
+                                                <div className={`${styles.sk_bankcard_row} ${styles.sk_bankcard_total_row}`} style={{gridTemplateColumns}}>
+                                                    <div className={styles.sk_person_row_content}>
+                                                        <p className={styles.sk_bankcard_total_name}>ИТОГО</p>
+                                                    </div>
+                                                    {selectedDayObjects.map((day, index) => (
+                                                        <div key={`bankcard-total-${day.date_unix}`} className={styles.sk_person_row_content}>
+                                                            <p className={styles.sk_bankcard_total_sum}>
+                                                                {formatBankCardTotal(bankCardColumnTotals[index] ?? 0)}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                    {selectedDayObjects.length === 0 && (
+                                                        <div className={styles.sk_person_row_content}>
+                                                            <p className={styles.sk_bankcard_total_sum}>0</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                             {bankUsers.length === 0 && (
                                                 <div className={styles.sk_surcharge_empty_state}>
                                                     <Empty description="Сотрудников за выбранный период нет" />
