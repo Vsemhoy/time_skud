@@ -44,7 +44,6 @@ const Chart = (props) => {
                 weeks.push(currentWeek.week());
                 currentWeek = currentWeek.add(1, 'week');
             }
-            console.log(weeks)
             return weeks;
         }
     }, [activeYear, months, rangeValues]);
@@ -80,15 +79,11 @@ const Chart = (props) => {
         const rangeStart = dayjs(`${activeYear}-${sortedMonths[0]}-01`).startOf('month');
         const rangeEnd = dayjs(`${activeYear}-${sortedMonths[sortedMonths.length - 1]}-01`).endOf('month');
 
-        // Находим первый понедельник в диапазоне
-        let firstMonday = rangeStart;
-        while (firstMonday.day() !== 1 && firstMonday.isBefore(rangeEnd)) {
-            firstMonday = firstMonday.add(1, 'day');
-        }
-
+        // Находим начало первой отображаемой недели в диапазоне
+        const firstMonday = rangeStart.startOf('week');
         // Вычисляем даты начала и конца запрошенной недели
         const weekStart = firstMonday.add((week - 1) * 7, 'day');
-        const weekEnd = weekStart.add(6, 'day');
+        const weekEnd = weekStart.endOf('week');
 
         // Проверяем, что неделя входит в диапазон
         if (weekStart.isAfter(rangeEnd)) return [];
@@ -104,6 +99,37 @@ const Chart = (props) => {
                 (chartEnd.isAfter(weekStart) || chartEnd.isSame(weekStart))
             );
         });
+    };
+    const getClaimWeekCellClassName = (chart, week) => {
+        if (!chart || !week) {
+            return '';
+        }
+
+        const sortedMonths = [...months].sort((a, b) => a - b);
+        const rangeStart = dayjs(`${activeYear}-${sortedMonths[0]}-01`).startOf('month');
+        const rangeEnd = dayjs(`${activeYear}-${sortedMonths[sortedMonths.length - 1]}-01`).endOf('month');
+        const weekStart = rangeStart.startOf('week').add((week - 1) * 7, 'day');
+        const weekEnd = weekStart.endOf('week');
+        const visibleWeekStart = weekStart.isBefore(rangeStart) ? rangeStart : weekStart;
+        const visibleWeekEnd = weekEnd.isAfter(rangeEnd) ? rangeEnd : weekEnd;
+        const chartStart = dayjs(chart.start);
+        const chartEnd = dayjs(chart.end);
+        const isStart = chartStart.isBetween(visibleWeekStart, visibleWeekEnd, null, '[]');
+        const isEnd = chartEnd.isBetween(visibleWeekStart, visibleWeekEnd, null, '[]');
+
+        if (isStart && isEnd) {
+            return `${styles.chart_claim_cell} ${styles.chart_claim_single}`;
+        }
+
+        if (isStart || (chartStart.isBefore(visibleWeekStart, 'day') && visibleWeekStart.isSame(rangeStart, 'day'))) {
+            return `${styles.chart_claim_cell} ${styles.chart_claim_start}`;
+        }
+
+        if (isEnd || (chartEnd.isAfter(visibleWeekEnd, 'day') && visibleWeekEnd.isSame(rangeEnd, 'day'))) {
+            return `${styles.chart_claim_cell} ${styles.chart_claim_end}`;
+        }
+
+        return `${styles.chart_claim_cell} ${styles.chart_claim_middle}`;
     };
     const getStartEndOfWeek = (week) => {
         if (!months?.length) return '';
@@ -393,7 +419,8 @@ const Chart = (props) => {
                                 })
                             ))}
                             {months.length > 2 && daysOrWeeksInMonth.map((week, index) => { // по неделям
-                                const currentChart = getChartsInWeekRange(user.charts, index);
+                                const weekNumberInRange = index + 1;
+                                const currentChart = getChartsInWeekRange(user.charts, weekNumberInRange);
                                 const fullDate = `${week} неделя, ${getStartEndOfWeek(index + 1)}`;
                                 const inter = isIntersectWeek(week);
                                 return currentChart.length > 0 ? (
@@ -401,8 +428,7 @@ const Chart = (props) => {
                                         <div className={`${styles.chart_cell_slot} ${inter ? styles.intersection : ''}`}>
                                             <div className={`
                                                 ${styles.chart_cell}
-                                                ${styles.chart_claim_cell}
-                                                ${styles.chart_claim_single}
+                                                ${getClaimWeekCellClassName(currentChart[0], weekNumberInRange)}
                                                 ${index === highlightedColumn ? styles.highlighted : ''}
                                             `}
                                                  style={getChartCellStyle(currentChart[0])}
@@ -427,7 +453,7 @@ const Chart = (props) => {
                                              title={fullDate}
                                              onDoubleClick={() => {
                                                  if (user) {
-                                                     openDrawer(null, user, getStartOfWeek(week));
+                                                     openDrawer(null, user, getStartOfWeek(weekNumberInRange));
                                                  }
                                              }}
                                              onMouseEnter={() => setHighlightedColumn(index)}
