@@ -9,8 +9,6 @@ import {CSRF_TOKEN, ROUTE_PREFIX} from '../../CONFIG/config'
 import EventMonitorListCard from './components/EventMonitorListCard';
 
 const EventMonitorPage = (props) => {
-    const [date, setDate] = useState(dayjs('2025-04-10', 'YYYY-MM-DD'));
-
     const [baseArchEvents, setBaseArchEvents] = useState([]);
 
     const [queryParams, setQueryParams] = useState({

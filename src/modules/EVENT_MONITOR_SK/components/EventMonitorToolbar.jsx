@@ -4,8 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
 import dayjs from "dayjs";
 import React, { useState, useEffect } from "react";
-import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
-import { DS_DEFAULT_USERS } from "../../../CONFIG/DEFAULTSTATE";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 
 const { Content, Sider } = Layout;
@@ -55,11 +54,7 @@ const EventMonitorToolbar = (props)=>
     useEffect(()=>{
         if (openCustomDrawer === true){
             if (baseUserlist.length === 0){
-                if (PRODMODE){
-                    get_arch_users();
-                } else {
-                    setBaseUserList(DS_DEFAULT_USERS);
-                }
+                get_arch_users();
             }
         }
     },[openCustomDrawer]);
