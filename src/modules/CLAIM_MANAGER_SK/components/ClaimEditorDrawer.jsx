@@ -115,6 +115,8 @@ const ClaimEditorDrawer = (props) => {
   );
   const effectiveItemId = itemId ?? props.data?.id;
   const isLocalTripClaim = Number(formType) === 8;
+  const isShortVacationClaim = Number(formType) === 9;
+  const isSingleDayTimeClaim = isLocalTripClaim || isShortVacationClaim;
   const isLongVacationClaim = [
     formType,
     props.data?.skud_current_state_id,
@@ -818,7 +820,7 @@ const ClaimEditorDrawer = (props) => {
             </div>
 
             {/* Диапазон дат с временем */}
-            {(formType === 7 || formType === 9) && (
+            {formType === 7 && (
             <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Начало и окончание</span>
               <div className={'sk-flex-space'}>
@@ -873,7 +875,7 @@ const ClaimEditorDrawer = (props) => {
 
 
             {/* Диапазон дат */}
-            {isLocalTripClaim && (
+            {isSingleDayTimeClaim && (
               <div className={'sk-claimeditor-drawer-row '}>
                 <div className={'sk-flex-space'}>
                   {editMode === 'read' ? (
