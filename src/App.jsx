@@ -357,6 +357,9 @@ function App() {
     return [];
   };
 
+  const getSkudEventDirection = (event) => Number(event?.direction ?? event?.diraction ?? event?.d);
+  const getSkudEventTime = (event) => event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t;
+
   const shouldShowOfficeMarkAlert = (user) => {
     if (!user) {
       return false;
@@ -367,17 +370,17 @@ function App() {
     const todayEvents = parseEventDump(user.event_dump)
       .map((event) => ({
         ...event,
-        normalizedTime: normalizeSkudTime(event.t),
+        normalizedTime: normalizeSkudTime(getSkudEventTime(event)),
       }))
       .filter((event) => event.normalizedTime?.isValid() && event.normalizedTime.isSame(today, 'day'))
       .sort((a, b) => a.normalizedTime.valueOf() - b.normalizedTime.valueOf());
 
     if (hasEventDumpField) {
       if (todayEvents.length === 0) {
-        return true;
+        return false;
       }
 
-      return Number(todayEvents[todayEvents.length - 1].d) > 0;
+      return getSkudEventDirection(todayEvents[todayEvents.length - 1]) > 0;
     }
 
     const normalizedEnterTime = normalizeSkudTime(user.enter_time);
