@@ -93,6 +93,7 @@ function App() {
 
   const [userAct, setUserAct] = useState([]);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [currentUserEventDump, setCurrentUserEventDump] = useState(null);
 
   const [actionUpdateEvents, setActionUpdateEvents] = useState(null);
   const [globalUserList, setGlobalUserList] = useState([]);
@@ -137,6 +138,23 @@ function App() {
       setGlobalUserList(response.data.content ?? []);
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const fetchCurrentUserEventDump = async (userId, date = dayjs().format('YYYY-MM-DD')) => {
+    if (!userId) {
+      setCurrentUserEventDump(null);
+      return;
+    }
+
+    try {
+      const response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/timeskud/user-event-dump/${userId}`, {
+        params: {date},
+      });
+      setCurrentUserEventDump(response.data ?? null);
+    } catch (e) {
+      console.log(e);
+      setCurrentUserEventDump(null);
     }
   };
 
@@ -308,6 +326,16 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const userId = userAct?.user?.id;
+    if (!pageLoaded || !userId) {
+      setCurrentUserEventDump(null);
+      return;
+    }
+
+    fetchCurrentUserEventDump(userId).then();
+  }, [pageLoaded, userAct?.user?.id]);
+
+  useEffect(() => {
     const handleOpenBillList = () => handleOpenGlobalBillList();
     const handleOpenClaimsList = () => handleOpenGlobalClaimsList();
 
@@ -336,25 +364,68 @@ function App() {
     return dayjs(time);
   };
 
-  const shouldShowOfficeMarkAlert = (user) => {
-    if (!user) {
+  const parseEventDump = (eventDump) => {
+    if (!eventDump) {
+      return [];
+    }
+
+    if (Array.isArray(eventDump)) {
+      return eventDump;
+    }
+
+    if (typeof eventDump === 'string') {
+      try {
+        const parsed = JSON.parse(eventDump);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.log('Cannot parse event_dump', e);
+      }
+    }
+
+    return [];
+  };
+
+  const getSkudEventDirection = (event) => Number(event?.direction ?? event?.diraction ?? event?.d);
+  const getSkudEventTime = (event) => event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t;
+
+  const shouldShowOfficeMarkAlert = (eventDumpResponse) => {
+    if (!eventDumpResponse) {
       return false;
     }
 
-    const today = dayjs();
-    const normalizedEnterTime = normalizeSkudTime(user.enter_time);
-    const normalizedExitTime = normalizeSkudTime(user.exit_time);
-    const hasEnteredOfficeToday = Boolean(
-      normalizedEnterTime && normalizedEnterTime.isValid() && normalizedEnterTime.isSame(today, 'day')
-    );
-    const hasExitedOfficeToday = Boolean(
-      normalizedExitTime && normalizedExitTime.isValid() && normalizedExitTime.isSame(today, 'day')
-    );
+    const targetDate = eventDumpResponse.date ? dayjs(eventDumpResponse.date) : dayjs();
+    const events = parseEventDump(eventDumpResponse.event_dump);
 
-    return !hasEnteredOfficeToday || (hasExitedOfficeToday && normalizedExitTime.isAfter(normalizedEnterTime));
+    if (events.length === 0) {
+      return true;
+    }
+
+    const sortedEvents = events
+      .map((event, index) => ({
+        ...event,
+        originalIndex: index,
+        normalizedTime: normalizeSkudTime(getSkudEventTime(event)),
+      }))
+      .filter((event) => !event.normalizedTime?.isValid?.() || event.normalizedTime.isSame(targetDate, 'day'))
+      .sort((a, b) => {
+        const aTime = a.normalizedTime?.isValid?.() ? a.normalizedTime.valueOf() : null;
+        const bTime = b.normalizedTime?.isValid?.() ? b.normalizedTime.valueOf() : null;
+
+        if (aTime !== null && bTime !== null) {
+          return aTime - bTime;
+        }
+
+        return a.originalIndex - b.originalIndex;
+      });
+
+    if (sortedEvents.length === 0) {
+      return true;
+    }
+
+    return getSkudEventDirection(sortedEvents[sortedEvents.length - 1]) > 0;
   };
 
-  const showOfficeMarkAlert = shouldShowOfficeMarkAlert(userAct?.user);
+  const showOfficeMarkAlert = shouldShowOfficeMarkAlert(currentUserEventDump);
 
   const handleNotificatorOpened = () => {
     setNotificatorOpened(true);
