@@ -336,53 +336,12 @@ function App() {
     return dayjs(time);
   };
 
-  const parseEventDump = (eventDump) => {
-    if (!eventDump) {
-      return [];
-    }
-
-    if (Array.isArray(eventDump)) {
-      return eventDump;
-    }
-
-    if (typeof eventDump === 'string') {
-      try {
-        const parsed = JSON.parse(eventDump);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        console.log('Cannot parse event_dump', e);
-      }
-    }
-
-    return [];
-  };
-
-  const getSkudEventDirection = (event) => Number(event?.direction ?? event?.diraction ?? event?.d);
-  const getSkudEventTime = (event) => event?.time ?? event?.datetime ?? event?.datetime_contr ?? event?.t;
-
   const shouldShowOfficeMarkAlert = (user) => {
     if (!user) {
       return false;
     }
 
     const today = dayjs();
-    const hasEventDumpField = Object.prototype.hasOwnProperty.call(user, 'event_dump');
-    const todayEvents = parseEventDump(user.event_dump)
-      .map((event) => ({
-        ...event,
-        normalizedTime: normalizeSkudTime(getSkudEventTime(event)),
-      }))
-      .filter((event) => event.normalizedTime?.isValid() && event.normalizedTime.isSame(today, 'day'))
-      .sort((a, b) => a.normalizedTime.valueOf() - b.normalizedTime.valueOf());
-
-    if (hasEventDumpField) {
-      if (todayEvents.length === 0) {
-        return false;
-      }
-
-      return getSkudEventDirection(todayEvents[todayEvents.length - 1]) > 0;
-    }
-
     const normalizedEnterTime = normalizeSkudTime(user.enter_time);
     const normalizedExitTime = normalizeSkudTime(user.exit_time);
     const hasEnteredOfficeToday = Boolean(
