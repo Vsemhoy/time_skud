@@ -1258,7 +1258,7 @@ const ExtendedInformationSidebar = (props) => {
                 <Button
                     type="text"
                     size="small"
-                    className="sk-userlist-details-title-action"
+                    className={`sk-userlist-details-title-action ${hasNextEnterSubscription ? 'sk-userlist-details-title-action--active' : ''}`}
                     icon={<BellOutlined />}
                     loading={isEventSubscriptionSaving}
                     disabled={isEventSubscriptionsLoading || hasNextEnterSubscription}

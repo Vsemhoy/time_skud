@@ -463,6 +463,13 @@
     background: var(--row-hovered-bg-color);
 }
 
+.newskud-page .sk-userlist-details-title-action--active,
+.newskud-page .sk-userlist-details-title-action--active:disabled {
+    color: #1677ff;
+    background: color-mix(in srgb, #1677ff 12%, transparent);
+    opacity: 1;
+}
+
 .newskud-page .sk-userlist-personal-week-title {
     display: flex;
     align-items: center;
