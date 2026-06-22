@@ -452,6 +452,9 @@ const ExtendedInformationSidebar = (props) => {
     const [superClaims, setSuperClaims] = useState([]);
     const [superVacationClaims, setSuperVacationClaims] = useState([]);
     const [isSuperClaimsLoading, setIsSuperClaimsLoading] = useState(false);
+    const [eventSubscriptions, setEventSubscriptions] = useState([]);
+    const [isEventSubscriptionsLoading, setIsEventSubscriptionsLoading] = useState(false);
+    const [isEventSubscriptionSaving, setIsEventSubscriptionSaving] = useState(false);
 
     const [targetDate, setTargetDate] = useState(dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
@@ -631,6 +634,76 @@ const ExtendedInformationSidebar = (props) => {
     const visibleTargetUserGuys = targetUserInfo
         ? props.base_user_list_data.filter((item) => item.boss_id === targetUserInfo.id)
         : targetUserGuys;
+    const targetStaffId = Number(targetUserInfo?.id);
+    const hasNextEnterSubscription = eventSubscriptions.some((subscription) => (
+        Number(subscription?.target_staff_id ?? subscription?.staff_id ?? subscription?.target_staff?.id) === targetStaffId
+        && Number(subscription?.event_type) === 0
+    ));
+
+    useEffect(() => {
+        if (!openUserInfo || !targetStaffId) {
+            setEventSubscriptions([]);
+            return undefined;
+        }
+
+        let isCancelled = false;
+        setIsEventSubscriptionsLoading(true);
+
+        const fetchEventSubscriptions = async () => {
+            try {
+                const response = await PROD_AXIOS_INSTANCE.get(`${ROUTE_PREFIX}/skud/event-notification-subscriptions`);
+                const payload = response?.data?.content ?? response?.data?.data ?? response?.data;
+                const subscriptions = Array.isArray(payload)
+                    ? payload
+                    : (payload?.items ?? payload?.subscriptions ?? []);
+
+                if (!isCancelled) {
+                    setEventSubscriptions(Array.isArray(subscriptions) ? subscriptions : []);
+                }
+            } catch (e) {
+                if (!isCancelled) {
+                    console.log('event notification subscriptions load error', e);
+                    setEventSubscriptions([]);
+                }
+            } finally {
+                if (!isCancelled) {
+                    setIsEventSubscriptionsLoading(false);
+                }
+            }
+        };
+
+        fetchEventSubscriptions();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [openUserInfo, targetStaffId]);
+
+    const handleNextEnterSubscription = async (event) => {
+        event.stopPropagation();
+
+        if (!targetStaffId || hasNextEnterSubscription || isEventSubscriptionSaving) {
+            return;
+        }
+
+        setIsEventSubscriptionSaving(true);
+        try {
+            await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/skud/event-notification-subscriptions`, {
+                data: {
+                    target_staff_id: targetStaffId,
+                    event_type: 0,
+                },
+            });
+            setEventSubscriptions((currentSubscriptions) => ([
+                ...currentSubscriptions,
+                {target_staff_id: targetStaffId, event_type: 0},
+            ]));
+        } catch (e) {
+            console.log('event notification subscription save error', e);
+        } finally {
+            setIsEventSubscriptionSaving(false);
+        }
+    };
 
     useEffect(() => {
         if (hasTargetUser) {
@@ -1187,9 +1260,11 @@ const ExtendedInformationSidebar = (props) => {
                     size="small"
                     className="sk-userlist-details-title-action"
                     icon={<BellOutlined />}
-                    title="Подписка следующий вход"
-                    aria-label="Подписка следующий вход"
-                    onClick={(event) => event.stopPropagation()}
+                    loading={isEventSubscriptionSaving}
+                    disabled={isEventSubscriptionsLoading || hasNextEnterSubscription}
+                    title={hasNextEnterSubscription ? 'Подписка на следующий вход активна' : 'Подписка на следующий вход'}
+                    aria-label={hasNextEnterSubscription ? 'Подписка на следующий вход активна' : 'Подписка на следующий вход'}
+                    onClick={handleNextEnterSubscription}
                 />
             </div>
             {renderEventInfo()}
