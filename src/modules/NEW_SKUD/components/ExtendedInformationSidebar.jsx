@@ -36,7 +36,7 @@ import {
     HeatMapOutlined,
     GlobalOutlined, CloseOutlined, IdcardOutlined,
     FileWordOutlined, DownloadOutlined, PrinterOutlined,
-    ScheduleOutlined
+    ScheduleOutlined, BellOutlined
 } from "@ant-design/icons";
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, ChartTooltip);
@@ -1180,7 +1180,18 @@ const ExtendedInformationSidebar = (props) => {
 
     const renderEventInfoCard = () => (
         <section className="sk-userlist-details-card sk-userlist-details-card--events">
-            <div className="sk-userlist-details-card-title">Входы и выходы</div>
+            <div className="sk-userlist-details-card-title sk-userlist-details-card-title--with-action">
+                <span>Входы и выходы</span>
+                <Button
+                    type="text"
+                    size="small"
+                    className="sk-userlist-details-title-action"
+                    icon={<BellOutlined />}
+                    title="Подписка следующий вход"
+                    aria-label="Подписка следующий вход"
+                    onClick={(event) => event.stopPropagation()}
+                />
+            </div>
             {renderEventInfo()}
         </section>
     );

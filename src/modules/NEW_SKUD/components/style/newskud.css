@@ -446,6 +446,23 @@
     border-top: 1px solid var(--table-border-divider-color);
 }
 
+.newskud-page .sk-userlist-details-card-title--with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.newskud-page .sk-userlist-details-title-action {
+    flex: 0 0 auto;
+    color: var(--app-muted-text-color);
+}
+
+.newskud-page .sk-userlist-details-title-action:hover {
+    color: var(--app-text-color);
+    background: var(--row-hovered-bg-color);
+}
+
 .newskud-page .sk-userlist-personal-week-title {
     display: flex;
     align-items: center;

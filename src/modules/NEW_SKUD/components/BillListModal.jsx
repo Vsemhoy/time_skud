@@ -412,11 +412,29 @@ const getDayEnterExit = (item, selectedMonth, selectedYear) => {
         }
     });
 
+    // The endpoint returns the applicable schedule for each individual day.
+    // Text fields are preferred because numeric values are stored in seconds.
+    const schedule = item?.schedule?.skud_schedule ?? item?.skud_schedule ?? item?.schedule ?? {};
+    const scheduleStart = parseScheduleSecondsToMinutes(getTimeValue(schedule, [
+        'start_time_text',
+        'start_time',
+        'work_start_time',
+        'day_start_time',
+    ]));
+    const scheduleEnd = parseScheduleSecondsToMinutes(getTimeValue(schedule, [
+        'end_time_text',
+        'end_time',
+        'work_end_time',
+        'day_end_time',
+    ]));
+
     return {
         day: normalizeDayNumber(item, selectedMonth, selectedYear),
         enter,
         exit,
-        isWorkday: item?.schedule?.is_workday ?? item?.is_workday ?? null,
+        scheduleStart,
+        scheduleEnd,
+        isWorkday: item?.schedule?.is_workday ?? schedule?.is_workday ?? item?.is_workday ?? null,
     };
 };
 
@@ -867,6 +885,8 @@ const BillListModal = (props) => {
             day: index + 1,
             enter: null,
             exit: null,
+            scheduleStart: null,
+            scheduleEnd: null,
             isWorkday: ![0, 6].includes(dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}`).day()),
         }));
 
@@ -889,6 +909,14 @@ const BillListModal = (props) => {
                 targetDay.exit = targetDay.exit === null ? item.exit : Math.max(targetDay.exit, item.exit);
             }
 
+            if (item.scheduleStart !== null) {
+                targetDay.scheduleStart = item.scheduleStart;
+            }
+
+            if (item.scheduleEnd !== null) {
+                targetDay.scheduleEnd = item.scheduleEnd;
+            }
+
             if (item.isWorkday !== null && item.isWorkday !== undefined) {
                 targetDay.isWorkday = Boolean(item.isWorkday);
             }
@@ -896,7 +924,6 @@ const BillListModal = (props) => {
 
         return days;
     }, [attendanceInfo, selectedMonth, selectedYear]);
-    const scheduleBounds = useMemo(() => getScheduleBounds(attendanceInfo?.days ?? attendanceInfo), [attendanceInfo]);
     const hasAttendanceChartPoints = attendanceChartData.some((item) => item.enter !== null || item.exit !== null);
 
     useEffect(() => {
@@ -922,14 +949,14 @@ const BillListModal = (props) => {
         const isLateEnter = (item) => (
             item?.isWorkday !== false
             && item?.enter !== null
-            && scheduleBounds.start !== null
-            && item.enter > scheduleBounds.start
+            && item?.scheduleStart !== null
+            && item.enter > item.scheduleStart
         );
         const isEarlyExit = (item) => (
             item?.isWorkday !== false
             && item?.exit !== null
-            && scheduleBounds.end !== null
-            && item.exit < scheduleBounds.end
+            && item?.scheduleEnd !== null
+            && item.exit < item.scheduleEnd
         );
         const segmentTouchesLateEnter = (context) => (
             isLateEnter(attendanceChartData[context.p0DataIndex])
@@ -944,14 +971,7 @@ const BillListModal = (props) => {
             afterDraw: (chart) => {
                 const {ctx, chartArea, scales} = chart;
                 const yScale = scales.y;
-                const lines = [
-                    {value: scheduleBounds.start, label: 'начало рабочего дня'},
-                    {value: scheduleBounds.end, label: 'окончание рабочего дня'},
-                ].filter((item) => item.value !== null && item.value !== undefined);
-
-                if (!lines.length) {
-                    return;
-                }
+                const xScale = scales.x;
 
                 ctx.save();
                 ctx.setLineDash([18, 12]);
@@ -962,14 +982,42 @@ const BillListModal = (props) => {
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'bottom';
 
-                lines.forEach((line) => {
-                    const y = yScale.getPixelForValue(line.value);
+                [
+                    {key: 'scheduleStart', label: 'Начало рабочего дня'},
+                    {key: 'scheduleEnd', label: 'Окончание рабочего дня'},
+                ].forEach(({key, label}) => {
+                    let segmentStart = null;
 
-                    ctx.beginPath();
-                    ctx.moveTo(chartArea.left, y);
-                    ctx.lineTo(chartArea.right, y);
-                    ctx.stroke();
-                    ctx.fillText(`${line.label} ${formatAxisMinutesAsTime(line.value)}`, chartArea.right - 4, y - 3);
+                    attendanceChartData.forEach((day, index) => {
+                        const value = day[key];
+                        const previousValue = index > 0 ? attendanceChartData[index - 1][key] : null;
+                        const nextValue = index < attendanceChartData.length - 1 ? attendanceChartData[index + 1][key] : null;
+
+                        if (value !== null && value !== undefined && value !== previousValue) {
+                            segmentStart = index;
+                        }
+
+                        if (segmentStart === null || value === null || value === undefined || value === nextValue) {
+                            return;
+                        }
+
+                        const firstX = xScale.getPixelForValue(segmentStart);
+                        const lastX = xScale.getPixelForValue(index);
+                        const startX = segmentStart === 0
+                            ? chartArea.left
+                            : (xScale.getPixelForValue(segmentStart - 1) + firstX) / 2;
+                        const endX = index === attendanceChartData.length - 1
+                            ? chartArea.right
+                            : (lastX + xScale.getPixelForValue(index + 1)) / 2;
+                        const y = yScale.getPixelForValue(value);
+
+                        ctx.beginPath();
+                        ctx.moveTo(startX, y);
+                        ctx.lineTo(endX, y);
+                        ctx.stroke();
+                        ctx.fillText(`${label} ${formatAxisMinutesAsTime(value)}`, endX - 4, y - 3);
+                        segmentStart = null;
+                    });
                 });
 
                 ctx.restore();
@@ -983,7 +1031,7 @@ const BillListModal = (props) => {
                 datasets: [
                     {
                         label: 'начало рабочего дня',
-                        data: attendanceChartData.map(() => scheduleBounds.start),
+                        data: attendanceChartData.map((item) => item.scheduleStart),
                         borderColor: 'transparent',
                         backgroundColor: 'transparent',
                         pointRadius: 0,
@@ -992,7 +1040,7 @@ const BillListModal = (props) => {
                     },
                     {
                         label: 'окончание рабочего дня',
-                        data: attendanceChartData.map(() => scheduleBounds.end),
+                        data: attendanceChartData.map((item) => item.scheduleEnd),
                         borderColor: 'transparent',
                         backgroundColor: 'transparent',
                         pointRadius: 0,
@@ -1102,7 +1150,7 @@ const BillListModal = (props) => {
         return () => {
             chart.destroy();
         };
-    }, [attendanceChartData, attendanceInfo, isLoadingBillList, isLoadingAttendance, scheduleBounds]);
+    }, [attendanceChartData, attendanceInfo, isLoadingBillList, isLoadingAttendance]);
 
     const renderBillListSkeleton = () => (
         <div className={'bill-list-modal-body'}>
