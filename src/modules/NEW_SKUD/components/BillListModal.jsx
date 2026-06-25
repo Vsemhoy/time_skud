@@ -880,7 +880,10 @@ const BillListModal = (props) => {
     const visibleBankPaymentRows = bankPaymentRemainder ? bankPaymentRows.slice(0, -1) : bankPaymentRows;
     const eventRows = summaryMeta.rows.filter((row) => row.byDays.length > 0);
     const attendanceChartData = useMemo(() => {
-        const daysCount = dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01`).daysInMonth();
+        const selectedMonthDate = dayjs(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01`);
+        const today = dayjs();
+        const todayDay = selectedMonthDate.isSame(today, 'month') ? today.date() : null;
+        const daysCount = selectedMonthDate.daysInMonth();
         const days = Array.from({length: daysCount}, (_, index) => ({
             day: index + 1,
             enter: null,
@@ -921,6 +924,10 @@ const BillListModal = (props) => {
                 targetDay.isWorkday = Boolean(item.isWorkday);
             }
         });
+
+        if (todayDay) {
+            days[todayDay - 1].exit = null;
+        }
 
         return days;
     }, [attendanceInfo, selectedMonth, selectedYear]);
