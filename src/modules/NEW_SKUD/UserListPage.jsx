@@ -91,6 +91,7 @@ const UserList = (props)=>{
   const isSuperUser = isTruthyFlag(userdata?.user?.super);
   const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
   const isSuperCompactMode = isSuperUser && !isSuperListExpanded;
+  const isSuperTableMode = isSuperUser;
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
   const LIMITED_USER_ID = 583;
@@ -99,7 +100,7 @@ const UserList = (props)=>{
   /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
-  const effectiveShowIdColumn = !isSuperCompactMode && (showIdColumn || isShowExtendedInfo);
+  const effectiveShowIdColumn = !isSuperTableMode && (showIdColumn || isShowExtendedInfo);
   const shouldShowExtendedTableColumns = isShowExtendedInfo && !isOpenFilters;
   const shouldShowFilterSidebar = !isSuperUser && isOpenFilters;
   const shouldShowDetailsSidebar = true;
@@ -1096,6 +1097,21 @@ const UserList = (props)=>{
             return userList;
         }
 
+        if (isSuperUser) {
+            userList = filterUserListByEmployeeSearch(userList, employeeSearchValue);
+            userList.sort((a, b) => {
+                const prioritySort = prioritizeBossInDepartment(a, b);
+                if (prioritySort !== null) {
+                    return prioritySort;
+                }
+                if (a.department_id === b.department_id) {
+                    return b.rang - a.rang;
+                }
+                return compareDepartmentOrder(a, b, 'asc');
+            });
+            return insertDepartmentNames(userList);
+        }
+
         let companyFilter = innerFilters.find((item) => item.key === 'id_company');
         if (companyFilter) {
             userList = filterUserListByCompany(userList, companyFilter.value);
@@ -1262,7 +1278,7 @@ const UserList = (props)=>{
                 imExist={userListData.find((item)=>  item.id === userdata.user.id) != null}
                 onFindMe={handleFindMe}
                 isSuperUser={isSuperUser}
-                superMode={isSuperCompactMode}
+                superMode={isSuperTableMode}
                 isSuperListExpanded={isSuperListExpanded}
                 onToggleSuperListExpanded={() => setIsSuperListExpanded((value) => !value)}
               />
@@ -1303,7 +1319,7 @@ const UserList = (props)=>{
                         <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
-                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'} ${isSuperCompactMode ? 'super-mode' : ''}`}>
+                                className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'} ${isSuperTableMode ? 'super-mode' : ''}`}>
 
                             {effectiveShowIdColumn && (
                               <div className="sk-userlist-id-cell" onClick={() => {
@@ -1326,13 +1342,13 @@ const UserList = (props)=>{
                               </div>
                             </div>
 
-                            {isSuperCompactMode && (
+                            {isSuperTableMode && (
                               <div className="sk-userlist-phone-cell">
                                 Телефон
                               </div>
                             )}
 
-                            {isSuperCompactMode && (
+                            {isSuperTableMode && (
                               <div className="sk-userlist-status-cell">
                                 Статус
                               </div>
@@ -1441,7 +1457,7 @@ const UserList = (props)=>{
                                     extendedInfo={shouldShowExtendedTableColumns}
                                     show_id_column={effectiveShowIdColumn}
                                     current_user_id={userdata.user.id}
-                                    super_mode={isSuperCompactMode}
+                                    super_mode={isSuperTableMode}
                                     on_hide_super_user={handleHideSuperUser}
                                   />
                             ))

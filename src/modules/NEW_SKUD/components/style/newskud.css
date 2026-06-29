@@ -31,7 +31,11 @@
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
-    order: 3;
+    order: 11;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-lost-time-cell {
+    border-right: 1px solid #80808061;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-claims-cell {
