@@ -784,7 +784,7 @@ const UserMonitorListCard = (props) => {
                      ${isSuperMode ? 'super-mode' : ''}
                      ${content.type === 'header' ? 'sk-usermonic-crd-divider' : ''}
                      ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${markedCard ? 'sk-usermonic-crd-marked' : ''}
-                     ${itsMe ? 'sk-usermonic-crd-mine' : ''} ${currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
+                     ${itsMe && !isSuperMode ? 'sk-usermonic-crd-mine' : ''} ${currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
                      style={isSuperMode ? undefined : {'--user-status-bg': statusBackground}}
                 >
                     {showIdColumn && (

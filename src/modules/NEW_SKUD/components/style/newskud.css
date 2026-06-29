@@ -31,7 +31,7 @@
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
-    order: 11;
+    order: 12;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-lost-time-cell {
@@ -39,7 +39,7 @@
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-claims-cell {
-    order: 4;
+    order: 11;
 }
 
 .newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div {
@@ -71,15 +71,19 @@
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
-    background: color-mix(in srgb, #ff4d4f 30%, var(--app-surface-color)) !important;
+    background: color-mix(in srgb, #ff4d4f 15%, var(--app-surface-color)) !important;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office {
-    background: color-mix(in srgb, #52c41a 30%, var(--app-surface-color)) !important;
+    background: color-mix(in srgb, #52c41a 15%, var(--app-surface-color)) !important;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
-    background: color-mix(in srgb, #fadb14 36%, var(--app-surface-color)) !important;
+    background: color-mix(in srgb, #fadb14 18%, var(--app-surface-color)) !important;
+}
+
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
+    background: var(--row-hovered-bg-color) !important;
 }
 
 .newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--absent {
