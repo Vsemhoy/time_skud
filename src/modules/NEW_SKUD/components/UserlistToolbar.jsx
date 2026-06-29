@@ -11,7 +11,7 @@ import {
     FilterOutlined, HomeOutlined, PlusOutlined, UserOutlined
 } from "@ant-design/icons";
 import {LoginOutlined, ScheduleOutlined, UnorderedListOutlined} from "@ant-design/icons";
-import {ListChevronsDownUp, ListChevronsUpDown} from "lucide-react";
+import {ListChevronsDownUp, ListChevronsUpDown, PanelRightClose, PanelRightOpen} from "lucide-react";
 import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
 import {message, Popover, Select} from "antd";
@@ -259,6 +259,7 @@ const UserListToolbar = (props) => {
                         <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-arrow" />
                     </div>
                     <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
+                        <Skeleton.Button active size="small" className="sk-userlist-toolbar-skeleton-icon" />
                         <Skeleton.Button active size="small" className={isSuperUser ? 'sk-userlist-toolbar-skeleton-user' : 'sk-userlist-toolbar-skeleton-create'} />
                     </div>
                 </div>
@@ -380,26 +381,40 @@ const UserListToolbar = (props) => {
                     />
                 </div>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
+                    <Button
+                        color={'default'}
+                        variant={'outlined'}
+                        icon={props.isDetailsSidebarVisible
+                            ? <span className="sk-userlist-lucide-btn-icon"><PanelRightClose size={16} strokeWidth={2.1} /></span>
+                            : <span className="sk-userlist-lucide-btn-icon"><PanelRightOpen size={16} strokeWidth={2.1} /></span>}
+                        className={'sk-userlist-compact-btn sk-userlist-icon-only-btn'}
+                        title={props.isDetailsSidebarVisible ? 'Скрыть карточки справа' : 'Показать карточки справа'}
+                        aria-label={props.isDetailsSidebarVisible ? 'Скрыть карточки справа' : 'Показать карточки справа'}
+                        aria-pressed={!props.isDetailsSidebarVisible}
+                        onClick={props.onToggleDetailsSidebar}
+                    />
                     {isSuperUser ? (
-                        <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
-                            <div
-                                className="sk-userlist-toolbar-user"
-                                title="Пользователь"
-                                role="button"
-                                tabIndex={0}
-                            >
-                                <Avatar
-                                    size={22}
-                                    style={{ backgroundColor: 'var(--app-soft-surface-color)', color: 'var(--app-text-color)' }}
-                                    icon={<UserOutlined />}
-                                />
-                                <span>
-                                    {props.userData?.user
-                                        ? `${props.userData.user.surname} ${props.userData.user.name}`
-                                        : 'Пользователь'}
-                                </span>
-                            </div>
-                        </Dropdown>
+                        <>
+                            <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
+                                <div
+                                    className="sk-userlist-toolbar-user"
+                                    title="Пользователь"
+                                    role="button"
+                                    tabIndex={0}
+                                >
+                                    <Avatar
+                                        size={22}
+                                        style={{ backgroundColor: 'var(--app-soft-surface-color)', color: 'var(--app-text-color)' }}
+                                        icon={<UserOutlined />}
+                                    />
+                                    <span>
+                                        {props.userData?.user
+                                            ? `${props.userData.user.surname} ${props.userData.user.name}`
+                                            : 'Пользователь'}
+                                    </span>
+                                </div>
+                            </Dropdown>
+                        </>
                     ) : (
                         <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
                             <Button

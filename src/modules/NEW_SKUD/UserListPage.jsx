@@ -28,6 +28,7 @@ import {PhoneOutlined} from "@ant-design/icons";
 const TABLE_SKELETON_ROWS = 10;
 const NEW_SKUD_AFFIX_OFFSET = 46;
 const NEW_SKUD_DETAILS_SIDER_WIDTH = 520;
+const NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY = 'newskud_details_sidebar_visible';
 
 const UserListStatusIndicator = ({isLoading}) => (
   <div className="sk-userlist-data-status" title={isLoading ? 'Данные подгружаются' : 'Данные загружены'}>
@@ -90,6 +91,13 @@ const UserList = (props)=>{
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const isSuperUser = isTruthyFlag(userdata?.user?.super);
   const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
+  const [isDetailsSidebarVisible, setIsDetailsSidebarVisible] = useState(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+
+    return window.localStorage.getItem(NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY) !== 'false';
+  });
   const isSuperCompactMode = isSuperUser && !isSuperListExpanded;
   const isSuperTableMode = isSuperUser;
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
@@ -103,7 +111,7 @@ const UserList = (props)=>{
   const effectiveShowIdColumn = !isSuperTableMode && (showIdColumn || isShowExtendedInfo);
   const shouldShowExtendedTableColumns = isShowExtendedInfo && !isOpenFilters;
   const shouldShowFilterSidebar = !isSuperUser && isOpenFilters;
-  const shouldShowDetailsSidebar = true;
+  const shouldShowDetailsSidebar = isDetailsSidebarVisible;
   const [editorMode, setEditorMode] = useState('create');
   const [editorOpened, setEditorOpened] = useState(false);
   const [formType, setFormType] = useState(null);
@@ -1281,6 +1289,12 @@ const UserList = (props)=>{
                 superMode={isSuperTableMode}
                 isSuperListExpanded={isSuperListExpanded}
                 onToggleSuperListExpanded={() => setIsSuperListExpanded((value) => !value)}
+                isDetailsSidebarVisible={isDetailsSidebarVisible}
+                onToggleDetailsSidebar={() => setIsDetailsSidebarVisible((value) => {
+                  const nextValue = !value;
+                  window.localStorage.setItem(NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY, String(nextValue));
+                  return nextValue;
+                })}
               />
             </Affix>
           </Header>
