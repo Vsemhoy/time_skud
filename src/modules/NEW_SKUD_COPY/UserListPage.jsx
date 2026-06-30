@@ -27,7 +27,7 @@ import './components/style/newskud-copy-design.css';
 
 const TABLE_SKELETON_ROWS = 10;
 const NEW_SKUD_AFFIX_OFFSET = 46;
-const NEW_SKUD_DETAILS_SIDER_WIDTH = 360;
+const NEW_SKUD_DETAILS_SIDER_WIDTH = 440;
 const NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY = 'newskud_details_sidebar_visible';
 
 const UserListStatusIndicator = ({isLoading}) => (
