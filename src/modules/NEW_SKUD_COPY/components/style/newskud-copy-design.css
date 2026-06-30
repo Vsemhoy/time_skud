@@ -165,7 +165,7 @@
 }
 
 .newskud-copy-page .sk-userlist-toolbar-top-right {
-    flex-basis: 360px;
+    flex-basis: 440px;
     justify-content: flex-end;
 }
 
@@ -276,9 +276,9 @@
         minmax(190px, 2fr)
         58px
         118px
-        minmax(92px, 1fr)
+        minmax(128px, 1.15fr)
         repeat(5, minmax(76px, 1fr));
-    height: 27px;
+    height: 32px;
     border-color: var(--sk2-line-soft);
     background: rgba(255, 255, 255, 0.96);
     transition: background-color 120ms ease;
@@ -289,7 +289,7 @@
         minmax(190px, 2fr)
         58px
         118px
-        minmax(92px, 1fr)
+        minmax(128px, 1.15fr)
         repeat(5, minmax(76px, 1fr));
 }
 
@@ -299,7 +299,7 @@
         minmax(190px, 2fr)
         58px
         118px
-        minmax(92px, 1fr)
+        minmax(128px, 1.15fr)
         repeat(5, minmax(76px, 1fr))
         repeat(3, minmax(105px, 1fr));
 }
@@ -309,7 +309,7 @@
         minmax(190px, 2fr)
         58px
         118px
-        minmax(92px, 1fr)
+        minmax(128px, 1.15fr)
         repeat(5, minmax(76px, 1fr))
         repeat(3, minmax(105px, 1fr));
 }
@@ -322,7 +322,7 @@
     padding: 3px 8px;
     border-right-color: var(--sk2-line-soft);
     color: var(--sk2-ink);
-    font-size: 11px;
+    font-size: 12.5px;
     line-height: 20px;
 }
 
@@ -364,7 +364,7 @@
     border-right: 1px solid #d6e0ed;
     background: linear-gradient(180deg, #ffffff 0%, #f5f8fc 42%, #dfe8f4 100%) !important;
     color: #58708f;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     line-height: 40px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(177, 193, 214, 0.5);
@@ -412,14 +412,14 @@
 
 .newskud-copy-page .sk-userlist-name-text {
     padding-left: 2px;
-    font-size: 10.5px;
+    font-size: 12.5px;
     font-weight: 500;
 }
 
 .newskud-copy-page .sk-userlist-phone-inline {
     justify-content: center;
     color: #5879a4;
-    font-size: 10px;
+    font-size: 11.5px;
 }
 
 .newskud-copy-page .sk-userlist-phone-cell {
@@ -439,7 +439,7 @@
     border-radius: 3px;
     box-shadow: none;
     color: #44556a;
-    font-size: 10px;
+    font-size: 11.5px;
     line-height: 18px;
 }
 
@@ -475,6 +475,7 @@
 
 .newskud-copy-page .sk-userlist-claims-icons {
     gap: 4px;
+    overflow: visible;
 }
 
 .newskud-copy-page .sk-userlist-claim-icon {
@@ -497,7 +498,7 @@
         #f1f5fa 100%
     );
     color: #637087;
-    font-size: 10.5px;
+    font-size: 11.5px;
     line-height: 24px;
 }
 
@@ -811,15 +812,15 @@
 
 @media (max-width: 1400px) {
     .newskud-copy-page .sk-userlist-toolbar-top-right {
-        flex-basis: 320px;
+        flex-basis: 380px;
     }
 
     .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) {
-        grid-template-columns: 38px minmax(175px, 1.8fr) 54px 108px minmax(84px, 0.9fr) repeat(5, minmax(68px, 0.8fr));
+        grid-template-columns: 38px minmax(175px, 1.8fr) 54px 108px minmax(116px, 1fr) repeat(5, minmax(68px, 0.8fr));
     }
 
     .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode).without-id-column {
-        grid-template-columns: minmax(175px, 1.8fr) 54px 108px minmax(84px, 0.9fr) repeat(5, minmax(68px, 0.8fr));
+        grid-template-columns: minmax(175px, 1.8fr) 54px 108px minmax(116px, 1fr) repeat(5, minmax(68px, 0.8fr));
     }
 }
 
