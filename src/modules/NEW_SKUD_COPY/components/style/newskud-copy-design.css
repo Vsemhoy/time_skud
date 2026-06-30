@@ -36,6 +36,9 @@
 
 .sk-main-menu--newskud-copy {
     --sk2-orange: #f57c00;
+    width: calc(100% - 20px);
+    margin: 0 10px;
+    box-sizing: border-box;
     height: 46px !important;
     min-height: 46px !important;
     padding: 0 12px !important;
@@ -153,6 +156,7 @@
 }
 
 .newskud-copy-page .sk-userlist-toolbar-top {
+    position: relative;
     min-height: 46px;
     padding: 0 !important;
     gap: 12px;
@@ -170,6 +174,10 @@
 }
 
 .newskud-copy-page .sk-userlist-toolbar-top-center {
+    position: absolute;
+    left: 50%;
+    z-index: 2;
+    transform: translateX(-50%);
     gap: 7px;
 }
 
