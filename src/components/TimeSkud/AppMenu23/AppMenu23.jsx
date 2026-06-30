@@ -99,6 +99,7 @@ const AppMenu23 = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const selectedKey = location.pathname;
+    const isNewSkudCopy = location.pathname === '/newskud-copy' || location.pathname.endsWith('/newskud-copy');
     const homeHref = `${window.location.origin}/`;
 
     const handleHomeClick = (event) => {
@@ -412,6 +413,24 @@ const AppMenu23 = (props) => {
     );
 
     const getMenuItems = () => {
+        if (isNewSkudCopy) {
+            return [
+                mainMenuItems[0],
+                {
+                    key: '/newskud-copy',
+                    label: <NavLink to="/newskud-copy">Сотрудники</NavLink>,
+                },
+                {
+                    key: '/claims',
+                    label: <NavLink to="/claims">Заявки</NavLink>,
+                },
+                {
+                    key: '/help',
+                    label: <NavLink to="/help">Справка</NavLink>,
+                },
+            ];
+        }
+
         console.log(props.user_act)
         const currentUser = props.user_act?.user;
         const currentAcls = props.user_act?.acls;
@@ -452,7 +471,10 @@ const AppMenu23 = (props) => {
 
     return (
         <div>
-            <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className={'sk-main-menu'}>
+            <Header
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                className={`sk-main-menu ${isNewSkudCopy ? 'sk-main-menu--newskud-copy' : ''}`}
+            >
                 {props.is_loading ? (
                     <div className="sk-appmenu-skeleton" aria-hidden="true">
                         <Skeleton.Button active size="small" className="sk-appmenu-skeleton-home" />
@@ -469,7 +491,7 @@ const AppMenu23 = (props) => {
                     />
                 )}
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
+                <div className="sk-main-menu-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
 
                     {props.is_loading ? (
                         <div className="sk-appmenu-skeleton-right" aria-hidden="true">
@@ -533,6 +555,7 @@ const AppMenu23 = (props) => {
 
                     {!props.is_loading && <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
                         <div
+                            className="sk-appmenu-user"
                             style={{
                                 cursor: 'pointer',
                                 display: 'flex',

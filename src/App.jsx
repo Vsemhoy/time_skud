@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import UserListPage from './modules/USER_LIST/UserListPage';
 import NewSkudPage from './modules/NEW_SKUD/UserListPage';
+import NewSkudCopyPage from './modules/NEW_SKUD_COPY/UserListPage';
 import {Layout, Menu, Skeleton, Button, Badge, Alert, message} from 'antd';
 import { DS_USER } from './CONFIG/DEFAULTSTATE';
 import { PROD_AXIOS_INSTANCE } from './API/API';
@@ -482,8 +483,10 @@ function App() {
           <Routes>
               <Route path={'/'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
               <Route path={'/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+              <Route path={'/newskud-copy'} element={<NewSkudCopyPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/newskud-copy'} element={<NewSkudCopyPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             
             <Route path={'/my'} element={<AccountPage userdata={userAct}/>} />
             <Route path={BASE_ROUTE + '/my'} element={<AccountPage userdata={userAct}/>} />

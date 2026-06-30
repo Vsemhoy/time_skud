@@ -1,0 +1,335 @@
+.bill-list-modal-container {
+    width:  calc(100% - 2px);
+    height: calc(100% - 2px);
+    padding: 1px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 40px 1fr;
+
+    .bill-list-modal-header-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .bill-list-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bill-list-current-user {
+            width: 300px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 11px;
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 6px;
+            background-color: var(--app-soft-surface-color);
+        }
+
+        .bill-list-current-user-name {
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 30px;
+            color: var(--app-text-color);
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bill-list-export-button {
+            min-width: 220px;
+        }
+    }
+
+    .bill-list-modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .bill-list-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bill-list-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .bill-list-summary-cards--three {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .bill-list-summary-cards--four {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .bill-list-summary-cards--special .bill-list-summary-card:nth-child(2) > .bill-list-summary-card-label:first-child {
+            display: none;
+        }
+
+        .bill-list-summary-card {
+            padding: 14px 16px;
+            background-color: var(--app-soft-surface-color);
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 12px;
+        }
+
+        .bill-list-summary-card--skeleton {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bill-list-summary-card-label {
+            font-size: 13px;
+            color: var(--app-muted-text-color);
+            margin-bottom: 8px;
+        }
+
+        .bill-list-summary-card-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--app-text-color);
+            line-height: 1.1;
+        }
+
+        .bill-list-summary-table {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .bill-list-summary-table-header,
+        .bill-list-summary-table-row {
+            display: grid;
+            grid-template-columns: minmax(180px, 1.5fr) 120px 160px;
+            align-items: center;
+        }
+
+        .bill-list-summary-table--with-money .bill-list-summary-table-header,
+        .bill-list-summary-table--with-money .bill-list-summary-table-row {
+            grid-template-columns: minmax(180px, 1.5fr) 120px 160px 120px;
+        }
+
+        .bill-list-summary-table-header {
+            min-height: 40px;
+            padding: 0 14px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: var(--app-soft-surface-color);
+            border: 1px solid var(--table-border-divider-color);
+        }
+
+        .bill-list-summary-table-row {
+            min-height: 42px;
+            padding: 0 14px;
+            font-size: 14px;
+            background-color: var(--app-surface-color);
+            border: 1px solid var(--table-border-divider-color);
+        }
+
+        .bill-list-summary-table-row:nth-child(even) {
+            background-color: var(--row-second-bg-color);
+        }
+
+        .bill-list-bank-payments {
+            gap: 1px;
+        }
+
+        .bill-list-bank-payments-title {
+            min-height: 40px;
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: var(--app-soft-surface-color);
+            border-bottom: 1px solid var(--table-border-divider-color);
+        }
+
+        .bill-list-bank-payments .bill-list-summary-table-header,
+        .bill-list-bank-payments .bill-list-summary-table-row {
+            grid-template-columns: minmax(180px, 1fr) 160px;
+        }
+
+        .bill-list-bank-payments .bill-list-summary-table-header > div:nth-child(2),
+        .bill-list-bank-payments .bill-list-summary-table-row > div:nth-child(2) {
+            text-align: center;
+        }
+
+        .bill-list-summary-table-row--total {
+            font-weight: 600;
+        }
+
+        .bill-list-summary-table-row--danger {
+            color: #cf1322;
+            font-weight: 600;
+        }
+
+        .bill-list-summary-table-header > div:nth-child(2),
+        .bill-list-summary-table-header > div:nth-child(3),
+        .bill-list-summary-table-header > div:nth-child(4),
+        .bill-list-summary-table-row > div:nth-child(2),
+        .bill-list-summary-table-row > div:nth-child(3),
+        .bill-list-summary-table-row > div:nth-child(4) {
+            text-align: center;
+        }
+
+        .bill-list-skeleton-label,
+        .bill-list-skeleton-table-label,
+        .bill-list-skeleton-table-header,
+        .bill-list-skeleton-table-header-wide,
+        .bill-list-skeleton-table-value,
+        .bill-list-skeleton-value {
+            width: 100%;
+        }
+
+        .bill-list-skeleton-label {
+            max-width: 140px;
+        }
+
+        .bill-list-skeleton-value {
+            max-width: 110px;
+            height: 32px;
+        }
+
+        .bill-list-skeleton-table-header {
+            max-width: 90px;
+        }
+
+        .bill-list-skeleton-table-header-wide {
+            max-width: 180px;
+        }
+
+        .bill-list-skeleton-table-label {
+            max-width: 180px;
+        }
+
+        .bill-list-skeleton-table-value {
+            max-width: 70px;
+            margin: 0 auto;
+        }
+
+        .bill-list-skeleton-days-cell {
+            justify-content: flex-start !important;
+        }
+
+        .bill-list-skeleton-day-tag {
+            min-width: 28px;
+            width: 28px;
+        }
+
+        .bill-list-events-collapse {
+            background: transparent;
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 12px;
+            overflow: hidden;
+
+            .ant-collapse-item {
+                border: none;
+            }
+
+            .ant-collapse-header {
+                background-color: var(--app-soft-surface-color);
+                color: var(--app-text-color) !important;
+                font-weight: 500;
+            }
+
+            .ant-collapse-content,
+            .ant-collapse-content-box {
+                background-color: var(--app-surface-color);
+            }
+
+            .ant-collapse-content > .ant-collapse-content-box {
+                padding: 0;
+            }
+        }
+
+        .table-by-days {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            .table-by-days-header {
+                height: 40px;
+                font-size: 16px;
+                font-weight: 500;
+                padding: 5px;
+                background-color: var(--app-soft-surface-color);
+                outline: 1px solid var(--table-border-divider-color);
+                display: flex;
+                align-items: center;
+                transition: .3s;
+            }
+            .table-by-days-row {
+                padding: 5px;
+                display: grid;
+                grid-template-columns: minmax(100px, 300px) minmax(100px, 1fr);
+                min-height: 40px;
+                outline: 1px solid var(--table-border-divider-color);
+                background-color: var(--app-surface-color);
+                transition: .3s;
+                .label-cell {
+                    padding: 5px;
+                    font-size: 14px;
+                    border-right: 1px solid var(--table-border-divider-color);
+                    display: flex;
+                    align-items: center;
+                }
+                .label-cell--danger {
+                    color: #cf1322;
+                    font-weight: 600;
+                }
+                .days-cell {
+                    padding: 5px 10px;
+                    font-size: 14px;
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                    gap: 5px;
+                    align-content: flex-start;
+                }
+            }
+            .table-by-days-row:hover {
+                background-color: var(--row-second-bg-color);
+            }
+            .table-by-days-row--empty {
+                grid-template-columns: 1fr;
+                color: var(--app-muted-text-color);
+            }
+        }
+
+        .bill-list-attendance-chart {
+            padding: 14px 16px 18px;
+            background-color: var(--app-surface-color);
+            border: 1px solid var(--table-border-divider-color);
+            border-radius: 12px;
+        }
+        .bill-list-attendance-chart-title {
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-color);
+        }
+        .bill-list-attendance-chart-canvas {
+            position: relative;
+            height: 320px;
+            min-height: 320px;
+        }
+        .bill-list-attendance-chart-canvas canvas {
+            display: block;
+        }
+        .bill-list-attendance-chart-empty {
+            margin-top: 8px;
+            color: var(--app-muted-text-color);
+            font-size: 13px;
+            text-align: center;
+        }
+    }
+}
