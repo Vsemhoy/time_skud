@@ -23,6 +23,7 @@ import ExtendedInformationSidebar from "./components/ExtendedInformationSidebar"
 import FiltersSidebar from "./components/FiltersSidebar";
 import ClaimListModal from "./components/ClaimListModal";
 import BillListModal from "./components/BillListModal";
+import {PhoneOutlined} from "@ant-design/icons";
 import './components/style/newskud-copy-design.css';
 
 const TABLE_SKELETON_ROWS = 10;
@@ -1356,7 +1357,7 @@ const UserList = (props)=>{
                             </div>
 
                             <div className="sk-userlist-phone-cell">
-                              Телефон
+                              <PhoneOutlined title="Телефон" aria-label="Телефон" />
                             </div>
 
                             <div className="sk-userlist-status-cell">

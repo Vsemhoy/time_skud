@@ -32,6 +32,13 @@
         linear-gradient(108deg, #f9fbfe 0%, #eaf1fa 53%, #f9fbfe 100%);
     font-family: Inter, "Segoe UI", Arial, sans-serif;
     font-size: 12px;
+    letter-spacing: 0.4px;
+}
+
+.newskud-copy-page *,
+.sk-main-menu--newskud-copy,
+.sk-main-menu--newskud-copy * {
+    letter-spacing: 0.4px;
 }
 
 .sk-main-menu--newskud-copy {
@@ -269,6 +276,8 @@
     border-radius: 3px;
     background: var(--sk2-surface);
     box-shadow: 0 5px 14px rgba(48, 65, 89, 0.1);
+    font-size: 14px;
+    letter-spacing: 0.4px;
 }
 
 .newskud-copy-page .sk-userlist-table-header-wrap {
@@ -286,7 +295,7 @@
         118px
         minmax(128px, 1.15fr)
         repeat(5, minmax(76px, 1fr));
-    height: 32px;
+    height: 38px;
     border-color: var(--sk2-line-soft);
     background: rgba(255, 255, 255, 0.96);
     transition: background-color 120ms ease;
@@ -330,8 +339,8 @@
     padding: 3px 8px;
     border-right-color: var(--sk2-line-soft);
     color: var(--sk2-ink);
-    font-size: 12.5px;
-    line-height: 20px;
+    font-size: 14px;
+    line-height: 24px;
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test > .sk-userlist-employee-cell {
@@ -359,7 +368,7 @@
 }
 
 .newskud-copy-page .sk-usermonic-headerrow {
-    height: 42px;
+    height: 50px;
     padding: 0;
     border: 0;
     border-bottom: 1px solid var(--sk2-line);
@@ -372,9 +381,14 @@
     border-right: 1px solid #d6e0ed;
     background: linear-gradient(180deg, #ffffff 0%, #f5f8fc 42%, #dfe8f4 100%) !important;
     color: #58708f;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    line-height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    line-height: 1.2;
+    white-space: normal;
+    overflow: hidden;
+    text-align: center;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(177, 193, 214, 0.5);
 }
 
@@ -412,6 +426,12 @@
     justify-content: center;
 }
 
+.newskud-copy-page .sk-usermonic-headerrow > .sk-userlist-claims-cell > div {
+    height: auto;
+    overflow: visible;
+    white-space: normal;
+}
+
 .newskud-copy-page .sk-userlist-name-cell {
     width: 100%;
     grid-template-columns: minmax(0, 1fr);
@@ -420,14 +440,14 @@
 
 .newskud-copy-page .sk-userlist-name-text {
     padding-left: 2px;
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 500;
 }
 
 .newskud-copy-page .sk-userlist-phone-inline {
     justify-content: center;
     color: #5879a4;
-    font-size: 11.5px;
+    font-size: 14px;
 }
 
 .newskud-copy-page .sk-userlist-phone-cell {
@@ -440,25 +460,20 @@
 }
 
 .newskud-copy-page .sk-userlist-status-inline--tag-new {
-    width: 104px;
-    min-height: 18px;
+    width: 112px;
+    min-height: 22px;
     padding: 0 6px;
     border: 0;
     border-radius: 3px;
     box-shadow: none;
     color: #44556a;
-    font-size: 11.5px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-id-cell,
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
-    background: linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--user-status-bg, #dff0c4) 42%, #ffffff) 0%,
-        color-mix(in srgb, var(--user-status-bg, #dff0c4) 25%, #ffffff) 58%,
-        color-mix(in srgb, var(--user-status-bg, #dff0c4) 8%, #ffffff) 100%
-    ) !important;
+    background: color-mix(in srgb, var(--user-status-bg, #dff0c4) 28%, #ffffff) !important;
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):hover > div {
@@ -467,12 +482,12 @@
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):hover > .sk-userlist-id-cell,
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow):hover > .sk-userlist-employee-cell {
-    background: linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--user-status-bg, #d7ebb7) 52%, #f7fbff) 0%,
-        color-mix(in srgb, var(--user-status-bg, #d7ebb7) 33%, #f7fbff) 58%,
-        color-mix(in srgb, var(--user-status-bg, #d7ebb7) 12%, #ffffff) 100%
-    ) !important;
+    background: color-mix(in srgb, var(--user-status-bg, #d7ebb7) 38%, #f7fbff) !important;
+}
+
+.newskud-copy-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > div,
+.newskud-copy-page .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):hover > div {
+    background: var(--row-selected-color) !important;
 }
 
 .newskud-copy-page .sk-userlist-enter-cell--late,
@@ -491,7 +506,7 @@
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou.sk-usermonic-crd-divider {
-    height: 24px;
+    height: 30px;
     grid-template-columns: 1fr !important;
     border: 0;
     border-bottom: 1px solid var(--sk2-line);
@@ -506,8 +521,8 @@
         #f1f5fa 100%
     );
     color: #637087;
-    font-size: 11.5px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 30px;
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou.sk-usermonic-crd-divider > div {
@@ -726,6 +741,8 @@
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.97);
     box-shadow: 0 4px 11px rgba(43, 58, 78, 0.16);
+    font-size: 14px;
+    letter-spacing: 0.4px;
 }
 
 .newskud-copy-page .sk-state-intgra-card-backdrop {
@@ -750,7 +767,7 @@
     border-color: #d6e0ec;
     background: linear-gradient(100deg, #bccbe0 0%, #f0f4fa 88%);
     color: var(--sk2-ink);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     text-align: center;
 }
@@ -762,7 +779,7 @@
 .newskud-copy-page .sk-usermonic-drawer-row {
     grid-template-columns: minmax(125px, 42%) minmax(0, 1fr);
     gap: 8px;
-    min-height: 30px;
+    min-height: 36px;
     box-sizing: border-box;
     padding: 6px 2px;
     border-bottom: 1px solid #dbe4ef;
@@ -775,24 +792,39 @@
 
 .newskud-copy-page .sk-labed-um {
     color: #58779e;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 500;
 }
 
 .newskud-copy-page .sk-contend-um {
     justify-content: flex-start;
     color: #3f4650;
-    font-size: 10.5px;
+    font-size: 14px;
     font-style: normal;
 }
 
 .newskud-copy-page .sk-uml-table-dumper th,
 .newskud-copy-page .sk-uml-table-dumper td {
-    height: 26px;
+    height: 32px;
     padding: 4px 8px;
     border-bottom-color: #dce5ef;
     color: #42536a;
-    font-size: 10.5px;
+    font-size: 14px;
+}
+
+.newskud-copy-page .sk-userlist-details-claim-title,
+.newskud-copy-page .sk-userlist-details-claim-info,
+.newskud-copy-page .sk-userlist-details-claim-date-value,
+.newskud-copy-page .sk-userlist-details-claim-time-value,
+.newskud-copy-page .sk-userlist-details-claim-status,
+.newskud-copy-page .sk-userlist-document-title,
+.newskud-copy-page .sk-userlist-super-summary-name,
+.newskud-copy-page .sk-userlist-super-summary-meta,
+.newskud-copy-page .sk-userlist-details-claims-empty,
+.newskud-copy-page .sk-umsmi-card,
+.newskud-copy-page .sk-umsmi-row {
+    font-size: 14px;
+    letter-spacing: 0.4px;
 }
 
 .newskud-copy-page .sk-uml-table-dumper th {
