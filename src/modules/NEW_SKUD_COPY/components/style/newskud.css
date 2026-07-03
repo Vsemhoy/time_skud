@@ -13,13 +13,8 @@
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode,
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
     grid-template-columns:
-        minmax(260px, 2.4fr)
-        minmax(96px, 0.8fr)
-        minmax(130px, 1fr)
-        minmax(90px, 0.8fr)
-        minmax(86px, 0.8fr)
-        minmax(86px, 0.8fr)
-        minmax(120px, 1fr);
+        minmax(230px, 1.8fr)
+        repeat(6, minmax(110px, 1fr));
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-employee-cell {
@@ -68,22 +63,27 @@
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-inline--tag-new {
     width: min(118px, 100%);
+    border: none;
+    box-shadow: none;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
-    background: color-mix(in srgb, #ff4d4f 15%, var(--app-surface-color)) !important;
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.9);
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office {
-    background: color-mix(in srgb, #52c41a 15%, var(--app-surface-color)) !important;
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
+    background: #f1dcd4 !important;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
-    background: color-mix(in srgb, #fadb14 18%, var(--app-surface-color)) !important;
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--office {
+    background: #e7f0cc !important;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
-    background: var(--row-hovered-bg-color) !important;
+.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left,
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
+    background: #f5eccb !important;
 }
 
 .newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--absent {
