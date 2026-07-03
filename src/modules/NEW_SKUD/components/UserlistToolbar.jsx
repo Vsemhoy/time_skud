@@ -17,6 +17,7 @@ import { StateContext } from "../../../components/ComStateProvider25/ComStatePro
 import {message, Popover, Select} from "antd";
 import {CSRF_TOKEN, HTTP_HOST, ROUTE_PREFIX} from "../../../CONFIG/config";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
+import {getSavedSkudPageTheme, saveSkudPageTheme, SKUD_PAGE_THEMES} from "../../../Utils/skudPageTheme";
 
 
 
@@ -36,6 +37,7 @@ const UserListToolbar = (props) => {
 
         return window.localStorage.getItem('skud_theme') === 'dark' ? 'dark' : 'light';
     });
+    const [pageTheme, setPageTheme] = useState(getSavedSkudPageTheme);
 
 
 
@@ -101,6 +103,12 @@ const UserListToolbar = (props) => {
         window.location.reload();
     };
 
+    const handlePageThemeChange = (nextPageTheme) => {
+        setPageTheme(nextPageTheme);
+        saveSkudPageTheme(nextPageTheme);
+        window.location.reload();
+    };
+
     const userMenuItems = [
         ...(isSuperUser ? [
             {
@@ -137,6 +145,27 @@ const UserListToolbar = (props) => {
                 </div>
             ),
         }] : []),
+        {
+            key: 'page-theme',
+            label: (
+                <div
+                    onClick={(event) => event.stopPropagation()}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minWidth: '210px' }}
+                >
+                    <span>Тема страницы</span>
+                    <Select
+                        size="small"
+                        value={pageTheme}
+                        onChange={handlePageThemeChange}
+                        options={[
+                            { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
+                            { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
+                        ]}
+                        style={{ width: '112px' }}
+                    />
+                </div>
+            ),
+        },
         {
             key: 'logout',
             icon: <LoginOutlined />,
