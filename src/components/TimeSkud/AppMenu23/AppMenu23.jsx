@@ -1,4 +1,4 @@
-import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Skeleton, Switch } from 'antd';
+import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Select, Skeleton, Switch } from 'antd';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
 import {HomeOutlined, LoginOutlined, NotificationOutlined, ScheduleOutlined, ThunderboltOutlined, UnorderedListOutlined, UserOutlined} from '@ant-design/icons';
@@ -7,6 +7,7 @@ import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 import Chat from "corp-chat-library-antd-react-socket";
 import Notificator from "corp-notificator-library-antd-react-socket";
+import {getSavedSkudPageTheme, saveSkudPageTheme, SKUD_PAGE_THEMES} from '../../../Utils/skudPageTheme';
 
 const THEME_STORAGE_KEY = 'skud_theme';
 
@@ -96,10 +97,13 @@ const AppMenu23 = (props) => {
 
     const [countOfNotifications, setCountOfNotifications] = useState(0);
     const [themeMode, setThemeMode] = useState(getSavedThemeMode);
+    const [pageTheme, setPageTheme] = useState(getSavedSkudPageTheme);
     const navigate = useNavigate();
     const location = useLocation();
     const selectedKey = location.pathname;
-    const isNewSkudCopy = location.pathname === '/newskud-copy' || location.pathname.endsWith('/newskud-copy');
+    const isNewSkudCopy = pageTheme === SKUD_PAGE_THEMES.NEW
+        || location.pathname === '/newskud-copy'
+        || location.pathname.endsWith('/newskud-copy');
     const homeHref = `${window.location.origin}/`;
 
     const handleHomeClick = (event) => {
@@ -184,6 +188,12 @@ const AppMenu23 = (props) => {
         window.location.reload();
     };
 
+    const handlePageThemeChange = (nextPageTheme) => {
+        setPageTheme(nextPageTheme);
+        saveSkudPageTheme(nextPageTheme);
+        window.location.reload();
+    };
+
 
 
     const getSelectedKeys = () => {
@@ -234,6 +244,27 @@ const AppMenu23 = (props) => {
                         size="small"
                         checked={themeMode === 'dark'}
                         onChange={handleThemeChange}
+                    />
+                </div>
+            ),
+        },
+        {
+            key: 'page-theme',
+            label: (
+                <div
+                    onClick={(event) => event.stopPropagation()}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minWidth: '210px' }}
+                >
+                    <span>Тема страницы</span>
+                    <Select
+                        size="small"
+                        value={pageTheme}
+                        onChange={handlePageThemeChange}
+                        options={[
+                            { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
+                            { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
+                        ]}
+                        style={{ width: '112px' }}
                     />
                 </div>
             ),
@@ -413,24 +444,6 @@ const AppMenu23 = (props) => {
     );
 
     const getMenuItems = () => {
-        if (isNewSkudCopy) {
-            return [
-                mainMenuItems[0],
-                {
-                    key: '/newskud-copy',
-                    label: <NavLink to="/newskud-copy">Сотрудники</NavLink>,
-                },
-                {
-                    key: '/claims',
-                    label: <NavLink to="/claims">Заявки</NavLink>,
-                },
-                {
-                    key: '/help',
-                    label: <NavLink to="/help">Справка</NavLink>,
-                },
-            ];
-        }
-
         console.log(props.user_act)
         const currentUser = props.user_act?.user;
         const currentAcls = props.user_act?.acls;

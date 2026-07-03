@@ -53,6 +53,7 @@ import NotifierDrawer from './components/Notifyer/NotifierDrawer';
 import AccountingPage from "./modules/ACCOUNTING/AccountingPage";
 import AccountingBankCardsPage from "./modules/ACCOUNTING/AccountingBankCardsPage";
 import AccountingSurchargesPage from "./modules/ACCOUNTING/AccountingSurchargesPage";
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from './Utils/skudPageTheme';
 import KppSchedulePage from "./modules/KPP_SCHEDULE/KppSchedulePage";
 import BuildersSchedulePage from "./modules/BUILDERS_SCHEDULE/BuildersSchedulePage";
 import {USDA} from "./modules/CHARTS/mock/mock";
@@ -85,6 +86,9 @@ message.config({
 });
 
 function App() {
+  const HomeSkudPage = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.NEW
+    ? NewSkudCopyPage
+    : NewSkudPage;
 
   const [notificatorOpened, setNotificatorOpened] = useState(false);
   const [countOfNotifications, setCountOfNotifications] = useState(0);
@@ -481,10 +485,10 @@ function App() {
             </div>
           )} 
           <Routes>
-              <Route path={'/'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+              <Route path={'/'} element={<HomeSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
               <Route path={'/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
               <Route path={'/newskud-copy'} element={<NewSkudCopyPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
-            <Route path={BASE_ROUTE + '/'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
+            <Route path={BASE_ROUTE + '/'} element={<HomeSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/newskud'} element={<NewSkudPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             <Route path={BASE_ROUTE + '/newskud-copy'} element={<NewSkudCopyPage userdata={userAct}/>}  refresh_trigger={actionUpdateEvents} />
             
