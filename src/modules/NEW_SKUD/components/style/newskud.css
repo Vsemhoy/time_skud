@@ -68,7 +68,10 @@
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 1;
+    border-bottom: 0;
+    box-shadow: 0 1px 0 #ffffff;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
