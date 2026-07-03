@@ -74,6 +74,10 @@
     box-shadow: 0 1px 0 #ffffff;
 }
 
+.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-marked) > div:not(.sk-userlist-employee-cell) {
+    background: #ffffff !important;
+}
+
 .newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
     background: #f1dcd4 !important;
