@@ -978,6 +978,7 @@ const ClaimManagerPage = (props) => {
                                             on_decline={handleDeclineEvent}
                                             on_edit={handleEditEvent}
                                             on_get_back={handleGetBackEvent}
+                                            current_user={userData?.user}
                                         />
                                     ))}
                                 </div>

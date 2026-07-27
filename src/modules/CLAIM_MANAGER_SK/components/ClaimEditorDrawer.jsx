@@ -92,11 +92,14 @@ const ClaimEditorDrawer = (props) => {
   const createUserIdFromProps = props.data?.user_id ?? props.data?.id;
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
   const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
-  const effectiveFormUsers = editMode === 'create' && !shouldShowUserSelect ? [MYID] : formUsers;
+  const editedClaimUserId = props.data?.user_id;
+  const effectiveFormUsers = editMode === 'create'
+      ? (!shouldShowUserSelect ? [MYID] : formUsers)
+      : (editedClaimUserId ? [editedClaimUserId] : formUsers);
   const selectedFullDayUsers = effectiveFormUsers
       .map((userId) => baseUserList.find((user) => Number(user?.id) === Number(userId)))
       .filter(Boolean);
-  const selectedFullDayUser = editMode === 'create' && effectiveFormUsers.length === 1
+  const selectedFullDayUser = effectiveFormUsers.length === 1
       ? baseUserList.find((user) => Number(user?.id) === Number(effectiveFormUsers[0]))
       : null;
   const selectedFullDaySchedule = selectedFullDayUser?.schedule?.skud_schedule;
@@ -299,14 +302,24 @@ const ClaimEditorDrawer = (props) => {
     if (editMode === 'read' && userCard){
       masterSetReadOptions();
     };
-  }, [userCard, editMode, props.acl_base, MYID]);
+  }, [userCard, editMode, props.acl_base, MYID, props.current_user]);
 
 
   const masterSetReadOptions = () => {
-    if (!userCard || !props.acl_base || !userCard.id_company) {
+    if (!userCard) {
       return;
     }
+
     const claimUserId = userCard.user_id ?? userCard.id;
+
+    if (isPrivilegedUser) {
+      setAllowEdit(true);
+    }
+
+    if (!props.acl_base || !userCard.id_company) {
+      return;
+    }
+
     const claimTypeId = userCard.skud_current_state_id ?? userCard.skud_current_state?.id;
     const needApproved = Number(userCard.need_approved ?? userCard.skud_current_state?.need_approved ?? 0);
     const companyAcls = props.acl_base?.[userCard.id_company];
@@ -331,7 +344,7 @@ const ClaimEditorDrawer = (props) => {
     ) {
         // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
         setAllowEdit(true);
-    } else if (userCard.boss_id === MYID &&
+    } else if (Number(userCard.boss_id) === Number(MYID) &&
         stateAcls &&
         stateAcls.includes('TEAM_CLAIM_UPDATE')
     ) {
@@ -339,7 +352,7 @@ const ClaimEditorDrawer = (props) => {
         setAllowEdit(true);
     } else if (Number(claimUserId) === Number(MYID) &&
         stateAcls &&
-        stateAcls.includes('TEAM_CLAIM_UPDATE')
+        stateAcls.includes('PERS_CLAIM_UPDATE')
     ) {
       setAllowEdit(true);
     }
@@ -891,7 +904,7 @@ const ClaimEditorDrawer = (props) => {
                           onChange={handleLocalTripDateChange}
                         />
                       </div>
-                      <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
+                      <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '12px', alignItems: 'end'}}>
                         <div>
                           <span className={'sk-usp-filter-col-label sk-labed-um'}>Начало</span>
                           <TimePicker
@@ -901,6 +914,7 @@ const ClaimEditorDrawer = (props) => {
                             needConfirm={false}
                             style={{ width: '100%' }}
                             value={formDateRange?.[0]}
+                            disabled={isFullWorkDay}
                             onChange={handleLocalTripStartTimeChange}
                           />
                         </div>
@@ -913,9 +927,17 @@ const ClaimEditorDrawer = (props) => {
                             needConfirm={false}
                             style={{ width: '100%' }}
                             value={formDateRange?.[1]}
+                            disabled={isFullWorkDay}
                             onChange={handleLocalTripEndTimeChange}
                           />
                         </div>
+                        <Button
+                          type={isFullWorkDay ? 'primary' : 'default'}
+                          disabled={!canUseFullWorkDay}
+                          onClick={handleToggleFullWorkDay}
+                        >
+                          Весь день
+                        </Button>
                       </div>
                     </div>
                   )}
