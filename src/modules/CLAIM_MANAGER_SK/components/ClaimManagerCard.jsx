@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
 import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 
+const isTruthyFlag = (value) => value === true || Number(value) === 1;
+
 // const items = [
 //   {
 //     key: '1',
@@ -109,7 +111,7 @@ const ClaimManagerCard = (props) => {
         if (userCard === null ||  !aclBase ||  MYID === 0){ return};
         let menu = [];
         let allowBack = false;
-        let allowEdit = false;
+        let allowEdit = isTruthyFlag(props.current_user?.super) || isTruthyFlag(props.current_user?.is_admin);
         let allowApprove = false;
         let allowDecline = false;
 
@@ -129,10 +131,10 @@ const ClaimManagerCard = (props) => {
         if (aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('ANY_CLAIM_UPDATE')){
             // фильтр, если есть привилегия создавать для всех в компании, добавляем в список
             allowEdit = true;
-        } else if (userCard.boss_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
+        } else if (Number(userCard.boss_id) === Number(MYID) && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
             // Если челик мой подчиненный и у меня есть права добавлять подчиненным
             allowEdit = true;
-        } else if (userCard.user_id === MYID && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('TEAM_CLAIM_UPDATE')){
+        } else if (Number(userCard.user_id) === Number(MYID) && aclBase[userCard.id_company] && aclBase[userCard.id_company][userCard.skud_current_state_id] && aclBase[userCard.id_company][userCard.skud_current_state_id]?.includes('PERS_CLAIM_UPDATE')){
             allowEdit = true;
         };
 
@@ -231,7 +233,7 @@ const ClaimManagerCard = (props) => {
             );
         };
         setMenuItems(menu);
-      }, [userCard, aclBase, MYID]);
+      }, [userCard, aclBase, MYID, props.current_user]);
 
 
     const handleEditEvent = ()=> {
