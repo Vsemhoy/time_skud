@@ -44,30 +44,6 @@ const isTruthyFlag = (value) => value === true || Number(value) === 1;
 // ];
 
 
-const formatExecutedDuration = (executedStart, executedEnd) => {
-    if (!executedStart || !executedEnd) {
-        return '-';
-    }
-
-    const start = dayjs(executedStart);
-    const end = dayjs(executedEnd);
-
-    if (!start.isValid() || !end.isValid()) {
-        return '-';
-    }
-
-    const totalMinutes = end.diff(start, 'minute');
-
-    if (totalMinutes < 0) {
-        return '-';
-    }
-
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-};
-
 const ClaimManagerCard = (props) => {
     const [itemId, setItemId] = useState(props.data.id);
     const [MYID, setMYID] = useState(0);
@@ -391,7 +367,7 @@ const ClaimManagerCard = (props) => {
               </div>
               <div>
                   <div className={'sk-align-center sk-fs-medium'}>
-                      {formatExecutedDuration(props.data.executed_start, props.data.executed_end)}
+                      {props.data.executed_time_count ?? '-'}
                   </div>
               </div>
               {/*<div>
