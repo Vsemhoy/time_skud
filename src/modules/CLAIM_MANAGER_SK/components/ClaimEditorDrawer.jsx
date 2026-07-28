@@ -994,16 +994,13 @@ const ClaimEditorDrawer = (props) => {
               </div>
             )}
 
-            {editMode === 'read' && (props.data?.executed_start || props.data?.executed_end) && (
+            {editMode === 'read'
+              && props.data?.executed_time_count !== null
+              && props.data?.executed_time_count !== undefined
+              && (
               <div className={'sk-claimeditor-drawer-row '}>
                 <span className={'sk-usp-filter-col-label sk-labed-um'}>Фактическое время исполнения</span>
-                <div className={'sk-flex-space'}>
-                  {renderReadRange(
-                    props.data?.executed_start,
-                    props.data?.executed_end,
-                    renderReadDateTime
-                  )}
-                </div>
+                <div className={'sk-contend-um'}>{props.data.executed_time_count}</div>
               </div>
             )}
 
