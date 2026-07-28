@@ -5,6 +5,7 @@ import ClaimIcon from "./ClaimIcon";
 import dayjs from "dayjs";
 import StateIconsController from "../../CHARTS/components/StateIconsController";
 import { formatMoscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
+import { formatSecondsAsTime } from "./claimTimeHelpers";
 
 const isTruthyFlag = (value) => value === true || Number(value) === 1;
 
@@ -367,7 +368,7 @@ const ClaimManagerCard = (props) => {
               </div>
               <div>
                   <div className={'sk-align-center sk-fs-medium'}>
-                      {props.data.executed_time_count ?? '-'}
+                      {formatSecondsAsTime(props.data.executed_time_count)}
                   </div>
               </div>
               {/*<div>
