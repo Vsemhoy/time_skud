@@ -5,6 +5,7 @@ import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import UserStatusLucideIconsController from "../../CHARTS/components/UserStatusLucideIconsController";
+import { formatSecondsAsTime } from "./claimTimeHelpers";
 const { Option } = Select;
 
 
@@ -1000,7 +1001,9 @@ const ClaimEditorDrawer = (props) => {
               && (
               <div className={'sk-claimeditor-drawer-row '}>
                 <span className={'sk-usp-filter-col-label sk-labed-um'}>Фактическое время исполнения</span>
-                <div className={'sk-contend-um'}>{props.data.executed_time_count}</div>
+                <div className={'sk-contend-um'}>
+                  {formatSecondsAsTime(props.data.executed_time_count)}
+                </div>
               </div>
             )}
 
