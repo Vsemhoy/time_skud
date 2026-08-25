@@ -293,7 +293,7 @@
         minmax(250px, 2fr)
         125px
         repeat(6, minmax(140px, 1fr));
-    height: 38px;
+    height: 32px;
     border-color: var(--sk2-line-soft);
     background: rgba(255, 255, 255, 0.96);
     transition: background-color 120ms ease;
