@@ -314,7 +314,11 @@ const ClaimEditorDrawer = (props) => {
     const claimUserId = userCard.user_id ?? userCard.id;
 
     if (isPrivilegedUser) {
+      setAllowBack(true);
       setAllowEdit(true);
+      setAllowApprove(true);
+      setAllowDecline(true);
+      return;
     }
 
     if (!props.acl_base || !userCard.id_company) {

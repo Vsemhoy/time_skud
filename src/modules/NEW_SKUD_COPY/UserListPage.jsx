@@ -1353,11 +1353,12 @@ const UserList = (props)=>{
                               <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}
                                    style={{textAlign: 'left'}}>
                                 <span>Сотрудник</span>
+                                <PhoneOutlined
+                                    className="sk-userlist-phone-header-icon"
+                                    title="Телефон"
+                                    aria-label="Телефон"
+                                />
                               </div>
-                            </div>
-
-                            <div className="sk-userlist-phone-cell">
-                              <PhoneOutlined title="Телефон" aria-label="Телефон" />
                             </div>
 
                             <div className="sk-userlist-status-cell">

@@ -14,15 +14,12 @@
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
     grid-template-columns:
         minmax(230px, 1.8fr)
-        repeat(6, minmax(110px, 1fr));
+        repeat(4, minmax(110px, 1fr))
+        110px;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-employee-cell {
     order: 1;
-}
-
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-phone-cell {
-    order: 2;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
@@ -47,12 +44,12 @@
 }
 
 .newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(7),
-.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(8) {
+.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(6) {
     display: none;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) max-content;
 }
 
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-cell {
