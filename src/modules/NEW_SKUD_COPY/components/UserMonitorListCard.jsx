@@ -805,12 +805,11 @@ const UserMonitorListCard = (props) => {
                                 <span className="sk-userlist-name-text">
                                     {content.surname} {content.name} {content.patronymic}
                                 </span>
+                                <span className="sk-userlist-phone-inline">
+                                    {formatPhone(content.phone)}
+                                </span>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="sk-userlist-phone-cell">
-                        {formatPhone(content.phone)}
                     </div>
 
                     <div className="sk-userlist-status-cell">

@@ -290,9 +290,9 @@
 .newskud-copy-page .sk-usermonic-cardrow-ou-test {
     grid-template-columns:
         42px
-        minmax(190px, 2fr)
-        58px
-        repeat(7, minmax(140px, 1fr));
+        minmax(250px, 2fr)
+        125px
+        repeat(6, minmax(140px, 1fr));
     height: 38px;
     border-color: var(--sk2-line-soft);
     background: rgba(255, 255, 255, 0.96);
@@ -301,25 +301,25 @@
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test.without-id-column {
     grid-template-columns:
-        minmax(190px, 2fr)
-        58px
-        repeat(7, minmax(140px, 1fr));
+        minmax(250px, 2fr)
+        125px
+        repeat(6, minmax(140px, 1fr));
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test.extended {
     grid-template-columns:
         42px
-        minmax(190px, 2fr)
-        58px
-        repeat(7, minmax(140px, 1fr))
+        minmax(250px, 2fr)
+        125px
+        repeat(6, minmax(140px, 1fr))
         repeat(3, minmax(105px, 1fr));
 }
 
 .newskud-copy-page .sk-usermonic-cardrow-ou-test.extended.without-id-column {
     grid-template-columns:
-        minmax(190px, 2fr)
-        58px
-        repeat(7, minmax(140px, 1fr))
+        minmax(250px, 2fr)
+        125px
+        repeat(6, minmax(140px, 1fr))
         repeat(3, minmax(105px, 1fr));
 }
 
@@ -339,6 +339,11 @@
     justify-content: stretch;
 }
 
+.newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell > div {
+    width: 100%;
+    min-width: 0;
+}
+
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-id-cell {
     order: 1;
 }
@@ -347,16 +352,12 @@
     order: 2;
 }
 
-.newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-phone-cell {
+.newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-status-cell {
     order: 3;
 }
 
-.newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-status-cell {
-    order: 4;
-}
-
 .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-claims-cell {
-    order: 5;
+    order: 4;
 }
 
 .newskud-copy-page .sk-usermonic-headerrow {
@@ -390,7 +391,10 @@
 }
 
 .newskud-copy-page .sk-usermonic-headerrow > .sk-userlist-employee-cell > div {
-    display: block;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: 12px;
     width: 100%;
     text-align: left !important;
 }
@@ -426,25 +430,29 @@
 
 .newskud-copy-page .sk-userlist-name-cell {
     width: 100%;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: 12px;
 }
 
 .newskud-copy-page .sk-userlist-name-text {
     padding-left: 2px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .newskud-copy-page .sk-userlist-phone-inline {
-    justify-content: center;
+    justify-self: end;
     color: #5879a4;
     font-size: 14px;
+    text-align: right;
+    white-space: nowrap;
 }
 
-.newskud-copy-page .sk-userlist-phone-cell {
+.newskud-copy-page .sk-userlist-phone-header-icon {
+    justify-self: end;
     color: #5879a4;
-    white-space: nowrap;
+    font-size: 14px;
 }
 
 .newskud-copy-page .sk-userlist-status-cell {
@@ -857,11 +865,11 @@
     }
 
     .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) {
-        grid-template-columns: 38px minmax(175px, 1.8fr) 54px repeat(7, minmax(120px, 1fr));
+        grid-template-columns: 38px minmax(230px, 1.8fr) 115px repeat(6, minmax(120px, 1fr));
     }
 
     .newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode).without-id-column {
-        grid-template-columns: minmax(175px, 1.8fr) 54px repeat(7, minmax(120px, 1fr));
+        grid-template-columns: minmax(230px, 1.8fr) 115px repeat(6, minmax(120px, 1fr));
     }
 }
 
