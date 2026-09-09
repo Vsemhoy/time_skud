@@ -302,7 +302,7 @@
 .newskud-copy-page .sk-usermonic-cardrow-ou-test.without-id-column {
     grid-template-columns:
         minmax(250px, 2fr)
-        125px
+        138px
         repeat(6, minmax(140px, 1fr));
 }
 
