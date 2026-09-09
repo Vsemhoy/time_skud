@@ -89,7 +89,7 @@ return (
         on_create_event={handleCustomEventCreation}
         user_to_search={userToSearch}
         can_create_event={canCreateEvent}
-        event_user_scope={hasFullEventUserAccess ? 'all' : 'warehouse'}
+        event_user_scope={hasAcl(77) || !hasFullEventUserAccess ? 'warehouse' : 'all'}
         header={(
             <div className="sk-event-monitor-content-header">
                 <h2>Монитор событий СКУД</h2>

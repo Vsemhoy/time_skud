@@ -40,6 +40,9 @@ const EventMonitorToolbar = (props)=>
     const filteredFormUsers = props.event_user_scope === 'warehouse'
         ? baseUserlist.filter((user) => getDepartmentId(user) === 9)
         : baseUserlist;
+    const hasAllowedFormUsers = formUsers.length > 0 && formUsers.every((userId) => (
+        filteredFormUsers.some((user) => String(user.id) === String(userId))
+    ));
     const textVariants = [
         "Ещё не получил пропуск",
         "Забыл пропуск",
@@ -205,7 +208,7 @@ const EventMonitorToolbar = (props)=>
         if (formReason.length > 1){
             points++;
         };
-        if (formUsers.length > 0){
+        if (hasAllowedFormUsers){
             points++;
         };
         if (formEndTime && formStartTime && formEndTime.isSame(formStartTime)){
@@ -213,14 +216,14 @@ const EventMonitorToolbar = (props)=>
         }
         setFormValid(points > 2);
 
-    },[formEndTime, formStartTime, formReason, formUsers]);
+    },[formEndTime, formStartTime, formReason, formUsers, hasAllowedFormUsers]);
 
 
 
 
 
     const handleCreateEvent = () =>{
-        if (formValid){
+        if (formValid && props.can_create_event && hasAllowedFormUsers){
             let obj = {
                 users: formUsers,
                 start: formStartTime?.format('YYYY-MM-DD HH:mm:ss'),
