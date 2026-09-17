@@ -1396,23 +1396,23 @@ const UserList = (props)=>{
                             >Выход
                             </div>
 
-                            <div
+                            {!isSuperTableMode && <div
                                 className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(22)
                                 }}
                                 title={'Обед'}
                             >Обед
-                            </div>
+                            </div>}
 
-                            <div
+                            {!isSuperTableMode && <div
                                 className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(14)
                                 }}
                                 title={'Кратковременные перерывы'}
                             >Крат. перерывы
-                            </div>
+                            </div>}
 
                             <div
                                 className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}

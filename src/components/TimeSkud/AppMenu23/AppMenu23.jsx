@@ -101,6 +101,7 @@ const AppMenu23 = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const selectedKey = location.pathname;
+    const isModern = pageTheme === SKUD_PAGE_THEMES.MODERN;
     const isNewSkudCopy = pageTheme === SKUD_PAGE_THEMES.NEW
         || location.pathname === '/newskud-copy'
         || location.pathname.endsWith('/newskud-copy');
@@ -191,7 +192,9 @@ const AppMenu23 = (props) => {
     const handlePageThemeChange = (nextPageTheme) => {
         setPageTheme(nextPageTheme);
         saveSkudPageTheme(nextPageTheme);
-        window.location.reload();
+        // Dedicated legacy routes otherwise keep rendering their fixed page after reload.
+        const pathname = window.location.pathname.replace(/\/newskud(?:-copy)?\/?$/, '/');
+        window.location.assign(pathname + window.location.search + window.location.hash);
     };
 
 
@@ -263,6 +266,7 @@ const AppMenu23 = (props) => {
                         options={[
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
+                            { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
                         ]}
                         style={{ width: '112px' }}
                     />
@@ -486,7 +490,7 @@ const AppMenu23 = (props) => {
         <div>
             <Header
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                className={`sk-main-menu ${isNewSkudCopy ? 'sk-main-menu--newskud-copy' : ''}`}
+                className={`sk-main-menu ${isNewSkudCopy || isModern ? 'sk-main-menu--newskud-copy' : ''} ${isModern ? 'sk-main-menu--modern' : ''}`}
             >
                 {props.is_loading ? (
                     <div className="sk-appmenu-skeleton" aria-hidden="true">

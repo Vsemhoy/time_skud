@@ -1,4 +1,4 @@
-﻿import {Button, DatePicker, Dropdown} from "antd";
+﻿import {Button, DatePicker, Dropdown, Input} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 import {Avatar, Skeleton, Switch} from "antd";
 
@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import '../../../assets/timeskud.css'
 import {
     CaretLeftOutlined, CaretRightOutlined,
-    FilterOutlined, HomeOutlined, PlusOutlined, UserOutlined
+    FilterOutlined, HomeOutlined, PlusOutlined, UserOutlined, SearchOutlined, LeftOutlined, RightOutlined, ReloadOutlined
 } from "@ant-design/icons";
 import {LoginOutlined, ScheduleOutlined, UnorderedListOutlined} from "@ant-design/icons";
 import {ListChevronsDownUp, ListChevronsUpDown, PanelRightClose, PanelRightOpen} from "lucide-react";
@@ -106,7 +106,9 @@ const UserListToolbar = (props) => {
     const handlePageThemeChange = (nextPageTheme) => {
         setPageTheme(nextPageTheme);
         saveSkudPageTheme(nextPageTheme);
-        window.location.reload();
+        // Dedicated legacy routes otherwise keep rendering their fixed page after reload.
+        const pathname = window.location.pathname.replace(/\/newskud(?:-copy)?\/?$/, '/');
+        window.location.assign(pathname + window.location.search + window.location.hash);
     };
 
     const userMenuItems = [
@@ -160,6 +162,7 @@ const UserListToolbar = (props) => {
                         options={[
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
+                            { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
                         ]}
                         style={{ width: '112px' }}
                     />
@@ -354,13 +357,14 @@ const UserListToolbar = (props) => {
                             onClick={handleFindMyself}
                         />
                     )}
+                    {props.modern && <Input className="modern-search" prefix={<SearchOutlined />} placeholder="Поиск по ФИО / id..." aria-label="Поиск сотрудников" allowClear value={props.employeeSearchValue} onChange={e => props.onEmployeeSearchChange(e.target.value)} />}
                 </div>
                 <div className="sk-flex sk-userlist-toolbar-top-center">
-                    <CaretLeftOutlined
+                    {props.modern ? <Button className="modern-date-arrow" aria-label="На предыдущий день" icon={<LeftOutlined />} onClick={decreaseDate} /> : <CaretLeftOutlined
                         title="На предыдущий день"
                         onClick={decreaseDate}
                         className={'sk-usermonic-filter-bacon'}
-                    />
+                    />}
                     <div>
                         <DatePicker
                             value={usedDate}
@@ -368,7 +372,7 @@ const UserListToolbar = (props) => {
                             format={"DD.MM.YYYY"}
                             variant="borderless"
                             size="large"
-                            style={{width: '130px'}}
+                            style={{width: props.modern ? '145px' : '130px'}}
                             title={getWeekDayString(usedDate.day())}
                             allowClear={false}
                             placement="bottomLeft"
@@ -401,13 +405,14 @@ const UserListToolbar = (props) => {
                                             : 'sk-userlist-toolbar-status-dot--ready'
                                 }`}
                             />
+                            {props.modern && <span className="modern-live-label">{props.isLoadError ? 'Ошибка загрузки' : props.isLoading ? 'Загрузка данных' : 'Данные актуальны'} <ReloadOutlined /></span>}
                         </span>
                     </div>
-                    <CaretRightOutlined
+                    {props.modern ? <Button className="modern-date-arrow" aria-label="На следующий день" icon={<RightOutlined />} onClick={increaseDate} /> : <CaretRightOutlined
                         onClick={increaseDate}
                         className={'sk-usermonic-filter-bacon'}
                         title="На следующий день"
-                    />
+                    />}
                 </div>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
                     <Button

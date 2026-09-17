@@ -106,7 +106,9 @@ const UserListToolbar = (props) => {
     const handlePageThemeChange = (nextPageTheme) => {
         setPageTheme(nextPageTheme);
         saveSkudPageTheme(nextPageTheme);
-        window.location.reload();
+        // Dedicated legacy routes otherwise keep rendering their fixed page after reload.
+        const pathname = window.location.pathname.replace(/\/newskud(?:-copy)?\/?$/, '/');
+        window.location.assign(pathname + window.location.search + window.location.hash);
     };
 
     const userMenuItems = [
@@ -160,6 +162,7 @@ const UserListToolbar = (props) => {
                         options={[
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
+                            { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
                         ]}
                         style={{ width: '112px' }}
                     />
