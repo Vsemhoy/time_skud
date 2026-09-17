@@ -6,104 +6,99 @@
     grid-template-columns: minmax(360px, 3.2fr) minmax(90px, 1fr) repeat(5, minmax(72px, 1fr));
 }
 
-.newskud-page--super .layout--newskud {
+.newskud-copy-page.newskud-page--super .layout--newskud {
     min-height: 100vh;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
     grid-template-columns:
         minmax(230px, 1.8fr)
         repeat(4, minmax(110px, 1fr))
         110px;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-employee-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-employee-cell {
     order: 1;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
     order: 12;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-lost-time-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-lost-time-cell {
     border-right: 1px solid #80808061;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-claims-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-claims-cell {
     order: 11;
 }
 
-.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div {
+.newskud-copy-page.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div {
     display: block;
 }
 
-.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell svg,
-.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div::after {
+.newskud-copy-page.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell svg,
+.newskud-copy-page.newskud-page--super .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div::after {
     display: none;
 }
 
-.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(7),
-.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(6) {
-    display: none;
-}
-
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
     grid-template-columns: minmax(0, 1fr) max-content;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-cell {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-inline--tag-new {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-status-inline--tag-new {
     width: min(118px, 100%);
     border: none;
     box-shadow: none;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell {
     position: relative;
     z-index: 1;
     border-bottom: 0;
     box-shadow: 0 1px 0 #ffffff;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-marked) > div:not(.sk-userlist-employee-cell) {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-marked) > div:not(.sk-userlist-employee-cell) {
     background: #ffffff !important;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent {
     background: #f1dcd4 !important;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--office {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--office {
     background: #e7f0cc !important;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
     background: #f5eccb !important;
 }
 
-.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--absent {
+.newskud-copy-page.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--absent {
     background: color-mix(in srgb, #ff4d4f 30%, var(--app-surface-color));
 }
 
-.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--office {
+.newskud-copy-page.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--office {
     background: color-mix(in srgb, #52c41a 30%, var(--app-surface-color));
 }
 
-.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--left {
+.newskud-copy-page.newskud-page--super .sk-state-intgra-card.sk-userlist-details-card--left {
     background: color-mix(in srgb, #fadb14 36%, var(--app-surface-color));
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked > .sk-userlist-employee-cell,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked > .sk-userlist-employee-cell,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell {
     background: var(--row-selected-color) !important;
 }
 
@@ -217,12 +212,12 @@
     background: var(--row-selected-color) !important;
 }
 
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
-.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow) > .sk-userlist-employee-cell.sk-userlist-employee-cell--left,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--absent,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--office,
+.newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.sk-usermonic-crd-marked:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):hover > .sk-userlist-employee-cell.sk-userlist-employee-cell--left {
     background: var(--row-selected-color) !important;
 }
 
@@ -880,13 +875,13 @@
     gap: 8px;
 }
 
-.newskud-page--super .sk-userlist-super-summary-scroll {
+.newskud-copy-page.newskud-page--super .sk-userlist-super-summary-scroll {
     height: calc(100vh - 46px - 46px - 5px);
     min-height: 0;
     overflow: hidden;
 }
 
-.newskud-page--super .sk-userlist-details-card--super-summary {
+.newskud-copy-page.newskud-page--super .sk-userlist-details-card--super-summary {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     max-height: 40vh;
@@ -894,13 +889,13 @@
     overflow: hidden;
 }
 
-.newskud-page--super .sk-userlist-super-summary-body {
+.newskud-copy-page.newskud-page--super .sk-userlist-super-summary-body {
     overflow-y: auto;
     min-height: 0;
     padding: 10px 7px 12px;
 }
 
-.newskud-page--super .sk-userlist-details-card--super-summary .sk-userlist-details-card-title {
+.newskud-copy-page.newskud-page--super .sk-userlist-details-card--super-summary .sk-userlist-details-card-title {
     min-height: 0;
 }
 

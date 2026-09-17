@@ -46,11 +46,6 @@
     display: none;
 }
 
-.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(7),
-.newskud-page--super .sk-usermonic-headerrow.super-mode > div:nth-child(8) {
-    display: none;
-}
-
 .newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
     grid-template-columns: minmax(0, 1fr);
 }

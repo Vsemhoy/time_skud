@@ -86,7 +86,7 @@ message.config({
 });
 
 function App() {
-  const HomeSkudPage = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.NEW
+  const HomeSkudPage = getSavedSkudPageTheme() !== SKUD_PAGE_THEMES.CLASSIC
     ? NewSkudCopyPage
     : NewSkudPage;
 

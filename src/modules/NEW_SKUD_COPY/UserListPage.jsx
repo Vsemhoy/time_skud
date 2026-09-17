@@ -23,8 +23,10 @@ import ExtendedInformationSidebar from "./components/ExtendedInformationSidebar"
 import FiltersSidebar from "./components/FiltersSidebar";
 import ClaimListModal from "./components/ClaimListModal";
 import BillListModal from "./components/BillListModal";
-import {PhoneOutlined} from "@ant-design/icons";
+import {DownOutlined, PhoneOutlined} from "@ant-design/icons";
 import './components/style/newskud-copy-design.css';
+import './components/style/modern.css';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 
 const TABLE_SKELETON_ROWS = 10;
 const NEW_SKUD_AFFIX_OFFSET = 46;
@@ -87,8 +89,27 @@ const UserListInitialLoader = ({phase}) => (
   </div>
 );
 
+const AnimatedDepartmentRow = ({modern, collapsed, children}) => {
+  if (!modern) return children;
+  return (
+    <div className={`modern-department-row${collapsed ? ' is-collapsed' : ''}`} inert={collapsed} aria-hidden={collapsed}>
+      <div className="modern-department-row-inner">{children}</div>
+    </div>
+  );
+};
+
 const UserList = (props)=>{
   const { userdata } = props;
+  const isModern = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MODERN;
+  const [collapsedDepartments, setCollapsedDepartments] = useState([]);
+  const toolbarElementRef = useRef(null);
+  const [toolbarHeight, setToolbarHeight] = useState(52);
+  useEffect(() => {
+    if (!isModern || !toolbarElementRef.current) return;
+    const observer = new ResizeObserver(([entry]) => setToolbarHeight(entry.target.getBoundingClientRect().height));
+    observer.observe(toolbarElementRef.current);
+    return () => observer.disconnect();
+  }, [isModern]);
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const isSuperUser = isTruthyFlag(userdata?.user?.super);
   const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
@@ -97,7 +118,8 @@ const UserList = (props)=>{
       return true;
     }
 
-    return window.localStorage.getItem(NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY) !== 'false';
+    const saved = window.localStorage.getItem(NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY);
+    return saved === null ? !isModern : saved !== 'false';
   });
   const isSuperCompactMode = isSuperUser && !isSuperListExpanded;
   const isSuperTableMode = isSuperUser;
@@ -109,7 +131,7 @@ const UserList = (props)=>{
   /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
-  const effectiveShowIdColumn = !isSuperTableMode && (showIdColumn || isShowExtendedInfo);
+  const effectiveShowIdColumn = !isSuperTableMode && (showIdColumn || isShowExtendedInfo || isModern);
   const shouldShowExtendedTableColumns = isShowExtendedInfo && !isOpenFilters;
   const shouldShowFilterSidebar = !isSuperUser && isOpenFilters;
   const shouldShowDetailsSidebar = isDetailsSidebarVisible;
@@ -1004,6 +1026,7 @@ const UserList = (props)=>{
 
   const customRow = (dep_id) => {
     return {
+    department_id: dep_id,
     id: `custom_row_dep_${dep_id}`,
       key: `custom_row_dep_${dep_id}`, // Уникальный ключ для строки
       name: getDepartmentNameById(dep_id) ? getDepartmentNameById(dep_id) : '<департамент удалён>',
@@ -1261,12 +1284,15 @@ const UserList = (props)=>{
 
 
   return (
-      <div className={`mega-layout newskud-page newskud-copy-page ${isSuperUser ? 'newskud-page--super' : ''}`}>
+      <div className={`mega-layout newskud-page newskud-copy-page ${getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MODERN ? 'modern-page' : ''} ${isSuperUser ? 'newskud-page--super' : ''}`}>
         {isInitialPageLoading && <UserListInitialLoader phase={initialLoaderPhase} />}
         <Layout className={'layout layout--newskud'}>
           <Affix offsetTop={0}>
-            <Header className={'header-user-list header-user-list--newskud'}>
+            <Header ref={toolbarElementRef} className={'header-user-list header-user-list--newskud'}>
               <UserListToolbar
+                modern={isModern}
+                employeeSearchValue={employeeSearchValue}
+                onEmployeeSearchChange={setEmployeeSearchValue}
                 // onSortBy={sortUserList}
                 departments={filterVisibleDepartments(departments)}
                 baseUsers={baseUserListData}
@@ -1308,7 +1334,7 @@ const UserList = (props)=>{
                      pointerEvents: shouldShowFilterSidebar ? 'auto' : 'none',
                    }}
             >
-              <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
+              <Affix offsetTop={isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET}>
                 <div className="sk-width-container">
                   <div className="sk-usp-filter-col sk2-filters-shell" style={{height: 'calc(100vh - 46px - 46px)'}}>
                     <FiltersSidebar onChangeInnerSort={toggleInnerSorts}
@@ -1331,7 +1357,7 @@ const UserList = (props)=>{
                       <Empty />
                   ):(
                       <div className="sk-userlist-table-frame">
-                        <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
+                        <Affix offsetTop={isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
                                 className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'} ${isSuperTableMode ? 'super-mode' : ''}`}>
@@ -1361,6 +1387,7 @@ const UserList = (props)=>{
                               </div>
                             </div>
 
+                            {isModern && !isSuperTableMode && <div className="modern-phone-cell"><PhoneOutlined title="Телефон" /></div>}
                             <div className="sk-userlist-status-cell">
                               Статус
                             </div>
@@ -1393,23 +1420,23 @@ const UserList = (props)=>{
                             >Выход
                             </div>
 
-                            <div
+                            {!isSuperTableMode && <div
                                 className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(22)
                                 }}
                                 title={'Обед'}
                             >Обед
-                            </div>
+                            </div>}
 
-                            <div
+                            {!isSuperTableMode && <div
                                 className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(14)
                                 }}
                                 title={'Кратковременные перерывы'}
                             >Крат. перерывы
-                            </div>
+                            </div>}
 
                             <div
                                 className={`sk-userlist-lost-time-cell ${selectedColumns.includes(16) ? "sk-col-selected" : ""}`}
@@ -1455,8 +1482,19 @@ const UserList = (props)=>{
                           </div>
                         ) : (
                           filteredUsers.map((arche, index) =>
-                              (
+                              isModern && arche.type === 'header' ? (
+                                <button key={arche.key} className="modern-department" aria-expanded={!collapsedDepartments.includes(arche.department_id)} onClick={() => setCollapsedDepartments(previous => previous.includes(arche.department_id) ? previous.filter(id => id !== arche.department_id) : [...previous, arche.department_id])}>
+                                  <DownOutlined className="modern-department-chevron" />{arche.name}
+                                  <span>На месте: {filteredUsers.filter(user => user.type !== 'header' && user.department_id === arche.department_id && Number(user.local_state) === 4).length} | Всего: {filteredUsers.filter(user => user.type !== 'header' && user.department_id === arche.department_id).length}</span>
+                                </button>
+                              ) : (
+                                <AnimatedDepartmentRow
+                                  key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
+                                  modern={isModern}
+                                  collapsed={collapsedDepartments.includes(arche.department_id)}
+                                >
                                   <UserMonitorListCard
+                                      modern={isModern}
                                       key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
                                       data={arche}
                                       on_mark_user={handleMarkUser}
@@ -1471,11 +1509,13 @@ const UserList = (props)=>{
                                     super_mode={isSuperTableMode}
                                     on_hide_super_user={handleHideSuperUser}
                                   />
+                                </AnimatedDepartmentRow>
                             ))
                         )}
                       </div>
                   )}
               </div>
+
             </Content>
             {shouldShowDetailsSidebar && <Sider width={NEW_SKUD_DETAILS_SIDER_WIDTH}
                    className="sider pl15"
@@ -1485,7 +1525,7 @@ const UserList = (props)=>{
                      pointerEvents: 'auto',
                    }}
             >
-              <Affix offsetTop={NEW_SKUD_AFFIX_OFFSET}>
+              <Affix offsetTop={isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET}>
                 <div className="sk-width-container sk-userlist-details-panel" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 46px)'}}>
                     <ExtendedInformationSidebar
                         target_user_guys={targetUserGuys}

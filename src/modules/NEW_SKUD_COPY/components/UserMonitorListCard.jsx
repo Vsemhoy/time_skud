@@ -744,7 +744,7 @@ const UserMonitorListCard = (props) => {
                             <Tag className="sk-usermonic-badger"
                                 style={{background: getReadableBadgeBackground(badger.color)}}
                                 title={badger.title}
-                            >{badger.icon} <span>{badger.text}</span></Tag>
+                            >{badger.icon} <span>{badger.text || (props.modern ? 'не пришел' : '')}</span></Tag>
                         )}</div>
                     </div>
                 </div>
@@ -812,14 +812,17 @@ const UserMonitorListCard = (props) => {
                         </div>
                     </div>
 
+                    {props.modern && !isSuperMode && <div className="modern-phone-cell">{formatPhone(content.phone)}</div>}
                     <div className="sk-userlist-status-cell">
                         {badger && (
                             <span
                                 className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
+                                style={{'--modern-status-bg': statusBackground}}
+                                data-modern-absent={props.modern && !badger.text ? 'true' : undefined}
                                 title={badger.title}
                             >
                                 {badger.icon}
-                                <span>{badger.text}</span>
+                                <span>{badger.text || (props.modern ? 'не пришел' : '')}</span>
                             </span>
                         )}
                     </div>
