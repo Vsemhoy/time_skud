@@ -812,7 +812,7 @@ const UserMonitorListCard = (props) => {
                         </div>
                     </div>
 
-                    {props.modern && !isSuperMode && <div className="modern-phone-cell">{formatPhone(content.phone)}</div>}
+                    {props.modern && <div className="modern-phone-cell">{formatPhone(content.phone)}</div>}
                     <div className="sk-userlist-status-cell">
                         {badger && (
                             <span

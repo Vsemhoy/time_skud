@@ -211,11 +211,11 @@
 }
 
 /* Reference layout: full-width grid, separate phone column and readable controls. */
-.modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .modern-phone-cell { order: 3; color: #8190a5; font-family: Consolas, monospace; }
+.modern-page .sk-usermonic-cardrow-ou-test > .modern-phone-cell { order: 3; color: #8190a5; font-family: Consolas, monospace; }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-status-cell { order: 4; padding-inline: 10px !important; }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-claims-cell { order: 5; }
-.modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) .sk-userlist-phone-inline,
-.modern-page .sk-usermonic-headerrow:not(.super-mode) .sk-userlist-phone-header-icon { display: none; }
+.modern-page .sk-usermonic-cardrow-ou-test .sk-userlist-phone-inline,
+.modern-page .sk-usermonic-headerrow .sk-userlist-phone-header-icon { display: none; }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) .sk-userlist-name-cell { display: block; }
 .modern-page .sk-userlist-name-text { font-size: 14px; font-weight: 400; }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode).sk-usermonic-headerrow { height: 56px; }
@@ -232,6 +232,21 @@
 .modern-page .sk-userlist-toolbar-top-center > div { display: flex; gap: 10px; align-items: center; }
 .modern-page .sk-userlist-toolbar-top-center .ant-picker { height: 34px; border: 1px solid #cbd5e1; }
 .modern-page .sk-userlist-toolbar-status { display: inline-flex; gap: 7px; width: auto; height: 34px; padding: 0 10px; margin: 0; border: 1px solid #6ee7b7; border-radius: 4px; background: #ecfdf5; color: #065f46; }
+.modern-page .sk-userlist-toolbar-status:has(.sk-userlist-toolbar-status-dot--error) {
+    border-color: #e24c4b;
+    background: #fef2f2;
+    color: #991b1b;
+}
+.modern-page .sk-userlist-toolbar-status:has(.sk-userlist-toolbar-status-dot--loading) {
+    border-color: #f0b429;
+    background: #fffbeb;
+    color: #92400e;
+}
+.modern-page .sk-userlist-toolbar-status:has(.sk-userlist-toolbar-status-dot--ready) {
+    border-color: #2db55d;
+    background: #ecfdf5;
+    color: #065f46;
+}
 .modern-page .modern-live-label { white-space: nowrap; font-size: 13px; }
 .sk-main-menu.sk-main-menu--modern { height: 50px !important; min-height: 50px !important; }
 .sk-main-menu--modern .ant-menu, .sk-main-menu--modern .ant-menu-item { font-size: 14px; height: 46px; }
@@ -258,32 +273,27 @@
 
 .modern-page .modern-department-chevron { flex: 0 0 12px; font-size: 12px; }
 
-/* Supervisor rows keep the phone beside the name, inside the employee column. */
+/* Modern uses separate phone, status and claims columns in supervisor mode too. */
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode,
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
-    grid-template-columns: minmax(300px, 2.4fr) repeat(3, minmax(110px, 1fr)) 130px 144px;
+    grid-template-columns: minmax(300px, 2.4fr) 76px 144px 130px repeat(3, minmax(110px, 1fr));
     height: 44px;
 }
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.extended,
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.extended.without-id-column {
-    grid-template-columns: minmax(300px, 2.4fr) repeat(6, minmax(110px, 1fr)) 130px 144px;
+    grid-template-columns: minmax(300px, 2.4fr) 76px 144px 130px repeat(6, minmax(110px, 1fr));
 }
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 58px;
-    align-items: center;
-    gap: 12px;
+    display: block;
     width: 100%;
     min-width: 0;
 }
-.modern-page.newskud-page--super .super-mode .sk-userlist-phone-inline {
-    box-sizing: border-box;
-    justify-content: flex-end;
-    line-height: 20px;
-    white-space: nowrap;
-}
-.modern-page.newskud-page--super .super-mode .sk-userlist-status-cell {
+.modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-status-cell {
+    order: 4;
     padding: 4px 10px;
+}
+.modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode > .sk-userlist-claims-cell {
+    order: 5;
 }
 
 .modern-page .modern-department-row {
