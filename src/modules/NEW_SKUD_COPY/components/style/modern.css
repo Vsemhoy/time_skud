@@ -162,8 +162,9 @@
 }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.sk-usermonic-headerrow) > div:not(.sk-userlist-employee-cell):not(.sk-userlist-status-cell):not(.sk-userlist-claims-cell),
 .modern-page .sk-userlist-phone-inline {
-    font-family: "JetBrains Mono", Consolas, monospace;
+    font-family: "Courier New", Courier, monospace;
     font-variant-numeric: tabular-nums;
+    font-feature-settings: "zero" 0;
     font-size: 12px;
 }
 .modern-page .sk-userlist-id-cell { color: #94a3b8 !important; }
@@ -175,7 +176,7 @@
     background: var(--modern-status-bg, #f1f5f9);
     color: #0f172a;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 22px;
 }
 .modern-page .sk-userlist-enter-cell--late,
@@ -211,7 +212,7 @@
 }
 
 /* Reference layout: full-width grid, separate phone column and readable controls. */
-.modern-page .sk-usermonic-cardrow-ou-test > .modern-phone-cell { order: 3; color: #8190a5; font-family: Consolas, monospace; }
+.modern-page .sk-usermonic-cardrow-ou-test > .modern-phone-cell { order: 3; color: #8190a5; font-family: "Courier New", Courier, monospace; }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-status-cell { order: 4; padding-inline: 10px !important; }
 .modern-page .sk-usermonic-cardrow-ou-test:not(.super-mode) > .sk-userlist-claims-cell { order: 5; }
 .modern-page .sk-usermonic-cardrow-ou-test .sk-userlist-phone-inline,

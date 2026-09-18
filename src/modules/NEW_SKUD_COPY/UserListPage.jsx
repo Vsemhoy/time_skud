@@ -131,7 +131,7 @@ const UserList = (props)=>{
   /*------- CREATE CLAIMS ----------------------------------------------------------------------------------------------------------------------------*/
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [isShowExtendedInfo, setIsShowExtendedInfo] = useState(false);
-  const effectiveShowIdColumn = !isSuperTableMode && (showIdColumn || isShowExtendedInfo || isModern);
+  const effectiveShowIdColumn = !isSuperTableMode && (showIdColumn || isShowExtendedInfo);
   const shouldShowExtendedTableColumns = isShowExtendedInfo && !isOpenFilters;
   const shouldShowFilterSidebar = !isSuperUser && isOpenFilters;
   const shouldShowDetailsSidebar = isDetailsSidebarVisible;
