@@ -1387,7 +1387,7 @@ const UserList = (props)=>{
                               </div>
                             </div>
 
-                            {isModern && !isSuperTableMode && <div className="modern-phone-cell"><PhoneOutlined title="Телефон" /></div>}
+                            {isModern && <div className="modern-phone-cell"><PhoneOutlined title="Телефон" /></div>}
                             <div className="sk-userlist-status-cell">
                               Статус
                             </div>
