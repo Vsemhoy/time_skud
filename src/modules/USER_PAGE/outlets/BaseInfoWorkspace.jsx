@@ -123,6 +123,7 @@ const BaseInfoWorkspace = (props) => {
         id: null,
         name: '',
     });
+    const [roles, setRoles] = useState([]);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [cardNumber, setCardNumber] = useState('');
@@ -154,7 +155,7 @@ const BaseInfoWorkspace = (props) => {
     }, [
         company, surname, name, patronymic, department, occupy,
         innerPhone, telegramID, email, dateLeave, dateEnter, dateLeave,
-        rating, status, role, boss, login, password, cardNumber, conditionalCard, allowEntry
+        rating, status, role, roles, boss, login, password, cardNumber, conditionalCard, allowEntry
     ]);
 
     useEffect(() => {
@@ -281,11 +282,12 @@ const BaseInfoWorkspace = (props) => {
         setRating(content?.rating);
         setStatus(content?.status);
         setVisible(content?.visible);
-        setRole(
-            content?.role
-            ?? USER_ROLES.find((item) => Number(item.id) === Number(content?.sales_role))
-            ?? {id: null, name: ''}
-        );
+        const activeRole = USER_ROLES.find((item) => item.id === Number(content?.role?.id ?? content?.sales_role));
+        const assignedRoles = Array.isArray(content?.sales_roles)
+            ? content.sales_roles.map(Number)
+            : activeRole ? [activeRole.id] : [];
+        setRoles(USER_ROLES.filter((item) => assignedRoles.includes(item.id)).map((item) => item.id));
+        setRole(activeRole && assignedRoles.includes(activeRole.id) ? activeRole : {id: null, name: ''});
         setBoss(content?.boss ?? {id: content?.boss_id ?? null, name: ''});
         setLogin(content?.login);
         setPassword(content?.password);
@@ -329,7 +331,7 @@ const BaseInfoWorkspace = (props) => {
                 const info = {
                     sex, company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, sales_role, boss, login, password, cardNumber, conditionalCard, allowEntry
+                    rating, status, sales_role, sales_roles: roles, boss, login, password, cardNumber, conditionalCard, allowEntry
                 }
                 const data = {
                     id: userIdState,
@@ -367,7 +369,7 @@ const BaseInfoWorkspace = (props) => {
                 const data = {
                     sex, company, surname, name, patronymic, department, occupy,
                     innerPhone, telegramID, email, dateLeave, dateEnter,
-                    rating, status, sales_role, boss, login, password, cardNumber, conditionalCard, allowEntry, visible, isBoss
+                    rating, status, sales_role, sales_roles: roles, boss, login, password, cardNumber, conditionalCard, allowEntry, visible, isBoss
                 }
                 console.log(data);
                 const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/updateuserbaseinfo/${userIdState}`,
@@ -577,12 +579,13 @@ const BaseInfoWorkspace = (props) => {
         },
         {
             key: 'role',
-            label: 'Роль',
-            tooltip: 'Необходимо указывать для сотрудников работающих в модуле отдела продаж',
+            label: 'Активная роль',
+            tooltip: 'Активная роль из выбранных доступных ролей ролей пользователя',
             control: (
-                <Select placeholder="Роль"
+                <Select placeholder="Активная роль"
                         value={(role.id !== undefined && role.id !== null) ? +role.id : null}
-                        options={USER_ROLES}
+                        options={USER_ROLES.filter((item) => roles.includes(item.id))}
+                        disabled={roles.length === 0}
                         onChange={(id) => setRole(USER_ROLES.find(c => Number(c.id) === Number(id)) ?? {id: null, name: ''})}
                         style={FIELD_CONTROL_STYLE}
                         allowClear
@@ -590,6 +593,27 @@ const BaseInfoWorkspace = (props) => {
                             value: 'id',
                             label: 'name',
                         }}
+                />
+            ),
+        },
+        {
+            key: 'roles',
+            label: 'Доступные роли',
+            control: (
+                <Select placeholder="Выберите роли пользователя"
+                        mode="multiple"
+                        value={roles}
+                        options={USER_ROLES}
+                        onChange={(ids) => {
+                            setRoles(ids);
+                            if (!ids.includes(Number(role.id))) {
+                                setRole({id: null, name: ''});
+                            }
+                        }}
+                        style={FIELD_CONTROL_STYLE}
+                        allowClear
+                        optionFilterProp="name"
+                        fieldNames={{value: 'id', label: 'name'}}
                 />
             ),
         },
@@ -663,6 +687,7 @@ const BaseInfoWorkspace = (props) => {
         {
             key: 'status',
             label: 'Статус',
+            wide: true,
             control: (
                 <Select placeholder="Статус"
                         value={(status.id !== undefined && status.id !== null) ? +status.id : null}
