@@ -548,7 +548,13 @@ function App() {
                 <Route path={'containers'} element={<Chart />} />
             </Route>
             <Route path={'/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
-            <Route path={'/hr/userchanges'} element={<UserChangesPage />} />
+            <Route path={'/hr/userchanges'} element={
+                !pageLoaded ? <Skeleton active /> :
+                [userAct?.user?.super, userAct?.user?.is_admin].some(
+                    (value) => value === true || value === 1 || value === '1'
+                ) ? <UserChangesPage /> :
+                <Alert type="error" showIcon message="Нет доступа к истории изменений" />
+            } />
             <Route path={'/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />
             <Route path={'/hr/schedules'} element={<SchedManagerPage userdata={userAct}/>} />
             <Route path={'/hr/rules'} element={<RuleManagerPage userdata={userAct}/>} />
