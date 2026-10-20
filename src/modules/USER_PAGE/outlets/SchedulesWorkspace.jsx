@@ -1,10 +1,10 @@
- import React, {useCallback, useEffect, useState} from 'react';
+ import React, {useEffect, useRef, useState} from 'react';
 import styles from "../style/user_page.module.css";
 import {useNavigate, useOutletContext} from "react-router-dom";
-import {Affix, Button, DatePicker, Pagination, Select, Spin, Tag} from "antd";
+import {Alert, Button, DatePicker, Empty, Pagination, Select, Spin, Tag} from "antd";
 import {ClearOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
-import {BASE_ROUTE, CSRF_TOKEN, HOST_COMPONENT_ROOT, PRODMODE, ROUTE_PREFIX} from "../../../CONFIG/config"
-import {SCHEDULES, SCHEDULES_NAMES_SELECTS, SCHEDULES_TYPES_SELECT} from "../mock/mock";
+import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
+import {findScheduleBreaks, findScheduleConflicts} from "./schedulePeriods.mjs";
 import dayjs from "dayjs";
 import SchedIcons from "../../../assets/Comicon/SchedIcons";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
@@ -13,271 +13,78 @@ function SchedulesWorkspace(props) {
     const navigate = useNavigate();
     const { userIdState, prepareAndShowAlert } = useOutletContext();
 
-    const [isMounted, setIsMounted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [loadError, setLoadError] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
-    const [allSchedulesCount, setAllSchedulesCount] = useState(0);
-
-    const [schedules, setSchedules] = useState([]);
-
-    const [scheduleTypes, setScheduleTypes] = useState([
-        {
-            id: 0,
-            name: 'Все типы графиков'
-        }
-    ]);
+    const [allSchedules, setAllSchedules] = useState([]);
+    const [scheduleTypes, setScheduleTypes] = useState([{id: 0, name: 'Все типы графиков'}]);
     const [scheduleNames, setScheduleNames] = useState([]);
-
     const [scheduleTypeFilter, setScheduleTypeFilter] = useState(0);
-
-    const [activeSchedule, setActiveSchedule] = useState({});
-    const [nextSchedule, setNextSchedule] = useState({});
-    const [editedSchedule, setEditedSchedule] = useState({
-        id: 0,
-    });
-
+    const [editedSchedule, setEditedSchedule] = useState({id: 0});
     const [toolbarTypeScheduleId, setToolbarTypeScheduleId] = useState(null);
     const [toolbarNameScheduleId, setToolbarNameScheduleId] = useState(null);
     const [toolbarDateStartSchedule, setToolbarDateStartSchedule] = useState(null);
     const [toolbarDateEndSchedule, setToolbarDateEndSchedule] = useState(null);
+    const formRef = useRef(null);
 
-    const [intersections, setIntersections] = useState([]);
+    const filteredSchedules = allSchedules.filter(item => !scheduleTypeFilter || +item.schedule_type === +scheduleTypeFilter);
+    const allSchedulesCount = filteredSchedules.length;
+    const pageSchedules = filteredSchedules.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const schedules = scheduleTypeFilter ? pageSchedules : findScheduleBreaks(pageSchedules);
+    const today = dayjs().startOf('day');
+    const activeSchedule = allSchedules.find(item => !dayjs(item.start).startOf('day').isAfter(today) &&
+        (!item.end || !dayjs(item.end).endOf('day').isBefore(today))) || {};
+    const conflicts = findScheduleConflicts(allSchedules, toolbarDateStartSchedule, toolbarDateEndSchedule, editedSchedule.id);
+    const intersections = conflicts.map(item => item.id);
+    const invalidPeriod = toolbarDateStartSchedule && toolbarDateEndSchedule && toolbarDateEndSchedule.isBefore(toolbarDateStartSchedule, 'day');
+    const isDisabledEndScheduleDate = date => toolbarDateStartSchedule && date.isBefore(toolbarDateStartSchedule, 'day');
 
-    const isEditingActiveSchedule = () => {
-        return editedSchedule.id && +editedSchedule.id === +activeSchedule.id;
+    // Load every page without a type filter: hidden assignments must also block overlaps.
+    const loadAllSchedules = async () => {
+        const result = [];
+        let page = 1;
+        let total = 0;
+        do {
+            const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userschedules/${userIdState}`, {
+                data: {scheduleTypeFilter: 0, currentPage: page, pageSize: 100}, _token: CSRF_TOKEN,
+            });
+            const content = response.data.content;
+            if (!content || !Array.isArray(content.schedules)) throw new Error('Не удалось загрузить привязки графиков');
+            total = Number(content.allSchedulesCount);
+            if (!Number.isFinite(total) || (!content.schedules.length && result.length < total)) throw new Error('Не удалось загрузить все привязки графиков');
+            result.push(...content.schedules);
+            page += 1;
+        } while (result.length < total);
+        return result.sort((a, b) => dayjs(b.start).valueOf() - dayjs(a.start).valueOf());
     };
-
-    const isEditingOpenEndedSchedule = () => {
-        return editedSchedule.id && !editedSchedule.end;
-    };
-
-    const getMinEndScheduleDate = () => {
-        return isEditingOpenEndedSchedule()
-            ? dayjs().startOf('day')
-            : dayjs().add(1, 'day').startOf('day');
-    };
-
-    const isDisabledEndScheduleDate = (date) => {
-        return date && date.startOf('day').isBefore(getMinEndScheduleDate());
-    };
-
-    useEffect(() => {
-        if (!isMounted) {
-            fetchInfo().then();
-            setIsMounted(true);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (isMounted) {
-            findActiveSchedule();
-            findNextSchedule();
-        }
-    }, [schedules]);
-
-    useEffect(() => {
-        if (isMounted) {
-            fetchInfo().then();
-        }
-    }, [scheduleTypeFilter, pageSize, currentPage]);
-
-    useEffect(() => {
-        if (isMounted) {
-            if (editedSchedule.id) {
-                setToolbarTypeScheduleId(editedSchedule.schedule_type);
-                setToolbarNameScheduleId(editedSchedule.schedule_id);
-                setToolbarDateStartSchedule(dayjs(editedSchedule.start));
-                setToolbarDateEndSchedule(editedSchedule.end ? dayjs(editedSchedule.end) : null);
-            } else {
-                setToolbarTypeScheduleId(null);
-                setToolbarNameScheduleId(null);
-                setToolbarDateStartSchedule(null);
-                setToolbarDateEndSchedule(null);
-                setIntersections([]);
-            }
-        }
-    }, [editedSchedule]);
-
-    useEffect(() => {
-        const arr = [];
-        schedules.forEach(schedule => {
-            if (+schedule.id !== +editedSchedule.id) {
-                if (schedule.end) {
-                    if (dayjs(toolbarDateStartSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateStartSchedule) <= dayjs(schedule.end)) {
-                        arr.push(schedule.id);
-                    }
-                    if (dayjs(toolbarDateEndSchedule) >= dayjs(schedule.start) && dayjs(toolbarDateEndSchedule) <= dayjs(schedule.end)) {
-                        arr.push(schedule.id);
-                    }
-                } else {
-                    if (+editedSchedule.id === +activeSchedule.id) {
-                        if (dayjs(toolbarDateEndSchedule) >= dayjs(schedule.start)) {
-                            arr.push(schedule.id);
-                        }
-                    }
-                    if (toolbarDateStartSchedule && +editedSchedule.id !== +activeSchedule.id) {
-                        arr.push(schedule.id);
-                    }
-                }
-            }
-        });
-        setIntersections(arr);
-    }, [toolbarDateStartSchedule, toolbarDateEndSchedule]);
-
-    useEffect(() => {
-        if (isEditingActiveSchedule()) return;
-        if (!toolbarDateStartSchedule) return;
-
-        const now = dayjs().startOf('day'); // Обрезаем время, оставляем только дату
-        const startDate = dayjs(toolbarDateStartSchedule).startOf('day'); // Аналогично для начальной даты
-
-        if (startDate.isBefore(now)) {
-            const newStart = dayjs().startOf('day'); // Устанавливаем начало текущего дня
-            if (!newStart.isSame(startDate, 'day')) { // Проверяем, отличается ли дата
-                setToolbarDateStartSchedule(newStart);
-            }
-        }
-    }, [toolbarDateStartSchedule]);
-
-    useEffect(() => {
-        if (!toolbarDateEndSchedule) return;
-
-        const minEndDate = getMinEndScheduleDate();
-        const endDate = dayjs(toolbarDateEndSchedule).startOf('day');
-
-        if (endDate.isBefore(minEndDate)) {
-            if (!minEndDate.isSame(endDate, 'day')) {
-                setToolbarDateEndSchedule(minEndDate);
-            }
-        }
-    }, [toolbarDateEndSchedule, editedSchedule]);
-
-    useEffect(() => {
-        if (userIdState === 'new') {
-            navigate(`/hr/usermanager/${userIdState}`);
-        }
-    }, [userIdState]);
     const fetchInfo = async () => {
         setIsLoading(true);
-        await fetchSchedulesInfo();
-        await fetchScheduleTypesSelect();
-        setTimeout(() => setIsLoading(false), 500);
-    };
-    const fetchSchedulesInfo = async () => {
-        //if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userschedules/${userIdState}`,
-                    {
-                        data: {
-                            scheduleTypeFilter,
-                            currentPage,
-                            pageSize
-                        },
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (serverResponse.data.content) {
-                    const content = serverResponse.data.content;
-                    if (!scheduleTypeFilter) {
-                        setSchedules(findBreaks(content.schedules));
-                    } else {
-                        setSchedules(content.schedules);
-                    }
-                    setCurrentPage(content.currentPage);
-                    setPageSize(content.pageSize);
-                    setAllSchedulesCount(content.allSchedulesCount);
-                }
-            } catch (error) {
-                console.error('Error fetching users schedules:', error);
-                prepareAndShowAlert(
-                    'error',
-                    'Произошла ошибка',
-                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
-                );
-            }
-        // } else {
-        //     setSchedules(findBreaks(SCHEDULES));
-        //     console.log(findBreaks(SCHEDULES))
-        //     setCurrentPage(1);
-        //     setPageSize(20);
-        //     setAllSchedulesCount(228);
-        // }
-    };
-    const fetchScheduleTypesSelect = async () => {
-        //if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userscheduleselects`,
-                    {
-                        user_id: userIdState,
-                        _token: CSRF_TOKEN
-                    }
-                );
-                if (serverResponse.data.content) {
-                    const content = serverResponse.data.content;
-                    setScheduleTypes([ scheduleTypes[0], ...content.types]);
-                    setScheduleNames(content.names);
-                }
-            } catch (error) {
-                console.error('Error fetching schedule selects:', error);
-                prepareAndShowAlert(
-                    'error',
-                    'Произошла ошибка',
-                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
-                );
-            }
-        // } else {
-        //     setScheduleTypes(SCHEDULES_TYPES_SELECT);
-        //     setScheduleNames(SCHEDULES_NAMES_SELECTS);
-        // }
-    };
-    const findBreaks = (schedules) => {
-        const result = [...schedules];
-        for (let i = result.length - 1; i > 0; i--) {
-            const current = result[i];
-            const previous = result[i - 1];
-            const breakStart = dayjs(previous.start).valueOf();
-            const breakEnd = dayjs(current.end).valueOf();
-            const breakDuration = breakStart - breakEnd;
-            if (breakDuration > 60000) {
-                const breakItem = {
-                    id: `break-${i}-${Date.now()}`,
-                    isBreak: true,
-                    start: dayjs(current.end).add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                    end: dayjs(previous.start).subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-                    breakDuration: breakDuration,
-                    breakDays: Math.round(breakDuration / 86400000)
-                };
-                result.splice(i, 0, breakItem);
-            }
+        setLoadError(false);
+        try {
+            const [items, response] = await Promise.all([
+                loadAllSchedules(),
+                PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userscheduleselects`, {user_id: userIdState, _token: CSRF_TOKEN}),
+            ]);
+            if (!response.data.content) throw new Error('Не удалось загрузить список графиков');
+            setAllSchedules(items);
+            setScheduleTypes([{id: 0, name: 'Все типы графиков'}, ...response.data.content.types]);
+            setScheduleNames(response.data.content.names);
+        } catch (error) {
+            setLoadError(true);
+            prepareAndShowAlert('error', 'Не удалось загрузить графики', error.response?.data?.message || error.message);
+        } finally {
+            setIsLoading(false);
         }
-        return result;
     };
-    const findActiveSchedule = () => {
-        console.log('findActiveSchedule')
-        const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
-        const activeSched = schedules.find(schedule => {
-            const start = dayjs(schedule.start, 'YYYY-MM-DD HH:mm:ss');
-            if (schedule.end) {
-                const end = dayjs(schedule.end, 'YYYY-MM-DD HH:mm:ss');
-                return start.isBefore(now) && end.isAfter(now);
-            }
-            return start.isBefore(now)
-        });
-        if (activeSched) setActiveSchedule(activeSched);
-    };
-    const findNextSchedule = () => {
-        console.log('findNextSchedule')
-        const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
-        const nextSched = schedules.find(schedule => {
-            const start = dayjs(schedule.start, 'YYYY-MM-DD HH:mm:ss');
-            return start.isAfter(now);
-        });
-        console.log(nextSched)
-        if (nextSched) setNextSchedule(nextSched);
-    };
-
+    useEffect(() => {
+        clearEdit();
+        setAllSchedules([]);
+        setCurrentPage(1);
+        if (userIdState === 'new') navigate(`/hr/usermanager/${userIdState}`);
+        else fetchInfo();
+    }, [userIdState]);
 
     const removeSchedule = async (id) => {
         // eslint-disable-next-line no-restricted-globals
@@ -313,135 +120,61 @@ function SchedulesWorkspace(props) {
     };
 
     const toEditSchedule = (id) => {
-        setEditedSchedule(schedules.find(schedule => +schedule.id === +id));
+        const schedule = allSchedules.find(item => +item.id === +id);
+        setEditedSchedule(schedule);
+        setToolbarTypeScheduleId(schedule.schedule_type);
+        setToolbarNameScheduleId(schedule.schedule_id);
+        setToolbarDateStartSchedule(dayjs(schedule.start));
+        setToolbarDateEndSchedule(schedule.end ? dayjs(schedule.end) : null);
+        formRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
     };
-    const getSelectedScheduleTypeId = () => {
-        if (toolbarTypeScheduleId) return toolbarTypeScheduleId;
-
-        return scheduleNames.find(name => +name.id === +toolbarNameScheduleId)?.skud_schedule_type_id || null;
-    };
-
-    const isCantAddSchedule = () => {
-        const selectedScheduleTypeId = getSelectedScheduleTypeId();
-
-        if (editedSchedule.id === activeSchedule.id) {
-            if (nextSchedule.id) {
-                return (
-                    (dayjs(toolbarDateEndSchedule) >= dayjs(nextSchedule.start)) ||
-                    !selectedScheduleTypeId ||
-                    !toolbarNameScheduleId ||
-                    !toolbarDateStartSchedule ||
-                    !toolbarDateEndSchedule ||
-                    intersections.length
-                );
-            }
-            return (
-                !selectedScheduleTypeId ||
-                !toolbarNameScheduleId ||
-                !toolbarDateStartSchedule ||
-                intersections.length
-            );
-        } else if (editedSchedule.id === nextSchedule.id) {
-            return (
-                !selectedScheduleTypeId ||
-                !toolbarNameScheduleId ||
-                !toolbarDateStartSchedule ||
-                intersections.length
-            );
-        } else {
-            return (
-                !selectedScheduleTypeId ||
-                !toolbarNameScheduleId ||
-                !toolbarDateStartSchedule ||
-                nextSchedule.id ||
-                intersections.length
-            );
-        }
-    };
-    const isDisableField = () => {
-        return editedSchedule.id === activeSchedule.id;
-    };
+    const getSelectedScheduleTypeId = () => toolbarTypeScheduleId ||
+        scheduleNames.find(item => +item.id === +toolbarNameScheduleId)?.skud_schedule_type_id;
+    const isCantAddSchedule = () => Boolean(isLoading || isSaving || loadError || !toolbarNameScheduleId ||
+        !toolbarDateStartSchedule || invalidPeriod || conflicts.length);
+    const isDisableField = () => Boolean(editedSchedule.id && +editedSchedule.id === +activeSchedule.id);
     const clearEdit = () => {
         setEditedSchedule({id: 0});
+        setToolbarTypeScheduleId(null);
+        setToolbarNameScheduleId(null);
+        setToolbarDateStartSchedule(null);
+        setToolbarDateEndSchedule(null);
     };
-
     const fetchAddOrUpdateSchedule = async () => {
-        if (editedSchedule.id) {
-            await fetchUpdateSchedule();
-        } else {
-            await fetchAddSchedule();
+        if (isCantAddSchedule()) return;
+        setIsSaving(true);
+        try {
+            const latest = await loadAllSchedules();
+            setAllSchedules(latest);
+            if (findScheduleConflicts(latest, toolbarDateStartSchedule, toolbarDateEndSchedule, editedSchedule.id).length) {
+                prepareAndShowAlert('error', 'Период занят', 'Привязки обновились. Выберите период без пересечений.');
+                return;
+            }
+            await PROD_AXIOS_INSTANCE.post(editedSchedule.id
+                ? `${ROUTE_PREFIX}/hr/userupdateschedules/${editedSchedule.id}`
+                : `${ROUTE_PREFIX}/hr/useraddschedules`, {
+                data: {
+                    userId: userIdState,
+                    ...(editedSchedule.id ? {editedSchedule} : {}),
+                    toolbarTypeScheduleId: getSelectedScheduleTypeId(),
+                    toolbarNameScheduleId,
+                    toolbarDateStartSchedule: toolbarDateStartSchedule.format('YYYY-MM-DD'),
+                    toolbarDateEndSchedule: toolbarDateEndSchedule?.format('YYYY-MM-DD') || null,
+                },
+                _token: CSRF_TOKEN,
+            });
+            prepareAndShowAlert('success', 'Сохранено', editedSchedule.id ? 'Привязка графика обновлена' : 'График привязан');
+            clearEdit();
+            await fetchInfo();
+        } catch (error) {
+            prepareAndShowAlert('error', 'Не удалось сохранить график', error.response?.data?.message || error.message);
+        } finally {
+            setIsSaving(false);
         }
-        clearEdit();
     };
-    const fetchUpdateSchedule = async () => {
-        //if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/userupdateschedules/${editedSchedule.id}`,
-                    {
-                        data: {
-                            userId: userIdState,
-                            editedSchedule,
-                            toolbarTypeScheduleId: getSelectedScheduleTypeId(),
-                            toolbarNameScheduleId,
-                            toolbarDateStartSchedule,
-                            toolbarDateEndSchedule,
-                        },
-                        _token: CSRF_TOKEN
-                    }
-                );
-                prepareAndShowAlert(
-                    'success',
-                    'Успех',
-                    'График обновлен!'
-                );
-                await fetchInfo();
-            } catch (error) {
-                console.error('Error fetching update user schedule:', error);
-                prepareAndShowAlert(
-                    'error',
-                    'Произошла ошибка',
-                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
-                );
-            }
-        // } else {
-        //     await fetchInfo();
-        // }
-    }
-    const fetchAddSchedule = async () => {
-        //if (PRODMODE) {
-            try {
-                const serverResponse = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/hr/useraddschedules`,
-                    {
-                        data: {
-                            userId: userIdState,
-                            toolbarTypeScheduleId: getSelectedScheduleTypeId(),
-                            toolbarNameScheduleId,
-                            toolbarDateStartSchedule,
-                            toolbarDateEndSchedule,
-                        },
-                        _token: CSRF_TOKEN
-                    }
-                );
-                prepareAndShowAlert(
-                    'success',
-                    'Успех',
-                    'График добавлен!'
-                );
-                await fetchInfo();
-            } catch (error) {
-                console.error('Error fetching add to user schedule:', error);
-                prepareAndShowAlert(
-                    'error',
-                    'Произошла ошибка',
-                    error.response?.data?.message || error.message || 'Неизвестная ошибка'
-                );
-            }
-        // } else {
-        //     await fetchInfo();
-        // }
-    }
 
     const timeString = (totalSeconds, mod = null) => {
+        if (totalSeconds == null) return '—';
         if (mod === 'm') {
             const totalMinutes = Math.floor(totalSeconds / 60);
             return totalMinutes.toString();
@@ -476,8 +209,8 @@ function SchedulesWorkspace(props) {
                                     jump_to_confirm: 'OK',
                                     page: 'Страница'
                                 }}
-                                onShowSizeChange={(current, newSize) => setPageSize(newSize)}
-                                onChange={(page) => setCurrentPage(page)}
+                                onShowSizeChange={(current, newSize) => {setPageSize(newSize); setCurrentPage(1);}}
+                                onChange={(page, size) => setCurrentPage(size === pageSize ? page : 1)}
                             />
                             <Tag
                                 style={{
@@ -496,13 +229,15 @@ function SchedulesWorkspace(props) {
                             value={scheduleTypeFilter}
                             options={scheduleTypes}
                             style={{width: '200px'}}
-                            onChange={(id) => setScheduleTypeFilter(id)}
+                            onChange={(id) => {setScheduleTypeFilter(id); setCurrentPage(1);}}
                             fieldNames={{
                                 value: 'id',
                                 label: 'name',
                             }}
                         />
                     </div>
+                    {loadError && <Alert type="error" showIcon message="Не удалось проверить привязки" description="Обновите данные перед сохранением." action={<Button onClick={fetchInfo}>Повторить</Button>} />}
+                    {!isLoading && !loadError && !allSchedulesCount && <Empty description="Привязок графиков нет. Выберите график и дату начала в форме." />}
                     <div className={styles.sk_schedule_table}>
                         <div className={`${styles.sk_schedule_table_row_wrapper} ${styles.sk_table_row_header}`}>
                             <div className={styles.sk_schedule_table_row}>
@@ -550,6 +285,7 @@ function SchedulesWorkspace(props) {
                                                 <div className={styles.sk_schedule_container}>
                                                     <p className={styles.sk_schedule_name}>{schedule.schedule_name}</p>
                                                     <p className={styles.sk_schedule_description}>{schedule.schedule_type_name}</p>
+                                                    <Tag color={+schedule.id === +activeSchedule.id ? "green" : "default"}>{+schedule.id === +activeSchedule.id ? "Действует сейчас" : dayjs(schedule.start).isAfter(today) ? "Запланирован" : "Завершён"}</Tag>
                                                 </div>
                                             </div>
                                             <div className={styles.sk_schedule_table_cell}>
@@ -571,25 +307,25 @@ function SchedulesWorkspace(props) {
                                             </div>
                                             <div className={styles.sk_schedule_table_cell}>
                                                 <div className={styles.sk_schedule_container_center}>
-                                                    <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : '—'}</p>
+                                                    <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : 'Бессрочно'}</p>
                                                 </div>
                                             </div>
                                             {+schedule.id !== +editedSchedule.id ? (
                                                 <div className={styles.sk_schedule_table_cell}
                                                      style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
-                                                    {(schedule.id === activeSchedule.id || schedule.id === nextSchedule.id) && (
+                                                    {(+schedule.id === +activeSchedule.id || dayjs(schedule.start).isAfter(today)) && (
                                                         <Button color={'default'}
                                                                 variant={'outlined'}
                                                                 shape="circle"
-                                                                icon={<EditOutlined/>}
+                                                                disabled={isSaving} title="Изменить привязку" aria-label="Изменить привязку" icon={<EditOutlined/>}
                                                                 onClick={() => toEditSchedule(schedule.id)}
                                                         ></Button>
                                                     )}
-                                                    {schedule.id !== activeSchedule.id && schedule.id === nextSchedule.id && (
+                                                    {dayjs(schedule.start).isAfter(today) && (
                                                         <Button color={'default'}
                                                                 variant={'outlined'}
                                                                 shape="circle"
-                                                                icon={<DeleteOutlined/>}
+                                                                disabled={isSaving} title="Отвязать график" aria-label="Отвязать график" icon={<DeleteOutlined/>}
                                                                 onClick={() => removeSchedule(schedule.id)}
                                                         ></Button>
                                                     )}
@@ -600,7 +336,7 @@ function SchedulesWorkspace(props) {
                                                     <Button color={'default'}
                                                             variant={'outlined'}
                                                             shape="circle"
-                                                            icon={<CloseOutlined/>}
+                                                            disabled={isSaving} title="Отменить редактирование" icon={<CloseOutlined/>}
                                                             onClick={() => clearEdit()}
                                                     ></Button>
                                                 </div>
@@ -611,47 +347,49 @@ function SchedulesWorkspace(props) {
                                     <div key={schedule.id} className={`${styles.sk_schedule_table_break_row}`}>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
-                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info} style={{textAlign: 'left'}}>Разрыв {schedule.breakDays} дней</p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info} style={{textAlign: 'left'}}>Без графика: {schedule.breakDays} дн.</p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}>{dayjs(schedule.start).format('DD.MM.YYYY')}</p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}>{dayjs(schedule.end).format('DD.MM.YYYY')}</p></div>
-                                        <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
+                                        <div className={styles.sk_schedule_table_break_cell}><Button size="small" type="link" disabled={isSaving} onClick={() => {
+                                            clearEdit();
+                                            setToolbarDateStartSchedule(dayjs(schedule.start));
+                                            setToolbarDateEndSchedule(dayjs(schedule.end));
+                                            formRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                        }}>Привязать</Button></div>
                                     </div>
                             )
                         ))}
                     </div>
                 </div>
-                <Affix offsetTop={10 + 10 + 52 + 52}>
+                <div ref={formRef} className={styles.sk_schedule_form_wrapper}>
                     <div className={styles.sk_schedule_linker}>
                         <div style={{width: '100%'}}>
                             <div className={styles.sk_flex_space}>
-                                <span className={'sk-totoro'}>Привязка нового графика</span>
-                                <span style={{cursor: 'pointer'}}
-                                      onClick={() => clearEdit()}
-                                >
-                                    <ClearOutlined/>
-                                </span>
+                                <span className={'sk-totoro'}>{editedSchedule.id ? "Изменение привязки" : "Привязать график"}</span>
+                                <Button type="text" title="Очистить форму" icon={<ClearOutlined/>} onClick={clearEdit} disabled={isSaving} />
                             </div>
-                            <br/>
-                            <div className={styles.sk_label_select}>Тип привязываемого графика</div>
-                            <Select placeholder={'Тип привязываемого графика'}
-                                    value={scheduleTypeFilter ? scheduleTypeFilter : toolbarTypeScheduleId}
+                            <p className={styles.sk_schedule_hint}>Выберите график и период его действия. Можно указать прошлые даты, если период свободен.</p>
+                            {isDisableField() && <Alert type="info" showIcon message="У действующего графика можно изменить дату окончания." />}
+                            <div className={styles.sk_label_select}>1. Выберите график</div>
+                            <Select placeholder={'Все типы графиков'} allowClear
+                                    value={toolbarTypeScheduleId}
                                     options={scheduleTypes.filter(schedule => +schedule.id !== 0)}
                                     style={{width: '100%'}}
-                                    onChange={(id) => setToolbarTypeScheduleId(id)}
+                                    onChange={(id) => {setToolbarTypeScheduleId(id || null); setToolbarNameScheduleId(null);}}
                                     fieldNames={{
                                         value: 'id',
                                         label: 'name',
                                     }}
-                                    disabled={(isDisableField() || scheduleTypeFilter)}
+                                    disabled={isDisableField() || isSaving}
                             />
                             <br/>
                             <br/>
                             <div className={styles.sk_label_select}>Название графика</div>
                             <Select placeholder={'Название графика'}
                                     value={toolbarNameScheduleId}
-                                    options={toolbarTypeScheduleId ? scheduleNames.filter(name => name.skud_schedule_type_id === toolbarTypeScheduleId) : scheduleNames}
+                                    options={toolbarTypeScheduleId ? scheduleNames.filter(name => +name.skud_schedule_type_id === +toolbarTypeScheduleId) : scheduleNames}
                                     style={{width: '100%'}}
                                     onChange={(id) => setToolbarNameScheduleId(id)}
                                     fieldNames={{
@@ -660,24 +398,8 @@ function SchedulesWorkspace(props) {
                                     }}
                                     showSearch
                                     optionFilterProp="name"
-                                    filterSort={(optionA, optionB) => {
-                                        var _a, _b;
-                                        return (
-                                            (_a = optionA === null || optionA === void 0 ? void 0 : optionA.label) !== null &&
-                                            _a !== void 0
-                                                ? _a
-                                                : ''
-                                        )
-                                            .toLowerCase()
-                                            .localeCompare(
-                                                ((_b = optionB === null || optionB === void 0 ? void 0 : optionB.label) !== null &&
-                                                    _b !== void 0
-                                                        ? _b
-                                                        : ''
-                                                ).toLowerCase(),
-                                            );
-                                    }}
-                                    disabled={isDisableField()}
+                                    filterSort={(a, b) => (a.name || '').localeCompare(b.name || '', 'ru')}
+                                    disabled={isDisableField() || isSaving}
                             />
                             {toolbarNameScheduleId ? (
                                     (() => {
@@ -688,9 +410,8 @@ function SchedulesWorkspace(props) {
                                         let lunch_end = null;
                                         let lunch_duration = null;
 
-                                        const shedName = scheduleNames.find(name => name.id === toolbarNameScheduleId);
+                                        const shedName = scheduleNames.find(name => +name.id === +toolbarNameScheduleId);
                                         if (shedName) {
-                                            console.log(shedName)
                                             start          = timeString(shedName.start_time);
                                             end            = timeString(shedName.end_time);
                                             duration       = timeString(shedName.target_time, 'h');
@@ -716,18 +437,18 @@ function SchedulesWorkspace(props) {
                             }
                             <br/>
                             <br/>
-                            <div className={styles.sk_label_select}>Дата начала действия графика</div>
+                            <div className={styles.sk_label_select}>2. Начало действия *</div>
                             <DatePicker placeholder="Дата начала действия графика"
                                         value={toolbarDateStartSchedule}
                                         onChange={(e) => setToolbarDateStartSchedule(e)}
                                         format={"DD.MM.YYYY"}
                                         style={{width: '100%'}}
-                                        disabled={isDisableField()}
+                                        disabled={isDisableField() || isSaving}
                             />
                             <br/>
                             <br/>
-                            <div className={styles.sk_label_select}>Дата окончания графика</div>
-                            <DatePicker placeholder="Дата окончания графика"
+                            <div className={styles.sk_label_select}>Окончание действия (включительно)</div>
+                            <DatePicker placeholder="Бессрочно" disabled={isSaving}
                                         value={toolbarDateEndSchedule}
                                         onChange={(e) => setToolbarDateEndSchedule(e)}
                                         format={"DD.MM.YYYY"}
@@ -736,13 +457,23 @@ function SchedulesWorkspace(props) {
                             />
                             <br/>
                             <br/>
-                            <Button block
+                            <p className={styles.sk_schedule_hint}>Без даты окончания график действует бессрочно. Для привязки перед существующим графиком укажите окончание не позднее предыдущего дня.</p>
+                            {invalidPeriod ? <Alert type="error" showIcon message="Окончание не может быть раньше начала" /> : conflicts.length ? (
+                                <Alert type="error" showIcon message="Период пересекается с другими графиками" description={
+                                    <ul className={styles.sk_schedule_conflicts}>{conflicts.map(item => <li key={item.id}>
+                                        {item.schedule_name}: {dayjs(item.start).format('DD.MM.YYYY')} — {item.end ? dayjs(item.end).format('DD.MM.YYYY') : 'бессрочно'}
+                                    </li>)}</ul>
+                                } />
+                            ) : toolbarDateStartSchedule && !loadError && !isLoading ? <Alert type="success" showIcon message="Период свободен" description={`С ${toolbarDateStartSchedule.format('DD.MM.YYYY')} ${toolbarDateEndSchedule ? 'по ' + toolbarDateEndSchedule.format('DD.MM.YYYY') + ' включительно' : 'без даты окончания'}`} /> : null}
+                            {!toolbarNameScheduleId || !toolbarDateStartSchedule ? <p className={styles.sk_schedule_hint}>Для сохранения выберите график и дату начала.</p> : null}
+                            <Button block type="primary" loading={isSaving} style={{marginTop: 16}}
                                     disabled={isCantAddSchedule()}
                                     onClick={() => fetchAddOrUpdateSchedule()}
-                            >Привязать график</Button>
+                            >{editedSchedule.id ? "Сохранить изменения" : "Привязать график"}</Button>
+                            {editedSchedule.id ? <Button block onClick={clearEdit} disabled={isSaving} style={{marginTop: 8}}>Отменить редактирование</Button> : null}
                         </div>
                     </div>
-                </Affix>
+                </div>
             </div>
         </Spin>
     );
