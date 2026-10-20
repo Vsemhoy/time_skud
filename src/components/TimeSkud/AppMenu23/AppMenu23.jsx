@@ -387,6 +387,10 @@ const AppMenu23 = (props) => {
                     key: '/hr/groups',
                     label: <NavLink to="/hr/groups">Группы пользователей</NavLink>,
                 },
+                {
+                    key: '/hr/userchanges',
+                    label: <NavLink to="/hr/userchanges">История изменений</NavLink>,
+                },
             ],
         },
         {

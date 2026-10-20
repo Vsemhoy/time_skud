@@ -63,6 +63,7 @@ import BillListModal from "./modules/NEW_SKUD/components/BillListModal";
 import ClaimEditorDrawer from "./modules/CLAIM_MANAGER_SK/components/ClaimEditorDrawer";
 import StateIconsController from "./modules/CHARTS/components/StateIconsController";
 import HelpPage from "./modules/HELP/HelpPage";
+import UserChangesPage from "./modules/USER_CHANGES/UserChangesPage";
 
 const { Header, Content, Footer } = Layout;
 
@@ -547,6 +548,7 @@ function App() {
                 <Route path={'containers'} element={<Chart />} />
             </Route>
             <Route path={'/hr/groups'} element={<GroupManagerPage userdata={userAct}/>} />
+            <Route path={'/hr/userchanges'} element={<UserChangesPage />} />
             <Route path={'/hr/calendars'} element={<ProdCalManagerPage userdata={userAct}/>} />
             <Route path={'/hr/schedules'} element={<SchedManagerPage userdata={userAct}/>} />
             <Route path={'/hr/rules'} element={<RuleManagerPage userdata={userAct}/>} />
