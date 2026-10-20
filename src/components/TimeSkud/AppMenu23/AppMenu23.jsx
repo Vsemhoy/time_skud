@@ -477,6 +477,7 @@ const AppMenu23 = (props) => {
             })();
             if (shouldShowItem && item.children) {
                 item.children = item.children.filter(child => {
+                    if (child.key === '/hr/userchanges') return hasFullMenuAccess;
                     return true;
                 });
                 if (item.children.length === 0) return false;
