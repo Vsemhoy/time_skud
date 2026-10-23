@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import UserStatusLucideIconsController from "../../CHARTS/components/UserStatusLucideIconsController";
 import { formatSecondsAsTime } from "./claimTimeHelpers";
+import TimeBankPanel from './TimeBankPanel';
 const { Option } = Select;
 
 
@@ -50,6 +51,7 @@ const ClaimEditorDrawer = (props) => {
   const [formUsers, setFormUsers] = useState([]); // all
   const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs().endOf('day')]); // All
   const [isFullWorkDay, setIsFullWorkDay] = useState(false);
+  const [usesTimeBank, setUsesTimeBank] = useState(false);
 
   const [formTargetPoint, setFormTargetPoint] = useState('');                              // 7, 8,
   const [formTargetAddress, setFormTargetAddress] = useState('');                          // 7, 8,
@@ -157,6 +159,7 @@ const ClaimEditorDrawer = (props) => {
   useEffect(() => {
     if (props.opened){
       refreshForm();
+      setUsesTimeBank(isTruthyFlag(props.data?.uses_time_bank));
       setOpen(true);
     } else {
       return;
@@ -618,7 +621,7 @@ const ClaimEditorDrawer = (props) => {
   const buildClaimPayload = (dateRange = formDateRange, users = effectiveFormUsers) => {
     let result = {};
     result.start = dateRange[0].format('YYYY-MM-DD HH:mm:ss');
-    if (formType === 11 || formType === 13 || formType === 24){
+    if (formType === 11 || formType === 13 || (formType === 24 && !usesTimeBank)){
       result.end = dateRange[1].clone().endOf('day').format('YYYY-MM-DD HH:mm:ss');
     } else {
       result.end = dateRange[1].format('YYYY-MM-DD HH:mm:ss');
@@ -629,6 +632,7 @@ const ClaimEditorDrawer = (props) => {
     result.state = 0;
     result.days_count = dateRange[1].diff(dateRange[0], 'day') + 1;
     result.info = buildClaimInfo();
+    result.uses_time_bank = Number(formType) === 24 && usesTimeBank;
 
     return result;
   };
@@ -977,7 +981,7 @@ const ClaimEditorDrawer = (props) => {
 
 
             {/* Просто дата */}
-            {(formType === 11 || formType === 13 || formType === 24) && (
+            {(formType === 11 || formType === 13 || (formType === 24 && !usesTimeBank)) && (
               <div className={'sk-claimeditor-drawer-row '}>
               <span className={'sk-usp-filter-col-label sk-labed-um'}>Дата события</span>
               {editMode === 'read' ? (
@@ -999,6 +1003,24 @@ const ClaimEditorDrawer = (props) => {
               </div>
             )}
 
+            {Number(formType) === 24 && <>
+              <div className="sk-claimeditor-drawer-row">
+                <span className="sk-usp-filter-col-label sk-labed-um">Основание отгула</span>
+                <Select style={{ width: '100%' }} disabled={editMode === 'read'} value={usesTimeBank}
+                  onChange={setUsesTimeBank} options={[{ value: true, label: 'Из банка времени' }, { value: false, label: 'Другое обоснование' }]} />
+              </div>
+              {usesTimeBank && <div className="sk-claimeditor-drawer-row">
+                <span className="sk-usp-filter-col-label sk-labed-um">Начало и окончание</span>
+                {editMode === 'read' ? renderReadRange(formDateRange[0], formDateRange[1], renderReadDateTime) : (
+                  <Space direction="vertical" size={12} style={{ width: '100%' }}>
+                    <DatePicker.RangePicker style={{ width: '100%' }} showTime={{ format: 'HH:mm', minuteStep: 60 }} format="DD.MM.YYYY HH:mm" value={formDateRange} onChange={setFormDateRange} />
+                    <Button onClick={() => setFormDateRange([formDateRange[0].startOf('day'), formDateRange[1].endOf('day')])}>Весь рабочий день по графику</Button>
+                    <Typography.Text type="secondary">Частичный отгул — с шагом один час. Полный день рассчитывается сервером по графику без обеда.</Typography.Text>
+                  </Space>
+                )}
+              </div>}
+            </>}
+
             {editMode === 'read'
               && props.data?.executed_time_count !== null
               && props.data?.executed_time_count !== undefined
@@ -1012,6 +1034,13 @@ const ClaimEditorDrawer = (props) => {
             )}
 
         </div>
+
+        {open && effectiveFormUsers.length === 1 && <TimeBankPanel
+          key={`${effectiveFormUsers[0]}-${effectiveItemId ?? 'new'}-${editMode}`}
+          userId={effectiveFormUsers[0]} claimId={editMode === 'create' ? null : effectiveItemId}
+          debitStart={Number(formType) === 24 && usesTimeBank ? formDateRange?.[0]?.format('YYYY-MM-DD HH:mm:ss') : null}
+          debitEnd={Number(formType) === 24 && usesTimeBank ? formDateRange?.[1]?.format('YYYY-MM-DD HH:mm:ss') : null}
+          claimType={formType} readOnly={editMode !== 'read'} />}
 
         <div style={{display:'grid', gridTemplateColumns: '48% 48%', gridGap: '0px 4%'}}>
 
