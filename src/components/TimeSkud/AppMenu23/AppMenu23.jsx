@@ -218,6 +218,12 @@ const AppMenu23 = (props) => {
     // User dropdown menu
     const userMenuItems = [
         {
+            key: '/my',
+            icon: <UserOutlined />,
+            label: 'Личный кабинет',
+            onClick: () => navigate('/my'),
+        },
+        {
             key: 'status',
             label: 'Статус: Онлайн',
         },

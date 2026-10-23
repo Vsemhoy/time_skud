@@ -1,6 +1,6 @@
 
 import {
-    Affix,
+    message, Affix,
     Avatar,
     Button,
     ConfigProvider,
@@ -425,7 +425,7 @@ const ClaimManagerPage = (props) => {
                 });
                 console.log('response data => ', response.data);
         } catch (e) {
-            console.log(e)
+            message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку')
         }
     }
 
@@ -449,7 +449,7 @@ const ClaimManagerPage = (props) => {
             }
             get_claimList(filterPack);
         } catch (e) {
-            console.log(e)
+            message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку')
         }
     }
 
@@ -463,7 +463,7 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
                 get_claimList(filterPack);
         } catch (e) {
-            console.log(e)
+            message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку')
         }
     }
 
@@ -477,7 +477,7 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
                 get_claimList(filterPack);
         } catch (e) {
-            console.log(e)
+            message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку')
         }
     }
 
@@ -491,7 +491,7 @@ const ClaimManagerPage = (props) => {
                 console.log('response data => ', response.data);
                 get_claimList(filterPack);
         } catch (e) {
-            console.log(e)
+            message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку')
         }
     }
 

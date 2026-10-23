@@ -1,4 +1,4 @@
-﻿
+
 import './App.css';
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import {
@@ -241,7 +241,7 @@ function App() {
       }
       setGlobalClaimsUpdateToken(dayjs().unix());
     } catch (e) {
-      console.log(e);
+      message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку');
     }
   };
 
@@ -253,7 +253,7 @@ function App() {
       });
       setGlobalClaimsUpdateToken(dayjs().unix());
     } catch (e) {
-      console.log(e);
+      message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку');
     }
   };
 
@@ -265,7 +265,7 @@ function App() {
       });
       setGlobalClaimsUpdateToken(dayjs().unix());
     } catch (e) {
-      console.log(e);
+      message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку');
     }
   };
 
@@ -277,7 +277,7 @@ function App() {
       });
       setGlobalClaimsUpdateToken(dayjs().unix());
     } catch (e) {
-      console.log(e);
+      message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку');
     }
   };
 

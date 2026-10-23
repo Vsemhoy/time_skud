@@ -1,276 +1,98 @@
-import React, { useEffect, useState } from "react";
-import { DatePicker, Radio, Space, Tabs } from 'antd';
-import { Button, Card, Checkbox, Empty, Tag, Transfer, Typography } from "antd";
-import dayjs from "dayjs";
- import "./components/style/accountpage.css";
-import AccPageSideBar from "./components/accpagesidebar";
+import React, { useEffect, useState } from 'react';
+import { Alert, Avatar, Button, Card, Col, DatePicker, Descriptions, Empty, Row, Skeleton, Space, Table, Tabs, Tag, Typography } from 'antd';
+import { UserOutlined, ReloadOutlined, CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { PROD_AXIOS_INSTANCE } from '../../API/API';
+import { ROUTE_PREFIX, CSRF_TOKEN } from '../../CONFIG/config';
+import TimeBankPanel from '../CLAIM_MANAGER_SK/components/TimeBankPanel';
+import { formatMoscowDateTime } from '../../components/Helpers/DateTimeHelpers';
 
+const hours = value => value == null ? '—' : `${Number((Number(value) / 3600).toFixed(2))} ч`;
+const clock = value => value == null ? '—' : `${String(Math.floor(value / 3600)).padStart(2, '0')}:${String(Math.floor(value % 3600 / 60)).padStart(2, '0')}`;
+const statuses = { 0: ['На согласовании', 'gold'], 1: ['Согласована', 'green'], 2: ['Отклонена', 'red'], 3: ['Отменена', 'default'] };
 
-const SideBar = (props) => {
+export default function AccountPage({ userdata }) {
+  const userId = userdata?.user?.id;
+  const [month, setMonth] = useState(dayjs().startOf('month'));
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [revision, setRevision] = useState(0);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true); setError('');
+    PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/me`, { data: { month: month.format('YYYY-MM') }, _token: CSRF_TOKEN })
+      .then(response => { if (!cancelled) setData(response.data.content); })
+      .catch(e => { if (!cancelled) setError(e.response?.data?.message || 'Не удалось загрузить личный кабинет'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [userId, month, revision]);
 
-    return (
-        <div>
-            Sidebar content
-        </div>
-    );
-};
-
-
-
-const MainContent = (props) => {
-
-    return (
-        <div>
-            <div className={"sk-ap-tab-title"}>
-                Main page content
-            </div>
-            <div>
-            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-            </div>
-        </div>
-    );
-};
-
-
-
-
-const ApDayTab = (props) => {
-    const [userData, setUserData] = useState(props.user_data);
-    const [selectedDate, setSelectedDate] = useState(dayjs());
-
-    const items = [
-        {
-          key: '1',
-          label: 'Общая статистика за год',
-          children: <MainContent/>,
-        },
-        {
-          key: '2',
-          label: 'Заявки и заявления',
-          children: 'Content of Tab Pane 2',
-        },
-        {
-          key: '3',
-          label: 'События за год',
-          children: 'Content of Tab Pane 3',
-        },
-        {
-            key: '4',
-            label: 'Задачи',
-            children: 'Content of Tab Pane 3',
-          },
-      ];
-
-    useEffect(()=>{ 
-        setSelectedDate(props.date);
-    },[props.date]);
-
-    return (
-        <div className={'sk-ap-tab-container'}>
-            <Tabs 
-                tabPosition={"left"}
-                defaultActiveKey="1" 
-                items={items}  
-                />
-        </div>
-    )
-};
-
-
-const ApMonthTab = (props) => {
-    const [userData, setUserData] = useState(props.user_data);
-    const [selectedDate, setSelectedDate] = useState(dayjs());
-
-    const items = [
-        {
-          key: '11',
-          label: 'Общая статистика за месяц',
-          children: <MainContent/>,
-        },
-        {
-          key: '12',
-          label: 'Заявки и заявления',
-          children: 'Content of Tab Pane 2',
-        },
-        {
-          key: '13',
-          label: 'События за месяц',
-          children: 'Content of Tab Pane 3',
-        },
-        {
-            key: '14',
-            label: 'Задачи',
-            children: 'Content of Tab Pane 3',
-          },
-      ];
-
-    useEffect(()=>{ 
-        setSelectedDate(props.date);
-    },[props.date]);
-
-    return (
-        <div className={'sk-ap-tab-container'}>
-            <Tabs 
-                tabPosition={"left"}
-                defaultActiveKey="1" 
-                items={items}  
-                />
-        </div>
-    )
-};
-
-
-const ApYeartab = (props) => {
-    const [userData, setUserData] = useState(props.user_data);
-    const [selectedDate, setSelectedDate] = useState(dayjs());
-
-    const items = [
-        {
-          key: '111',
-          label: 'События за день',
-          children: <MainContent/>,
-        },
-        {
-          key: '112',
-          label: 'Заявки и заявления',
-          children: 'Content of Tab Pane 2',
-        },
-        {
-          key: '113',
-          label: 'События за год',
-          children: 'Content of Tab Pane 3',
-        },
-        {
-            key: '1114',
-            label: 'Задачи',
-            children: 'Content of Tab Pane 3',
-          },
-      ];
-
-    useEffect(()=>{ 
-        setSelectedDate(props.date);
-    },[props.date]);
-
-    return (
-        <div className={'sk-ap-tab-container'}>
-            <Tabs 
-                tabPosition={"left"}
-                defaultActiveKey="1" 
-                items={items}  
-                />
-        </div>
-    )
-};
-
-
-
-
-
-const AccountPage = (props) => {
-    const [userData, setUserData] = useState(props.userdata);
-    const [selectedFullDate, setSelectedFullDate] = useState(dayjs());
-    const [selectedUnit, setSelectedUnit] = useState("d");
-
-
-
-    const changeFullDate = (date) => {
-        setSelectedFullDate(date);
-    }
-    const changeUnit = (unit) => {
-        setSelectedUnit(unit.target.value);
-    }
-
-    const changeTabAction = (ev)=>{
-        console.log(ev);
-    };
-
-
-    
-    return (
-        <div className={'sk-mw-1400'} style={{padding: '12px'}}>
-            <div>
-            <h1>Главная страница юзера</h1>
-            </div>
-
-            <div className={"sk-2col-body"}>
-                <div>
-                    <div className={"sk-homepage-control"}>
-                   
-                        <Space direction="horizontal">
-                            <Radio.Group defaultValue="c" buttonStyle="solid">
-                            <Radio.Button onChange={changeUnit} value="d">День</Radio.Button>
-                            {/* <Radio.Button onChange={changeUnit} value="w">Неделя</Radio.Button> */}
-                            <Radio.Button onChange={changeUnit} value="m">Месяц</Radio.Button>
-                            <Radio.Button onChange={changeUnit} value="y">Год</Radio.Button>
-                            </Radio.Group>
-                            { selectedUnit === "d" ? (
-                                <DatePicker
-                                    sta
-                                    placeholder="Выберите дату"
-                                    value={selectedFullDate}
-                                    onChange={changeFullDate}
-                                />
-
-                            ): ""}
-                            {/* <DatePicker onChange={onChangUnit} picker="week" /> */}
-                            {/* { selectedUnit === "w" ? (
-                                <DatePicker 
-                                    picker="week" placeholder="Неделя"
-                                    value={selectedFullDate}
-                                    onChange={changeFullDate}
-                                />
-
-                            ): ""} */}
-                            { selectedUnit === "m" ? (
-                                <DatePicker 
-                                    picker="month" placeholder="Месяц"
-                                    value={selectedFullDate}
-                                    onChange={changeFullDate}
-                                />
-
-                            ): ""}
-                            {/* <DatePicker onChange={onChangUnit} picker="quarter" /> */}
-                            { selectedUnit === "y" ? (
-                                <DatePicker 
-                                    picker="year" placeholder="Год"
-                                    value={selectedFullDate}
-                                    onChange={changeFullDate}
-                                />
-
-                            ): ""}
-                        </Space>
-                        <br/>
-                    </div>
-
-                    { selectedUnit === "d" ? (
-                        <ApDayTab 
-                        user_data={userData} 
-                        date={selectedFullDate}
-                        /> 
-                        ): ""}
-                        { selectedUnit === "m" ? (
-                            <ApMonthTab
-                            user_data={userData} 
-                            date={selectedFullDate}
-                            /> 
-                        ): ""}
-                        { selectedUnit === "y" ? (
-                            <ApYeartab
-                            user_data={userData} 
-                            date={selectedFullDate}
-                            /> 
-                        ): ""}
-                </div>
-
-
-                <div>
-                    <AccPageSideBar />
-                    
-                </div>
-            </div>
-
-        </div>
-    )
-};
-
-export default AccountPage;
+  const profile = data?.profile;
+  const name = profile ? [profile.surname, profile.name, profile.secondname].filter(Boolean).join(' ') : 'Сотрудник';
+  const schedule = data?.schedule;
+  return <div style={{ maxWidth: 1400, margin: '0 auto', padding: '24px 16px 40px' }}>
+    <Space style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }} wrap>
+      <div><Typography.Title level={2} style={{ margin: 0 }}>Личный кабинет</Typography.Title><Typography.Text type="secondary">Мои данные, рабочее время и заявки</Typography.Text></div>
+      <Button icon={<ReloadOutlined />} loading={loading} onClick={() => setRevision(v => v + 1)}>Обновить</Button>
+    </Space>
+    {error && <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} />}
+    {!data && loading ? <Skeleton active paragraph={{ rows: 8 }} /> : data && <>
+      <Row gutter={[20, 20]}>
+        <Col xs={24} lg={10}>
+          <Card style={{ height: '100%' }}>
+            <Space align="start" size={16} style={{ marginBottom: 24 }}>
+              <Avatar size={64} icon={<UserOutlined />} />
+              <div><Typography.Title level={4} style={{ margin: '0 0 4px' }}>{name}</Typography.Title><Typography.Text type="secondary">{profile.occupy || 'Должность не указана'}</Typography.Text></div>
+            </Space>
+            <Descriptions column={1} size="small" items={[
+              { key: 'company', label: 'Компания', children: data.company || '—' },
+              { key: 'department', label: 'Подразделение', children: data.department || '—' },
+              { key: 'manager', label: 'Руководитель', children: data.manager || '—' },
+              { key: 'email', label: 'Почта', children: profile.email || '—' },
+              { key: 'phone', label: 'Телефон', children: profile.phone || '—' },
+            ]} />
+          </Card>
+        </Col>
+        <Col xs={24} lg={14}>
+          <Card style={{ height: '100%' }}>
+            <TimeBankPanel key={`${profile.id}-${revision}`} userId={profile.id} readOnly allowAdjust={false} />
+            <Typography.Text type="secondary">Часы начисляются после подтверждения руководителем. Согласованные отгулы резервируют часы до списания.</Typography.Text>
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card title={<Space><ClockCircleOutlined />Текущий график</Space>}>
+            {schedule ? <Space size="large" wrap>
+              <b>{schedule.name || 'Рабочий график'}</b><span>{clock(schedule.start_time)} — {clock(schedule.end_time)}</span>
+              <span>Норма: {hours(schedule.target_time)}</span><span>Обед: {hours(schedule.lunch_time)}</span>
+            </Space> : <Typography.Text type="secondary">График не назначен</Typography.Text>}
+          </Card>
+        </Col>
+        <Col span={24}>
+          <Card title={<Space><CalendarOutlined />Мой месяц</Space>} extra={<DatePicker picker="month" allowClear={false} value={month} onChange={setMonth} format="MM.YYYY" />}>
+            <Tabs items={[
+              { key: 'claims', label: `Мои заявки (${data.claims.length})`, children: <Table rowKey="id" dataSource={data.claims} loading={loading} size="middle" scroll={{ x: 650 }} pagination={{ pageSize: 8 }} locale={{ emptyText: <Empty description="За этот месяц заявок нет" /> }} columns={[
+                { title: 'Заявка', dataIndex: 'id', render: (id, row) => <Link to={`/claims?id=${id}`}>№{id} · {row.skud_current_state?.title || 'Заявка'}</Link> },
+                { title: 'Начало', dataIndex: 'start', render: value => formatMoscowDateTime(value, 'DD.MM.YYYY HH:mm') },
+                { title: 'Окончание', dataIndex: 'end', render: value => formatMoscowDateTime(value, 'DD.MM.YYYY HH:mm') },
+                { title: 'Статус', dataIndex: 'state', render: value => <Tag color={statuses[value]?.[1]}>{statuses[value]?.[0] || '—'}</Tag> },
+                { title: 'Банк', dataIndex: 'uses_time_bank', render: value => value ? 'Из банка времени' : '—' },
+              ]} /> },
+              { key: 'attendance', label: 'Учёт времени', children: <>
+                <Alert type="info" showIcon message="Зачтённое время учитывает график и заявки, включая отпуск и отгулы. Оно не равно фактическому присутствию и не начисляется в банк автоматически." style={{ marginBottom: 16 }} />
+                <Table rowKey="control_date" dataSource={data.daily} loading={loading} scroll={{ x: 650 }} pagination={{ pageSize: 10 }} locale={{ emptyText: <Empty description="За этот месяц расчёта пока нет" /> }} columns={[
+                  { title: 'Дата', dataIndex: 'control_date', render: value => dayjs(value).format('DD.MM.YYYY') },
+                  { title: 'Вход', dataIndex: 'enter_time', render: value => value ? formatMoscowDateTime(typeof value === 'number' ? new Date(value * 1000) : value, 'HH:mm') : '—' },
+                  { title: 'Выход', dataIndex: 'exit_time', render: value => value ? formatMoscowDateTime(typeof value === 'number' ? new Date(value * 1000) : value, 'HH:mm') : '—' },
+                  { title: 'Зачтено', dataIndex: 'job_time_count', render: hours },
+                  { title: 'Недоработка', dataIndex: 'lost_time_count', render: hours },
+                ]} />
+              </> },
+            ]} />
+          </Card>
+        </Col>
+      </Row>
+    </>}
+  </div>;
+}
