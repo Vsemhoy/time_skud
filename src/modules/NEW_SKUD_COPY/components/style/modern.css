@@ -89,7 +89,7 @@
     height: 32px;
     font-weight: 500;
 }
-.modern-page .sk-userlist-toolbar-top-left > .ant-btn:first-child {
+.modern-page .sk-userlist-toolbar-top-left > .ant-btn:first-child:not(.sk-userlist-favorites-btn) {
     width: auto;
     min-width: 0;
     color: #334155 !important;

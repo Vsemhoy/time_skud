@@ -90,7 +90,18 @@ const UserList = (props)=>{
   const { userdata } = props;
   const showIdColumn = isTruthyFlag(userdata?.user?.is_admin);
   const isSuperUser = isTruthyFlag(userdata?.user?.super);
-  const [isSuperListExpanded, setIsSuperListExpanded] = useState(false);
+  const [isSuperFavoritesOnly, setIsSuperFavoritesOnly] = useState(false);
+  const [favoriteRowStates, setFavoriteRowStates] = useState({});
+  const pendingFavoriteUsers = useRef(new Set());
+  const favoriteFeedbackTimers = useRef(new Map());
+
+  useEffect(() => {
+    const timers = favoriteFeedbackTimers.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
   const [isDetailsSidebarVisible, setIsDetailsSidebarVisible] = useState(() => {
     if (typeof window === 'undefined') {
       return true;
@@ -98,7 +109,7 @@ const UserList = (props)=>{
 
     return window.localStorage.getItem(NEW_SKUD_DETAILS_SIDEBAR_STORAGE_KEY) !== 'false';
   });
-  const isSuperCompactMode = isSuperUser && !isSuperListExpanded;
+  const isSuperCompactMode = isSuperUser && isSuperFavoritesOnly;
   const isSuperTableMode = isSuperUser;
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
@@ -984,20 +995,43 @@ const UserList = (props)=>{
     return (userList ?? []).filter((user) => isTruthyFlag(user?.for_super));
   };
 
-  const handleHideSuperUser = async (userId) => {
+  const handleSetSuperFavorite = async (userId, isFavorite) => {
+    const key = String(userId);
+    if (pendingFavoriteUsers.current.has(key)) return;
+    pendingFavoriteUsers.current.add(key);
+    clearTimeout(favoriteFeedbackTimers.current.get(key));
+    favoriteFeedbackTimers.current.delete(key);
+    setFavoriteRowStates((states) => ({ ...states, [key]: 'loading' }));
     try {
       await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/set-for-super`, {
-        data: {
-          user_id: userId,
-          for_super: 0,
-        },
-        _token: CSRF_TOKEN
+        data: { user_id: userId, for_super: isFavorite ? 1 : 0 },
+        _token: CSRF_TOKEN,
       });
-      message.success('Сотрудник скрыт');
-      get_users(extFiltersRef.current, { showSkeleton: false });
+      const updateFavorite = (users) => (users ?? []).map((user) =>
+        String(user.id) === key ? { ...user, for_super: isFavorite ? 1 : 0 } : user
+      );
+      setBaseUserListData(updateFavorite);
+      setUserListData(updateFavorite);
+      setFavoriteRowStates((states) => ({ ...states, [key]: isFavorite ? 'added' : undefined }));
+      if (isFavorite) {
+        favoriteFeedbackTimers.current.set(key, setTimeout(() => {
+          favoriteFeedbackTimers.current.delete(key);
+          setFavoriteRowStates((states) => {
+            if (states[key] !== 'added') return states;
+            const nextStates = { ...states };
+            delete nextStates[key];
+            return nextStates;
+          });
+        }, 1500));
+      }
+      return true;
     } catch (e) {
       console.log(e);
-      message.error('Не удалось скрыть сотрудника');
+      setFavoriteRowStates((states) => ({ ...states, [key]: undefined }));
+      message.error('Не удалось обновить избранное');
+      return false;
+    } finally {
+      pendingFavoriteUsers.current.delete(key);
     }
   };
 
@@ -1287,8 +1321,9 @@ const UserList = (props)=>{
                 onFindMe={handleFindMe}
                 isSuperUser={isSuperUser}
                 superMode={isSuperTableMode}
-                isSuperListExpanded={isSuperListExpanded}
-                onToggleSuperListExpanded={() => setIsSuperListExpanded((value) => !value)}
+                isSuperFavoritesOnly={isSuperFavoritesOnly}
+                onAddSuperFavorite={(userId) => handleSetSuperFavorite(userId, true)}
+                onToggleSuperFavoritesOnly={() => setIsSuperFavoritesOnly((value) => !value)}
                 isDetailsSidebarVisible={isDetailsSidebarVisible}
                 onToggleDetailsSidebar={() => setIsDetailsSidebarVisible((value) => {
                   const nextValue = !value;
@@ -1472,7 +1507,9 @@ const UserList = (props)=>{
                                     show_id_column={effectiveShowIdColumn}
                                     current_user_id={userdata.user.id}
                                     super_mode={isSuperTableMode}
-                                    on_hide_super_user={handleHideSuperUser}
+                                    is_super_favorites_only={isSuperFavoritesOnly}
+                                    on_set_super_favorite={handleSetSuperFavorite}
+                                    favorite_row_state={favoriteRowStates[String(arche.id)]}
                                   />
                             ))
                         )}

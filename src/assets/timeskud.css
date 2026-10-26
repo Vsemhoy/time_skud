@@ -1435,3 +1435,17 @@ font-size: smaller;
         width: 90px;
     }
 }
+
+.newskud-page .ant-btn.sk-userlist-favorites-btn[aria-pressed="true"],
+.newskud-page .ant-btn.sk-userlist-favorites-btn[aria-pressed="true"]:hover {
+    background: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.sk-userlist-favorite-feedback {
+    display: inline-flex;
+    margin-inline-start: 8px;
+    vertical-align: middle;
+    color: inherit;
+}
