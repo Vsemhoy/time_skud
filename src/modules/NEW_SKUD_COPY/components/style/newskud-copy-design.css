@@ -222,19 +222,19 @@
 }
 
 .newskud-copy-page .ant-btn-primary.sk-userlist-compact-btn,
-.newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child {
+.newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child:not(.sk-userlist-favorites-btn) {
     color: #fff !important;
     border-color: var(--sk2-orange) !important;
     background: var(--sk2-orange) !important;
 }
 
 .newskud-copy-page .ant-btn-primary.sk-userlist-compact-btn:hover,
-.newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child:hover {
+.newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child:not(.sk-userlist-favorites-btn):hover {
     border-color: var(--sk2-orange-hover) !important;
     background: var(--sk2-orange-hover) !important;
 }
 
-.newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child,
+.newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child:not(.sk-userlist-favorites-btn),
 .newskud-copy-page .sk-userlist-toolbar-top-right .ant-btn-primary {
     width: 190px;
     min-width: 190px;
@@ -878,7 +878,7 @@
         flex-basis: auto;
     }
 
-    .newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child,
+    .newskud-copy-page .sk-userlist-toolbar-top-left > .ant-btn:first-child:not(.sk-userlist-favorites-btn),
     .newskud-copy-page .sk-userlist-toolbar-top-right .ant-btn-primary {
         width: 120px;
         min-width: 120px;

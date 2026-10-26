@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown } from "antd";
 
 import { BarChartOutlined,  IssuesCloseOutlined, RobotOutlined,
+    LoadingOutlined,
     MinusCircleOutlined,
     AppleOutlined,
     RestOutlined,
@@ -287,11 +288,12 @@ const UserMonitorListCard = (props) => {
     const superContextMenu = {
         items: [
             {
-                key: 'hide',
-                label: 'Скрыть',
+                key: 'favorite',
+                disabled: props.favorite_row_state === 'loading',
+                label: props.is_super_favorites_only ? 'Скрыть из избранного' : 'Добавить в избранное',
                 onClick: ({ domEvent }) => {
                     domEvent.stopPropagation();
-                    props.on_hide_super_user?.(content.id);
+                    props.on_set_super_favorite?.(content.id, !props.is_super_favorites_only);
                 },
             },
         ],
@@ -785,7 +787,7 @@ const UserMonitorListCard = (props) => {
                      ${content.type === 'header' ? 'sk-usermonic-crd-divider' : ''}
                      ${content.is_custom > 0 ? 'sk-evemonic-cuscard' : 'sk-evemonic-norcard'} ${markedCard ? 'sk-usermonic-crd-marked' : ''}
                      ${itsMe && !isSuperMode ? 'sk-usermonic-crd-mine' : ''} ${currentState !== 4 && content.type !== 'header' ? 'sk-usermonic-crd-notinoffice-state' : ''}`}
-                     style={isSuperMode ? undefined : {'--user-status-bg': statusBackground}}
+                     style={{'--user-status-bg': statusBackground}}
                 >
                     {showIdColumn && (
                         <div className="sk-userlist-id-cell">
@@ -804,6 +806,13 @@ const UserMonitorListCard = (props) => {
                             <div className="sk-userlist-name-cell">
                                 <span className="sk-userlist-name-text">
                                     {content.surname} {content.name} {content.patronymic}
+                                    {isSuperMode && props.favorite_row_state && (
+                                        <span className="sk-userlist-favorite-feedback" role="status" aria-live="polite">
+                                            {props.favorite_row_state === 'loading'
+                                                ? <LoadingOutlined spin aria-label="Обновление избранного" />
+                                                : <CheckOutlined style={{ color: '#389e0d' }} aria-label="Добавлено в избранное" title="Добавлено в избранное" />}
+                                        </span>
+                                    )}
                                 </span>
                                 <span className="sk-userlist-phone-inline">
                                     {formatPhone(content.phone)}

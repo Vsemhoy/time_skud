@@ -11,7 +11,7 @@ import {
     FilterOutlined, HomeOutlined, PlusOutlined, UserOutlined
 } from "@ant-design/icons";
 import {LoginOutlined, ScheduleOutlined, UnorderedListOutlined} from "@ant-design/icons";
-import {ListChevronsDownUp, ListChevronsUpDown, PanelRightClose, PanelRightOpen} from "lucide-react";
+import {Star, PanelRightClose, PanelRightOpen} from "lucide-react";
 import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
 import {message, Popover, Select} from "antd";
@@ -191,17 +191,12 @@ const UserListToolbar = (props) => {
 
         setIsAddingSuperUser(true);
         try {
-            await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/userlist/set-for-super`, {
-                data: {
-                    user_id: selectedSuperUserId,
-                    for_super: 1,
-                },
-                _token: CSRF_TOKEN,
-            });
+            const added = await props.onAddSuperFavorite(selectedSuperUserId);
+            if (!added) return;
             message.success('Сотрудник добавлен');
             setSelectedSuperUserId(null);
             setIsAddUserOpen(false);
-            props.onRefresh?.();
+
         } catch (e) {
             console.log(e);
             message.error('Не удалось добавить сотрудника');
@@ -306,6 +301,18 @@ const UserListToolbar = (props) => {
                 <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
                     {isSuperUser ? (
                         <>
+                            <Button
+                                color={'default'}
+                                variant={props.isSuperFavoritesOnly ? 'solid' : 'outlined'}
+                                className={'sk-userlist-compact-btn sk-userlist-favorites-btn'}
+                                icon={<span className="sk-userlist-lucide-btn-icon"><Star size={16} strokeWidth={2.1} fill={props.isSuperFavoritesOnly ? 'currentColor' : 'none'} /></span>}
+                                onClick={props.onToggleSuperFavoritesOnly}
+                                title={'Избранное'}
+                                aria-pressed={props.isSuperFavoritesOnly}
+                            >
+                                <span className={'sk-userlist-btn-label'}>Избранное</span>
+                            </Button>
+                            {props.isSuperFavoritesOnly && (
                             <Popover
                                 trigger="click"
                                 placement="bottomLeft"
@@ -322,20 +329,7 @@ const UserListToolbar = (props) => {
                                     <span className={'sk-userlist-btn-label'}>Добавить</span>
                                 </Button>
                             </Popover>
-                            <Button
-                                color={'default'}
-                                variant={'outlined'}
-                                className={'sk-userlist-compact-btn'}
-                                icon={props.isSuperListExpanded
-                                    ? <span className="sk-userlist-lucide-btn-icon"><ListChevronsDownUp size={16} strokeWidth={2.1} /></span>
-                                    : <span className="sk-userlist-lucide-btn-icon"><ListChevronsUpDown size={16} strokeWidth={2.1} /></span>}
-                                onClick={props.onToggleSuperListExpanded}
-                                title={props.isSuperListExpanded ? 'Свернуть список' : 'Раскрыть весь список'}
-                            >
-                                <span className={'sk-userlist-btn-label'}>
-                                    {props.isSuperListExpanded ? 'Свернуть' : 'Раскрыть весь список'}
-                                </span>
-                            </Button>
+                            )}
                         </>
                     ) : (
                         <Button color={'default'}
