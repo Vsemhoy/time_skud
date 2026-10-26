@@ -450,6 +450,7 @@ const ClaimManagerPage = (props) => {
             get_claimList(filterPack);
         } catch (e) {
             message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку')
+            return false;
         }
     }
 
@@ -541,7 +542,7 @@ const ClaimManagerPage = (props) => {
 
     const handleSaveClaim = async (claim, editmode) => {
         if (editmode === 'create'){
-            await create_claim(claim);
+            if (await create_claim(claim) === false) return false;
         } else if (editmode === 'update'){
             console.log('update claim');
             await update_claim(claim);

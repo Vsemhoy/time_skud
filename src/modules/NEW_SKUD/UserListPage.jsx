@@ -304,7 +304,7 @@ const UserList = (props)=>{
 
   const handleSaveClaim = async (claim, editmode) => {
     if (editmode === 'create'){
-      await create_claim(claim);
+      if (await create_claim(claim) === false) return false;
     } else if (editmode === 'update'){
       console.log('update claim');
       await update_claim(claim);
@@ -343,6 +343,7 @@ const UserList = (props)=>{
       setDoUpdateModal(dayjs().unix());
     } catch (e) {
       console.log(e)
+      return false;
     }
   };
 
