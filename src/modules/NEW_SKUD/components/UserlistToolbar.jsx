@@ -419,29 +419,7 @@ const UserListToolbar = (props) => {
                         aria-pressed={!props.isDetailsSidebarVisible}
                         onClick={props.onToggleDetailsSidebar}
                     />
-                    {isSuperUser ? (
-                        <>
-                            <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
-                                <div
-                                    className="sk-userlist-toolbar-user"
-                                    title="Пользователь"
-                                    role="button"
-                                    tabIndex={0}
-                                >
-                                    <Avatar
-                                        size={22}
-                                        style={{ backgroundColor: 'var(--app-soft-surface-color)', color: 'var(--app-text-color)' }}
-                                        icon={<UserOutlined />}
-                                    />
-                                    <span>
-                                        {props.userData?.user
-                                            ? `${props.userData.user.surname} ${props.userData.user.name}`
-                                            : 'Пользователь'}
-                                    </span>
-                                </div>
-                            </Dropdown>
-                        </>
-                    ) : (
+                    {!isSuperUser && (
                         <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
                             <Button
                                 type="primary"
