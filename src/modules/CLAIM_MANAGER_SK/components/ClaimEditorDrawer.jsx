@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Drawer, Form, Input, Popover, Row, Select, Space, TimePicker, Typography } from 'antd';
+import { Alert, Button, Col, DatePicker, Drawer, Form, Input, Popover, Row, Select, Space, TimePicker, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { formatMoscowDateTime, moscowDateTime } from "../../../components/Helpers/DateTimeHelpers";
 import UserStatusLucideIconsController from "../../CHARTS/components/UserStatusLucideIconsController";
 import { formatSecondsAsTime } from "./claimTimeHelpers";
 import TimeBankPanel from './TimeBankPanel';
+import { PROD_AXIOS_INSTANCE } from '../../../API/API';
+import { CSRF_TOKEN, ROUTE_PREFIX } from '../../../CONFIG/config';
+import { checkClaimOverlaps, describeClaimConflicts } from './claimOverlapHelpers';
 const { Option } = Select;
 
 
@@ -42,6 +45,10 @@ const parseClaimInfo = (info) => {
 
 const ClaimEditorDrawer = (props) => {
   const [open, setOpen] = useState(false);
+  const [overlapCheck, setOverlapCheck] = useState({ key: '', status: 'idle', conflicts: [] });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submissionPending = useRef(false);
+  const currentOverlapKey = useRef('');
   const [pageTitle, setPageTitle] = useState('');
   const [pageСolor, setPageColor] = useState('');
 
@@ -637,36 +644,98 @@ const ClaimEditorDrawer = (props) => {
     return result;
   };
 
-  const handleSubmitForm = ()=>{
-    let result = buildClaimPayload();
+  const buildSubmissionClaims = () => {
+    const result = buildClaimPayload();
+    if (itemId && editMode !== 'create') result.id = itemId;
+    if (editMode === 'create' && isFullWorkDay && effectiveFormUsers.length > 1) {
+      return selectedFullDayUsers.map((user) => {
+        const range = getFullWorkDayRangeForUser(user, formDateRange);
+        return { ...result, users: [user.id], start: range[0].format('YYYY-MM-DD HH:mm:ss'), end: range[1].format('YYYY-MM-DD HH:mm:ss') };
+      });
+    }
+    return [result];
+  };
 
-    // console.log(result);
-    if (props.on_send){
-      if (itemId){
-        result.id = itemId;
-      };
+  const hasValidClaimPeriod = Boolean(
+    effectiveFormUsers.length && Number(formType) > 0
+    && formDateRange?.[0]?.isValid?.() && formDateRange?.[1]?.isValid?.()
+    && !formDateRange[1].isBefore(formDateRange[0])
+    && (!isFullWorkDay || canUseFullWorkDay)
+  );
+  // Only employee, type and effective period trigger the availability request.
+  const overlapKey = open && props.opened && editMode === 'create' && hasValidClaimPeriod
+    ? JSON.stringify(buildSubmissionClaims().map(({ users, skud_current_state_id, start, end }) => ({ users, skud_current_state_id, start, end })))
+    : '';
+  currentOverlapKey.current = overlapKey;
 
-      if (editMode === 'create' && isFullWorkDay && effectiveFormUsers.length > 1) {
-        const splitClaims = selectedFullDayUsers.map((user) => {
-          const userRange = getFullWorkDayRangeForUser(user, formDateRange);
+  const requestOverlapCheck = (claims, signal) => checkClaimOverlaps(claims, async (data) => {
+    const response = await PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/checkoverlap`, {
+      data, _token: CSRF_TOKEN,
+    }, { signal });
+    return response.data;
+  });
 
-          return {
-            ...result,
-            users: [user.id],
-            start: userRange[0].format('YYYY-MM-DD HH:mm:ss'),
-            end: userRange[1].format('YYYY-MM-DD HH:mm:ss'),
-          };
-        });
+  useEffect(() => {
+    if (!overlapKey) {
+      setOverlapCheck({ key: '', status: 'idle', conflicts: [] });
+      return;
+    }
+    const controller = new AbortController();
+    setOverlapCheck({ key: overlapKey, status: 'checking', conflicts: [] });
+    const timer = setTimeout(async () => {
+      try {
+        const conflicts = await requestOverlapCheck(JSON.parse(overlapKey), controller.signal);
+        if (!controller.signal.aborted && currentOverlapKey.current === overlapKey) {
+          setOverlapCheck({ key: overlapKey, status: conflicts.length ? 'conflict' : 'clear', conflicts });
+        }
+      } catch (error) {
+        if (!controller.signal.aborted && currentOverlapKey.current === overlapKey) {
+          setOverlapCheck({ key: overlapKey, status: 'error', conflicts: [] });
+        }
+      }
+    }, 400);
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [overlapKey]);
 
-        props.on_send(splitClaims, editMode);
-        setOpen(false);
+  const overlapIsCurrent = overlapCheck.key === overlapKey;
+  const createBlocked = editMode === 'create' && (
+    !overlapKey || !overlapIsCurrent || overlapCheck.status !== 'clear'
+  );
+
+  const handleSubmitForm = async () => {
+    if (!props.on_send || submissionPending.current || !hasValidClaimPeriod || createBlocked) return;
+    submissionPending.current = true;
+    setIsSubmitting(true);
+    const key = overlapKey;
+    try {
+      const claims = buildSubmissionClaims();
+      if (editMode === 'create') {
+        // Recheck immediately before saving; form availability may have changed.
+        const conflicts = await requestOverlapCheck(JSON.parse(key));
+        if (currentOverlapKey.current !== key) return;
+        if (conflicts.length) {
+          setOverlapCheck({ key, status: 'conflict', conflicts });
+          return;
+        }
+      }
+      const saved = await props.on_send(claims.length === 1 ? claims[0] : claims, editMode);
+      if (saved === false) {
+        if (editMode === 'create' && currentOverlapKey.current === key) {
+          const conflicts = await requestOverlapCheck(JSON.parse(key));
+          if (currentOverlapKey.current === key) setOverlapCheck({ key, status: conflicts.length ? 'conflict' : 'error', conflicts });
+        }
         return;
       }
-
-      props.on_send(result, editMode);
+      setOpen(false);
+    } catch (error) {
+      if (editMode === 'create' && currentOverlapKey.current === key) {
+        setOverlapCheck({ key, status: 'error', conflicts: [] });
+      }
+    } finally {
+      submissionPending.current = false;
+      setIsSubmitting(false);
     }
-    setOpen(false);
-  }
+  };
 
   const handleTransferClaim = () => {
     const sourceClaimId = effectiveItemId;
@@ -1263,6 +1332,22 @@ const ClaimEditorDrawer = (props) => {
         </div>
           <br />
           
+          {editMode === 'create' && overlapKey && (
+            <div style={{ marginBottom: 12 }}>
+              {(!overlapIsCurrent || overlapCheck.status === 'checking') && <Alert type="info" showIcon message="Проверяем пересечения заявок…" />}
+              {overlapIsCurrent && overlapCheck.status === 'conflict' && <Alert type="error" showIcon message="Заявка пересекается с уже созданной" description={describeClaimConflicts(overlapCheck.conflicts, baseUserList)} />}
+              {overlapIsCurrent && overlapCheck.status === 'error' && <Alert type="error" showIcon message="Не удалось проверить пересечения. Создание заявки недоступно." action={<Button size="small" onClick={async () => {
+                const key = overlapKey;
+                setOverlapCheck({ key, status: 'checking', conflicts: [] });
+                try {
+                  const conflicts = await requestOverlapCheck(JSON.parse(key));
+                  if (currentOverlapKey.current === key) setOverlapCheck({ key, status: conflicts.length ? 'conflict' : 'clear', conflicts });
+                } catch {
+                  if (currentOverlapKey.current === key) setOverlapCheck({ key, status: 'error', conflicts: [] });
+                }
+              }}>Повторить</Button>} />}
+            </div>
+          )}
           <div className={'sk-flex-space'}>
             <Button
               onClick={onClose}
@@ -1270,7 +1355,7 @@ const ClaimEditorDrawer = (props) => {
             {editMode !== 'read' && (
               <div>
                 {formValid || itemId ? (
-                  <Button type={'primary'} onClick={handleSubmitForm} block>Сохранить</Button>
+                  <Button type={'primary'} onClick={handleSubmitForm} loading={isSubmitting} disabled={createBlocked || !hasValidClaimPeriod} block>Сохранить</Button>
                 ): (
                   <Button danger disabled block>Сохранить</Button>
                             )} 

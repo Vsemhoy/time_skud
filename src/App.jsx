@@ -242,6 +242,7 @@ function App() {
       setGlobalClaimsUpdateToken(dayjs().unix());
     } catch (e) {
       message.error(Object.values(e.response?.data?.errors || {}).flat().join(' ') || e.response?.data?.message || 'Не удалось сохранить заявку');
+      return false;
     }
   };
 
@@ -283,7 +284,7 @@ function App() {
 
   const handleGlobalSaveClaim = async (claim, editMode) => {
     if (editMode === 'create') {
-      await createGlobalClaim(claim);
+      if (await createGlobalClaim(claim) === false) return false;
     } else if (editMode === 'update') {
       await updateGlobalClaim(claim);
     } else if (editMode === 'transfer') {
