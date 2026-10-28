@@ -1456,14 +1456,14 @@ const UserList = (props)=>{
                             >Выход
                             </div>
 
-                            {!isSuperTableMode && <div
+                            <div
                                 className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}
                                 onClick={() => {
                                   toggleSelectedColumn(22)
                                 }}
                                 title={'Обед'}
                             >Обед
-                            </div>}
+                            </div>
 
                             {!isSuperTableMode && <div
                                 className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}

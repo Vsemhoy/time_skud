@@ -858,9 +858,9 @@ const UserMonitorListCard = (props) => {
                         {shouldHideExitTime ? '' : renderEventDumpCell(displayedExitTime)}
                     </div>
 
-                    {!isSuperMode && <div className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
+                    <div className={`${selectedColumns.includes(22) ? "sk-col-selected" : ""}`}> {/*РѕР±РµРґ*/}
                         {formatDurationFromMinute(content.lunch_time)}
-                    </div>}
+                    </div>
 
                     {!isSuperMode && <div className={`${selectedColumns.includes(14) ? "sk-col-selected" : ""}`}>
                         {formatDurationFromMinute(content.exit_time_count)}

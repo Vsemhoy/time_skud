@@ -14,7 +14,7 @@
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
     grid-template-columns:
         minmax(230px, 1.8fr)
-        repeat(4, minmax(110px, 1fr))
+        repeat(5, minmax(110px, 1fr))
         110px;
 }
 
@@ -1174,27 +1174,27 @@
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked) > .sk-userlist-employee-cell--absent {
-    background: #f1dcd4 !important;
+    background: #ffe1e1 !important;
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked):hover > .sk-userlist-employee-cell--absent {
-    background: color-mix(in srgb, #f1dcd4 92%, #000000) !important;
+    background: color-mix(in srgb, #ffe1e1 92%, #000000) !important;
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked) > .sk-userlist-employee-cell--office {
-    background: #e7f0cc !important;
+    background: #dcffdc !important;
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked):hover > .sk-userlist-employee-cell--office {
-    background: color-mix(in srgb, #e7f0cc 92%, #000000) !important;
+    background: color-mix(in srgb, #dcffdc 92%, #000000) !important;
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked) > .sk-userlist-employee-cell--left {
-    background: #f5eccb !important;
+    background: #FCFCB9 !important;
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked):hover > .sk-userlist-employee-cell--left {
-    background: color-mix(in srgb, #f5eccb 92%, #000000) !important;
+    background: color-mix(in srgb, #FCFCB9 92%, #000000) !important;
 }
 
 .newskud-copy-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode:not(.sk-usermonic-headerrow):not(.sk-usermonic-crd-divider):not(.sk-usermonic-crd-marked):hover > div:not(.sk-userlist-employee-cell) {

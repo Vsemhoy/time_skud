@@ -277,12 +277,12 @@
 /* Modern uses separate phone, status and claims columns in supervisor mode too. */
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode,
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
-    grid-template-columns: minmax(300px, 2.4fr) 76px 144px 130px repeat(3, minmax(110px, 1fr));
+    grid-template-columns: minmax(300px, 2.4fr) 76px 144px 130px repeat(4, minmax(110px, 1fr));
     height: 44px;
 }
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.extended,
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.extended.without-id-column {
-    grid-template-columns: minmax(300px, 2.4fr) 76px 144px 130px repeat(6, minmax(110px, 1fr));
+    grid-template-columns: minmax(300px, 2.4fr) 76px 144px 130px repeat(7, minmax(110px, 1fr));
 }
 .modern-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode .sk-userlist-name-cell {
     display: block;
