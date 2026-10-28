@@ -851,7 +851,7 @@
 
 .newskud-page .sk-userlist-super-summary-list {
     display: grid;
-    gap: 8px;
+    gap: 4px;
 }
 
 .newskud-copy-page.newskud-page--super .sk-userlist-super-summary-scroll {
@@ -871,7 +871,7 @@
 .newskud-copy-page.newskud-page--super .sk-userlist-super-summary-body {
     overflow-y: auto;
     min-height: 0;
-    padding: 10px 7px 12px;
+    padding: 6px;
 }
 
 .newskud-copy-page.newskud-page--super .sk-userlist-details-card--super-summary .sk-userlist-details-card-title {
@@ -880,10 +880,10 @@
 
 .newskud-page .sk-userlist-super-summary-row {
     display: grid;
-    grid-template-columns: 34px minmax(0, 1fr);
+    grid-template-columns: 26px minmax(0, 1fr);
     align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
+    gap: 6px;
+    padding: 5px 8px;
     border: 1px solid var(--table-border-divider-color);
     border-radius: 6px;
     background: var(--row-main-bg-color);
@@ -904,6 +904,10 @@
 
 .newskud-page .sk-userlist-super-summary-main {
     min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
 }
 
 .newskud-page .sk-userlist-super-summary-name {
@@ -915,9 +919,12 @@
 }
 
 .newskud-page .sk-userlist-super-summary-meta {
-    display: grid;
-    gap: 3px;
-    margin-top: 3px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0;
+    white-space: nowrap;
     color: var(--app-secondary-text-color, #8c8c8c);
     font-size: 12px;
 }

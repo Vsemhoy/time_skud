@@ -1224,9 +1224,8 @@ const ExtendedInformationSidebar = (props) => {
                                 <StateIconsController IdState={claim?.skud_current_state_id} height={'22px'} />
                             </div>
                             <div className="sk-userlist-super-summary-main">
-                                <div className="sk-userlist-super-summary-name">{getClaimUserFullName(claim)}</div>
+                                <div className="sk-userlist-super-summary-name" title={getClaimUserFullName(claim)}>{getClaimUserFullName(claim)}</div>
                                 <div className="sk-userlist-super-summary-meta">
-                                    <span>{getClaimTitle(claim)}</span>
                                     <span>{renderClaimPeriod(claim)}</span>
                                 </div>
                             </div>
