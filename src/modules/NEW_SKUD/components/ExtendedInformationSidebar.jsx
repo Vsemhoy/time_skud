@@ -1,3 +1,4 @@
+import CollapsibleSidebarCard from "../../../components/TimeSkud/CollapsibleSidebarCard";
 import React, { useEffect, useState } from "react";
 import UserlistEventDumpCard from "./UserlistEventDumpCard";
 import {Affix, Alert, Button, Drawer, Empty, Skeleton, Spin, Tag, Tooltip} from "antd";
@@ -439,6 +440,14 @@ const ExtendedInformationSidebar = (props) => {
 
     const userdata = props.userdata;
     const isSuperMode = userdata?.user?.super === true || userdata?.user?.super === 1 || userdata?.user?.super === '1';
+    const currentUserId = Number(userdata?.user?.id);
+    const isManager = currentUserId > 0 && (
+        [true, 1, '1'].includes(userdata?.user?.is_boss)
+        || (props.base_user_list_data ?? []).some((user) =>
+            Number(user.boss_id) === currentUserId
+            || (Number(user.id) === currentUserId && [true, 1, '1'].includes(user.is_boss))
+        )
+    );
     const [isMounted, setIsMounted] = useState(false);
     const [targetUserGuys, setTargetUserGuys] = useState([]);
     const [openUserInfo, setOpenUserInfo] = useState(false);
@@ -469,7 +478,7 @@ const ExtendedInformationSidebar = (props) => {
     }, [props.target_user_guys])
 
     const fetchSuperClaims = async () => {
-        if (!isSuperMode) {
+        if (!isSuperMode && !isManager) {
             return;
         }
 
@@ -478,7 +487,7 @@ const ExtendedInformationSidebar = (props) => {
             const requestBase = {
                 page: 1,
                 onPage: 5000,
-                boss_id: null,
+                boss_id: isSuperMode ? null : currentUserId,
                 user_id: null,
             };
             const [claimsResponse, vacationResponse] = await Promise.all([
@@ -489,16 +498,16 @@ const ExtendedInformationSidebar = (props) => {
                     },
                     _token: CSRF_TOKEN
                 }),
-                PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`, {
+                isSuperMode ? PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getclaims`, {
                     data: {
                         ...requestBase,
                         type: 10,
                     },
                     _token: CSRF_TOKEN
-                }),
+                }) : Promise.resolve(null),
             ]);
             setSuperClaims(claimsResponse.data.content ?? []);
-            setSuperVacationClaims(vacationResponse.data.content ?? []);
+            setSuperVacationClaims(vacationResponse?.data?.content ?? []);
         } catch (e) {
             console.log(e);
             setSuperClaims([]);
@@ -509,12 +518,12 @@ const ExtendedInformationSidebar = (props) => {
     };
 
     useEffect(() => {
-        if (!isSuperMode || props.target_user_info) {
+        if ((!isSuperMode && !isManager) || props.target_user_info) {
             return;
         }
 
         fetchSuperClaims();
-    }, [isSuperMode, props.target_user_info, props.target_date]);
+    }, [isSuperMode, isManager, currentUserId, props.target_user_info, props.target_date]);
 
     useEffect(() => {
         if (props.target_user_info){
@@ -1162,7 +1171,7 @@ const ExtendedInformationSidebar = (props) => {
     };
 
     const renderClaimsInfo = () => (
-        <section className="sk-userlist-details-card sk-userlist-details-card--claims">
+        <CollapsibleSidebarCard storageId="claims" label="Заявки" className="sk-userlist-details-card sk-userlist-details-card--claims">
             <div className="sk-userlist-details-card-title">Заявки</div>
             {visibleClaims.length > 0 ? (
                 <div className="sk-userlist-details-claims-list">
@@ -1195,7 +1204,7 @@ const ExtendedInformationSidebar = (props) => {
             ) : (
                 <div className="sk-userlist-details-claims-empty">Нет активных заявок</div>
             )}
-        </section>
+        </CollapsibleSidebarCard>
     );
 
     const renderSuperSummaryClaimList = (items, emptyText) => {
@@ -1236,22 +1245,26 @@ const ExtendedInformationSidebar = (props) => {
         );
     };
 
-    const renderSuperEmptyState = () => (
-        <div className="sk-userlist-details-scroll sk-userlist-super-summary-scroll">
-            <section className="sk-userlist-details-card sk-userlist-details-card--super-summary">
+    const renderPendingApprovalCard = () => (
+            <CollapsibleSidebarCard storageId="pending-approval" label="Заявки ожидающие согласования" className="sk-userlist-details-card sk-userlist-details-card--super-summary">
                 <div className="sk-userlist-details-card-title">Заявки ожидающие согласования</div>
                 {renderSuperSummaryClaimList(superPendingApprovalClaims, 'Нет заявок ожидающих согласования')}
-            </section>
+            </CollapsibleSidebarCard>
+    );
 
-            <section className="sk-userlist-details-card sk-userlist-details-card--super-summary">
+    const renderSuperEmptyState = () => (
+        <div className="sk-userlist-details-scroll sk-userlist-super-summary-scroll">
+            {renderPendingApprovalCard()}
+
+            <CollapsibleSidebarCard storageId="month-vacations" label="В этом месяце отпуск запланирован" className="sk-userlist-details-card sk-userlist-details-card--super-summary">
                 <div className="sk-userlist-details-card-title">В этом месяце отпуск запланирован</div>
                 {renderSuperSummaryClaimList(superMonthVacationClaims, 'Нет запланированных отпусков в этом месяце')}
-            </section>
+            </CollapsibleSidebarCard>
         </div>
     );
 
     const renderEventInfoCard = () => (
-        <section className="sk-userlist-details-card sk-userlist-details-card--events">
+        <CollapsibleSidebarCard storageId="events" label="Входы и выходы" className="sk-userlist-details-card sk-userlist-details-card--events">
             <div className="sk-userlist-details-card-title sk-userlist-details-card-title--with-action">
                 <span>Входы и выходы</span>
                 <Button
@@ -1267,11 +1280,11 @@ const ExtendedInformationSidebar = (props) => {
                 />
             </div>
             {renderEventInfo()}
-        </section>
+        </CollapsibleSidebarCard>
     );
 
     const renderScheduleInfoCard = () => (
-        <section className="sk-userlist-details-card sk-userlist-details-card--schedule">
+        <CollapsibleSidebarCard storageId="schedule" label="График" className="sk-userlist-details-card sk-userlist-details-card--schedule">
             <div className="sk-userlist-details-card-title">График</div>
             <Spin spinning={isScheduleLoading}>
                 <div className="sk-userlist-details-card-loader-body">
@@ -1287,14 +1300,14 @@ const ExtendedInformationSidebar = (props) => {
                     )}
                 </div>
             </Spin>
-        </section>
+        </CollapsibleSidebarCard>
     );
 
     const renderCreateClaimCard = () => {
         const claimTypes = props.claim_types ?? [];
 
         return (
-            <section className="sk-userlist-details-card sk-userlist-details-card--create-claim">
+            <CollapsibleSidebarCard storageId="create-claim" label="Создать заявку" className="sk-userlist-details-card sk-userlist-details-card--create-claim">
                 <div className="sk-userlist-details-card-title">Создать заявку</div>
                 {claimTypes.length > 0 ? (
                     <div className="sk-userlist-create-claim-list">
@@ -1317,7 +1330,7 @@ const ExtendedInformationSidebar = (props) => {
                 ) : (
                     <div className="sk-userlist-details-claims-empty">Нет доступных типов заявок</div>
                 )}
-            </section>
+            </CollapsibleSidebarCard>
         );
     };
 
@@ -1326,7 +1339,7 @@ const ExtendedInformationSidebar = (props) => {
         const currentUserId = userdata?.user?.id;
 
         return (
-            <section className="sk-userlist-details-card sk-userlist-details-card--personal-week">
+            <CollapsibleSidebarCard storageId="personal-week" label="Личная статистика" className="sk-userlist-details-card sk-userlist-details-card--personal-week">
                 <div className="sk-userlist-details-card-title sk-userlist-personal-week-title">
                     <IdcardOutlined />
                     <span>{currentUserFullName || userdata?.user?.email || 'Пользователь'}</span>
@@ -1363,7 +1376,7 @@ const ExtendedInformationSidebar = (props) => {
                         </>
                     )}
                 </div>
-            </section>
+            </CollapsibleSidebarCard>
         );
     };
 
@@ -1399,7 +1412,7 @@ const ExtendedInformationSidebar = (props) => {
     );
 
     const renderAccountingDocumentsCard = () => (
-        <section className="sk-userlist-details-card sk-userlist-details-card--documents">
+        <CollapsibleSidebarCard storageId="documents" label="Документы" className="sk-userlist-details-card sk-userlist-details-card--documents">
             <div className="sk-userlist-details-card-title">Документы</div>
             <div className="sk-userlist-documents-list">
                 {EMPTY_STATE_DOCUMENTS(props.userdata?.user?.active_company)?.map((documentItem) => (
@@ -1442,7 +1455,7 @@ const ExtendedInformationSidebar = (props) => {
                     </div>
                 ))}
             </div>
-        </section>
+        </CollapsibleSidebarCard>
     );
 
     return (
@@ -1454,13 +1467,15 @@ const ExtendedInformationSidebar = (props) => {
 
                         {renderCreateClaimCard()}
 
+                        {isManager && renderPendingApprovalCard()}
+
                         {renderAccountingDocumentsCard()}
                     </div>
                 )
             )}
             {openUserInfo && hasTargetUser && (
                 <div className="sk-userlist-details-scroll">
-                    <section className="sk-userlist-details-card sk-userlist-details-card--employee">
+                    <CollapsibleSidebarCard storageId="employee" label="Сотрудник" className="sk-userlist-details-card sk-userlist-details-card--employee">
                         {renderStatusHeader()}
                         <div className="sk-w-padding-18">
                             <div className={'sk-usermonic-drawer-row'}>
@@ -1534,7 +1549,7 @@ const ExtendedInformationSidebar = (props) => {
                                 </div>
                             )}
                         </div>
-                    </section>
+                    </CollapsibleSidebarCard>
 
                     {renderClaimsInfo()}
 
@@ -1543,7 +1558,7 @@ const ExtendedInformationSidebar = (props) => {
                     {renderScheduleInfoCard()}
 
                     {targetUserInfo.boss_id && targetUserInfo.boss_id !== 0 && targetUserInfo.user_id != 46 ? (
-                        <section className="sk-userlist-details-card sk-userlist-details-card--boss">
+                        <CollapsibleSidebarCard storageId="boss" label="Руководитель" className="sk-userlist-details-card sk-userlist-details-card--boss">
                             <div className="sk-userlist-details-card-title">
                                 <span
                                     onClick={() => handleOpenUserDetails(targetUserInfo.boss_id)}
@@ -1569,11 +1584,11 @@ const ExtendedInformationSidebar = (props) => {
                                     <div className={'sk-contend-um'}>{targetUserInfo.boss_phone}</div>
                                 </div>
                             </div>
-                        </section>
+                        </CollapsibleSidebarCard>
                     ) : ""}
 
                     {visibleTargetUserGuys && visibleTargetUserGuys.length > 0 && (
-                        <section className="sk-userlist-details-card sk-userlist-details-card--guys">
+                        <CollapsibleSidebarCard storageId="guys" label="Сотрудники" className="sk-userlist-details-card sk-userlist-details-card--guys">
                             <div className="sk-userlist-details-card-title">Сотрудники</div>
                             <div className="sk-w-padding-18">
                                 {visibleTargetUserGuys.map((item, index) => (
@@ -1583,7 +1598,7 @@ const ExtendedInformationSidebar = (props) => {
                                     >{item.surname} {item.name} {item.patronymic}</div>
                                 ))}
                             </div>
-                        </section>
+                        </CollapsibleSidebarCard>
                     )}
                 </div>
             )}
