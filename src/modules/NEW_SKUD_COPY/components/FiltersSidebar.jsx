@@ -1,3 +1,4 @@
+import CollapsibleSidebarCard from "../../../components/TimeSkud/CollapsibleSidebarCard";
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Button, Checkbox, Input, Select} from "antd";
 import {DS_DEPARTMENTS, DS_USER} from "../../../CONFIG/DEFAULTSTATE";
@@ -206,7 +207,7 @@ const FiltersSidebar = (props) => {
     };
 
     return (
-        <aside className="sk2-filters-panel">
+        <CollapsibleSidebarCard storageId="filters" label="Фильтры сотрудников" className="sk2-filters-panel">
             <header className="sk2-filters-panel__header">
                 <div className="sk2-filters-panel__eyebrow">Параметры списка</div>
                 <div className="sk2-filters-panel__title">Фильтры сотрудников</div>
@@ -297,7 +298,7 @@ const FiltersSidebar = (props) => {
                   Сбросить фильтры
               </Button>
             </footer>
-        </aside>
+        </CollapsibleSidebarCard>
     );
 }
 
