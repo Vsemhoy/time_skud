@@ -888,6 +888,7 @@ const  Charts = (props) => {
                         on_approve={handleApproveEvent}
                         on_decline={handleDeclineEvent}
                         current_user={currentUser}
+                        current_acls={acls}
                     />
                 )}
                 {canUpdatePrices() && (

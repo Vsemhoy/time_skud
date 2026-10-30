@@ -47,6 +47,7 @@ const ClaimEditorDrawer = (props) => {
   const [open, setOpen] = useState(false);
   const [overlapCheck, setOverlapCheck] = useState({ key: '', status: 'idle', conflicts: [] });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState('');
   const submissionPending = useRef(false);
   const currentOverlapKey = useRef('');
   const [pageTitle, setPageTitle] = useState('');
@@ -58,7 +59,7 @@ const ClaimEditorDrawer = (props) => {
   const [formUsers, setFormUsers] = useState([]); // all
   const [formDateRange, setFormDateRange] = useState([dayjs(), dayjs().endOf('day')]); // All
   const [isFullWorkDay, setIsFullWorkDay] = useState(false);
-  const [usesTimeBank, setUsesTimeBank] = useState(false);
+  const [usesTimeBank, setUsesTimeBank] = useState(true);
 
   const [formTargetPoint, setFormTargetPoint] = useState('');                              // 7, 8,
   const [formTargetAddress, setFormTargetAddress] = useState('');                          // 7, 8,
@@ -99,12 +100,15 @@ const ClaimEditorDrawer = (props) => {
       ? `${currentUser.surname ?? ''} ${currentUser.name ?? ''} ${currentUser.patronymic ?? ''}`.trim()
       : `#${MYID}`;
   const isPrivilegedUser = isTruthyFlag(props.current_user?.super) || isTruthyFlag(props.current_user?.is_admin);
+  const selectAllMen = Number(formType) === 13 && (props.current_acls ?? []).some((acl) => Number(acl) === 156);
   const createUserIdFromProps = props.data?.user_id ?? props.data?.id;
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
-  const shouldShowUserSelect = editMode === 'create' && canCreateForOtherUsers;
+  const shouldShowUserSelect = editMode === 'create' && (selectAllMen || canCreateForOtherUsers);
   const editedClaimUserId = props.data?.user_id;
   const effectiveFormUsers = editMode === 'create'
-      ? (!shouldShowUserSelect ? [MYID] : formUsers)
+      ? (!shouldShowUserSelect ? [MYID] : selectAllMen
+          ? formUsers.filter((id) => userList.some((user) => Number(user.value) === Number(id)))
+          : formUsers)
       : (editedClaimUserId ? [editedClaimUserId] : formUsers);
   const selectedFullDayUsers = effectiveFormUsers
       .map((userId) => baseUserList.find((user) => Number(user?.id) === Number(userId)))
@@ -166,7 +170,8 @@ const ClaimEditorDrawer = (props) => {
   useEffect(() => {
     if (props.opened){
       refreshForm();
-      setUsesTimeBank(isTruthyFlag(props.data?.uses_time_bank));
+      setUsesTimeBank(editMode === 'create' ? true : isTruthyFlag(props.data?.uses_time_bank));
+      setSubmissionError('');
       setOpen(true);
     } else {
       return;
@@ -273,12 +278,12 @@ const ClaimEditorDrawer = (props) => {
   }, [props.my_id]);
   useEffect(()=>{
     masterFilterUserList();
-  },[baseUserList, acls, formType, props.current_user]);
+  },[baseUserList, acls, formType, props.current_user, props.current_acls, MYID]);
   useEffect(() => {
-    if (editMode === 'create' && !canCreateForOtherUsers && MYID && !createUserIdFromProps) {
+    if (editMode === 'create' && !selectAllMen && !canCreateForOtherUsers && MYID && !createUserIdFromProps) {
       setFormUsers([MYID]);
     }
-  }, [editMode, canCreateForOtherUsers, MYID, createUserIdFromProps]);
+  }, [editMode, selectAllMen, canCreateForOtherUsers, MYID, createUserIdFromProps]);
   useEffect(() => {
     if (effectiveFormUsers.length === 0) {
       setIsFullWorkDay(false);
@@ -432,7 +437,9 @@ const ClaimEditorDrawer = (props) => {
     let filteredUsers = [];
     for (let i = 0; i < baseUserList.length; i++) {
       const userCard = baseUserList[i];
-      if (isPrivilegedUser) {
+      if (selectAllMen) {
+        if (Number(userCard.sex) === 1) filteredUsers.push(userCard);
+      } else if (isPrivilegedUser) {
         filteredUsers.push(userCard);
       } else if (acls[userCard.id_company] &&
           acls[userCard.id_company][+formType] &&
@@ -706,6 +713,7 @@ const ClaimEditorDrawer = (props) => {
     if (!props.on_send || submissionPending.current || !hasValidClaimPeriod || createBlocked) return;
     submissionPending.current = true;
     setIsSubmitting(true);
+    setSubmissionError('');
     const key = overlapKey;
     try {
       const claims = buildSubmissionClaims();
@@ -718,11 +726,17 @@ const ClaimEditorDrawer = (props) => {
           return;
         }
       }
-      const saved = await props.on_send(claims.length === 1 ? claims[0] : claims, editMode);
+      let saved;
+      try {
+        saved = await props.on_send(claims.length === 1 ? claims[0] : claims, editMode);
+      } catch (error) {
+        setSubmissionError(Object.values(error.response?.data?.errors || {}).flat().join(' ') || error.response?.data?.message || 'Не удалось сохранить заявку');
+        return;
+      }
       if (saved === false) {
         if (editMode === 'create' && currentOverlapKey.current === key) {
           const conflicts = await requestOverlapCheck(JSON.parse(key));
-          if (currentOverlapKey.current === key) setOverlapCheck({ key, status: conflicts.length ? 'conflict' : 'error', conflicts });
+          if (currentOverlapKey.current === key) setOverlapCheck({ key, status: conflicts.length ? 'conflict' : 'clear', conflicts });
         }
         return;
       }
@@ -893,7 +907,7 @@ const ClaimEditorDrawer = (props) => {
                     allowClear
                     style={{ width: '100%' }}
                     placeholder={'Имя пользователя'}
-                    value={formUsers.length > 0 ? formUsers : []}
+                    value={effectiveFormUsers}
                     options={userList}
                     onChange={setFormUsers}
                     optionFilterProp="searchLabel" // ищет по этому полю!
@@ -1084,7 +1098,7 @@ const ClaimEditorDrawer = (props) => {
                   <Space direction="vertical" size={12} style={{ width: '100%' }}>
                     <DatePicker.RangePicker style={{ width: '100%' }} showTime={{ format: 'HH:mm', minuteStep: 60 }} format="DD.MM.YYYY HH:mm" value={formDateRange} onChange={setFormDateRange} />
                     <Button onClick={() => setFormDateRange([formDateRange[0].startOf('day'), formDateRange[1].endOf('day')])}>Весь рабочий день по графику</Button>
-                    <Typography.Text type="secondary">Частичный отгул — с шагом один час. Полный день рассчитывается сервером по графику без обеда.</Typography.Text>
+                    <Typography.Text type="secondary">Частичный отгул — с шагом один час. Полный день рассчитывается сервером по графику без обеда. Если графика нет, списывается весь указанный интервал: задайте точное время начала и окончания.</Typography.Text>
                   </Space>
                 )}
               </div>}
@@ -1348,6 +1362,7 @@ const ClaimEditorDrawer = (props) => {
               }}>Повторить</Button>} />}
             </div>
           )}
+          {submissionError && <Alert type="error" showIcon message={submissionError} />}
           <div className={'sk-flex-space'}>
             <Button
               onClick={onClose}
