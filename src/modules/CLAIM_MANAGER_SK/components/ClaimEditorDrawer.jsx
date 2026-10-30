@@ -78,6 +78,8 @@ const ClaimEditorDrawer = (props) => {
   const [formResult, setFormResult] = useState('');                                        // 11,
   
   const [baseUserList, setBaseUserList] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [usersLoadError, setUsersLoadError] = useState('');
   const [userList, setUserList] = useState([]);
   const [acls, setAcls] = useState({});
   const [editMode, setEditMode] = useState('create');
@@ -475,11 +477,33 @@ const ClaimEditorDrawer = (props) => {
     
   }
 
-  useEffect(()=>{
-    if (props.user_list){
-      setBaseUserList(props.user_list);
+  useEffect(() => {
+    if (!props.opened || editMode !== 'create' || !selectAllMen) {
+      setBaseUserList(props.user_list ?? []);
+      setUsersLoading(false);
+      setUsersLoadError('');
+      return;
     }
-  },[props.user_list]);
+    // Page lists may be filtered or omit sex. Use the complete claim directory.
+    const controller = new AbortController();
+    setBaseUserList([]);
+    setUsersLoading(true);
+    setUsersLoadError('');
+    PROD_AXIOS_INSTANCE.post(`${ROUTE_PREFIX}/timeskud/claims/getusers`, {
+      data: {}, _token: CSRF_TOKEN,
+    }, { signal: controller.signal }).then((response) => {
+      if (controller.signal.aborted) return;
+      if (!Array.isArray(response.data?.content)) throw new Error('Invalid employee directory');
+      setBaseUserList(response.data.content);
+    }).catch((error) => {
+      if (!controller.signal.aborted) {
+        setUsersLoadError(error.response?.data?.message || 'Не удалось загрузить полный список сотрудников. Откройте заявку повторно.');
+      }
+    }).finally(() => {
+      if (!controller.signal.aborted) setUsersLoading(false);
+    });
+    return () => controller.abort();
+  }, [props.opened, props.user_list, editMode, selectAllMen]);
 
   const refreshForm = () => {
     setFormUsers([]);
@@ -897,6 +921,7 @@ const ClaimEditorDrawer = (props) => {
         // }
       >
         <div style={{display: 'flex', flexDirection: 'column'}} className={`${editMode === 'read' ? 'sk-claim-read' : ''}`} >
+          {usersLoadError && <Alert type="error" showIcon message={usersLoadError} />}
 
         <div>
           <div className={'sk-claimeditor-drawer-row '}>
@@ -909,6 +934,8 @@ const ClaimEditorDrawer = (props) => {
                     placeholder={'Имя пользователя'}
                     value={effectiveFormUsers}
                     options={userList}
+                    loading={usersLoading}
+                    disabled={usersLoading || Boolean(usersLoadError)}
                     onChange={setFormUsers}
                     optionFilterProp="searchLabel" // ищет по этому полю!
                     showSearch
@@ -1232,9 +1259,9 @@ const ClaimEditorDrawer = (props) => {
                     type='number'
                     min={0}
                     style={{ width: '100%' }}
-                    placeholder={'Имя пользователя'}
                     allowClear={true}
                     value={formBusCount}
+                    placeholder={'Имя пользователя'}
                     onChange={(ev)=>{setFormBusCount(ev.target.value)}}
                     />
                     )}
