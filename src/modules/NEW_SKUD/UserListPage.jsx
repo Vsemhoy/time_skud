@@ -1567,6 +1567,7 @@ const UserList = (props)=>{
             on_send={handleSaveClaim}
             my_id={userData?.user?.id}
             current_user={userData?.user}
+            current_acls={userData?.acls}
             on_get_back={handleGetBackEvent}
             on_approve={handleApproveEvent}
             on_decline={handleDeclineEvent}
