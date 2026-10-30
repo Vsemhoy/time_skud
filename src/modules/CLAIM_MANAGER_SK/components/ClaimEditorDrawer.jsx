@@ -102,7 +102,7 @@ const ClaimEditorDrawer = (props) => {
       ? `${currentUser.surname ?? ''} ${currentUser.name ?? ''} ${currentUser.patronymic ?? ''}`.trim()
       : `#${MYID}`;
   const isPrivilegedUser = isTruthyFlag(props.current_user?.super) || isTruthyFlag(props.current_user?.is_admin);
-  const selectAllMen = Number(formType) === 13 && (props.current_acls ?? []).some((acl) => Number(acl) === 156);
+  const selectAllMen = [13, 24].includes(Number(formType)) && (props.current_acls ?? []).some((acl) => Number(acl) === 156);
   const createUserIdFromProps = props.data?.user_id ?? props.data?.id;
   const canCreateForOtherUsers = userList.some((user) => Number(user?.value) !== Number(MYID));
   const shouldShowUserSelect = editMode === 'create' && (selectAllMen || canCreateForOtherUsers);
@@ -1259,9 +1259,9 @@ const ClaimEditorDrawer = (props) => {
                     type='number'
                     min={0}
                     style={{ width: '100%' }}
+                    placeholder={'Имя пользователя'}
                     allowClear={true}
                     value={formBusCount}
-                    placeholder={'Имя пользователя'}
                     onChange={(ev)=>{setFormBusCount(ev.target.value)}}
                     />
                     )}

@@ -198,7 +198,7 @@ const ClaimManagerPage = (props) => {
         for (let i = 0; i < baseClaimTypes.length; i++) {
             const claimType = baseClaimTypes[i];
             const formType  = claimType.id;
-            let allowType = Number(formType) === 13 && (userData?.acls ?? []).some((acl) => Number(acl) === 156);
+            let allowType = [13, 24].includes(Number(formType)) && (userData?.acls ?? []).some((acl) => Number(acl) === 156);
             for (let n = 0; n < baseUserList.length; n++) {
                 const userCard = baseUserList[n];
                 if (aclBase[userCard.id_company] && aclBase[userCard.id_company][formType] && aclBase[userCard.id_company][formType]?.includes('ANY_CLAIM_CREATE')){
