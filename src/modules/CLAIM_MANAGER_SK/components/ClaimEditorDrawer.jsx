@@ -1104,7 +1104,7 @@ const ClaimEditorDrawer = (props) => {
 
         </div>
 
-        {open && !isTruthyFlag(props.current_user?.super) && effectiveFormUsers.length === 1 && <TimeBankPanel
+        {open && (!isTruthyFlag(props.current_user?.super) || Number(formType) === 13) && effectiveFormUsers.length === 1 && <TimeBankPanel
           key={`${effectiveFormUsers[0]}-${effectiveItemId ?? 'new'}-${editMode}`}
           userId={effectiveFormUsers[0]} claimId={editMode === 'create' ? null : effectiveItemId}
           debitStart={Number(formType) === 24 && usesTimeBank ? formDateRange?.[0]?.format('YYYY-MM-DD HH:mm:ss') : null}

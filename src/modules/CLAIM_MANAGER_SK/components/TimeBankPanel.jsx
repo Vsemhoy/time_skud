@@ -52,7 +52,7 @@ export default function TimeBankPanel({ userId, claimId, claimType, readOnly = f
     {bank && <>
       <Space wrap><span>Баланс: <b>{duration(bank.balance_seconds)}</b></span><span>Резерв: {duration(bank.reserved_seconds)}</span><span>Доступно: <b>{duration(bank.available_seconds)}</b></span></Space>
       {bank.credit ? <Alert type="success" message={`По заявке начислено ${duration(bank.credit.seconds)}. Подтверждение выполнено, повторное начисление запрещено.`} />
-        : !readOnly && claimId && creditable && bank.can_manage && <>
+        : !readOnly && claimId && creditable && (Number(claimType) === 13 ? bank.can_credit_containers : bank.can_manage) && <>
           {Number(claimType) === 13 && <Space><span>Часов за контейнеры</span><InputNumber min={1} max={100000} precision={0} step={1} value={hours} onChange={value => { setHours(value); setPreview(null); }} /></Space>}
           <Button loading={busy} disabled={Number(claimType) === 13 && !hours} onClick={() => run(async () => {
             setPreview(await post(`preview/${claimId}`, { hours: Number(claimType) === 13 ? hours : null }));
