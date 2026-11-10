@@ -31,8 +31,8 @@ const EventMonitorToolbar = (props)=>
     const [openCustomDrawer, setOpenCustomDrawer] = useState(false);
     const [baseUserlist, setBaseUserList] = useState([]);
     const [formUsers, setFormUsers] = useState( []);
-    const [formStartTime , setFormStartTime] = useState( dayjs() );
-    const [formEndTime, setFormEndTime] = useState( dayjs() );
+    const [formStartTime, setFormStartTime] = useState(null);
+    const [formEndTime, setFormEndTime] = useState(null);
     const [formReason, setFormReason] = useState('');
     const [formValid, setFormValid] = useState(false);
 
@@ -164,13 +164,6 @@ const EventMonitorToolbar = (props)=>
     }
 
 
-    useEffect(()=>{ 
-        setFormStartTime(targetStartDate?.hour(9).minute(15))
-    },[targetStartDate]);
-
-    useEffect(()=>{ 
-        setFormEndTime(targetEndDate?.hour(18).minute(0))
-    },[targetStartDate]);
     
     
     useEffect(()=>{ 
@@ -499,6 +492,8 @@ const EventMonitorToolbar = (props)=>
                                     <Button color="cyan" variant="solid"
                                         onClick={() => {
                                             setFormReason(manualEntryTitle);
+                                            setFormStartTime(null);
+                                            setFormEndTime(null);
                                             setCurrentTextVariant(0);
                                             setOpenCustomDrawer(true);
                                         }}
@@ -565,7 +560,7 @@ const EventMonitorToolbar = (props)=>
 
                 </div>
                 <br />
-                {formStartTime?.format('YYYY-MM-DD HH:mm') === formEndTime?.format('YYYY-MM-DD HH:mm') && (
+                {formStartTime && formEndTime && formStartTime.isSame(formEndTime, 'minute') && (
                     <div>Время входа и выхода не должно совпадать<br /><br /></div>
                 )}
                 <div className={'sk-dform-exttab'}>
