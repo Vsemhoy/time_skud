@@ -8,6 +8,7 @@ import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
 
 const { Content, Sider } = Layout;
+const manualEntryTitle = "Ручное добавление записи";
 
 const EventMonitorToolbar = (props)=>
 {
@@ -44,6 +45,7 @@ const EventMonitorToolbar = (props)=>
         filteredFormUsers.some((user) => String(user.id) === String(userId))
     ));
     const textVariants = [
+        manualEntryTitle,
         "Ещё не получил пропуск",
         "Забыл пропуск",
         "В процессе замены пропуска",
@@ -495,7 +497,11 @@ const EventMonitorToolbar = (props)=>
                             <div className="sk-event-monitor-table-toolbar-actions">
                                 {props.can_create_event && (
                                     <Button color="cyan" variant="solid"
-                                        onClick={()=> {setOpenCustomDrawer(true)}}
+                                        onClick={() => {
+                                            setFormReason(manualEntryTitle);
+                                            setCurrentTextVariant(0);
+                                            setOpenCustomDrawer(true);
+                                        }}
                                     >
                                         Создать событие
                                     </Button>
@@ -513,7 +519,7 @@ const EventMonitorToolbar = (props)=>
                 closable
                 destroyOnClose
                 rootClassName="sk-event-monitor-create-drawer"
-                title={<span>Ручное дабовление записи</span>}
+                title={<span>{manualEntryTitle}</span>}
                 placement="right"
                 open={openCustomDrawer}
                 // loading={loading}
