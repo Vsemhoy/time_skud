@@ -1123,7 +1123,14 @@ const ClaimEditorDrawer = (props) => {
                 <span className="sk-usp-filter-col-label sk-labed-um">Начало и окончание</span>
                 {editMode === 'read' ? renderReadRange(formDateRange[0], formDateRange[1], renderReadDateTime) : (
                   <Space direction="vertical" size={12} style={{ width: '100%' }}>
-                    <DatePicker.RangePicker style={{ width: '100%' }} showTime={{ format: 'HH:mm', minuteStep: 60 }} format="DD.MM.YYYY HH:mm" value={formDateRange} onChange={setFormDateRange} />
+                    <DatePicker.RangePicker
+                      style={{ width: '100%' }}
+                      allowClear={false}
+                      showTime={{ format: 'HH:mm', minuteStep: 60 }}
+                      format="DD.MM.YYYY HH:mm"
+                      value={formDateRange}
+                      onChange={(dates) => setFormDateRange(dates.map(date => date.startOf('minute')))}
+                    />
                     <Button onClick={() => setFormDateRange([formDateRange[0].startOf('day'), formDateRange[1].endOf('day')])}>Весь рабочий день по графику</Button>
                     <Typography.Text type="secondary">Частичный отгул — с шагом один час. Полный день рассчитывается сервером по графику без обеда. Если графика нет, списывается весь указанный интервал: задайте точное время начала и окончания.</Typography.Text>
                   </Space>
