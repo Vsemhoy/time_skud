@@ -28,7 +28,7 @@ import ChineseZodiac from "../../../assets/Comicon/ChineseZodiac";
 
 
 
-const ProdCalItemCard = ({onOpenModal, data, allow_delete}) => {
+const ProdCalItemCard = ({onOpenModal, data, allow_delete, tableRow}) => {
 
 const [ userList, setUserList] = useState(options);
 const [ calData, setCalData] = useState(data);
@@ -50,6 +50,18 @@ const [ calData, setCalData] = useState(data);
         setCalData(data);
     }, [data]);
 
+    if (tableRow) {
+        const status = {'-1': 'Ожидает', 0: 'Активен', 1: 'Архивирован'}[calData.archieved];
+        return (
+            <tr>
+                <td>{calData.id}</td>
+                <td><div className="sk-personnel-icon-label"><ChineseZodiac year={calData.year} />{calData.year}</div></td>
+                <td>{calData.company_name}</td>
+                <td>{calData.count_links ?? 0}</td><td>{status ?? '—'}</td>
+                <td><Button size="small" aria-label="Редактировать календарь" icon={<EditOutlined />} onClick={openModalClick} /></td>
+            </tr>
+        );
+    }
     return (
         <div className={`sk-cal-card ${calData.archieved === 1 ? "skc-archieved ": ""}`}> 
           

@@ -26,6 +26,7 @@ import BillListModal from "./components/BillListModal";
 import {DownOutlined, PhoneOutlined} from "@ant-design/icons";
 import './components/style/newskud-copy-design.css';
 import './components/style/modern.css';
+import './components/style/main.css';
 import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 
 const TABLE_SKELETON_ROWS = 10;
@@ -100,10 +101,16 @@ const AnimatedDepartmentRow = ({modern, collapsed, children}) => {
 
 const UserList = (props)=>{
   const { userdata } = props;
-  const isModern = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MODERN;
+  const pageTheme = getSavedSkudPageTheme();
+  const renderColumnLabel = (label, title = label) => pageTheme === SKUD_PAGE_THEMES.MAIN
+    ? <span className="sk-column-label" title={title}>{label}</span>
+    : label;
+  const isModern = pageTheme === SKUD_PAGE_THEMES.MODERN;
   const [collapsedDepartments, setCollapsedDepartments] = useState([]);
   const toolbarElementRef = useRef(null);
   const [toolbarHeight, setToolbarHeight] = useState(52);
+  const menuOffset = pageTheme === SKUD_PAGE_THEMES.MAIN ? 46 : 0;
+  const contentOffset = menuOffset + (isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET);
   useEffect(() => {
     if (!isModern || !toolbarElementRef.current) return;
     const observer = new ResizeObserver(([entry]) => setToolbarHeight(entry.target.getBoundingClientRect().height));
@@ -916,6 +923,7 @@ const UserList = (props)=>{
   };
 
   const toggleSelectedColumn = (col) => {
+    if (pageTheme === SKUD_PAGE_THEMES.MAIN) return;
     if (selectedColumns.includes(col)) {
       // Удалить col из массива
       setSelectedColumns(selectedColumns.filter(item => item !== col));
@@ -1319,10 +1327,10 @@ const UserList = (props)=>{
 
 
   return (
-      <div className={`mega-layout newskud-page newskud-copy-page ${getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MODERN ? 'modern-page' : ''} ${isSuperUser ? 'newskud-page--super' : ''}`}>
+      <div className={`mega-layout newskud-page newskud-copy-page ${pageTheme === SKUD_PAGE_THEMES.MAIN ? 'main-page' : ''} ${isModern ? 'modern-page' : ''} ${isSuperUser ? 'newskud-page--super' : ''}`}>
         {isInitialPageLoading && <UserListInitialLoader phase={initialLoaderPhase} />}
         <Layout className={'layout layout--newskud'}>
-          <Affix offsetTop={0}>
+          <Affix offsetTop={menuOffset}>
             <Header ref={toolbarElementRef} className={'header-user-list header-user-list--newskud'}>
               <UserListToolbar
                 modern={isModern}
@@ -1370,10 +1378,11 @@ const UserList = (props)=>{
                      pointerEvents: shouldShowFilterSidebar ? 'auto' : 'none',
                    }}
             >
-              <Affix offsetTop={isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET}>
+              <Affix offsetTop={contentOffset}>
                 <div className="sk-width-container">
                   <div className="sk-usp-filter-col sk2-filters-shell" style={{height: 'calc(100vh - 46px - 46px)'}}>
-                    <FiltersSidebar onChangeInnerSort={toggleInnerSorts}
+                    <FiltersSidebar collapsible={pageTheme !== SKUD_PAGE_THEMES.MAIN}
+                                    onChangeInnerSort={toggleInnerSorts}
                                     onChangeInnerFilers={toggleInnerFilters}
                                     extendedInfo={isShowExtendedInfo}
                                     isShowExtended={(value) => setIsShowExtendedInfo(value)}
@@ -1393,7 +1402,7 @@ const UserList = (props)=>{
                       <Empty />
                   ):(
                       <div className="sk-userlist-table-frame">
-                        <Affix offsetTop={isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET}>
+                        <Affix offsetTop={contentOffset}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
                                 className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'} ${isSuperTableMode ? 'super-mode' : ''}`}>
@@ -1404,7 +1413,7 @@ const UserList = (props)=>{
                               }}>
                                 <div style={{paddingLeft: '9px'}}
                                      className={`${selectedColumns.includes(1) ? "sk-col-selected" : ""}`}
-                                >id
+                                >{renderColumnLabel('id')}
                                 </div>
                               </div>
                             )}
@@ -1414,7 +1423,7 @@ const UserList = (props)=>{
                             }}>
                               <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}
                                    style={{textAlign: 'left'}}>
-                                <span>Сотрудник</span>
+                                {pageTheme === SKUD_PAGE_THEMES.MAIN ? renderColumnLabel('Сотрудник') : <span>Сотрудник</span>}
                                 <PhoneOutlined
                                     className="sk-userlist-phone-header-icon"
                                     title="Телефон"
@@ -1425,7 +1434,7 @@ const UserList = (props)=>{
 
                             {isModern && <div className="modern-phone-cell"><PhoneOutlined title="Телефон" /></div>}
                             <div className="sk-userlist-status-cell">
-                              Статус
+                              {renderColumnLabel('Статус')}
                             </div>
 
                             <div
@@ -1436,7 +1445,7 @@ const UserList = (props)=>{
                                 }}
                             >
                               <div className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}>
-                                Заявки
+                                {renderColumnLabel('Заявки')}
                               </div>
                             </div>
 
@@ -1445,7 +1454,7 @@ const UserList = (props)=>{
                                 onClick={() => {
                                   toggleSelectedColumn(10)
                                 }}
-                            >Вход
+                            >{renderColumnLabel('Вход')}
                             </div>
 
                             <div
@@ -1453,7 +1462,7 @@ const UserList = (props)=>{
                                 onClick={() => {
                                   toggleSelectedColumn(11)
                                 }}
-                            >Выход
+                            >{renderColumnLabel('Выход')}
                             </div>
 
                             <div
@@ -1462,7 +1471,7 @@ const UserList = (props)=>{
                                   toggleSelectedColumn(22)
                                 }}
                                 title={'Обед'}
-                            >Обед
+                            >{renderColumnLabel('Обед')}
                             </div>
 
                             {!isSuperTableMode && <div
@@ -1471,7 +1480,7 @@ const UserList = (props)=>{
                                   toggleSelectedColumn(14)
                                 }}
                                 title={'Кратковременные перерывы'}
-                            >Крат. перерывы
+                            >{renderColumnLabel('Крат. перерывы', 'Кратковременные перерывы')}
                             </div>}
 
                             <div
@@ -1480,31 +1489,31 @@ const UserList = (props)=>{
                                   toggleSelectedColumn(16)
                                 }}
                                 title={'Потерянное время'}
-                            >Потерянное время
+                            >{renderColumnLabel('Потерянное время')}
                             </div>
 
                             {shouldShowExtendedTableColumns && (
                                 <div title='График работ'
                                      className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
-                                >График работ
+                                >{renderColumnLabel('График работ')}
                                 </div>
                             )}
 
                             {shouldShowExtendedTableColumns && (
                                 <div title='Правила учёта РВ'
                                      className={`${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
-                                >Правила учёта РВ
+                                >{renderColumnLabel('Правила учёта РВ')}
                                 </div>
                             )}
 
                             {shouldShowExtendedTableColumns && (
                                 <div>
-                                  <div>Руководитель</div>
+                                  <div>{renderColumnLabel('Руководитель')}</div>
                                 </div>
                             )}
 
                             <div title='Заявки' className={`sk-userlist-legacy-claims-header ${selectedColumns.includes(20) ? "sk-col-selected" : ""}`}
-                            >Заявки
+                            >{renderColumnLabel('Заявки')}
                             </div>
 
                           </div>
@@ -1530,6 +1539,7 @@ const UserList = (props)=>{
                                   collapsed={collapsedDepartments.includes(arche.department_id)}
                                 >
                                   <UserMonitorListCard
+                                      showFullNameOnHover={pageTheme === SKUD_PAGE_THEMES.MAIN}
                                       modern={isModern}
                                       key={`usmcard_${arche.id !== undefined ? arche.id : arche.key}`}
                                       data={arche}
@@ -1555,16 +1565,19 @@ const UserList = (props)=>{
               </div>
 
             </Content>
-            {shouldShowDetailsSidebar && <Sider width={NEW_SKUD_DETAILS_SIDER_WIDTH}
-                   className="sider pl15"
+            {(pageTheme === SKUD_PAGE_THEMES.MAIN || shouldShowDetailsSidebar) && <Sider
+                   width={shouldShowDetailsSidebar ? NEW_SKUD_DETAILS_SIDER_WIDTH : 0}
+                   className={`sider pl15 ${shouldShowDetailsSidebar ? '' : 'sider-hidden'}`}
                    style={{
                      paddingTop: '5px',
-                     visibility: 'visible',
-                     pointerEvents: 'auto',
+                     visibility: shouldShowDetailsSidebar ? 'visible' : 'hidden',
                    }}
             >
-              <Affix offsetTop={isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET}>
+              <Affix offsetTop={contentOffset}>
                 <div className="sk-width-container sk-userlist-details-panel" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 46px)'}}>
+                    {pageTheme === SKUD_PAGE_THEMES.MAIN && (
+                      <h2 className="sk-userlist-details-heading">Виджеты</h2>
+                    )}
                     <ExtendedInformationSidebar
                         target_user_guys={targetUserGuys}
                         target_user_info={targetUserInfo}

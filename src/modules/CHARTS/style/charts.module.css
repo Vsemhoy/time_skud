@@ -215,3 +215,55 @@
     background-color: #1677ff;
     border-color: #1677ff;
 }
+
+:global(.sk-charts-main) .month.active_month {
+    background-color: var(--sk-action-blue);
+    border-color: var(--sk-action-blue);
+}
+
+:global(.sk-charts-main) .sk_chart {
+    --row-main-bg-color: white;
+    --row-second-bg-color: #f5f8fa;
+    --row-hovered-bg-color: #e5eff8;
+    --table-border-divider-color: #dbe3ec;
+    border-radius: 0;
+    min-width: 720px;
+}
+:global(.sk-charts-main) .chart_sticky_header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-radius: 0;
+    box-shadow: none;
+}
+:global(.sk-charts-main) .month_row,
+:global(.sk-charts-main) .user_row.by_day {
+    background: #506b89;
+    color: white;
+    --app-text-color: white;
+    --app-muted-text-color: white;
+    --table-border-divider-color: #435d78;
+}
+:global(.sk-charts-main) .month_row button {
+    color: white;
+}
+:global(.sk-charts-main) .chart_header_cell {
+    background: #506b89;
+    color: white;
+}
+:global(.sk-charts-main) .chart_header_cell.highlighted {
+    background: #385773;
+}
+:global(.sk-charts-main) .chart_header_cell.weekend {
+    background: #862d36;
+    color: white;
+}
+:global(.sk-charts-main) .chart_header_cell.weekend.highlighted {
+    background: #70242c;
+}
+:global(.sk-charts-main) .user_cell > div:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    font-weight: 400;
+}

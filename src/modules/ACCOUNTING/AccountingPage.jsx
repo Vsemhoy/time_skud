@@ -1,3 +1,6 @@
+import AccountingPeriodFilters from './components/AccountingPeriodFilters';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
+import '../../assets/operations-main.css';
 import React, {useEffect, useState} from 'react';
 import {Affix, Button, Checkbox, Input, Layout, Select, Skeleton, Spin, Tag} from "antd";
 import {Content, Header} from "antd/es/layout/layout";
@@ -44,7 +47,11 @@ const STAFFING_FORM_FIELDS = [
     'bet',
 ];
 
+const Unpinned = ({children}) => children;
+
 const AccountingPage = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const PageAffix = isMain ? Unpinned : Affix;
     const useCookieState = (key, defaultValue) => {
         const [state, setState] = useState(() => {
             const saved = Cookies.get(key);
@@ -59,7 +66,7 @@ const AccountingPage = (props) => {
     }
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
-    const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', true);
+    const [isOpenFilters, setIsOpenFilters] = useCookieState(isMain ? 'user_manager_filters_main' : 'user_manager_filters', !isMain);
     const [disableSaveInfo, setdDisableSavingInfo] = useState(false);
     const [savingInfo, setSavingInfo] = useState(false);
     const [creatingStaffList, setCreatingStaffList] = useState(false);
@@ -331,17 +338,27 @@ const AccountingPage = (props) => {
         }
     };
     return (
-        <div className={'mega-layout'}>
+        <div className={isMain ? 'mega-layout sk-operations-main sk-accounting-main sk-accounting-fit' : 'mega-layout'}>
             <Layout className={'layout'}>
                 <Header className={'header'}>
-                    <Affix>
+                    <PageAffix>
                         <div className={'sk-header-container'}>
-                            <Button color={'default'}
+                            {isMain ? (
+                                <AccountingPeriodFilters
+                                    months={prepareSelectOptions('month', months)}
+                                    years={prepareSelectOptions('year', years)}
+                                    period={filterParams}
+                                    setPeriod={setFilterParams}
+                                />
+                            ) : (
+                                <Button color={'default'}
+                                    aria-expanded={isOpenFilters}
                                     variant={isOpenFilters ? 'solid' : 'outlined'}
                                     icon={<FilterOutlined />}
                                     style={{ width: '125px' }}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
                             >Фильтры</Button>
+                            )}
                             <h1 className={'page-header'}>Штатное расписание</h1>
                             <Button type="primary"
                                     disabled={disableSaveInfo || isLoading || staffingUsers.length === 0}
@@ -351,13 +368,13 @@ const AccountingPage = (props) => {
                                     onClick={saveStaffList}
                             >{btnHeader()}</Button>
                         </div>
-                    </Affix>
+                    </PageAffix>
                 </Header>
                 <Layout className="sk-layout-center">
-                    <Sider width={isOpenFilters ? "330px" : 0}
+                    {!isMain && <Sider width={isOpenFilters ? "330px" : 0}
                            className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
                     >
-                        <Affix offsetTop={54}>
+                        <PageAffix offsetTop={54}>
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
                                     <FiltersSidebar
@@ -369,13 +386,13 @@ const AccountingPage = (props) => {
                                     />
                                 </div>
                             </div>
-                        </Affix>
-                    </Sider>
+                        </PageAffix>
+                    </Sider>}
                     <Content className="content">
                         <div className={`sk-content-table-wrapper ${styles.sk_accounting_table_wrapper}`}>
                             <Spin tip="Ожидайте" spinning={false} style={{width: '100%', height: '100%'}}>
                                 <div className={`sk-content-table ${styles.sk_accounting_table}`}>
-                                    <Affix offsetTop={44}>
+                                    <PageAffix offsetTop={44}>
                                         <div className={`${styles.sk_table_row_staffingschedule} ${showIdColumn ? '' : styles.sk_staffing_grid_no_id}`}>
                                             {showIdColumn && (
                                                 <div className={`${styles.sk_department_table_header}`}>
@@ -413,10 +430,10 @@ const AccountingPage = (props) => {
                                                 <p className={`${styles.sk_department_table_header_p}`}>Ставка, руб.</p>
                                             </div>
                                         </div>
-                                    </Affix>
+                                    </PageAffix>
                                     {isLoading ? renderTableSkeleton() : departmentsInfo.map((department, index) => (
                                         <div key={`${department.id}-${index}`}>
-                                            <Affix offsetTop={96}>
+                                            <PageAffix offsetTop={96}>
                                                 <div className={`${styles.sk_department_header}`}
                                                     onDoubleClick={() => openCloseDepartments(department.id)}
                                                 >
@@ -424,7 +441,7 @@ const AccountingPage = (props) => {
                                                         <p className={`${styles.sk_department_header_p}`}>{department.name}</p>
                                                     </div>
                                                 </div>
-                                            </Affix>
+                                            </PageAffix>
                                             {!closedDepartments.find(item => item === department.id) && (
                                                 <div className="sk-person-rows">
                                                     {usersInfo.map((user, idx) => {

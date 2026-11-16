@@ -414,3 +414,62 @@
     min-width: 0 !important;
     max-width: 100%;
 }
+
+:global(.sk-accounting-main) .sk_accounting_table_wrapper {
+    height: 100%;
+    padding: 0;
+    overflow: auto;
+    background: white;
+}
+:global(.sk-accounting-main) .sk_accounting_table {
+    min-width: max-content;
+    border-radius: 0;
+    box-shadow: none;
+}
+:global(.sk-accounting-main) :is(.sk_table_row_staffingschedule, .sk_table_row_surcharges, .sk_table_row_bankcard_title) {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    min-height: 42px;
+    background: var(--operations-header);
+    border: 1px solid var(--operations-divider);
+    border-radius: 0;
+    box-shadow: none;
+}
+:global(.sk-accounting-main) .sk_department_table_header { border-color: var(--operations-divider); }
+:global(.sk-accounting-main) .sk_department_table_header_p { text-shadow: none; font-weight: 600; }
+:global(.sk-accounting-main) :is(.sk_department_header, .sk_bankcard_days_month) {
+    background: #d5e0ec;
+    border-color: #b9c3ce;
+    box-shadow: none;
+}
+:global(.sk-accounting-main) .sk_bankcard_days_panel { margin: 0; box-shadow: none; }
+:global(.sk-accounting-main) :is(.sk_person_row_basic_hover_container, .sk_surcharge_row, .sk_bankcard_row) { min-height: 44px; }
+:global(.sk-accounting-main) :is(.sk_person_row_basic_hover_container, .sk_surcharge_row, .sk_bankcard_row):nth-child(even) { background: #f5f8fa; }
+
+:global(.sk-accounting-fit) .sk_accounting_table_wrapper {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    contain: inline-size;
+}
+:global(.sk-accounting-fit) .sk_accounting_table {
+    width: 100%;
+    min-width: 0;
+}
+:global(.sk-accounting-fit) :is(.sk_table_row_staffingschedule, .sk_person_row_basic_hover_container) {
+    grid-template-columns: 36px minmax(116px, 2fr) minmax(90px, 1.35fr) repeat(8, minmax(56px, 1fr));
+    min-width: 690px;
+}
+:global(.sk-accounting-fit) .sk_staffing_grid_no_id {
+    grid-template-columns: minmax(116px, 2fr) minmax(90px, 1.35fr) repeat(8, minmax(56px, 1fr));
+    min-width: 654px;
+}
+:global(.sk-accounting-fit) .sk_bankcard_table {
+    width: min-content;
+    min-width: 100%;
+}
+:global(.sk-accounting-fit) :is(.sk_person_row_content, .sk_department_table_header) {
+    padding-inline: 4px;
+}
+:global(.sk-accounting-fit) .sk_bankcard_days_panel { overflow-x: auto; }

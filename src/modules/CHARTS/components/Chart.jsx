@@ -11,8 +11,9 @@ import {log10} from "chart.js/helpers";
 dayjs.extend(isBetween);
 
 const Chart = (props) => {
-    const { isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, setRangeValues, activeYear, renderIntersections, openDrawer, onPreviousMonth, onNextMonth } = useOutletContext();
+    const { isMain, isLoadingChart, usersPage, selectedChartState, reactiveColor, rangeValues, setRangeValues, activeYear, renderIntersections, openDrawer, onPreviousMonth, onNextMonth } = useOutletContext();
 
+    const TableHeader = isMain ? React.Fragment : Affix;
     const [highlightedColumn, setHighlightedColumn] = useState(null);
     const months = useMemo(() => {
         const arr = [];
@@ -285,7 +286,7 @@ const Chart = (props) => {
         <Spin spinning={isLoadingChart}>
             {usersPage && (
                 <div className={styles.sk_chart}>
-                    <Affix offsetTop={192}>
+                    <TableHeader {...(isMain ? {} : {offsetTop: 192})}>
                         <div className={styles.chart_sticky_header}>
                             <div className={styles.month_row}>
                                 <div></div>
@@ -323,7 +324,7 @@ const Chart = (props) => {
                                 </div>
                             </div>
                             <div className={`${styles.user_row} ${styles.by_day}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
-                            <div className={styles.user_cell}></div>
+                            <div className={styles.user_cell}>{isMain && "Сотрудник"}</div>
                             {months.length <= 2 && months.map((month, monthIdx) => {                          // по дням
                                 const daysInMonth = getDaysInMonth(dayjs(`${activeYear}-${month}-01`));
 
@@ -366,11 +367,11 @@ const Chart = (props) => {
                             })}
                             </div>
                         </div>
-                    </Affix>
+                    </TableHeader>
                     {usersPage.map((user, index) => (
                         <div className={styles.user_row} key={`user_${user.id}_${index}`} style={{gridTemplateColumns: months.length > 2 ? gridColumnsWeeks : gridColumnsDays}}>
                             <div className={styles.user_cell}>
-                                <div>{ShortName(user.surname, user.name, user.patronymic)}</div>
+                                <div title={isMain ? [user.surname, user.name, user.patronymic].filter(Boolean).join(" ") : undefined}>{ShortName(user.surname, user.name, user.patronymic)}</div>
                                 <div style={{color: 'var(--row-selected-color_2)'}}>{(user.charts && user.charts.length > 0) ? user.charts.length : ''}</div>
                             </div>
                             {months.length <= 2 && months.map((month, index) => (                             // по дням

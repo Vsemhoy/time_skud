@@ -102,6 +102,7 @@ const AppMenu23 = (props) => {
     const location = useLocation();
     const selectedKey = location.pathname;
     const isModern = pageTheme === SKUD_PAGE_THEMES.MODERN;
+    const isMain = pageTheme === SKUD_PAGE_THEMES.MAIN;
     const isNewSkudCopy = pageTheme === SKUD_PAGE_THEMES.NEW
         || location.pathname === '/newskud-copy'
         || location.pathname.endsWith('/newskud-copy');
@@ -273,6 +274,7 @@ const AppMenu23 = (props) => {
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
                             { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
+                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Основная' },
                         ]}
                         style={{ width: '112px' }}
                     />
@@ -470,6 +472,7 @@ const AppMenu23 = (props) => {
         );
 
         return mainMenuItems.filter(item => {
+            if (isMain && item.key === 'home') return false;
             const shouldShowItem = (() => {
                 switch (item.key) {
                     case 'menu2': return hasPersonnelAccess;
@@ -498,11 +501,17 @@ const AppMenu23 = (props) => {
     }
 
     return (
-        <div>
+        <div className={isMain ? 'sk-main-menu-sticky' : undefined}>
             <Header
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                className={`sk-main-menu ${isNewSkudCopy || isModern ? 'sk-main-menu--newskud-copy' : ''} ${isModern ? 'sk-main-menu--modern' : ''}`}
+                className={`sk-main-menu ${isNewSkudCopy || isModern || isMain ? 'sk-main-menu--newskud-copy' : ''} ${isMain ? 'sk-main-menu--main' : ''} ${isModern ? 'sk-main-menu--modern' : ''}`}
             >
+                {isMain && (
+                    <div className="sk-main-menu-brand">
+                        <a href={HTTP_HOST} aria-label="Домой" title="Домой"><HomeOutlined /></a>
+                        <strong>СКУД</strong>
+                    </div>
+                )}
                 {props.is_loading ? (
                     <div className="sk-appmenu-skeleton" aria-hidden="true">
                         <Skeleton.Button active size="small" className="sk-appmenu-skeleton-home" />
@@ -600,11 +609,15 @@ const AppMenu23 = (props) => {
                         >
                             {props.user_act?.user ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', lineHeight: 1 }}>
-                                    <Avatar
+                                    {isMain ? (
+                                        <span className="sk-main-menu-initial" aria-hidden="true">
+                                            {(props.user_act.user.surname || props.user_act.user.name || '?').trim().charAt(0).toUpperCase()}
+                                        </span>
+                                    ) : <Avatar
                                         size={22}
                                         style={{ backgroundColor: 'var(--app-soft-surface-color)', color: 'var(--app-text-color)' }}
                                         icon={<UserOutlined />}
-                                    ></Avatar>
+                                    />}
                                     <span style={{fontWeight: 500, color: "var(--app-text-color)", fontSize: '14px', whiteSpace: 'nowrap'}}>
                                       {props.user_act.user.surname} {props.user_act.user.name}
                                     </span>

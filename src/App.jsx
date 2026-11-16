@@ -64,6 +64,7 @@ import ClaimEditorDrawer from "./modules/CLAIM_MANAGER_SK/components/ClaimEditor
 import StateIconsController from "./modules/CHARTS/components/StateIconsController";
 import HelpPage from "./modules/HELP/HelpPage";
 import UserChangesPage from "./modules/USER_CHANGES/UserChangesPage";
+import './assets/personnel-main.css';
 
 const { Header, Content, Footer } = Layout;
 
@@ -446,7 +447,7 @@ function App() {
   return (
     <Layout style={{background: 'var(--app-surface-color)'}}>
         <BrowserRouter basename={ BASE_NAME}>
-          <div >
+          <div className="sk-route-shell">
 
        <AppMenu23 
         user_act={userAct}

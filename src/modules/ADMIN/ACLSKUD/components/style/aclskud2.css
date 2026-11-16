@@ -317,3 +317,77 @@
     
     opacity: 0.70;
 }
+
+.sk-route-shell:has(.sk-acl-main) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+}
+.sk-route-shell > .ant-layout-content:has(.sk-acl-main) { min-height: 0; }
+.sk-page-body.sk-acl-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding: 0 8px 8px;
+    box-sizing: border-box;
+    background: #e5ecf5;
+}
+.sk-acl-main > br, .sk-acl-main > div:first-child > br { display: none; }
+.sk-acl-main > .sk-mw-1600 { width: 100%; max-width: none; margin: 0; box-sizing: border-box; }
+.sk-acl-main > div:first-child { background: white; border-bottom: 1px solid #8f9dad; }
+.sk-acl-main > div:first-child > .sk-flex-space { flex-wrap: wrap; gap: 6px; }
+.sk-acl-main > .sk-acl-table-region {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    overflow: auto;
+    padding: 0 !important;
+    border: 1px solid #b9c3ce;
+    background: white;
+}
+.sk-acl-main .sk-table-aclskud { min-width: 820px; }
+.sk-acl-main .sk-table-aclskud-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid #435d78;
+    backdrop-filter: none;
+}
+.sk-acl-main .sk-table-aclskud-header > .sk-tas-inwrap,
+.sk-acl-main .sk-table-aclskud-header > .sk-tas-inwrap > div {
+    min-height: 42px;
+    background: #506b89;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+}
+.sk-acl-main .sk-table-aclskud-header .sk-table-aclskud-cell { border-color: #435d78; }
+.sk-acl-main .sk-rdepart-section { margin: 0; box-shadow: none; }
+.sk-acl-main .sk-table-aclskud-data { border-color: #dbe3ec; }
+.sk-acl-main .sk-tas-inwrap-depart { background: #d5e0ec; color: #182b42; }
+.sk-acl-main .sk-act-templaterow { z-index: auto; box-shadow: none; }
+.sk-acl-main .sk-tas-userrow { background: #f5f8fa; }
+
+.sk-acl-reveal { display: contents; }
+
+.sk-acl-main .sk-opened-box { border: 0; }
+.sk-acl-main .sk-acl-table-region { overflow-anchor: none; scrollbar-gutter: stable; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .sk-acl-main .sk-acl-reveal {
+        display: grid;
+        animation: sk-acl-expand 200ms ease-out;
+    }
+    .sk-acl-main .sk-acl-reveal > div {
+        min-height: 0;
+        overflow: clip;
+    }
+}
+@keyframes sk-acl-expand {
+    from { grid-template-rows: 0fr; }
+    to { grid-template-rows: 1fr; }
+}

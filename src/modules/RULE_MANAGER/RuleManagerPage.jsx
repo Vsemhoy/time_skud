@@ -1,3 +1,5 @@
+import PersonnelTable from '../../components/PersonnelTable';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import RuleEditorModal from "./components/ruleeditormodal";
@@ -25,6 +27,7 @@ const { Header, Sider, Content } = Layout;
 
 
 const RuleManagerPage = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const { userdata } = props;
 
     const prepareSelectOptions = (name, options) => {
@@ -50,7 +53,7 @@ const RuleManagerPage = (props) => {
 
         return [state, setState];
     };
-    const [isOpenFilters, setIsOpenFilters] = useCookieState('rule_manager_filters', true);
+    const [isOpenFilters, setIsOpenFilters] = useCookieState(isMain ? 'RuleManagerPage_main_filters' : 'rule_manager_filters', !isMain);
     const [baseRuleList, setBaseRuleList] = useState([]);
     const [editorOpened, setEditorOpened] = useState(false);
     const [editedRuleId, setEditedRuleId] = useState(0);
@@ -254,27 +257,38 @@ const RuleManagerPage = (props) => {
         setEditorOpened(true);
     }
 
+    const createAction = (
+        <Button color={'primary'}
+            variant={isMain ? 'solid' : 'outlined'}
+            icon={<PlusOutlined/>}
+            style={{ width: '125px' }}
+            onClick={openModal}
+        >Создать</Button>
+    );
+    const PanelWrapper = isMain ? 'div' : Affix;
     return (
-        <Layout className={'rule-layout'}>
+        <Layout className={isMain ? "rule-layout sk-personnel-main sk-claims-viewport" : "rule-layout"}>
             <Header className={'header'}>
-                <Affix>
+                <PanelWrapper>
                     <div className={'sk-header-container'}>
                         <Button color={'default'}
+                                aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 style={{ width: '125px' }}
                                 onClick={() => setIsOpenFilters(!isOpenFilters)}
                         >Фильтры</Button>
                         <h1 className={'page-header'}>Правила учёта рабочего времени</h1>
-                        <div></div>
+                        {isMain ? <div className="sk-personnel-actions">{createAction}</div> : <div />}
                     </div>
-                </Affix>
+                </PanelWrapper>
             </Header>
             <Layout className="sk-layout-center">
-                <Sider width={isOpenFilters ? "330px" : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
-                    <Affix offsetTop={54}>
+                <Sider width={isOpenFilters ? (isMain ? 320 : 330) : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
+                    <PanelWrapper {...(isMain ? {} : {offsetTop: 54})}>
                         <div className="sk-width-container">
                             <div className="sk-usp-filter-col">
+                                    {isMain && <h2 className="sk-claims-filter-title">Фильтры</h2>}
                                 <ClaimManagerSidebar
                                     company_list={prepareSelectOptions('company', companies)}
                                     current_rules_list={prepareSelectOptions('current_rules_list', currentRules)}
@@ -282,14 +296,15 @@ const RuleManagerPage = (props) => {
                                 />
                             </div>
                         </div>
-                    </Affix>
+                    </PanelWrapper>
                 </Sider>
                 <Content className="content">
                     <div className="sk-content-table-wrapper">
-                        <Affix offsetTop={44}>
+                        <PanelWrapper {...(isMain ? {} : {offsetTop: 44})}>
                             <div className="sk-pagination-wrapper">
                                 <div className="sk-pagination-container">
                                     <Pagination
+                                        showQuickJumper={isMain}
                                         current={currentPage}
                                         total={count}
                                         pageSize={pageSize}
@@ -317,16 +332,36 @@ const RuleManagerPage = (props) => {
                                         }}
                                     >Всего найдено: {count}</Tag>
                                 </div>
-                                <Button color={'primary'}
-                                        variant={'outlined'}
-                                        icon={<PlusOutlined/>}
-                                        style={{ width: '125px' }}
-                                        onClick={openModal}
-                                >Создать</Button>
+                                {!isMain && createAction}
                             </div>
-                        </Affix>
+                        </PanelWrapper>
                         <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
-                            <div className="sk-content-table">
+                            {isMain ? (
+                                <PersonnelTable label="Правила учёта рабочего времени" headings={['ID','Правило','Компания','Сотрудники','Действия']} empty={!baseRuleList.length}>
+                                    {baseRuleList.map(rule => (
+                                        <React.Fragment key={rule.id}>
+                                            <tr onDoubleClick={() => openCloseRules(rule.id)}>
+                                                <td>{rule.id}</td>
+                                                <td><div className="sk-personnel-icon-label"><RuleIcons type={rule.rule_type_id} size="20px" />{rule.name}</div></td>
+                                                <td>{rule.company_name}</td>
+                                                <td><Button size="small" aria-expanded={closedRules.includes(rule.id)} onClick={() => openCloseRules(rule.id)}>
+                                                    {rule.users_count ?? 0} <UserOutlined />
+                                                </Button></td>
+                                                <td><Button size="small" aria-label="Редактировать правило" icon={<EditOutlined />} onClick={() => onOpenModalEditor(rule.id)} /></td>
+                                            </tr>
+                                            {closedRules.includes(rule.id) && <tr><td colSpan={5}>
+                                                <PersonnelTable label={`Сотрудники — ${rule.name}`} headings={['ID','Сотрудник','Должность','Действия']}
+                                                    empty={!users.some(user => userRules[user.id]?.includes(+rule.id))}>
+                                                    {users.filter(user => userRules[user.id]?.includes(+rule.id)).map(user => (
+                                                        <tr key={user.id}><td>{user.id}</td><td>{[user.surname,user.name,user.patronymic].filter(Boolean).join(' ')}</td>
+                                                            <td>{user.occupy}</td><td><NavLink to={`/hr/usermanager/${user.id}/rules`}>Редактировать</NavLink></td></tr>
+                                                    ))}
+                                                </PersonnelTable>
+                                            </td></tr>}
+                                        </React.Fragment>
+                                    ))}
+                                </PersonnelTable>
+                            ) : <div className="sk-content-table">
                                 {baseRuleList.map((rule, index) => (
                                     <div key={`${rule.id}-${index}`}
                                          className="sk-department-block"
@@ -382,7 +417,7 @@ const RuleManagerPage = (props) => {
                                         )}
                                     </div>
                                 ))}
-                            </div>
+                            </div>}
                         </Spin>
                     </div>
                 </Content>

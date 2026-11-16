@@ -187,12 +187,12 @@ const GroupPageToolbar = (props) =>{
             
             </div>
 
-        <div className={"sk-flex-gap"}>
+        {!props.hideCreate && <div className={"sk-flex-gap"}>
         <Button 
             onClick={clickNew}>
                 Создать группу
         </Button>
-            </div>
+            </div>}
 
         </div>
     );

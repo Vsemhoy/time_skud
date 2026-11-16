@@ -1,3 +1,4 @@
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, {useEffect, useState} from "react";
 import {Link, Outlet, useLocation, useNavigate, useParams} from "react-router-dom";
 import {Affix, Alert, Button, Tag} from "antd";
@@ -7,6 +8,7 @@ import {PROD_AXIOS_INSTANCE} from "../../API/API";
 import {USDA} from "./mock/mock";
 import {RollbackOutlined} from "@ant-design/icons";
 const UserPage = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const location = useLocation();
     const {userId} = useParams();
     const navigate = useNavigate();
@@ -92,8 +94,8 @@ const UserPage = (props) => {
     };
 
     return (
-        <div className={styles.sk_mega_layout}>
-            <Affix>
+        <div className={`${styles.sk_mega_layout} ${isMain ? 'sk-personnel-profile' : ''}`}>
+            <Affix offsetTop={isMain ? 46 : 0}>
                 <div className={styles.sk_user_tabs}>
                     <Button variant={'outlined'}
                             color="primary"
@@ -122,7 +124,7 @@ const UserPage = (props) => {
                     >Группы</Button>
                 </div>
             </Affix>
-            <Affix offsetTop={52}>
+            <Affix offsetTop={isMain ? 98 : 52}>
                 <div className={styles.sk_user_header}>
                 {userIdState !== 'new' && (<p className={styles.sk_user_id}>{userIdState}</p>)}
                 <h1 className={styles.sk_user_name}>{userFIO}</h1>
@@ -139,12 +141,12 @@ const UserPage = (props) => {
                         height: '30px',
                         lineHeight: '27px',
                         textAlign: 'center',
-                        color: 'var(--badge-text-color)',
+                        color: isMain ? '#fff' : 'var(--badge-text-color)',
                         fontSize: '14px',
                         backgroundColor: userCompanyState.color,
                         borderColor: userCompanyState.color,
                         marginRight: 0,
-                    }}>#{userCompanyState.name}</Tag>
+                    }}>{isMain ? '' : '#'}{userCompanyState.name}</Tag>
                 )}
             </div>
             </Affix>

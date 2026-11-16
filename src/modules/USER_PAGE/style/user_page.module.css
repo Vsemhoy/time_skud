@@ -530,3 +530,63 @@ h1 {
 
 
 
+
+:global(.sk-personnel-profile).sk_mega_layout {
+    --sk-action-blue: #2465c3;
+    padding: 0 8px 8px;
+    background: #e5ecf5;
+}
+:global(.sk-personnel-profile) .sk_user_tabs,
+:global(.sk-personnel-profile) .sk_user_header {
+    padding-inline: 8px;
+    background: white;
+    border-bottom: 1px solid #b9c3ce;
+}
+:global(.sk-personnel-profile) .sk_user_id,
+:global(.sk-personnel-profile) .sk_user_name {
+    font-size: 20px;
+    font-weight: 700;
+    color: inherit;
+    text-align: left;
+}
+:global(.sk-personnel-profile) .sk_user_header {
+    column-gap: 10px;
+}
+:global(.sk-personnel-profile) .sk_user_tabs :global(.ant-btn-variant-solid):enabled,
+:global(.sk-personnel-profile) .sk_user_header :global(.ant-btn-primary):enabled {
+    background: var(--sk-action-blue);
+    border-color: var(--sk-action-blue);
+    color: white;
+}
+
+.type_with_icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.type_with_icon > span {
+    display: inline-flex;
+    flex: none;
+}
+.schedule_list_scroll {
+    max-height: calc(100dvh - 300px);
+    min-height: 100px;
+    overflow: auto;
+    border: 1px solid #b9c3ce;
+}
+.schedule_list_scroll table { min-width: 840px; }
+.schedule_list_scroll td small { display: block; color: #536274; }
+.schedule_list_scroll tbody tr[data-active="true"] { background: #e3f1e6; }
+.schedule_list_scroll tbody tr[data-conflict="true"] { background: #fae5e5; }
+.schedule_list_scroll tr[data-editing="true"] > td { border-block: 1px solid #2465c3; }
+.schedule_list_scroll tbody .schedule_gap { color: #6b4b22; background: #fff5e6; }
+.schedule_list_scroll .sk_schedule_table_cell {
+    padding: 0 !important;
+    border: 0;
+}
+:global(.sk-personnel-profile) .sk_schedules_table { gap: 0; }
+:global(.sk-personnel-profile) .sk_schedules_table .sk_pagination_wrapper {
+    justify-content: flex-end;
+    padding-inline: 8px;
+    background: white;
+}

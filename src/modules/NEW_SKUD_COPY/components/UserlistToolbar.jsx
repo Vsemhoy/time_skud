@@ -163,6 +163,7 @@ const UserListToolbar = (props) => {
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
                             { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
+                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Основная' },
                         ]}
                         style={{ width: '112px' }}
                     />

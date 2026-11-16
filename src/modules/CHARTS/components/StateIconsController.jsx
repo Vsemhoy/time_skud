@@ -12,7 +12,7 @@ import {AppstoreFilled} from "@ant-design/icons";
 const StateIconsController = (props) => {
     const iconSize = props.height ? props.height : '25px';
     const stateIcons = {
-        0:  <AppstoreFilled        style={{fontSize: '22px'}}/>,
+        0:  <AppstoreFilled        style={{fontSize: props.height || '22px'}}/>,
         8:  <StateSuitcaseIcon     height={iconSize}/>,
         9:  <StateHomeIcon         height={iconSize}/>,
         11: <StopwatchPlusIcon     height={iconSize}/>,

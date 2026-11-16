@@ -1,3 +1,5 @@
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
+import '../../assets/operations-main.css';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Button, DatePicker, Empty, Select, Skeleton, message} from 'antd';
 import dayjs from 'dayjs';
@@ -60,6 +62,7 @@ const mapResponseToScheduleValues = (rows, month, year) => {
 };
 
 const KppSchedulePage = () => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const [targetMonth, setTargetMonth] = useState(dayjs().month());
     const [targetYear, setTargetYear] = useState(dayjs());
     const [users, setUsers] = useState([]);
@@ -168,9 +171,9 @@ const KppSchedulePage = () => {
     };
 
     return (
-        <div className="sk-kpp-schedule-page">
+        <div className={isMain ? "sk-kpp-schedule-page sk-operations-main sk-shift-main" : "sk-kpp-schedule-page"}>
             {contextHolder}
-            <div className="sk-kpp-schedule-header">
+            <div className="sk-kpp-schedule-header shift-header">
                 <div>
                     <h2>График КПП</h2>
                     <span className="sk-kpp-schedule-subtitle">Пулково КПП, отдел {KPP_DEPARTMENT_ID}</span>
@@ -191,7 +194,7 @@ const KppSchedulePage = () => {
                     />
                     <Button
                         type="primary"
-                        className="sk-kpp-schedule-save-btn"
+                        className="sk-kpp-schedule-save-btn shift-save-btn"
                         loading={isSaving}
                         onClick={handleSave}
                     >
@@ -200,9 +203,9 @@ const KppSchedulePage = () => {
                 </div>
             </div>
 
-            <div className="sk-kpp-schedule-table-wrap">
+            <div className="sk-kpp-schedule-table-wrap shift-table-wrap" style={isMain ? {'--schedule-min-width': (170 + 30 * days.length) + 'px'} : undefined}>
                 <div
-                    className="sk-kpp-schedule-grid sk-kpp-schedule-grid--header"
+                    className="sk-kpp-schedule-grid sk-kpp-schedule-grid--header shift-grid--header"
                     style={{gridTemplateColumns: tableColumns}}
                 >
                     <div className="sk-kpp-schedule-employee-head">Сотрудник</div>
@@ -233,11 +236,11 @@ const KppSchedulePage = () => {
                         const userId = getUserId(user);
                         return (
                             <div
-                                className="sk-kpp-schedule-grid sk-kpp-schedule-row"
+                                className="sk-kpp-schedule-grid sk-kpp-schedule-row shift-row"
                                 style={{gridTemplateColumns: tableColumns}}
                                 key={`kpp-schedule-user-${userId}`}
                             >
-                                <div className="sk-kpp-schedule-employee-cell">
+                                <div className="sk-kpp-schedule-employee-cell shift-employee-cell">
                                     <strong>{getUserFullName(user)}</strong>
                                     <span>{user.occupy ?? user.user_occupy ?? ''}</span>
                                 </div>

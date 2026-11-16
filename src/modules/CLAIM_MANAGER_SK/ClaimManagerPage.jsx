@@ -6,7 +6,7 @@ import {
     ConfigProvider,
     Dropdown,
     Layout, Modal,
-    Pagination,
+    Pagination, Popover, Input, InputNumber, DatePicker,
     Radio,
     Select,
     Spin,
@@ -16,9 +16,10 @@ import {
 import React, { useEffect, useState } from "react";
 
 import './components/style/claimmanager.css';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import ClaimManagerCard from "./components/ClaimManagerCard";
 import ClaimEditorDrawer from "./components/ClaimEditorDrawer";
-import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
+import {ClaimManagerSidebar, useClaimColumnFilters, claimStatuses, evalStatuses} from "./components/ClaimManagerSidebar";
 import dayjs from "dayjs";
 import {CSRF_TOKEN, ROUTE_PREFIX} from "../../CONFIG/config";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
@@ -44,7 +45,7 @@ import {
     BlockOutlined,
     DockerOutlined,
     PlusOutlined,
-    PlusCircleOutlined, FilterOutlined
+    PlusCircleOutlined, FilterOutlined, CalendarOutlined, DownOutlined, SearchOutlined, UserOutlined, TeamOutlined
 } from "@ant-design/icons";
 import {BASE_CLAIM_TYPES, USER_STATE_PLACES} from "../../CONFIG/DEFFORMS";
 import {CHART_STATES, USDA} from "../CHARTS/mock/mock";
@@ -84,12 +85,16 @@ const DynamicIcon = ({ iconName, ...props }) => {
 
 
 const ClaimManagerPage = (props) => {
+    const columnFilters = useClaimColumnFilters();
+    const isMainTheme = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const ClaimTableHeaderWrapper = isMainTheme ? React.Fragment : Affix;
+    const HeaderActions = isMainTheme ? 'div' : React.Fragment;
     const initialClaimId = Number(new URLSearchParams(window.location.search).get('id'));
     const [userData, setUserData] = useState(null);
     const [typeSelect, setTypeSelect] = useState(0);
     const [editorOpened, setEditorOpened] = useState(false);
 
-    const [isOpenFilters, setIsOpenFilters] = useState(true);
+    const [isOpenFilters, setIsOpenFilters] = useState(!isMainTheme);
 
     const [formType, setFormType] = useState(null);
     const [filterPack, setFilterPack] = useState({});
@@ -135,7 +140,7 @@ const ClaimManagerPage = (props) => {
     };
 
     useEffect(() => {
-      if (total < page * onPage){
+      if (page > Math.max(1, Math.ceil(total / onPage))){
         setPage(1);
       }
     }, [total]);
@@ -180,6 +185,7 @@ const ClaimManagerPage = (props) => {
         let clabs = [
             {
                 value: 0,
+                icon: <StateIconsController IdState={0} height="16px" />,
                 label: (
                     <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                         <span>Все заявки</span>
@@ -230,6 +236,7 @@ const ClaimManagerPage = (props) => {
             if (claimType.fillable === 1){
                 clabs.push({
                         value: claimType.id,
+                        icon: <StateIconsController IdState={claimType.id} height="16px" />,
                         label: (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span>{claimType.title}</span>
@@ -265,7 +272,7 @@ const ClaimManagerPage = (props) => {
     }
 
     useEffect(() => {
-      handleFilterChanged(filterPack);
+      setFilterPack(current => ({...current, page, onPage, type: typeSelect || null}));
     }, [typeSelect, page, onPage]);
 
 
@@ -528,6 +535,36 @@ const ClaimManagerPage = (props) => {
         setFilterPack(nextFilterPack);
     }
 
+    const updateColumnFilter = (setter, value) => {
+        setPage(1);
+        setter(value);
+    };
+    const dateFilter = <DatePicker.RangePicker value={columnFilters.filterEventInterval}
+        onChange={value => updateColumnFilter(columnFilters.setFilterEventInterval, value)} />;
+    const filterButton = (label, active, icon) => (
+            <button type="button" className="sk-claim-column-filter" data-active={Boolean(active)}
+                aria-label={`Фильтр: ${label}`} title={label}>
+                <span>{label === 'Информация' ? 'Инфо' : label}</span>{icon}
+            </button>
+    );
+    const columnHeading = (label, control, active, icon = <SearchOutlined />) => isMainTheme ? (
+        <Popover trigger="click" placement="bottomLeft" arrow={false} content={control}>
+            {filterButton(label, active, icon)}
+        </Popover>
+    ) : label;
+    const textFilter = (value, setter, placeholder) => <Input allowClear value={value}
+        placeholder={placeholder} onChange={e => updateColumnFilter(setter, e.target.value)} />;
+    const optionHeading = (label, value, setter, options, active) => isMainTheme ? (
+        <Dropdown trigger={['click']} placement="bottomLeft" menu={{
+            selectable: true,
+            selectedKeys: [String(value ?? 'all')],
+            items: options.map(o => ({key: String(o.value ?? 'all'), label: o.label, icon: o.icon})),
+            onClick: ({key}) => updateColumnFilter(setter, options.find(o => String(o.value ?? 'all') === key).value),
+        }}>
+            {filterButton(label, active, <DownOutlined />)}
+        </Dropdown>
+    ) : label;
+
     const handleSetTypeSelect = (ev, value, canCreate) => {
         if (ev.button === 1 && value !== 0 && canCreate){
             // Средней кнопкой мыши мы открываем редактор
@@ -706,7 +743,7 @@ const ClaimManagerPage = (props) => {
     );
 
     return (
-        <div className={'mega-layout'}>
+        <div className={`mega-layout${isMainTheme ? ' sk-claims-viewport' : ''}`}>
             {/*<div className={'sk-flex-space'}>
                     <div className="sk-flex">
                         <Pagination
@@ -744,17 +781,49 @@ const ClaimManagerPage = (props) => {
 
             <Layout className={'layout'}>
                 <Header className={'header'}>
-                    <Affix>
+                    <Affix offsetTop={isMainTheme ? 46 : 0}>
                         <div className={'sk-header-container'}>
-                            <Button color={'default'}
+                            <HeaderActions>
+                            <Button color={isMainTheme ? 'primary' : 'default'}
                                     variant={isOpenFilters ? 'solid' : 'outlined'}
                                     icon={<FilterOutlined />}
-                                    style={{ width: '140px' }}
+                                    style={isMainTheme ? undefined : {width: '140px'}}
+                                    aria-expanded={isOpenFilters}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
                             >Фильтры</Button>
+                            {isMainTheme && <>
+                                <Tooltip title="Мои заявки">
+                                    <Button aria-label="Мои заявки" aria-pressed={showOnlyMine} icon={<UserOutlined />}
+                                        onClick={() => {
+                                            setPage(1);
+                                            setShowOnlyCrew(false);
+                                            setShowOnlyMine(!showOnlyMine);
+                                        }} />
+                                </Tooltip>
+                                {userList?.some(user => +user.boss_id === +userData?.user?.id) && (
+                                    <Tooltip title="Мои сотрудники">
+                                        <Button aria-label="Мои сотрудники" aria-pressed={showOnlyCrew} icon={<TeamOutlined />}
+                                            onClick={() => {
+                                                setPage(1);
+                                                setShowOnlyMine(false);
+                                                setShowOnlyCrew(!showOnlyCrew);
+                                            }} />
+                                    </Tooltip>
+                                )}
+                            </>}
+                            </HeaderActions>
                             {/*<h1 className={'page-header'}>Менеджер пользовательских заявок</h1>*/}
                             <h1 className={'page-header'}>Список заявок</h1>
-
+                            <HeaderActions>
+                                {isMainTheme && (
+                                    <Tooltip title={transportPriceTooltipTitle}>
+                                        <button type="button" className="sk-claim-fares" aria-disabled={!canUpdatePrices()}
+                                            aria-label={`Стоимость проезда: наземный — ${upPrice}, подземный — ${downPrice}`}
+                                            onClick={() => canUpdatePrices() && setIsOpenTransportPopup(true)}>
+                                            <span>🚎 {upPrice}</span><span>Ⓜ️ {downPrice}</span>
+                                        </button>
+                                    </Tooltip>
+                                )}
                                 {claimTypes.length > 0 ? (
                                     <Dropdown
                                         menu={menuProps}
@@ -768,20 +837,23 @@ const ClaimManagerPage = (props) => {
                                             Создать заявку
                                         </Button>
                                     </Dropdown>
-                                ) : (
+                                ) : isMainTheme ? null : (
                                     <div style={{ width: '140px' }}></div>
                                 )}
+                            </HeaderActions>
                         </div>
                     </Affix>
                 </Header>
                 <Layout className="sk-layout-center">
-                    <Sider width={isOpenFilters ? "330px" : 0}
+                    <Sider width={isOpenFilters ? (isMainTheme ? 320 : 330) : 0}
                            className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
                     >
-                        <Affix offsetTop={54}>
+                        <Affix offsetTop={isMainTheme ? 92 : 54}>
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
+                                    {isMainTheme && <h2 className="sk-claims-filter-title">Фильтры заявок</h2>}
                                     <ClaimManagerSidebar
+                                        columnFilters={columnFilters}
                                         user_list={baseUserList}
                                         depart_list={departList}
                                         company_list={userData?.companies}
@@ -792,7 +864,7 @@ const ClaimManagerPage = (props) => {
                         </Affix>
                     </Sider>
                     <Content className="content">
-                        <div className="sk-content-table-wrapper-claims">
+                        {!isMainTheme && <div className="sk-content-table-wrapper-claims">
                             <Affix offsetTop={44}>
                                 <div className="sk-claims-toolbar-shell">
                                     <div className="sk-claims-toolbar-row">
@@ -890,46 +962,51 @@ const ClaimManagerPage = (props) => {
                                     </div>
                                 </div>
                             </Affix>
-                        </div>
+                        </div>}
                         <Spin spinning={claimsLoading} size="large">
                             <div className="sk-usp-content-col">
-                                <div className={'sk-arche-stack'}>
-                                    <Affix offsetTop={165}>
+                                <div className={`sk-arche-stack${isMainTheme ? ' sk-claims-table-main' : ''}`}>
+                                    <ClaimTableHeaderWrapper {...(isMainTheme ? {} : {offsetTop: 165})}>
                                         <div className="sk-clamen-headerrow">
                                             <div className={'sk-clamen-card'}>
                                                 <div>
                                                     <div>
-                                                        Тип
+                                                        {optionHeading('Тип', typeSelect, selectClaimType, claimTypeOptions, Number(typeSelect) !== 0)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Сотрудник
+                                                        {columnHeading('Сотрудник', textFilter(columnFilters.filterUserName, columnFilters.setFilterUserName, 'Имя сотрудника'), columnFilters.filterUserName)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Статус
+                                                        {optionHeading('Статус', columnFilters.filterStatus, columnFilters.setFilterStatus, claimStatuses, columnFilters.filterStatus != null)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Начало
+                                                        {columnHeading('Начало', dateFilter, columnFilters.filterEventInterval?.[0], <CalendarOutlined />)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Конец
+                                                        {columnHeading('Конец', dateFilter, columnFilters.filterEventInterval?.[1], <CalendarOutlined />)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div title="количество дней в заявке">
-                                                        Дней
+                                                        {columnHeading('Дней', <div className="sk-claim-duration-filter">
+                                                            <InputNumber min={0} placeholder="От" aria-label="Дней от" value={columnFilters.filterDurationStart || null}
+                                                                onChange={v => updateColumnFilter(columnFilters.setFilterDurationStart, v || 0)} />
+                                                            <InputNumber min={0} placeholder="До" aria-label="Дней до" value={columnFilters.filterDurationEnd || null}
+                                                                onChange={v => updateColumnFilter(columnFilters.setFilterDurationEnd, v || 0)} />
+                                                        </div>, columnFilters.filterDurationStart || columnFilters.filterDurationEnd)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Информация
+                                                        {columnHeading('Информация', textFilter(columnFilters.filterReason, columnFilters.setFilterReason, 'Поиск по описанию'), columnFilters.filterReason)}
                                                     </div>
                                                 </div>
                                                 <div>
@@ -939,7 +1016,7 @@ const ClaimManagerPage = (props) => {
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        Исп
+                                                        {optionHeading('Исп', columnFilters.filterShowEvaluated, columnFilters.setFilterShowEvaluated, evalStatuses, columnFilters.filterShowEvaluated != null)}
                                                     </div>
                                                 </div>
                                                 <div>
@@ -966,7 +1043,7 @@ const ClaimManagerPage = (props) => {
 
 
                                         </div>
-                                    </Affix>
+                                    </ClaimTableHeaderWrapper>
                                     {claimList.map((claim, idx) => (
                                         <ClaimManagerCard
                                             key={`${claim.id}-ClaimManagerCard-${idx}`}
@@ -983,6 +1060,23 @@ const ClaimManagerPage = (props) => {
                                         />
                                     ))}
                                 </div>
+                                {isMainTheme && (
+                                    <div className="sk-claims-table-pagination">
+                                        <Pagination
+                                            current={page}
+                                            pageSize={onPage}
+                                            total={total}
+                                            showTotal={count => `Всего: ${count}`}
+                                            showQuickJumper
+                                            showSizeChanger
+                                            pageSizeOptions={[30, 60, 100, 200, 300]}
+                                            onChange={(nextPage, nextSize) => {
+                                                setOnPage(nextSize);
+                                                setPage(nextSize === onPage ? nextPage : 1);
+                                            }}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </Spin>
                     </Content>

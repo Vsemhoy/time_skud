@@ -1,0 +1,287 @@
+.sk-route-shell:has(> .ant-layout-content > .sk-personnel-main) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.sk-personnel-main {
+    --table-border-divider-color: #dbe3ec;
+    --row-second-bg-color: #f5f8fa;
+    --row-hovered-bg-color: #e5eff8;
+    background: #e5ecf5;
+}
+
+.sk-personnel-main.layout, .sk-personnel-main.rule-layout {
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+}
+
+.sk-personnel-main .sk-content-table-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: white;
+}
+
+.sk-personnel-main .sk-content-table-wrapper > .ant-spin-nested-loading {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+    overflow: auto;
+}
+
+.sk-personnel-main .sk-content-table-wrapper > div:has(> .sk-pagination-wrapper) {
+    order: 1;
+    flex-shrink: 0;
+}
+
+.sk-personnel-main .sk-pagination-wrapper,
+.sk-personnel-main .user-changes-table .ant-table-pagination {
+    display: flex;
+    justify-content: flex-end;
+    height: auto;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid #b9c3ce;
+    background: white;
+}
+
+.sk-personnel-main .sk-pagination-container { flex-wrap: wrap; }
+.sk-personnel-main .sk-pagination-container .ant-tag { order: -1; }
+.sk-personnel-main .sk-usp-filter-col > div { overflow-y: auto; }
+.sk-personnel-main .sk-content-table { gap: 0; }
+.sk-personnel-main .sk-schedule-list-row,
+.sk-personnel-main .sk-cal-card > .ant-card,
+.sk-personnel-main .sk-group-card {
+    margin: 0;
+    border: 1px solid #dbe3ec;
+    border-radius: 0;
+    box-shadow: none;
+    background: white;
+}
+
+.sk-personnel-main .sk-department-header,
+.sk-personnel-main .sk-first-row-4group,
+.sk-personnel-main .sk-schedule-list-row > .sk-first-row,
+.sk-personnel-main .sk-cal-first-row,
+.sk-personnel-main .user-changes-table .ant-table-thead > tr > th {
+    background: #506b89;
+    color: white;
+    border-color: #435d78;
+}
+.sk-personnel-main .sk-department-header-hover-container:hover { background: #435d78; }
+.sk-personnel-main .sk-department-header-p,
+.sk-personnel-main .sk-first-row-4group .sk-schedule-list-title,
+.sk-personnel-main .sk-first-row .sk-schedule-list-title,
+.sk-personnel-main .sk-cal-item-head { color: inherit; }
+
+.sk-personnel-main .sk-person-row:nth-child(even),
+.sk-personnel-main .user-changes-table .ant-table-tbody > tr:nth-child(even) > td {
+    background: #f5f8fa;
+}
+
+.sk-personnel-main .sk-personnel-actions { justify-content: flex-end; }
+.sk-personnel-main .sk-personnel-actions .ant-btn-color-primary,
+.sk-personnel-main .sk-personnel-titlebar .ant-btn-primary,
+.sk-personnel-main button[aria-expanded="true"].user-changes-filter-toggle,
+.sk-personnel-titlebar button[aria-expanded="true"] {
+    background: #2465c3;
+    border-color: #2465c3;
+    color: white;
+}
+
+.sk-personnel-groups, .user-changes-page.sk-personnel-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    padding: 0 8px 8px;
+    gap: 0;
+}
+
+.sk-personnel-titlebar, .sk-personnel-main .user-changes-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    align-items: center;
+    min-height: 46px;
+    margin-inline: -8px;
+    padding-inline: 8px;
+    background: white;
+    border-bottom: 1px solid #8f9dad;
+}
+
+.sk-personnel-titlebar > button:first-child,
+.sk-personnel-main .user-changes-filter-toggle { justify-self: start; width: min(190px,100%); }
+.sk-personnel-main .user-changes-filter-toggle[aria-expanded="false"] { background: white; color: #182433; border-color: #b9c3ce; }
+.sk-personnel-titlebar > button:last-child { justify-self: end; }
+.sk-personnel-titlebar h2 { margin: 0; font-size: 20px; font-weight: 500; }
+.sk-personnel-groups .sk-group-1col-body { flex: 1; min-height: 0; overflow: auto; background: white; }
+.sk-personnel-groups .sk-group-list { gap: 0; }
+.sk-personnel-main .user-changes-layout { min-height: 0; flex: 1; gap: 0; align-items: stretch; }
+/* History keeps the filter and column headings on the same baseline. */
+.user-changes-page.sk-personnel-main { --history-heading-height: 42px; }
+.sk-personnel-main .user-changes-sidebar {
+    overflow: auto;
+    padding: 0;
+    background: white;
+    border: 0;
+    border-right: 3px solid #849ab1;
+    border-radius: 0;
+}
+.sk-personnel-main .user-changes-sidebar .sk-claims-filter-title {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    height: var(--history-heading-height);
+    margin: 0;
+    padding: 0 8px;
+}
+.sk-personnel-main .user-changes-sidebar form { padding: 12px; }
+.sk-personnel-main .user-changes-results,
+.sk-personnel-main .user-changes-table,
+.sk-personnel-main .user-changes-table :is(.ant-spin-nested-loading, .ant-spin-container, .ant-table, .ant-table-container) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+.sk-personnel-main .user-changes-results { background: white; }
+.sk-personnel-main .user-changes-table .ant-table-bordered > .ant-table-container {
+    border-top: 0;
+    border-inline-start: 0;
+}
+.sk-personnel-main .user-changes-table .ant-table-content {
+    flex: 1;
+    overflow-y: auto !important;
+}
+.sk-personnel-main .user-changes-table :is(.ant-table, .ant-table-container, .ant-table-content > table, .ant-table-thead > tr > th) {
+    border-radius: 0 !important;
+}
+.sk-personnel-main .user-changes-table .ant-table-thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: var(--history-heading-height);
+    box-sizing: border-box;
+    padding-block: 0;
+    border-inline-end: 1px solid #435d78 !important;
+}
+.sk-personnel-main .user-changes-table .ant-table-pagination { flex: none; }
+
+.sk-personnel-icon-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.sk-personnel-icon-label :is(img, svg) {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
+.sk-personnel-table {
+    width: 100%;
+    border-spacing: 0;
+    background: white;
+    color: #182433;
+    font-size: 14px;
+}
+
+.sk-personnel-table > thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 40px;
+    padding: 0 10px;
+    border-inline-end: 1px solid #435d78;
+    background: #506b89;
+    color: white;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.sk-personnel-table > tbody > tr > :is(td, th) {
+    height: 44px;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    border-inline-end: 1px solid #dbe3ec;
+    border-bottom: 1px solid #dbe3ec;
+}
+
+.sk-personnel-table > tbody > tr:nth-child(even) { background: #f5f8fa; }
+.sk-personnel-table > tbody > tr:hover { background: #e5eff8; }
+.sk-personnel-table > tbody > tr[aria-selected="true"] { background: #dbe9f9; }
+.sk-personnel-table > tbody > .sk-personnel-department > :is(th, td) {
+    background: #d4dfed;
+    text-align: left;
+}
+.sk-personnel-department button {
+    padding: 4px;
+    background: transparent;
+    border: 0;
+    color: #213d60;
+    font: inherit;
+    cursor: pointer;
+}
+.sk-personnel-table .sk-personnel-table > thead > tr > th {
+    position: static;
+    background: #d4dfed;
+    color: #213d60;
+}
+
+.sk-user-manager-main .sk-pagination-container {
+    height: auto;
+    background: transparent;
+}
+
+.sk-user-manager-main .header .sk-header-container {
+    grid-template-rows: 1fr;
+    line-height: normal;
+}
+
+.sk-user-manager-main .header .page-header {
+    place-self: center;
+    margin: 0;
+    padding: 0;
+}
+
+.sk-user-manager-main .sk-personnel-actions > a {
+    display: inline-flex;
+}
+
+.sk-user-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sk-user-row-actions > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    height: 32px;
+    padding-inline: 15px;
+    border: 1px solid #b9c3ce;
+    border-radius: 6px;
+    background: white;
+    color: #214f80;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.sk-user-row-actions > a:hover {
+    color: #2465c3;
+    border-color: currentColor;
+}
