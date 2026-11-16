@@ -2,9 +2,7 @@ import { Button, DatePicker, Input, Select, Switch } from "antd";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 
-const ClaimManagerSidebar = (props) => {
-
-    const claimStatuses = [
+export const claimStatuses = [
         {
             key: 'cs145324',
             label: 'Все',
@@ -27,7 +25,7 @@ const ClaimManagerSidebar = (props) => {
         },
     ];
 
-    const evalStatuses = [
+export const evalStatuses = [
         {
             key: 'cs145354324',
             label: 'Все',
@@ -45,6 +43,36 @@ const ClaimManagerSidebar = (props) => {
         }
     ];
 
+export function useClaimColumnFilters() {
+    const [filterUserName, setFilterUserName] = useState('');
+    const [filterReason, setFilterReason] = useState('');
+    const [filterStatus, setFilterStatus] = useState(null);
+    const [filterEventInterval, setFilterEventInterval] = useState([null, null]);
+    const [filterShowEvaluated, setFilterShowEvaluated] = useState(0);
+    const [filterDurationStart, setFilterDurationStart] = useState(0);
+    const [filterDurationEnd, setFilterDurationEnd] = useState(0);
+    return {
+        filterUserName, setFilterUserName,
+        filterReason, setFilterReason,
+        filterStatus, setFilterStatus,
+        filterEventInterval, setFilterEventInterval,
+        filterShowEvaluated, setFilterShowEvaluated,
+        filterDurationStart, setFilterDurationStart,
+        filterDurationEnd, setFilterDurationEnd,
+    };
+}
+
+export const ClaimManagerSidebar = (props) => {
+    const {
+        filterUserName, setFilterUserName,
+        filterReason, setFilterReason,
+        filterStatus, setFilterStatus,
+        filterEventInterval, setFilterEventInterval,
+        filterShowEvaluated, setFilterShowEvaluated,
+        filterDurationStart, setFilterDurationStart,
+        filterDurationEnd, setFilterDurationEnd,
+    } = props.columnFilters;
+
     const initialstate = {
         filterUserName: '',
         filterReason: '',
@@ -60,18 +88,11 @@ const ClaimManagerSidebar = (props) => {
         filterShowEvaluated: 0
     }
     
-    const [filterUserName, setFilterUserName] = useState('');
-    const [filterReason, setFilterReason] = useState('');
     const [filterCompany, setFilterCompany] = useState(null);
     const [filterDepartment, setFilterDepartment] = useState(null);
     const [filterBoss, setFilterBoss] = useState(null);
-    const [filterEventInterval, setFilterEventInterval] = useState([null, null]);
-    const [filterStatus, setFilterStatus] = useState(null);
     const [filterShowDeleted, setFilterShowDeleted] = useState(false);
-    const [filterShowEvaluated, setFilterShowEvaluated] = useState(0);
     const [filterApprover, setFilterApprover] = useState('');
-    const [filterDurationStart, setFilterDurationStart] = useState(0);
-    const [filterDurationEnd, setFilterDurationEnd] = useState(0);
 
 
     const setInitialState = () => {
@@ -349,4 +370,7 @@ const ClaimManagerSidebar = (props) => {
     )
 }
 
-export default ClaimManagerSidebar;
+export default function StandaloneClaimManagerSidebar(props) {
+    const columnFilters = useClaimColumnFilters();
+    return <ClaimManagerSidebar {...props} columnFilters={columnFilters} />;
+}

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import {Affix, Button, Layout, Pagination, Radio, Spin, Tag, Tooltip} from "antd";
-import {DollarOutlined, FilterOutlined, PlusOutlined,} from "@ant-design/icons";
+import {Affix, Button, Layout, Pagination, Radio, Select, Spin, Tag, Tooltip} from "antd";
+import {UserOutlined, TeamOutlined, DollarOutlined, FilterOutlined, PlusOutlined,} from "@ant-design/icons";
 import {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import ChartsSidebar from "./components/ChartsSidebar";
@@ -16,16 +16,20 @@ import "./style/patch.css";
 import "../CLAIM_MANAGER_SK/components/style/claimmanager.css";
 import MonthsRange from "./components/MonthsRange";
 import StateIconsController from "./components/StateIconsController";
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 const isTruthyFlag = (value) => value === true || Number(value) === 1;
 const  Charts = (props) => {
 
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const HeaderGroup = isMain ? 'div' : React.Fragment;
+    const HeaderWrapper = isMain ? React.Fragment : Affix;
     const navigate = useNavigate();
     const location = useLocation();
 
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingChart, setIsLoadingChart] = useState(false);
-    const [isOpenFilters, setIsOpenFilters] = useState(true);
+    const [isOpenFilters, setIsOpenFilters] = useState(!isMain);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(100);
@@ -123,12 +127,16 @@ const  Charts = (props) => {
     useEffect(() => {
         const pathSegments = location.pathname.split('/').filter(Boolean);
         const lastSegment = pathSegments[pathSegments.length - 1];
+        if (isMain && lastSegment === 'charts' && chartStates.some(state => state.name === 'longvacation')) {
+            navigate(`${location.pathname.replace(/\/$/, '')}/longvacation`, {replace: true});
+            return;
+        }
         //console.log(lastSegment)
         const chart = chartStates.find(state => state.name === lastSegment);
         if (chart && chart.value) {
             setSelectedChartState(chart.value);
         }
-    }, [chartStates, location.pathname]);
+    }, [chartStates, location.pathname, isMain, navigate]);
     useEffect(() => {
         setReactiveColor(chartStates.find(state => +state.value === +selectedChartState) ?
             chartStates.find(state => +state.value === +selectedChartState).color :
@@ -243,7 +251,7 @@ const  Charts = (props) => {
         return states.filter(state => state.fillable).map(state => ({
                 label: (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <StateIconsController IdState={state.id} />
+                        <StateIconsController IdState={state.id} height={isMain ? '16px' : undefined} />
                         <span>{state.title}</span>
                     </div>
                 ),
@@ -698,39 +706,59 @@ const  Charts = (props) => {
     };
 
     return (
-        <Spin spinning={isLoading}>
-            <div className={'mega-layout'}>
+        <Spin spinning={isLoading} wrapperClassName={isMain ? "sk-charts-screen" : undefined}>
+            <div className={isMain ? "mega-layout sk-claims-viewport sk-charts-main" : "mega-layout"}>
                 <Layout className={'layout'}>
                     <Header className={'header'}>
-                        <Affix>
+                        <HeaderWrapper>
                             <div className={'sk-header-container'}>
-                                <Button color={'default'}
+                                <HeaderGroup>
+                                <Button aria-expanded={isOpenFilters} color={isMain ? 'primary' : 'default'}
                                         variant={isOpenFilters ? 'solid' : 'outlined'}
                                         icon={<FilterOutlined />}
-                                        style={{ width: '140px' }}
+                                        style={isMain ? undefined : { width: '140px' }}
                                         onClick={() => setIsOpenFilters(!isOpenFilters)}
                                 >Фильтры</Button>
-                                <h1 className={'page-header'}>{returnHeader()}</h1>
+                                {isMain && <>
+                                    <Button title="Мои заявки" aria-label="Мои заявки" aria-pressed={myClaims} icon={<UserOutlined />}
+                                        onClick={() => { setCurrentPage(1); setMySubjects(false); setMyClaims(!myClaims); }} />
+                                    {users.some(user => +user.boss_id === +currentUser?.id) && (
+                                        <Button title="Мои сотрудники" aria-label="Мои сотрудники" aria-pressed={mySubjects} icon={<TeamOutlined />}
+                                            onClick={() => { setCurrentPage(1); setMyClaims(false); setMySubjects(!mySubjects); }} />
+                                    )}
+                                </>}
+                                </HeaderGroup>
+                                <h1 className={'page-header'}>{returnHeader() || (isMain ? 'Графики заявок' : '')}</h1>
+                                <HeaderGroup>
+                                {isMain && <Tooltip title={transportPriceTooltipTitle}>
+                                    <button type="button" className="sk-claim-fares" aria-label={`Стоимость проезда: наземный — ${upPrice}, подземный — ${downPrice}`}
+                                        aria-disabled={!canUpdatePrices()} onClick={() => canUpdatePrices() && setIsOpenTransportPopup(true)}>
+                                        <span>🚎 {upPrice}</span><span>Ⓜ️ {downPrice}</span>
+                                    </button>
+                                </Tooltip>}
                                 {isCanCreate() ? (
-                                    <Button color={'primary'}
-                                         variant={'solid'}
+                                    <Button type={isMain ? 'primary' : undefined}
+                                         color={isMain ? undefined : 'primary'}
+                                         variant={isMain ? undefined : 'solid'}
                                          icon={<PlusOutlined/>}
-                                         style={{width: '140px'}}
+                                         style={isMain ? undefined : {width: '140px'}}
                                          onClick={openCreateDrawer}
                                     >Создать заявку</Button>
-                                ) : (
+                                ) : isMain ? null : (
                                     <div style={{width: '140px'}}></div>
                                 )}
+                                </HeaderGroup>
                             </div>
-                        </Affix>
+                        </HeaderWrapper>
                     </Header>
                     <Layout className="sk-layout-center">
-                        <Sider width={isOpenFilters ? "330px" : 0}
+                        <Sider width={isOpenFilters ? (isMain ? 320 : 330) : 0}
                                className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
                         >
-                            <Affix offsetTop={54}>
+                            <HeaderWrapper {...(isMain ? {} : {offsetTop: 54})}>
                                 <div className="sk-width-container">
                                     <div className="sk-usp-filter-col">
+                                        {isMain && <h2 className="sk-claims-filter-title">Фильтры графика</h2>}
                                         <ChartsSidebar
                                             year_list={prepareSelectOptions('years', years)}
                                             user_list={prepareSelectOptions('users', prepareShortFio(users))}
@@ -748,10 +776,16 @@ const  Charts = (props) => {
                                         />
                                     </div>
                                 </div>
-                            </Affix>
+                            </HeaderWrapper>
                         </Sider>
                         <Content className="content">
-                            <div className="sk-content-table-wrapper-charts">
+                            {isMain ? (
+                                <div className="sk-charts-controls">
+                                    <Select aria-label="Вид графика" value={selectedChartState} options={chartStates} onChange={navigateTo} />
+                                    <MonthsRange range={marks2} rangeValues={rangeValues}
+                                        setActiveMonth={handleSetActiveMonth} setRangeValues={handleSetRangeValues} />
+                                </div>
+                            ) : <div className="sk-content-table-wrapper-charts">
                                 <Affix offsetTop={44}>
                                     <div className="sk-charts-toolbar-shell">
                                         <div className="sk-charts-toolbar-row">
@@ -854,8 +888,9 @@ const  Charts = (props) => {
                                         </div>
                                     </div>
                                 </Affix>
-                            </div>
+                            </div>}
                             <Outlet context={{
+                                isMain,
                                 isLoadingChart,
                                 usersPage,
                                 selectedChartState,
@@ -868,6 +903,11 @@ const  Charts = (props) => {
                                 onPreviousMonth,
                                 onNextMonth,
                             }}/>
+                            {isMain && <div className="sk-claims-table-pagination">
+                                <Pagination current={currentPage} pageSize={pageSize} total={allUsersCount}
+                                    showTotal={count => `Всего: ${count}`} showSizeChanger showQuickJumper pageSizeOptions={[100, 200]}
+                                    onChange={(page, size) => { setPageSize(size); setCurrentPage(size === pageSize ? page : 1); }} />
+                            </div>}
                         </Content>
                     </Layout>
                 </Layout>

@@ -9,7 +9,11 @@ import dayjs from "dayjs";
 import SchedIcons from "../../../assets/Comicon/SchedIcons";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 
+import PersonnelTable from "../../../components/PersonnelTable";
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from "../../../Utils/skudPageTheme";
+
 function SchedulesWorkspace(props) {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const navigate = useNavigate();
     const { userIdState, prepareAndShowAlert } = useOutletContext();
 
@@ -191,27 +195,70 @@ function SchedulesWorkspace(props) {
         }
     };
 
+    const pagination = (
+        <Pagination showQuickJumper={isMain} showTotal={isMain ? count => `Всего: ${count}` : undefined}
+            current={currentPage}
+            total={allSchedulesCount}
+            pageSize={pageSize}
+            pageSizeOptions={[20, 50, 100]}
+            locale={{
+                items_per_page: 'на странице',
+                jump_to: 'Перейти',
+                jump_to_confirm: 'OK',
+                page: 'Страница'
+            }}
+            onShowSizeChange={(current, newSize) => {setPageSize(newSize); setCurrentPage(1);}}
+            onChange={(page, size) => setCurrentPage(size === pageSize ? page : 1)}
+        />
+    );
+    const scheduleActions = schedule => +schedule.id !== +editedSchedule.id ? (
+    <div className={styles.sk_schedule_table_cell}
+         style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
+        {(+schedule.id === +activeSchedule.id || dayjs(schedule.start).isAfter(today)) && (
+            <Button color={'default'}
+                    variant={'outlined'}
+                    shape="circle"
+                    disabled={isSaving} title="Изменить привязку" aria-label="Изменить привязку" icon={<EditOutlined/>}
+                    onClick={() => toEditSchedule(schedule.id)}
+            ></Button>
+        )}
+        {dayjs(schedule.start).isAfter(today) && (
+            <Button color={'default'}
+                    variant={'outlined'}
+                    shape="circle"
+                    disabled={isSaving} title="Отвязать график" aria-label="Отвязать график" icon={<DeleteOutlined/>}
+                    onClick={() => removeSchedule(schedule.id)}
+            ></Button>
+        )}
+    </div>
+) : (
+    <div className={styles.sk_schedule_table_cell}
+         style={{padding: '15px', justifyContent: 'center'}}>
+        <Button color={'default'}
+                variant={'outlined'}
+                shape="circle"
+                disabled={isSaving} title="Отменить редактирование" icon={<CloseOutlined/>}
+                onClick={() => clearEdit()}
+        ></Button>
+    </div>
+);
+    const assignBreak = schedule => (
+        <Button size="small" type="link" disabled={isSaving} onClick={() => {
+                                                    clearEdit();
+                                                    setToolbarDateStartSchedule(dayjs(schedule.start));
+                                                    setToolbarDateEndSchedule(dayjs(schedule.end));
+                                                    formRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
+                                                }}>Привязать</Button>
+    );
+
     return (
         <Spin spinning={isLoading}>
             <div className={styles.sk_schedule_workspace}>
                 <div className={styles.sk_schedules_table}>
                     <div className={styles.sk_schedule_table_label}>Графики работы пользователя</div>
                     <div className={styles.sk_pagination_wrapper}>
-                        <div className={styles.sk_pagination_container}>
-                            <Pagination
-                                current={currentPage}
-                                total={allSchedulesCount}
-                                pageSize={pageSize}
-                                pageSizeOptions={[20, 50, 100]}
-                                locale={{
-                                    items_per_page: 'на странице',
-                                    jump_to: 'Перейти',
-                                    jump_to_confirm: 'OK',
-                                    page: 'Страница'
-                                }}
-                                onShowSizeChange={(current, newSize) => {setPageSize(newSize); setCurrentPage(1);}}
-                                onChange={(page, size) => setCurrentPage(size === pageSize ? page : 1)}
-                            />
+                        {!isMain && <div className={styles.sk_pagination_container}>
+                            {pagination}
                             <Tag
                                 style={{
                                     width: '160px',
@@ -224,7 +271,7 @@ function SchedulesWorkspace(props) {
                                     borderColor: 'var(--table-border-divider-color)',
                                 }}
                             >Всего найдено: {allSchedulesCount}</Tag>
-                        </div>
+                        </div>}
                         <Select
                             value={scheduleTypeFilter}
                             options={scheduleTypes}
@@ -238,7 +285,37 @@ function SchedulesWorkspace(props) {
                     </div>
                     {loadError && <Alert type="error" showIcon message="Не удалось проверить привязки" description="Обновите данные перед сохранением." action={<Button onClick={fetchInfo}>Повторить</Button>} />}
                     {!isLoading && !loadError && !allSchedulesCount && <Empty description="Привязок графиков нет. Выберите график и дату начала в форме." />}
-                    <div className={styles.sk_schedule_table}>
+                    {isMain ? <>
+                        <div className={styles.schedule_list_scroll}>
+                            <PersonnelTable label="Графики работы пользователя" headings={['Тип', 'ID', 'Название, описание', 'Работа', 'Обед', 'Начало действия', 'Действует до', 'Действия']}>
+                                {schedules.map(schedule => schedule.isBreak ? (
+                                    <tr key={schedule.id} className={styles.schedule_gap}>
+                                        <td colSpan={5}>Без графика: {schedule.breakDays} дн.</td>
+                                        <td>{dayjs(schedule.start).format('DD.MM.YYYY')}</td>
+                                        <td>{dayjs(schedule.end).format('DD.MM.YYYY')}</td>
+                                        <td>{assignBreak(schedule)}</td>
+                                    </tr>
+                                ) : (
+                                    <tr key={schedule.id} data-active={+schedule.id === +activeSchedule.id}
+                                        data-editing={+schedule.id === +editedSchedule.id}
+                                        data-conflict={intersections.some(id => +id === +schedule.id)}>
+                                        <td><span className={styles.type_with_icon}>
+                                            <span aria-hidden="true"><SchedIcons type={schedule.schedule_type} size="20px" /></span>
+                                            {schedule.schedule_type_name || scheduleTypes.find(type => +type.id !== 0 && +type.id === +schedule.schedule_type)?.name || 'Не указан'}
+                                        </span></td>
+                                        <td>{schedule.id}</td>
+                                        <td>{schedule.schedule_name}</td>
+                                        <td>{timeString(schedule.enter)} – {timeString(schedule.leave)}</td>
+                                        <td>{timeString(schedule.lunch_start)} – {timeString(schedule.lunch_end)}</td>
+                                        <td>{dayjs(schedule.start).format('DD.MM.YYYY')}</td>
+                                        <td>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : 'Бессрочно'}</td>
+                                        <td>{scheduleActions(schedule)}</td>
+                                    </tr>
+                                ))}
+                            </PersonnelTable>
+                        </div>
+                        <div className="sk-claims-table-pagination">{pagination}</div>
+                    </> : <div className={styles.sk_schedule_table}>
                         <div className={`${styles.sk_schedule_table_row_wrapper} ${styles.sk_table_row_header}`}>
                             <div className={styles.sk_schedule_table_row}>
                                 <div className={`${styles.sk_schedule_table_cell} ${styles.sk_schedule_table_cell_header}`}>
@@ -310,37 +387,7 @@ function SchedulesWorkspace(props) {
                                                     <p className={styles.sk_schedule_name}>{schedule.end ? dayjs(schedule.end).format('DD.MM.YYYY') : 'Бессрочно'}</p>
                                                 </div>
                                             </div>
-                                            {+schedule.id !== +editedSchedule.id ? (
-                                                <div className={styles.sk_schedule_table_cell}
-                                                     style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
-                                                    {(+schedule.id === +activeSchedule.id || dayjs(schedule.start).isAfter(today)) && (
-                                                        <Button color={'default'}
-                                                                variant={'outlined'}
-                                                                shape="circle"
-                                                                disabled={isSaving} title="Изменить привязку" aria-label="Изменить привязку" icon={<EditOutlined/>}
-                                                                onClick={() => toEditSchedule(schedule.id)}
-                                                        ></Button>
-                                                    )}
-                                                    {dayjs(schedule.start).isAfter(today) && (
-                                                        <Button color={'default'}
-                                                                variant={'outlined'}
-                                                                shape="circle"
-                                                                disabled={isSaving} title="Отвязать график" aria-label="Отвязать график" icon={<DeleteOutlined/>}
-                                                                onClick={() => removeSchedule(schedule.id)}
-                                                        ></Button>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className={styles.sk_schedule_table_cell}
-                                                     style={{padding: '15px', justifyContent: 'center'}}>
-                                                    <Button color={'default'}
-                                                            variant={'outlined'}
-                                                            shape="circle"
-                                                            disabled={isSaving} title="Отменить редактирование" icon={<CloseOutlined/>}
-                                                            onClick={() => clearEdit()}
-                                                    ></Button>
-                                                </div>
-                                            )}
+                                            {scheduleActions(schedule)}
                                         </div>
                                     </div>
                                 ) : (
@@ -352,16 +399,11 @@ function SchedulesWorkspace(props) {
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}></p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}>{dayjs(schedule.start).format('DD.MM.YYYY')}</p></div>
                                         <div className={styles.sk_schedule_table_break_cell}><p className={styles.sk_schedule_table_break_info}>{dayjs(schedule.end).format('DD.MM.YYYY')}</p></div>
-                                        <div className={styles.sk_schedule_table_break_cell}><Button size="small" type="link" disabled={isSaving} onClick={() => {
-                                            clearEdit();
-                                            setToolbarDateStartSchedule(dayjs(schedule.start));
-                                            setToolbarDateEndSchedule(dayjs(schedule.end));
-                                            formRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
-                                        }}>Привязать</Button></div>
+                                        <div className={styles.sk_schedule_table_break_cell}>{assignBreak(schedule)}</div>
                                     </div>
                             )
                         ))}
-                    </div>
+                    </div>}
                 </div>
                 <div ref={formRef} className={styles.sk_schedule_form_wrapper}>
                     <div className={styles.sk_schedule_linker}>

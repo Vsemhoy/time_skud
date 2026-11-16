@@ -27,7 +27,7 @@ export default function CollapsibleSidebarCard({storageId, label, children, ...p
 
     return (
         <section {...props}>
-            <div style={{position: 'relative'}}>
+            <div className="sk-sidebar-card-header" style={{position: 'relative'}}>
                 {cloneElement(header, {style: {...header.props.style, paddingRight: 44}})}
                 <Button
                     type="text"

@@ -1,3 +1,5 @@
+import PersonnelTable from '../../components/PersonnelTable';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
 import { Affix, Button, Layout, Pagination, Spin, Tag } from "antd";
 import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
@@ -17,6 +19,7 @@ import {
 const { Header, Sider, Content } = Layout;
 
 const SchedManagerPage = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const { userdata } = props;
 
     const prepareSelectOptions = (name, options) => {
@@ -43,7 +46,7 @@ const SchedManagerPage = (props) => {
         return [state, setState];
     };
 
-    const [isOpenFilters,            setIsOpenFilters]     = useCookieState('rule_manager_filters', true);
+    const [isOpenFilters,            setIsOpenFilters]     = useCookieState(isMain ? 'SchedManagerPage_main_filters' : 'rule_manager_filters', !isMain);
     const [companies,         setCompanies]         = useState([]);
     const [isLoading,       setIsLoading]         = useState(false);
     const [isMounted,       setIsMounted]         = useState(false);
@@ -284,27 +287,42 @@ const SchedManagerPage = (props) => {
         }
     }
 
+    const createAction = (
+        <Button color={'primary'}
+            variant={isMain ? 'solid' : 'outlined'}
+            icon={<PlusOutlined/>}
+            style={{ width: '125px' }}
+            onClick={openBlankEditor}
+        >Создать</Button>
+    );
+    const ListContainer = isMain ? PersonnelTable : 'div';
+    const listProps = isMain
+        ? {label: 'Графики работы', headings: ['ID', 'График', 'Описание', 'Компания', 'Год', 'Сотрудники', 'Действия'], empty: !scheduleList.length}
+        : {className: 'sk-content-table'};
+    const PanelWrapper = isMain ? 'div' : Affix;
     return (
-        <Layout className={'layout'}>
+        <Layout className={isMain ? "layout sk-personnel-main sk-claims-viewport" : "layout"}>
             <Header className={'header'}>
-                <Affix>
+                <PanelWrapper>
                     <div className={'sk-header-container'}>
                         <Button color={'default'}
+                                aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 style={{ width: '125px' }}
                                 onClick={() => setIsOpenFilters(!isOpenFilters)}
                         >Фильтры</Button>
                         <h1 className={'page-header'}>Графики работ</h1>
-                        <div></div>
+                        {isMain ? <div className="sk-personnel-actions">{createAction}</div> : <div />}
                     </div>
-                </Affix>
+                </PanelWrapper>
             </Header>
             <Layout className="sk-layout-center">
-                <Sider width={isOpenFilters ? "330px" : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
-                    <Affix offsetTop={54}>
+                <Sider width={isOpenFilters ? (isMain ? 320 : 330) : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
+                    <PanelWrapper {...(isMain ? {} : {offsetTop: 54})}>
                         <div className="sk-width-container">
                             <div className="sk-usp-filter-col">
+                                    {isMain && <h2 className="sk-claims-filter-title">Фильтры</h2>}
                                 <ClaimManagerSidebar
                                     company_list={prepareSelectOptions('company', companies)}
                                     schedules_types_list={prepareSelectOptions('schedule', scheduleTypes)}
@@ -312,14 +330,15 @@ const SchedManagerPage = (props) => {
                                 />
                             </div>
                         </div>
-                    </Affix>
+                    </PanelWrapper>
                 </Sider>
                 <Content className="content">
                     <div className="sk-content-table-wrapper">
-                        <Affix offsetTop={44}>
+                        <PanelWrapper {...(isMain ? {} : {offsetTop: 44})}>
                             <div className="sk-pagination-wrapper">
                                 <div className="sk-pagination-container">
                                     <Pagination
+                                        showQuickJumper={isMain}
                                         current={currentPage}
                                         total={totalCount}
                                         pageSize={pageSize}
@@ -347,24 +366,19 @@ const SchedManagerPage = (props) => {
                                         }}
                                     >Всего найдено: {totalCount}</Tag>
                                 </div>
-                                <Button color={'primary'}
-                                        variant={'outlined'}
-                                        icon={<PlusOutlined/>}
-                                        style={{ width: '125px' }}
-                                        onClick={openBlankEditor}
-                                >Создать</Button>
+                                {!isMain && createAction}
                             </div>
-                        </Affix>
+                        </PanelWrapper>
                         <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
-                            <div className="sk-content-table">
-                                {scheduleList.map((item, index) => (
-                                    <SchedListRow key={index} data={item}
+                            <ListContainer {...listProps}>
+                                {scheduleList.map(item => (
+                                    <SchedListRow tableRow={isMain} key={item.id} data={item}
                                         onOpenEditorModal={openEditorModal}
                                         users_count={item.users_count}
                                         prodCalendars={baseProdCalendars}
                                     />
                                 ))}
-                            </div>
+                            </ListContainer>
                         </Spin>
                     </div>
                 </Content>

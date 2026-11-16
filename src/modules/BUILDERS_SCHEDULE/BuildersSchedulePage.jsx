@@ -1,3 +1,5 @@
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
+import '../../assets/operations-main.css';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Button, DatePicker, Empty, Input, Select, Skeleton, message} from 'antd';
 import dayjs from 'dayjs';
@@ -53,6 +55,7 @@ const mapResponseToScheduleValues = (rows, month, year) => {
 };
 
 const BuildersSchedulePage = () => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const [targetMonth, setTargetMonth] = useState(dayjs().month());
     const [targetYear, setTargetYear] = useState(dayjs());
     const [users, setUsers] = useState([]);
@@ -169,9 +172,9 @@ const BuildersSchedulePage = () => {
     };
 
     return (
-        <div className="sk-builders-schedule-page">
+        <div className={isMain ? "sk-builders-schedule-page sk-operations-main sk-shift-main" : "sk-builders-schedule-page"}>
             {contextHolder}
-            <div className="sk-builders-schedule-header">
+            <div className="sk-builders-schedule-header shift-header">
                 <div>
                     <h2>График строителей</h2>
                     <span className="sk-builders-schedule-subtitle">Строительный отдел, отдел {BUILDERS_DEPARTMENT_ID}</span>
@@ -192,7 +195,7 @@ const BuildersSchedulePage = () => {
                     />
                     <Button
                         type="primary"
-                        className="sk-builders-schedule-save-btn"
+                        className="sk-builders-schedule-save-btn shift-save-btn"
                         loading={isSaving}
                         onClick={handleSave}
                     >
@@ -201,9 +204,9 @@ const BuildersSchedulePage = () => {
                 </div>
             </div>
 
-            <div className="sk-builders-schedule-table-wrap">
+            <div className="sk-builders-schedule-table-wrap shift-table-wrap" style={isMain ? {'--schedule-min-width': (170 + 30 * days.length) + 'px'} : undefined}>
                 <div
-                    className="sk-builders-schedule-grid sk-builders-schedule-grid--header"
+                    className="sk-builders-schedule-grid sk-builders-schedule-grid--header shift-grid--header"
                     style={{gridTemplateColumns: tableColumns}}
                 >
                     <div className="sk-builders-schedule-employee-head">Сотрудник</div>
@@ -234,11 +237,11 @@ const BuildersSchedulePage = () => {
                         const userId = getUserId(user);
                         return (
                             <div
-                                className="sk-builders-schedule-grid sk-builders-schedule-row"
+                                className="sk-builders-schedule-grid sk-builders-schedule-row shift-row"
                                 style={{gridTemplateColumns: tableColumns}}
                                 key={`builders-schedule-user-${userId}`}
                             >
-                                <div className="sk-builders-schedule-employee-cell">
+                                <div className="sk-builders-schedule-employee-cell shift-employee-cell">
                                     <strong>{getUserFullName(user)}</strong>
                                     <span>{user.occupy ?? user.user_occupy ?? ''}</span>
                                 </div>

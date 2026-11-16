@@ -68,6 +68,17 @@ const SchedListRow = (props) => {
         itemData.count_links ??
         0;
 
+    if (props.tableRow) {
+        return (
+            <tr onDoubleClick={handleDoubleClick}>
+                <td>{itemData.id}</td>
+                <td><div className="sk-personnel-icon-label"><SchedIcons type={itemData.skud_schedule_type_id} size="20px" />{itemData.name}</div></td>
+                <td>{itemData.description}</td>
+                <td>{companyName}</td><td>{scheduleYear}</td><td>{linkedUsersCount}</td>
+                <td><Button size="small" aria-label="Редактировать график" icon={<EditOutlined />} onClick={openEditor} /></td>
+            </tr>
+        );
+    }
     return (
         <div className={"sk-schedule-list-row"} onDoubleClick={handleDoubleClick}>
             <div className="sk-row sk-first-row">

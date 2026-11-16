@@ -1,3 +1,4 @@
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Button, DatePicker, Form, InputNumber, Select, Table, Tag, Typography} from 'antd';
 import {FilterOutlined} from '@ant-design/icons';
@@ -34,6 +35,7 @@ const errorText = (error) => {
 };
 
 export default function UserChangesPage() {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const [form] = Form.useForm();
     const [users, setUsers] = useState([]);
     const [staffNames, setStaffNames] = useState({});
@@ -43,7 +45,7 @@ export default function UserChangesPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [reload, setReload] = useState(0);
-    const [filtersOpen, setFiltersOpen] = useState(true);
+    const [filtersOpen, setFiltersOpen] = useState(!isMain);
     const filterTimer = useRef();
     const filterVersion = useRef(0);
 
@@ -166,7 +168,7 @@ export default function UserChangesPage() {
     ];
 
     return (
-        <div className="user-changes-page">
+        <div className={isMain ? "user-changes-page sk-personnel-main" : "user-changes-page"}>
             <header className="user-changes-toolbar">
                 <Button className="user-changes-filter-toggle" icon={<FilterOutlined />}
                     aria-expanded={filtersOpen} aria-controls="user-changes-filters"
@@ -175,6 +177,7 @@ export default function UserChangesPage() {
             </header>
             <div className={`user-changes-layout${filtersOpen ? '' : ' without-filters'}`}>
             <aside id="user-changes-filters" className="user-changes-sidebar" hidden={!filtersOpen}>
+                {isMain && <h2 className="sk-claims-filter-title">Фильтры</h2>}
                 {usersError && <Alert type="warning" message={usersError} showIcon style={{marginBottom: 16}} />}
                 <Form form={form} layout="vertical" onValuesChange={applyFilters}>
                     <div className="user-changes-filters">
@@ -222,7 +225,8 @@ export default function UserChangesPage() {
                 scroll={{x: 1160}}
                 locale={{emptyText: error ? 'История не загружена' : 'Изменений по заданным условиям нет'}}
                 pagination={{
-                    position: ['topLeft'],
+                    position: [isMain ? 'bottomRight' : 'topLeft'],
+                    showQuickJumper: isMain,
                     current: result.currentPage ?? query.currentPage,
                     pageSize: result.pageSize ?? query.pageSize,
                     total: result.allChangesCount,

@@ -1,3 +1,6 @@
+import AccountingPeriodFilters from './components/AccountingPeriodFilters';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
+import '../../assets/operations-main.css';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Affix, Button, Empty, Input, InputNumber, Layout, Select, Skeleton, Spin, message} from "antd";
 import {Content, Header} from "antd/es/layout/layout";
@@ -26,7 +29,11 @@ const MONTHS = [
     {id: 12, name: 'Декабрь'},
 ];
 
+const Unpinned = ({children}) => children;
+
 const AccountingSurchargesPage = () => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const PageAffix = isMain ? Unpinned : Affix;
     const useCookieState = (key, defaultValue) => {
         const [state, setState] = useState(() => {
             const saved = Cookies.get(key);
@@ -40,7 +47,7 @@ const AccountingSurchargesPage = () => {
         return [state, setState];
     };
 
-    const [isOpenFilters, setIsOpenFilters] = useCookieState('accounting_surcharge_filters', true);
+    const [isOpenFilters, setIsOpenFilters] = useCookieState(isMain ? 'accounting_surcharge_filters_main' : 'accounting_surcharge_filters', !isMain);
     const [filterParams, setFilterParams] = useState({
         year: dayjs().year(),
         month: dayjs().month() + 1,
@@ -216,20 +223,30 @@ const AccountingSurchargesPage = () => {
     );
 
     return (
-        <div className={'mega-layout'}>
+        <div className={isMain ? 'mega-layout sk-operations-main sk-accounting-main' : 'mega-layout'}>
             <Layout className={'layout'}>
                 <Header className={'header'}>
-                    <Affix>
+                    <PageAffix>
                         <div className={'sk-header-container'}>
-                            <Button
+                            {isMain ? (
+                                <AccountingPeriodFilters
+                                    months={months}
+                                    years={years}
+                                    period={filterParams}
+                                    setPeriod={setFilterParams}
+                                />
+                            ) : (
+                                <Button
                                 color={'default'}
-                                variant={isOpenFilters ? 'solid' : 'outlined'}
+                                aria-expanded={isOpenFilters}
+                                    variant={isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 style={{width: '125px'}}
                                 onClick={() => setIsOpenFilters(!isOpenFilters)}
                             >
                                 Фильтры
                             </Button>
+                            )}
                             <h1 className={'page-header'}>Доплаты</h1>
                             <Button
                                 type="primary"
@@ -242,14 +259,14 @@ const AccountingSurchargesPage = () => {
                                 Сохранить
                             </Button>
                         </div>
-                    </Affix>
+                    </PageAffix>
                 </Header>
                 <Layout className="sk-layout-center">
-                    <Sider
+                    {!isMain && <Sider
                         width={isOpenFilters ? "330px" : 0}
                         className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
                     >
-                        <Affix offsetTop={54}>
+                        <PageAffix offsetTop={54}>
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
                                     <div className={'sk-usp-filter-col-item'}>
@@ -272,13 +289,13 @@ const AccountingSurchargesPage = () => {
                                     </div>
                                 </div>
                             </div>
-                        </Affix>
-                    </Sider>
+                        </PageAffix>
+                    </Sider>}
                     <Content className="content">
                         <div className={`sk-content-table-wrapper ${styles.sk_accounting_table_wrapper}`}>
                             <Spin tip="Ожидайте" spinning={false} style={{width: '100%', height: '100%'}}>
                                 <div className={`sk-content-table ${styles.sk_accounting_table}`}>
-                                    <Affix offsetTop={44}>
+                                    <PageAffix offsetTop={44}>
                                         <div className={styles.sk_table_row_surcharges}>
                                             <div className={styles.sk_department_table_header}>
                                                 <p className={styles.sk_department_table_header_p}>ФИО</p>
@@ -290,7 +307,7 @@ const AccountingSurchargesPage = () => {
                                                 <p className={styles.sk_department_table_header_p}>Сумма</p>
                                             </div>
                                         </div>
-                                    </Affix>
+                                    </PageAffix>
                                     <div className={styles.sk_surcharge_add_row}>
                                         <div className={styles.sk_person_row_content}>
                                             <Select

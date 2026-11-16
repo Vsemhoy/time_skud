@@ -1,3 +1,5 @@
+import PersonnelTable from '../../components/PersonnelTable';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
 import {CSRF_TOKEN, PRODMODE, ROUTE_PREFIX} from "../../CONFIG/config"
 import { DS_USER } from "../../CONFIG/DEFAULTSTATE";
@@ -15,6 +17,7 @@ import {YEARS, PROD_CALENDARS, COMPANIES} from "./mock/mock";
 const { Header, Sider, Content } = Layout;
 
 const ProdCalManagerPage = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
     const { userdata } = props;
 
     const prepareSelectOptions = (name, options) => {
@@ -41,7 +44,7 @@ const ProdCalManagerPage = (props) => {
         return [state, setState];
     };
 
-    const [isOpenFilters, setIsOpenFilters] = useCookieState('prod_manager_filters', true);
+    const [isOpenFilters, setIsOpenFilters] = useCookieState(isMain ? 'ProdCalManagerPage_main_filters' : 'prod_manager_filters', !isMain);
     const [isLoading, setIsLoading] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const [filtersState, setFiltersState] = useState([]);
@@ -261,27 +264,42 @@ const ProdCalManagerPage = (props) => {
         // console.log('Opened');
     };
 
+    const createAction = (
+        <Button color={'primary'}
+            variant={isMain ? 'solid' : 'outlined'}
+            icon={<PlusOutlined/>}
+            style={{ width: '125px' }}
+            onClick={() => openModal()}
+        >Создать</Button>
+    );
+    const ListContainer = isMain ? PersonnelTable : 'div';
+    const listProps = isMain
+        ? {label: 'Производственные календари', headings: ['ID', 'Год', 'Компания', 'Графики', 'Статус', 'Действия'], empty: !calendarList.length}
+        : {className: 'sk-content-table'};
+    const PanelWrapper = isMain ? 'div' : Affix;
     return (
-        <Layout className={'layout'}>
+        <Layout className={isMain ? "layout sk-personnel-main sk-claims-viewport" : "layout"}>
             <Header className={'header'}>
-                <Affix>
+                <PanelWrapper>
                     <div className={'sk-header-container'}>
                         <Button color={'default'}
+                                aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 style={{ width: '125px' }}
                                 onClick={() => setIsOpenFilters(!isOpenFilters)}
                         >Фильтры</Button>
                         <h1 className={'page-header'}>Производственные календари</h1>
-                        <div></div>
+                        {isMain ? <div className="sk-personnel-actions">{createAction}</div> : <div />}
                     </div>
-                </Affix>
+                </PanelWrapper>
             </Header>
             <Layout className="sk-layout-center">
-                <Sider width={isOpenFilters ? "330px" : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
-                    <Affix offsetTop={54}>
+                <Sider width={isOpenFilters ? (isMain ? 320 : 330) : 0} className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}>
+                    <PanelWrapper {...(isMain ? {} : {offsetTop: 54})}>
                         <div className="sk-width-container">
                             <div className="sk-usp-filter-col">
+                                    {isMain && <h2 className="sk-claims-filter-title">Фильтры</h2>}
                                 <ClaimManagerSidebar
                                     company_list={prepareSelectOptions('company', companies)}
                                     years_list={prepareSelectOptions('years', years)}
@@ -289,14 +307,15 @@ const ProdCalManagerPage = (props) => {
                                 />
                             </div>
                         </div>
-                    </Affix>
+                    </PanelWrapper>
                 </Sider>
                 <Content className="content">
                     <div className="sk-content-table-wrapper">
-                        <Affix offsetTop={44}>
+                        <PanelWrapper {...(isMain ? {} : {offsetTop: 44})}>
                             <div className="sk-pagination-wrapper">
                                 <div className="sk-pagination-container">
                                     <Pagination
+                                        showQuickJumper={isMain}
                                         current={currentPage}
                                         total={count}
                                         pageSize={pageSize}
@@ -324,30 +343,21 @@ const ProdCalManagerPage = (props) => {
                                         }}
                                     >Всего найдено: {count}</Tag>
                                 </div>
-                                <Button color={'primary'}
-                                        variant={'outlined'}
-                                        icon={<PlusOutlined/>}
-                                        style={{ width: '125px' }}
-                                        onClick={() => openModal()}
-                                >Создать</Button>
+                                {!isMain && createAction}
                             </div>
-                        </Affix>
+                        </PanelWrapper>
                         <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
-                            <div className="sk-content-table">
-                                {
-                                    calendarList.map((jcal)=>(
-                                        <ProdCalItemCard
+                            <ListContainer {...listProps}>
+                                {calendarList.map(jcal => (
+                                    <ProdCalItemCard tableRow={isMain}
                                             onOpenModal={openModal}
                                             data={jcal}
                                             key={`clitem_${jcal.id}`}
                                             allow_delete={allowDeleteSet}
                                         />
-                                    ))
-                                }
-                                {calendarList.length === 0 ? (
-                                    <Empty description={"Ничего не найдено"}/>
-                                ): ""}
-                            </div>
+                                ))}
+                                {!isMain && calendarList.length === 0 && <Empty description="Ничего не найдено" />}
+                            </ListContainer>
                         </Spin>
                     </div>
                 </Content>

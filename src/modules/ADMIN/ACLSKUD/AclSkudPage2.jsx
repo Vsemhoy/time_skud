@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useId, useRef } from 'react';
 import './components/style/aclskud2.css';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../../Utils/skudPageTheme';
 import { BarsOutlined, BuildOutlined, CheckCircleOutlined, CheckOutlined, ClearOutlined, CloseCircleOutlined, CloseOutlined, ClusterOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DiffOutlined, DownSquareOutlined, EditOutlined, EyeOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { AimOutlined, BlockOutlined, BugOutlined, CarOutlined, DockerOutlined, DollarOutlined, MedicineBoxOutlined, MoonOutlined, PlusCircleOutlined, PlusOutlined, RocketOutlined, SmileOutlined, TruckOutlined } from "@ant-design/icons";
 import { Affix, Checkbox, Dropdown, Radio, Select, Tabs } from 'antd';
@@ -13,6 +14,8 @@ import AclCheckbox from './components/AclSkudCheckbox';
 
 
 const AclSkudPage2 = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const HeaderWrapper = isMain ? React.Fragment : Affix;
 
     const [baseUserCollection, setBaseUserCollection] = useState([]);
     const [userCollection, setUserCollection] = useState([]);
@@ -1253,7 +1256,7 @@ useEffect(() => {
 
 
     return (
-        <div className='sk-page-body'>
+        <div className={isMain ? 'sk-page-body sk-acl-main' : 'sk-page-body'}>
                 <div style={{padding: '6px'}} className={'sk-mw-1600'}>
                     <div>
                         
@@ -1294,10 +1297,10 @@ useEffect(() => {
                     <br/>
         
                        
-                <div style={{padding: '6px'}} className={'sk-mw-1600'} key={'fashdjkfjaklsjdf'}>
+                <div style={{padding: '6px'}} className={'sk-mw-1600 sk-acl-table-region'} key={'fashdjkfjaklsjdf'}>
         
                     <div className={'sk-table-aclskud'}>
-                        <Affix offsetTop={0}>                
+                        <HeaderWrapper>                
                             <div className={'sk-table-aclskud-row sk-table-aclskud-header'}>
                             <div className='sk-tas-inwrap'>
                                 <div>
@@ -1342,14 +1345,14 @@ useEffect(() => {
                             </div>
                             </div>
                         </div>
-                        </Affix>
+                        </HeaderWrapper>
 
                         <div>
                           {departments.map(item => {
                             const count_users_in = userCollection.filter((user)=> user.depart_id === item.id).length;
                             const current_depart = item.id;
                             return (
-                            <div className={`sk-rdepart-section ${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "} ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource-tpl' : ''} ${count_users_in ? '' : 'sk-table-users-empty'}`}>
+                            <div key={item.id} className={`sk-rdepart-section ${openedDeparts.includes(item.id) || openedTemplates.includes(item.id) ? "sk-opened-box":"sk-not-opened-box "} ${copySource && copySource.type === 'templates' && copySource.id === item.id ? 'sk-copysource-tpl' : ''} ${count_users_in ? '' : 'sk-table-users-empty'}`}>
                             <div 
                               
                               className={`sk-table-aclskud-row sk-table-aclskud-data `} key={`checkdser${item.id}_${item.id}`}>
@@ -1412,6 +1415,7 @@ useEffect(() => {
 
 
                             { openedTemplates.includes(item.id) && (
+                              <div className="sk-acl-reveal">
                               <div className='sk-act-templaterow'>
                                 <div className={'sk-table-template-control sk-template-header-row '} >
                                   <div></div>
@@ -1533,6 +1537,7 @@ useEffect(() => {
                                   <div></div>
                                 </div>
                               </div>
+                              </div>
                             )}
 
 
@@ -1540,6 +1545,7 @@ useEffect(() => {
 
                             
                             { openedDeparts.includes(item.id) && (
+                              <div className="sk-acl-reveal">
                               <div>
                               <div>
                                   {userCollection.filter((user)=> user.depart_id === item.id).map(user => {
@@ -1619,6 +1625,7 @@ useEffect(() => {
                                 </div>
                                  <div className={'sk-aclskud-row-inner'}>
                                     {openedUsers.includes(user.id) && (
+                                      <div className="sk-acl-reveal">
                                       <div className='sk-act-depusererow'>
                                         {eventTypes.map(type => {
                                         const userLocalAcls_row = userLocalAcls.filter(itemt => itemt.skud_current_state_id === type.id);
@@ -1677,11 +1684,13 @@ useEffect(() => {
                                         </div>
                                           )})}
                                       </div>
+                                      </div>
                                     )}
                                   </div>
                                  </div>
                                   )})
                                   }
+                              </div>
                               </div>
                               </div>
                               )}

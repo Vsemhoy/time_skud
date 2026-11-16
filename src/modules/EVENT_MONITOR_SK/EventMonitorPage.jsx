@@ -1,3 +1,4 @@
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { Empty, Skeleton } from 'antd';
@@ -74,41 +75,27 @@ const EventMonitorPage = (props) => {
     // ------------------ FetchWorld END ----------------------
 
 
-    const handleCustomEventCreation = () => {
+    const refreshEvents = () => {
         get_arch_events(queryParams);
-        // Call to reload page after insert user's action
     }
 
 
     
 
+const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+
 return (
     <EventMonitorToolbar
+        isMain={isMain}
         on_chang_query_params={(data)=>{setQueryParams(data)}}
         pagination_total={totalRowsInQuery}
-        on_create_event={handleCustomEventCreation}
+        on_create_event={refreshEvents}
+        onRefresh={refreshEvents}
+        refreshing={eventsLoading}
         user_to_search={userToSearch}
         can_create_event={canCreateEvent}
         event_user_scope={hasAcl(77) || !hasFullEventUserAccess ? 'warehouse' : 'all'}
-        header={(
-            <div className="sk-event-monitor-content-header">
-                <h2>Монитор событий СКУД</h2>
-                <span>Найдено: {totalRowsInQuery}</span>
-            </div>
-        )}
-        table_header={(
-            <div className={`sk-evemonic-cardrow sk-evemonic-headerrow`}>
-                <div>id</div>
-                <div>src</div>
-                <div>Сотрудник</div>
-                <div>Причина</div>
-                <div>Время события</div>
-                <div>День</div>
-                <div>Тип</div>
-            </div>
-        )}
     >
-        <div className={'sk-arche-stack sk-event-monitor-table'}>
             {eventsLoading ? (
                 <div className="sk-event-monitor-skeleton">
                     {Array.from({length: 12}).map((_, index) => (
@@ -139,7 +126,6 @@ return (
                 </>
 
             )}
-        </div>
     </EventMonitorToolbar>
 );
 

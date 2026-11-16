@@ -1,5 +1,5 @@
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Affix, Button, DatePicker, Drawer, Layout, Pagination, Select } from "antd";
+import { DownOutlined, LeftOutlined, PlusOutlined, ReloadOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons";
+import { Affix, Button, DatePicker, Drawer, Dropdown, Input, Layout, Pagination, Popover, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
 import dayjs from "dayjs";
@@ -390,10 +390,80 @@ const EventMonitorToolbar = (props)=>
       }
 
 
+    const handleSearchChange = (event) => {
+        setTargetString(event.target.value);
+        setPaginatorPage(1);
+    };
+
+    const tableHeader = (
+        <div className="sk-evemonic-cardrow sk-evemonic-headerrow">
+            <div>id</div>
+            <div>{props.isMain ? (
+                <Dropdown trigger={['click']} menu={{
+                    items: sources.map(({value, label}) => ({key: value ?? 'all', label})),
+                    selectable: true,
+                    selectedKeys: [selectedSource ?? 'all'],
+                    onClick: ({key}) => {
+                        setSelectedSource(key === 'all' ? null : key);
+                        setPaginatorPage(1);
+                    },
+                }}>
+                    <button type="button" className="sk-event-filter" data-active={selectedSource !== null}
+                        aria-label="Фильтр по источнику">
+                        Источник <DownOutlined />
+                    </button>
+                </Dropdown>
+            ) : 'src'}</div>
+            <div>{props.isMain ? (
+                <Popover trigger="click" placement="bottomLeft" content={
+                    <Input allowClear aria-label="Поиск сотрудника" placeholder="Имя, фамилия или должность"
+                        value={targetString} onChange={handleSearchChange} />
+                }>
+                    <button type="button" className="sk-event-filter" data-active={Boolean(targetString.trim())}
+                        aria-label="Фильтр по сотруднику">
+                        Сотрудник <SearchOutlined />
+                    </button>
+                </Popover>
+            ) : 'Сотрудник'}</div>
+            <div>Причина</div>
+            <div>Время события</div>
+            <div>День</div>
+            <div>Тип</div>
+        </div>
+    );
+
+    const createButton = props.can_create_event && (
+        <Button color={props.isMain ? "primary" : "cyan"} variant="solid"
+            icon={props.isMain ? <PlusOutlined /> : undefined}
+            className={props.isMain ? 'sk-event-monitor-create' : undefined}
+            onClick={() => {
+                setFormReason(manualEntryTitle);
+                setFormStartTime(null);
+                setFormEndTime(null);
+                setCurrentTextVariant(0);
+                setOpenCustomDrawer(true);
+            }}
+        >
+            Создать событие
+        </Button>
+    );
+    const pagination = (
+        <Pagination
+            showQuickJumper
+            current={paginatorPage}
+            total={paginatorTotal}
+            onChange={handlePaginationChange}
+            pageSize={paginatorOnPage}
+            pageSizeOptions={[
+                100, 200, 500, 1000, 10000
+            ]}
+        />
+    );
+
     return (
-        <Layout className="sk-event-monitor-page">
-            <Sider width={330} className="sk-event-monitor-sider">
-                <Affix offsetTop={0}>
+        <Layout className={`sk-event-monitor-page ${props.isMain ? "sk-event-monitor-main" : ""}`}>
+            {!props.isMain && <Sider width={330} className="sk-event-monitor-sider">
+                <Affix offsetTop={props.isMain ? 46 : 0}>
                     <div className="sk-event-monitor-sidebar">
                         <div className="sk-event-monitor-sidebar-title">Фильтры</div>
                         <div className={'sk-event-monitor-toolbar'}>
@@ -425,13 +495,33 @@ const EventMonitorToolbar = (props)=>
                         </div>
                     </div>
                 </Affix>
-            </Sider>
+            </Sider>}
             <Content className="sk-event-monitor-content">
-                <Affix offsetTop={0}>
+                <Affix offsetTop={props.isMain ? 46 : 0}>
                     <div className="sk-event-monitor-affix-head">
-                        {props.header}
+                        <div className="sk-event-monitor-content-header">
+                            <h2>Монитор событий СКУД</h2>
+                            {props.isMain ? (
+                                <div className="sk-event-monitor-header-actions">
+                                    <Button icon={<ReloadOutlined />} loading={props.refreshing} onClick={props.onRefresh}>
+                                        Обновить
+                                    </Button>
+                                    {createButton}
+                                </div>
+                            ) : <span>Найдено: {props.pagination_total}</span>}
+                        </div>
                         <div className="sk-event-monitor-table-toolbar">
-                            <div />
+                            {props.isMain ? (
+                                <Input
+                                    className="sk-event-monitor-search"
+                                    prefix={<SearchOutlined />}
+                                    allowClear
+                                    aria-label="Поиск по имени, фамилии или должности"
+                                    placeholder="Поиск по имени, фамилии или должности"
+                                    value={targetString}
+                                    onChange={handleSearchChange}
+                                />
+                            ) : <div />}
                             <div className="sk-event-monitor-table-toolbar-center">
                                 <Select
                                     style={{width: '140px'}}
@@ -476,37 +566,20 @@ const EventMonitorToolbar = (props)=>
                                     title="Смещение на диапазон в будущее"
                                     ><RightOutlined /></Button>
                                 </div>
-                                <Pagination
-                                    showQuickJumper
-                                    current={paginatorPage}
-                                    total={paginatorTotal}
-                                    onChange={handlePaginationChange}
-                                    pageSize={paginatorOnPage}
-                                    pageSizeOptions={[
-                                        100, 200, 500, 1000, 10000
-                                    ]}
-                                />
+                                {!props.isMain && pagination}
                             </div>
-                            <div className="sk-event-monitor-table-toolbar-actions">
-                                {props.can_create_event && (
-                                    <Button color="cyan" variant="solid"
-                                        onClick={() => {
-                                            setFormReason(manualEntryTitle);
-                                            setFormStartTime(null);
-                                            setFormEndTime(null);
-                                            setCurrentTextVariant(0);
-                                            setOpenCustomDrawer(true);
-                                        }}
-                                    >
-                                        Создать событие
-                                    </Button>
-                                )}
-                            </div>
+                            {!props.isMain && <div className="sk-event-monitor-table-toolbar-actions">
+                                {createButton}
+                            </div>}
                         </div>
-                        {props.table_header}
+                        {!props.isMain && tableHeader}
                     </div>
                 </Affix>
-                {props.children}
+                <div className="sk-arche-stack sk-event-monitor-table">
+                    {props.isMain && tableHeader}
+                    {props.children}
+                </div>
+                {props.isMain && <div className="sk-event-monitor-pagination">{pagination}</div>}
             </Content>
 
 

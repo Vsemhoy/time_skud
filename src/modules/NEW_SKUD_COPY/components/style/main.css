@@ -1,0 +1,330 @@
+.newskud-copy-page.main-page {
+    --panel-divider: 3px solid #849ab1;
+    --sk-heading-height: 40px;
+    --table-heading-bg: #506b89;
+    --sk2-orange: #2465c3;
+    --sk2-orange-hover: #194c94;
+    --sk2-ink: #182433;
+    --sk2-muted: #536274;
+    --sk2-line: #b9c3ce;
+    --sk2-blue-header: #d4dfed;
+    --app-bg-color: #e5ecf5;
+    --app-text-color: var(--sk2-ink);
+    --row-second-bg-color: #f6f8fa;
+    --row-hovered-bg-color: #e5eff8;
+    background: var(--app-bg-color);
+}
+
+.sk-main-menu--main.sk-main-menu,
+.main-page.newskud-copy-page .header-user-list--newskud {
+    --sk2-orange: #2465c3;
+    border-bottom: 1px solid #8f9dad;
+    background: white !important;
+    box-shadow: none !important;
+}
+
+.main-page.newskud-copy-page,
+.sk-main-menu--main {
+    --sk-page-gutter: 8px;
+}
+
+.main-page.newskud-copy-page .layout--newskud {
+    padding-inline: 0;
+}
+
+.main-page.newskud-copy-page .header-user-list--newskud {
+    width: 100%;
+    margin-inline: 0;
+    padding-inline: var(--sk-page-gutter) !important;
+}
+
+.main-page.newskud-copy-page .sk-layout-center {
+    padding-inline: var(--sk-page-gutter);
+}
+
+.sk-main-menu--main .ant-menu-item-selected {
+    background: #dbe7f3;
+    border-radius: 3px;
+}
+
+.sk-main-menu-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 101;
+}
+
+.sk-main-menu.sk-main-menu--main {
+    width: 100%;
+    margin: 0;
+    padding-inline: var(--sk-page-gutter) !important;
+    gap: 12px;
+    border-bottom-color: #c4ccd5;
+}
+
+.sk-main-menu--main .sk-main-menu-brand {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    color: #425267;
+    font: 800 11px/1 Inter, "Segoe UI", sans-serif;
+    letter-spacing: .08em;
+}
+
+.sk-main-menu-brand strong {
+    font-weight: inherit;
+    letter-spacing: inherit;
+}
+
+.sk-main-menu-brand a {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid #9eabb9;
+    border-radius: 3px;
+    color: #2465c3;
+    background: white;
+    font-size: 14px;
+}
+
+.sk-main-menu--main .sk-main-menu-actions {
+    line-height: 1;
+}
+
+.sk-main-menu--main .sk-main-menu-actions > :has(.ant-btn) {
+    display: inline-flex;
+    align-items: center;
+}
+
+.sk-main-menu--main.sk-main-menu .sk-appmenu-user {
+    height: 30px !important;
+    min-width: 0;
+    padding: 2px 8px 2px 2px !important;
+    border: 1px solid #9eabb9 !important;
+    background: white !important;
+}
+
+.sk-main-menu--main.sk-main-menu .sk-appmenu-user span {
+    color: #182433 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.sk-main-menu--main.sk-main-menu .sk-appmenu-user .sk-main-menu-initial {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    background: #324760;
+    color: white !important;
+}
+
+.main-page.newskud-copy-page .ant-layout-content.content.no-pb,
+.main-page.newskud-copy-page .sider.pl15 {
+    background: var(--sk2-surface) !important;
+}
+
+.main-page.newskud-copy-page .sider.pl15 {
+    padding: 0 !important;
+    border-inline-start: var(--panel-divider);
+}
+
+.main-page.newskud-copy-page .sider.pr15:not(.sider-hidden) {
+    padding: 0 !important;
+    border-inline-end: var(--panel-divider);
+    background: var(--sk2-surface) !important;
+}
+
+.main-page .sider.pr15 .sk-width-container {
+    width: 100%;
+}
+
+.main-page.newskud-copy-page .sk2-filters-shell {
+    padding: 0 !important;
+    border: 0;
+    border-radius: 0;
+    background: var(--sk2-surface);
+}
+
+.main-page .sk2-filters-panel__header {
+    padding: 0 8px;
+}
+
+.main-page.newskud-copy-page .sk2-filters-panel__actions {
+    background: transparent;
+}
+
+.main-page.newskud-copy-page .sk2-filters-panel__actions .ant-btn {
+    background: white;
+    color: var(--sk2-ink);
+    border-color: var(--sk2-line);
+}
+
+.main-page.newskud-copy-page .sk2-filters-panel__actions .ant-btn:hover {
+    background: white !important;
+    color: var(--sk2-orange) !important;
+    border-color: currentColor !important;
+}
+
+.main-page .sk2-filters-panel__eyebrow {
+    display: none;
+}
+
+.main-page .sk2-filters-panel__title {
+    color: inherit;
+    font: inherit;
+}
+
+.main-page.newskud-copy-page .sk-userlist-table-frame {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.main-page.newskud-copy-page .sk-userlist-details-panel {
+    padding: 0;
+    scrollbar-gutter: auto;
+}
+
+.main-page.newskud-copy-page .sk2-filters-panel__header,
+.main-page .sk-userlist-details-heading {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    height: var(--sk-heading-height);
+    box-sizing: border-box;
+    margin: 0;
+    border-bottom: 1px solid var(--sk2-line);
+    background: var(--table-heading-bg);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.main-page.newskud-copy-page .sk2-filters-panel__header {
+    position: static;
+}
+
+.main-page.newskud-copy-page .sk-userlist-details-scroll {
+    gap: 0;
+    padding: 0;
+    align-items: stretch;
+}
+
+.main-page.newskud-copy-page .sk-userlist-details-card {
+    border: 0;
+    border-radius: 0;
+    background: white;
+    box-shadow: none;
+}
+
+.main-page.newskud-copy-page .sk-userlist-details-card + .sk-userlist-details-card {
+    border-block-start: var(--panel-divider);
+}
+
+.main-page .sk-sidebar-card-header {
+    height: var(--sk-heading-height);
+    background: var(--sk2-blue-header);
+}
+
+.main-page .sk-sidebar-card-header > .sk-userlist-details-card-title {
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.main-page .sk-sidebar-card-header > .ant-btn {
+    top: 50% !important;
+    transform: translateY(-50%);
+}
+
+.main-page.newskud-copy-page .sk-userlist-details-card-title,
+.main-page.newskud-copy-page .sk-userlist-details-card-subtitle,
+.main-page.newskud-copy-page .sk-state-intgra-card {
+    box-sizing: border-box;
+    height: var(--sk-heading-height);
+    min-height: var(--sk-heading-height) !important;
+    padding-block: 0;
+    align-content: center;
+    border-color: #acbed2;
+    background: var(--sk2-blue-header) !important;
+    color: #213d60;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.main-page.newskud-copy-page .sk-usermonic-cardrow-ou-test:not(.super-mode) {
+    --employee-columns: minmax(180px, 2fr) minmax(86px, 1fr) minmax(64px, 1fr);
+    --time-columns: repeat(3, minmax(52px, 1fr)) repeat(2, minmax(76px, 1fr));
+    --list-columns: var(--employee-columns) var(--time-columns);
+    grid-template-columns: 42px var(--list-columns);
+}
+
+.main-page.newskud-copy-page .sk-usermonic-cardrow-ou-test.extended:not(.super-mode) {
+    --list-columns: var(--employee-columns) var(--time-columns) repeat(3, minmax(82px, 1fr));
+}
+
+.main-page.newskud-copy-page .sk-usermonic-cardrow-ou-test.without-id-column:not(.super-mode) {
+    grid-template-columns: var(--list-columns);
+}
+
+.main-page .sk-usermonic-headerrow .sk-column-label {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.main-page .sk-usermonic-headerrow > div > div {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.main-page.newskud-copy-page .sk-usermonic-headerrow {
+    height: auto;
+    min-height: var(--sk-heading-height);
+    border-radius: 0;
+    background: var(--table-heading-bg) !important;
+    box-shadow: none;
+}
+
+.main-page.newskud-copy-page .sk-usermonic-headerrow > div {
+    justify-content: flex-start;
+    border-radius: 0;
+    padding: 7px 8px;
+    border-top: 0;
+    border-inline: 0 !important;
+    border-inline-start: 1px solid #435d78 !important;
+    cursor: default;
+    background: var(--table-heading-bg) !important;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+    box-shadow: none;
+}
+
+.main-page.newskud-copy-page .sk-usermonic-headerrow > div:first-child {
+    border-inline-start: 0 !important;
+}
+
+.main-page.newskud-copy-page .sk-usermonic-headerrow > .sk-userlist-status-cell,
+.main-page.newskud-copy-page .sk-usermonic-headerrow > .sk-userlist-status-cell ~ div {
+    justify-content: center;
+    text-align: center;
+}
+
+.main-page .sk-usermonic-headerrow .sk-userlist-phone-header-icon {
+    color: inherit;
+}
+
+.main-page.newskud-copy-page .sk-usermonic-headerrow > .sk-col-selected,
+.main-page.newskud-copy-page .sk-usermonic-headerrow > div:has(.sk-col-selected) {
+    background: #375471 !important;
+}

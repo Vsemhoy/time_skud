@@ -4,6 +4,7 @@ export const SKUD_PAGE_THEMES = {
     CLASSIC: 'classic',
     NEW: 'new',
     MODERN: 'modern',
+    MAIN: 'main',
 };
 
 export const getSavedSkudPageTheme = () => {

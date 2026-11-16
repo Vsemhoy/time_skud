@@ -1,3 +1,5 @@
+import PersonnelTable from '../../../components/PersonnelTable';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../../Utils/skudPageTheme';
 import React, {useEffect, useState} from 'react';
 import UserManagerExtraTools from "./components/UserManagerExtraTools";
 import ClaimManagerSidebar from "./components/ClaimManagerSidebar";
@@ -6,7 +8,7 @@ import {Affix, Button, Checkbox, Flex, Layout, Pagination, Select, Spin, Tag} fr
 import {
     CalendarOutlined,
     ClockCircleOutlined,
-    EditOutlined,
+    EditOutlined, EyeOutlined,
     FilterOutlined,
     HistoryOutlined, PlusOutlined,
     ToolOutlined
@@ -31,6 +33,7 @@ const { Header, Sider, Content } = Layout;
 
 
 const UserManagerPage_2025 = (props) => {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
 
     const useCookieState = (key, defaultValue) => {
         const [state, setState] = useState(() => {
@@ -71,7 +74,7 @@ const UserManagerPage_2025 = (props) => {
     const [filterParams, setFilterParams] = useState([]);
 
 
-    const [isOpenFilters, setIsOpenFilters] = useCookieState('user_manager_filters', true);
+    const [isOpenFilters, setIsOpenFilters] = useCookieState(isMain ? 'UserManagerPage_2025_main_filters' : 'user_manager_filters', !isMain);
     const [isOpenTools, setIsOpenTools] = useCookieState('user_manager_toolbar', false);
 
     /* useEffect */
@@ -184,6 +187,13 @@ const UserManagerPage_2025 = (props) => {
         }*/
     };
     const filterAndSetUsers = (newUsers) => {
+        if (isMain) {
+            newUsers = newUsers.map(user => ({
+                ...user,
+                departament: Number(user.departament) || 0,
+                departament_name: user.departament_name?.trim() || 'Без отдела',
+            }));
+        }
         setUsers(newUsers.sort((a, b) => a.department - b.department));
         setDepartments([...new Set(newUsers.map(user => JSON.stringify({
             id: user.departament,
@@ -312,35 +322,104 @@ const UserManagerPage_2025 = (props) => {
         //}
     };
 
+    const renderUserDetails = user => (
+        <div className="sk-person-rules no-select">
+            {user.linked_schedule && (
+                <div className="sk-person-schedule">
+                    <div
+                        className="sk-person-schedule-hover-container">
+                        <div className="sk-schedule-cell">
+                            <SchedIcons type={user.linked_schedule.skud_schedule_type_id} size={'30px'}/>
+                            <p>{user.linked_schedule.skud_schedule.name}</p>
+                        </div>
+                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                            {dayjs()
+                                .startOf('day')
+                                .add(user.linked_schedule.skud_schedule.start_time, 'seconds')
+                                .format('HH:mm')}
+                            -
+                            {dayjs()
+                                .startOf('day')
+                                .add(user.linked_schedule.skud_schedule.end_time, 'seconds')
+                                .format('HH:mm')}
+                        </p>
+                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                            {dayjs()
+                                .startOf('day')
+                                .add(user.linked_schedule.skud_schedule.lunch_start, 'seconds')
+                                .format('HH:mm')}
+                            -
+                            {dayjs()
+                                .startOf('day')
+                                .add(user.linked_schedule.skud_schedule.lunch_end, 'seconds')
+                                .format('HH:mm')}
+                        </p>
+                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                            {dayjs()
+                                .startOf('day')
+                                .add(user.linked_schedule.skud_schedule.target_time, 'seconds')
+                                .format('HH:mm')} / день</p>
+                    </div>
+                </div>
+            )}
+            {user.linked_rules && user.linked_rules.length > 0 && user.linked_rules.map((rule, idx) => (
+                <div className="sk-person-rule no-select" key={`${user.id}-${rule.id}`}>
+                    <div className="sk-person-rule-hover-container">
+                        <div className="sk-schedule-cell">
+                            <RuleIcons type={rule.type} size={'30px'}/>
+                            <p>{rule.name}</p>
+                        </div>
+                        <p className="sk-schedule-cell sk-schedule-cell-center">
+                            {dayjs()
+                                .startOf('day')
+                                .add(rule.duration_time, 'seconds')
+                                .format('HH:mm')}
+                        </p>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+    const createAction = (
+        <NavLink to="/hr/usermanager/new">
+            <Button color="primary" variant={isMain ? 'solid' : 'outlined'} icon={<PlusOutlined />} style={{width: 125}}>
+                Создать
+            </Button>
+        </NavLink>
+    );
+    const toolsButton = (
+        <Button color="default" variant={isOpenTools ? 'solid' : 'outlined'} icon={<ToolOutlined />}
+            style={{width: 125}} onClick={() => setIsOpenTools(!isOpenTools)}>
+            Мультитул
+        </Button>
+    );
+    const PanelWrapper = isMain ? 'div' : Affix;
     return (
-        <div className={'mega-layout'}>
+        <div className={isMain ? "mega-layout sk-personnel-main sk-claims-viewport sk-user-manager-main" : "mega-layout"}>
             <Layout className={'layout'}>
                 <Header className={'header'}>
-                    <Affix>
+                    <PanelWrapper>
                         <div className={'sk-header-container'}>
                             <Button color={'default'}
-                                    variant={isOpenFilters ? 'solid' : 'outlined'}
+                                    aria-expanded={isOpenFilters}
+                                variant={isOpenFilters ? 'solid' : 'outlined'}
                                     icon={<FilterOutlined />}
                                     style={{ width: '125px' }}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
                             >Фильтры</Button>
                             <h1 className={'page-header'}>Список сотрудников</h1>
-                            <Button color="default"
-                                    variant={isOpenTools ? 'solid' : 'outlined'}
-                                    icon={<ToolOutlined />}
-                                    style={{ width: '125px' }}
-                                    onClick={() => setIsOpenTools(!isOpenTools)}
-                            >Мультитул</Button>
+                            {isMain ? <div className="sk-personnel-actions">{createAction}{toolsButton}</div> : toolsButton}
                         </div>
-                    </Affix>
+                    </PanelWrapper>
                 </Header>
                 <Layout className="sk-layout-center">
-                    <Sider width={isOpenFilters ? "330px" : 0}
+                    <Sider width={isOpenFilters ? (isMain ? 320 : 330) : 0}
                            className={`sider ${isOpenFilters ? '' : 'sider-hidden'} pr15`}
                     >
-                        <Affix offsetTop={54}>
+                        <PanelWrapper {...(isMain ? {} : {offsetTop: 54})}>
                             <div className="sk-width-container">
                                 <div className="sk-usp-filter-col">
+                                    {isMain && <h2 className="sk-claims-filter-title">Фильтры</h2>}
                                     <ClaimManagerSidebar
                                         on_select_company={(val)=> {setSelectedCompany(val);}}
 
@@ -360,14 +439,16 @@ const UserManagerPage_2025 = (props) => {
                                     />
                                 </div>
                             </div>
-                        </Affix>
+                        </PanelWrapper>
                     </Sider>
                     <Content className="content">
                         <div className="sk-content-table-wrapper">
-                            <Affix offsetTop={44}>
+                            <PanelWrapper {...(isMain ? {} : {offsetTop: 44})}>
                                 <div className="sk-pagination-wrapper">
                                     <div className="sk-pagination-container">
                                         <Pagination
+                                            showQuickJumper={isMain}
+                                            showTotal={isMain ? count => `Всего найдено: ${count}` : undefined}
                                             current={currentPage}
                                             total={allUsersCount}
                                             pageSize={pageSize}
@@ -382,7 +463,7 @@ const UserManagerPage_2025 = (props) => {
                                             onChange={(page) => handlePageChange(page)}
                                         />
 
-                                        <Tag
+                                        {!isMain && <Tag
                                             style={{
                                                 width: '160px',
                                                 height: '30px',
@@ -393,19 +474,41 @@ const UserManagerPage_2025 = (props) => {
                                                 backgroundColor: 'var(--row-second-bg-color)',
                                                 borderColor: 'var(--table-border-divider-color)',
                                             }}
-                                        >Всего найдено: {allUsersCount}</Tag>
+                                        >Всего найдено: {allUsersCount}</Tag>}
                                     </div>
-                                    <NavLink to={'/hr/usermanager/new'}>
-                                        <Button color={'primary'}
-                                                variant={'outlined'}
-                                                icon={<PlusOutlined/>}
-                                                style={{ width: '125px' }}
-                                        >Создать</Button>
-                                    </NavLink>
-                                </div>
-                            </Affix>
+                                {!isMain && createAction}
+                            </div>
+                            </PanelWrapper>
                             <Spin tip="Ожидайте" spinning={isLoading} style={{width: '100%', height: '100%'}}>
-                                <div className="sk-content-table">
+                                {isMain ? (
+                                    <PersonnelTable label="Список сотрудников" headings={['Выбор','ID','Сотрудник','Должность','Группы','Действия']} empty={!departments.length}>
+                                        {departments.map(department => (
+                                            <React.Fragment key={department.id}>
+                                                <tr className="sk-personnel-department">
+                                                    <td><Checkbox aria-label={`Выбрать отдел ${department.name}`} checked={isChecked(department.id)}
+                                                        indeterminate={isIndeterminate(department.id)} onChange={() => checkUncheckDepartment(department.id)} /></td>
+                                                    <th scope="row" colSpan={5}><button type="button" aria-expanded={!closedDepartments.includes(department.id)}
+                                                        onClick={() => openCloseDepartments(department.id)}>{department.name}</button></th>
+                                                </tr>
+                                                {!closedDepartments.includes(department.id) && users.filter(user => +user.departament === +department.id).map(user => (
+                                                    <React.Fragment key={user.id}>
+                                                        <tr aria-selected={checkedUsers.includes(user.id)} onDoubleClick={event => openCloseUserRules(event, user.id)}>
+                                                            <td><Checkbox aria-label={`Выбрать сотрудника ${user.id}`} checked={checkedUsers.includes(user.id)} onChange={() => checkUncheckUser(user.id)} /></td>
+                                                            <td>{user.id}</td><td>{[user.surname,user.name,user.patronymic].filter(Boolean).join(' ')}</td>
+                                                            <td>{user.occupy}</td>
+                                                            <td>{user.groups?.map(group => <Tag key={group.id} closable onClose={event => removeGroup(event, group, user.id)}>{group.name}</Tag>)}</td>
+                                                            <td><div className="sk-user-row-actions">
+                                                                <Button icon={<EyeOutlined />} aria-expanded={openRules.includes(user.id)} onClick={event => openCloseUserRules(event, user.id)}>Подробнее</Button>
+                                                                <NavLink to={`/hr/usermanager/${user.id}`}><EditOutlined /> Редактировать</NavLink>
+                                                            </div></td>
+                                                        </tr>
+                                                        {openRules.includes(user.id) && <tr><td colSpan={6}>{renderUserDetails(user)}</td></tr>}
+                                                    </React.Fragment>
+                                                ))}
+                                            </React.Fragment>
+                                        ))}
+                                    </PersonnelTable>
+                            ) : <div className="sk-content-table">
                                     {departments.map((department, index) => (
                                         <div key={`${department.id}-${index}`}
                                              className="sk-department-block"
@@ -472,62 +575,7 @@ const UserManagerPage_2025 = (props) => {
                                                                         )}
                                                                     </div>
                                                                     {openRules.find(item => item === user.id) && (
-                                                                        <div className="sk-person-rules no-select">
-                                                                            {user.linked_schedule && (
-                                                                                <div className="sk-person-schedule">
-                                                                                    <div
-                                                                                        className="sk-person-schedule-hover-container">
-                                                                                        <div className="sk-schedule-cell">
-                                                                                            <SchedIcons type={user.linked_schedule.skud_schedule_type_id} size={'30px'}/>
-                                                                                            <p>{user.linked_schedule.skud_schedule.name}</p>
-                                                                                        </div>
-                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                            {dayjs()
-                                                                                                .startOf('day')
-                                                                                                .add(user.linked_schedule.skud_schedule.start_time, 'seconds')
-                                                                                                .format('HH:mm')}
-                                                                                            -
-                                                                                            {dayjs()
-                                                                                                .startOf('day')
-                                                                                                .add(user.linked_schedule.skud_schedule.end_time, 'seconds')
-                                                                                                .format('HH:mm')}
-                                                                                        </p>
-                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                            {dayjs()
-                                                                                                .startOf('day')
-                                                                                                .add(user.linked_schedule.skud_schedule.lunch_start, 'seconds')
-                                                                                                .format('HH:mm')}
-                                                                                            -
-                                                                                            {dayjs()
-                                                                                                .startOf('day')
-                                                                                                .add(user.linked_schedule.skud_schedule.lunch_end, 'seconds')
-                                                                                                .format('HH:mm')}
-                                                                                        </p>
-                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                            {dayjs()
-                                                                                                .startOf('day')
-                                                                                                .add(user.linked_schedule.skud_schedule.target_time, 'seconds')
-                                                                                                .format('HH:mm')} / день</p>
-                                                                                    </div>
-                                                                                </div>
-                                                                            )}
-                                                                            {user.linked_rules && user.linked_rules.length > 0 && user.linked_rules.map((rule, idx) => (
-                                                                                <div className="sk-person-rule no-select" key={`${user.id}-${rule.id}`}>
-                                                                                    <div className="sk-person-rule-hover-container">
-                                                                                        <div className="sk-schedule-cell">
-                                                                                            <RuleIcons type={rule.type} size={'30px'}/>
-                                                                                            <p>{rule.name}</p>
-                                                                                        </div>
-                                                                                        <p className="sk-schedule-cell sk-schedule-cell-center">
-                                                                                            {dayjs()
-                                                                                                .startOf('day')
-                                                                                                .add(rule.duration_time, 'seconds')
-                                                                                                .format('HH:mm')}
-                                                                                        </p>
-                                                                                    </div>
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
+                                                                        renderUserDetails(user)
                                                                     )}
                                                                 </div>
                                                             );
@@ -538,14 +586,14 @@ const UserManagerPage_2025 = (props) => {
                                             )}
                                         </div>
                                     ))}
-                                </div>
+                                </div>}
                             </Spin>
                         </div>
                     </Content>
                     <Sider width={isOpenTools ? "330px" : 0}
                            className={`sider ${isOpenTools ? '' : 'sider-hidden'} pl15`}
                     >
-                        <Affix offsetTop={54}>
+                        <PanelWrapper {...(isMain ? {} : {offsetTop: 54})}>
                             <div className="sk-width-container">
                                 <UserManagerExtraTools
                                     onChangeFilter={(ev) => {setFilters(ev)}}
@@ -570,7 +618,7 @@ const UserManagerPage_2025 = (props) => {
                                     on_action={fetchUsers}
                                 />
                             </div>
-                        </Affix>
+                        </PanelWrapper>
                     </Sider>
                 </Layout>
             </Layout>

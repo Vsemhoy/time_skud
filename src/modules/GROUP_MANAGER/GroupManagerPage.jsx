@@ -1,5 +1,8 @@
+import PersonnelTable from '../../components/PersonnelTable';
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
 import GroupPageToolbar from "./components/grouppagetoolbar";
+import {FilterOutlined, PlusOutlined} from '@ant-design/icons';
 import { Button, Empty, Flex, Input, Splitter, Typography } from 'antd';
 import GroupCardItem from "./components/groupcarditem";
 import GroupUserCardItem from "./components/groupusercarditem";
@@ -19,6 +22,8 @@ import UserManagerModal from "./components/usermanagermodal";
 
 
 const GroupManagerPage = (props)=>{
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const [showFilters, setShowFilters] = useState(false);
 
     const [companies, setCompanies] = useState([
         { key: 0, value: 0, label: 'Все компании' },
@@ -496,20 +501,35 @@ const GroupManagerPage = (props)=>{
 
 
     return (
-        <div className={'sk-mw-1400 sk-p-12'}>
-            <br />
-            <h2>Группировка пользователей</h2>
+        <div className={isMain ? "sk-personnel-main sk-personnel-groups" : "sk-mw-1400 sk-p-12"}>
+            {isMain ? <header className="sk-personnel-titlebar">
+                <Button icon={<FilterOutlined />} aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>Фильтры</Button>
+                <h2>Группы пользователей</h2>
+                <Button type="primary" icon={<PlusOutlined />} onClick={openBlankEditor}>Создать группу</Button>
+            </header> : <><br /><h2>Группировка пользователей</h2></>}
+            <div hidden={isMain && !showFilters}>
             <GroupPageToolbar
+                hideCreate={isMain}
                 companies={companies}
                 userData={props.userdata}
                 onChangeFilter={onSetFilters}
                 // schedTypes={scheduleTypes}
                 onAddNewClick={openBlankEditor}
             />
-            <br/>
+            </div>
+            {!isMain && <br/>}
 
             <div className={'sk-group-1col-body'}>
-            <div className={'sk-group-list'}>
+            {isMain ? (
+                <PersonnelTable label="Группы пользователей" headings={['ID','Группа','Компания','Сотрудники','Действия']} empty={!groupList.length}>
+                    {groupList.map(group => (
+                        <tr key={group.id}>
+                            <td>{group.id}</td><td>{group.name}</td><td>{group.company_name}</td><td>{group.users_count ?? 0}</td>
+                            <td><Button size="small" onClick={event => openModalEditor(group.id, event)}>Редактировать</Button></td>
+                        </tr>
+                    ))}
+                </PersonnelTable>
+            ) : <><div className={'sk-group-list'}>
                 { groupList.map((group)=>(
                     <GroupCardItem
                         key={`grocard_${group.id}`}
@@ -535,6 +555,7 @@ const GroupManagerPage = (props)=>{
                     <Empty description={"Ничего не найдено"}/>
                 ): ""}
 
+</>}
             </div>
 
             <div>

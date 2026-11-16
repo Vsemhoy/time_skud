@@ -171,3 +171,40 @@
 .ant-drawer {
     z-index: 1100 !important;
 }
+
+.sk-route-shell:has(> .ant-layout-content > .sk-charts-screen) {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.sk-charts-screen, .sk-charts-screen > .ant-spin-container {
+    height: 100%;
+}
+.sk-charts-main .content {
+    display: flex;
+    flex-direction: column;
+}
+.sk-charts-main .content > .ant-spin-nested-loading {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    overflow: auto;
+    background: white;
+}
+.sk-charts-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: white;
+    border: 1px solid #b9c3ce;
+    border-top: 0;
+}
+.sk-charts-controls > .ant-select {
+    width: 210px;
+}
+.sk-charts-controls > div:last-child {
+    flex: 1 1 420px;
+}

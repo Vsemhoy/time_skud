@@ -14,7 +14,12 @@ import RuleIcons from "../../../assets/Comicon/RuleIcons";
 import {PROD_AXIOS_INSTANCE} from "../../../API/API";
 import {DEF_SCHEDULE as activeRule} from "../../../CONFIG/DEFFORMS";
 
+import PersonnelTable from "../../../components/PersonnelTable";
+import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from "../../../Utils/skudPageTheme";
+
 function RulesWorkspace(props) {
+    const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
+    const FormWrapper = isMain ? 'div' : Affix;
     const navigate = useNavigate();
     const { userIdState, prepareAndShowAlert } = useOutletContext();
 
@@ -416,27 +421,64 @@ function RulesWorkspace(props) {
         }
     };
 
+    const pagination = (
+        <Pagination showQuickJumper={isMain} showTotal={isMain ? count => `Всего: ${count}` : undefined}
+            current={currentPage}
+            total={allRulesCount}
+            pageSize={pageSize}
+            pageSizeOptions={[20, 50, 100]}
+            locale={{
+                items_per_page: 'на странице',
+                jump_to: 'Перейти',
+                jump_to_confirm: 'OK',
+                page: 'Страница'
+            }}
+            onShowSizeChange={(current, newSize) => setPageSize(newSize)}
+            onChange={(page) => setCurrentPage(page)}
+        />
+    );
+    const ruleActions = rule => (
+        +rule.id !== +editedRule.id ? (
+            <div className={`${styles.sk_rules_table_cell}`}
+                  style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
+                {(activeRules.find(r => r.id === rule.id) || nextRules.find(r => r.id === rule.id)) && (
+                    <Button color={'default'}
+                            variant={'outlined'}
+                            shape="circle"
+                            aria-label="Изменить привязку" icon={<EditOutlined/>}
+                            onClick={() => toEditRule(rule.id)}
+                    ></Button>
+                )}
+                {nextRules.find(r => r.id === rule.id) && (
+                    <Button color={'default'}
+                            variant={'outlined'}
+                            shape="circle"
+                            aria-label="Отвязать правило" icon={<DeleteOutlined/>}
+                            onClick={() => removeRule(rule.id)}
+                    ></Button>
+                )}
+            </div>
+        ) : (
+            <div className={styles.sk_schedule_table_cell}
+                 style={{padding: '15px', justifyContent: 'center'}}>
+                <Button color={'default'}
+                        variant={'outlined'}
+                        shape="circle"
+                        aria-label="Отменить редактирование" icon={<CloseOutlined/>}
+                        onClick={() => clearEdit()}
+                ></Button>
+            </div>
+        )
+    );
+
     return (
         <Spin spinning={isLoading}>
-            <div className={styles.sk_rules_workspace}>
-                <div className={styles.sk_rules_table_container}>
-                    <div className={styles.sk_rules_table_label}>Правила учета рабочего времени пользователя</div>
+            <div className={isMain ? styles.sk_schedule_workspace : styles.sk_rules_workspace}>
+                <div className={isMain ? styles.sk_schedules_table : styles.sk_rules_table_container}>
+                    <div className={isMain ? styles.sk_schedule_table_label : styles.sk_rules_table_label}>Правила учета рабочего времени пользователя</div>
                     <div className={styles.sk_pagination_wrapper}>
-                        <div className={styles.sk_pagination_container}>
-                            <Pagination
-                                current={currentPage}
-                                total={allRulesCount}
-                                pageSize={pageSize}
-                                pageSizeOptions={[20, 50, 100]}
-                                locale={{
-                                    items_per_page: 'на странице',
-                                    jump_to: 'Перейти',
-                                    jump_to_confirm: 'OK',
-                                    page: 'Страница'
-                                }}
-                                onShowSizeChange={(current, newSize) => setPageSize(newSize)}
-                                onChange={(page) => setCurrentPage(page)}
-                            />
+                        {!isMain && <div className={styles.sk_pagination_container}>
+                            {pagination}
                             <Tag
                                 style={{
                                     width: '160px',
@@ -449,7 +491,7 @@ function RulesWorkspace(props) {
                                     borderColor: 'var(--table-border-divider-color)',
                                 }}
                             >Всего найдено: {allRulesCount}</Tag>
-                        </div>
+                        </div>}
                         <Select
                             value={ruleTypeFilter}
                             options={ruleTypes}
@@ -461,7 +503,25 @@ function RulesWorkspace(props) {
                             }}
                         />
                     </div>
-                    <div className={styles.sk_rules_table}>
+                    {isMain ? <>
+                        <div className={styles.schedule_list_scroll}>
+                            <PersonnelTable label="Правила учёта рабочего времени" headings={['Тип', 'ID', 'Название, описание', 'Время, час.', 'Начало действия', 'Действует до', 'Действия']} empty={!rules.length}>
+                                {rules.map(rule => (
+                                    <tr key={rule.id} data-active={activeRules.some(r => r.id === rule.id)}
+                                        data-editing={+rule.id === +editedRule.id} data-conflict={intersections.some(id => +id === +rule.id)}>
+                                        <td><span className={styles.type_with_icon}>
+                                            <span aria-hidden="true"><RuleIcons type={rule.rule_type_id} size="20px" /></span>
+                                            {ruleTypes.find(type => +type.id !== 0 && +type.id === +rule.rule_type_id)?.name || 'Не указан'}
+                                        </span></td>
+                                        <td>{rule.id}</td><td>{rule.name}<small>{rule.name_2}</small></td>
+                                        <td>{timeString(rule.duration_time)}</td><td>{dayjs(rule.start).format('DD.MM.YYYY')}</td>
+                                        <td>{rule.end ? dayjs(rule.end).format('DD.MM.YYYY') : 'Бессрочно'}</td><td>{ruleActions(rule)}</td>
+                                    </tr>
+                                ))}
+                            </PersonnelTable>
+                        </div>
+                        <div className="sk-claims-table-pagination">{pagination}</div>
+                    </> : <div className={styles.sk_rules_table}>
                         <div className={`${styles.sk_rules_table_row_wrapper} ${styles.sk_table_row_header}`}>
                             <div className={styles.sk_rules_table_row}>
                                 <div className={`${styles.sk_rules_table_cell} ${styles.sk_rules_table_cell_header}`}>
@@ -522,54 +582,24 @@ function RulesWorkspace(props) {
                                             <p className={styles.sk_rules_name}>{rule.end ? dayjs(rule.end).format('DD.MM.YYYY') : '—'}</p>
                                         </div>
                                     </div>
-                                    {+rule.id !== +editedRule.id ? (
-                                        <div className={`${styles.sk_rules_table_cell}`}
-                                              style={{padding: '15px', justifyContent: 'center', gridGap: '5px'}}>
-                                            {(activeRules.find(r => r.id === rule.id) || nextRules.find(r => r.id === rule.id)) && (
-                                                <Button color={'default'}
-                                                        variant={'outlined'}
-                                                        shape="circle"
-                                                        icon={<EditOutlined/>}
-                                                        onClick={() => toEditRule(rule.id)}
-                                                ></Button>
-                                            )}
-                                            {nextRules.find(r => r.id === rule.id) && (
-                                                <Button color={'default'}
-                                                        variant={'outlined'}
-                                                        shape="circle"
-                                                        icon={<DeleteOutlined/>}
-                                                        onClick={() => removeRule(rule.id)}
-                                                ></Button>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <div className={styles.sk_schedule_table_cell}
-                                             style={{padding: '15px', justifyContent: 'center'}}>
-                                            <Button color={'default'}
-                                                    variant={'outlined'}
-                                                    shape="circle"
-                                                    icon={<CloseOutlined/>}
-                                                    onClick={() => clearEdit()}
-                                            ></Button>
-                                        </div>
-                                    )}
+                                    {ruleActions(rule)}
                                 </div>
                             </div>
                         ))}
-                    </div>
+                    </div>}
                 </div>
-                <Affix offsetTop={10 + 10 + 52 + 52}>
-                    <div className={styles.sk_rules_linker}>
+                <FormWrapper {...(isMain ? {className: styles.sk_schedule_form_wrapper} : {offsetTop: 124})}>
+                    <div className={isMain ? styles.sk_schedule_linker : styles.sk_rules_linker}>
                         <div style={{width: '100%'}}>
                             <div className={styles.sk_flex_space}>
-                                <span className={'sk-totoro'}>Привязка нового правила</span>
+                                <span className={'sk-totoro'}>{isMain ? (editedRule.id ? "Изменение привязки" : "Привязать правило") : "Привязка нового правила"}</span>
                                 <span style={{cursor: 'pointer'}}
                                       onClick={() => clearEdit()}
                                 >
                                     <ClearOutlined/>
                                 </span>
                             </div>
-                            <br/>
+                            {isMain ? <p className={styles.sk_schedule_hint}>Выберите правило и укажите период его действия.</p> : <br/>}
                             <div className={styles.sk_label_select}>Тип привязываемого правила</div>
                             <Select placeholder={'Тип привязываемого правила'}
                                     value={ruleTypeFilter ? ruleTypeFilter : toolbarTypeRuleId}
@@ -658,10 +688,11 @@ function RulesWorkspace(props) {
                             />
                             <br/>
                             <br/>
-                            <Button block
+                            <Button block type={isMain ? "primary" : "default"}
                                     disabled={isCantAddRule()}
                                     onClick={() => fetchAddOrUpdateRule()}
-                            >Привязать правило</Button>
+                            >{isMain && editedRule.id ? 'Сохранить изменения' : 'Привязать правило'}</Button>
+                            {isMain && Boolean(editedRule.id) && <Button block style={{marginTop: 8}} onClick={clearEdit}>Отменить редактирование</Button>}
                             {toolbarTypeRuleId ? (
                                 (() => {
                                     let description = null;
@@ -686,7 +717,7 @@ function RulesWorkspace(props) {
                             }
                         </div>
                     </div>
-                </Affix>
+                </FormWrapper>
             </div>
         </Spin>
 );

@@ -804,7 +804,12 @@ const UserMonitorListCard = (props) => {
                     >
                         <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}>
                             <div className="sk-userlist-name-cell">
-                                <span className="sk-userlist-name-text">
+                                <span
+                                    className="sk-userlist-name-text"
+                                    title={props.showFullNameOnHover
+                                        ? [content.surname, content.name, content.patronymic].filter(Boolean).join(' ')
+                                        : undefined}
+                                >
                                     {content.surname} {content.name} {content.patronymic}
                                     {isSuperMode && props.favorite_row_state && (
                                         <span className="sk-userlist-favorite-feedback" role="status" aria-live="polite">

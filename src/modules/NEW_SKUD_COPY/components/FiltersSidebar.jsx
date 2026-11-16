@@ -206,8 +206,12 @@ const FiltersSidebar = (props) => {
         }
     };
 
+    const collapsible = props.collapsible !== false;
+    const Panel = collapsible ? CollapsibleSidebarCard : 'section';
+    const panelProps = collapsible ? {storageId: 'filters', label: 'Фильтры сотрудников'} : {};
+
     return (
-        <CollapsibleSidebarCard storageId="filters" label="Фильтры сотрудников" className="sk2-filters-panel">
+        <Panel {...panelProps} className="sk2-filters-panel">
             <header className="sk2-filters-panel__header">
                 <div className="sk2-filters-panel__eyebrow">Параметры списка</div>
                 <div className="sk2-filters-panel__title">Фильтры сотрудников</div>
@@ -298,7 +302,7 @@ const FiltersSidebar = (props) => {
                   Сбросить фильтры
               </Button>
             </footer>
-        </CollapsibleSidebarCard>
+        </Panel>
     );
 }
 
