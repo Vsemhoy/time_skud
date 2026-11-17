@@ -45,19 +45,22 @@ const UserListStatusIndicator = ({isLoading}) => (
 
 const isTruthyFlag = (value) => value === true || value === 1 || value === '1';
 
-const UserListTableSkeleton = ({extendedInfo, showIdColumn = true}) => (
+const UserListTableSkeleton = ({extendedInfo, showIdColumn = true, separatePhoneColumn}) => (
   <div className="sk-userlist-skeleton" aria-hidden="true">
     {Array.from({ length: TABLE_SKELETON_ROWS }).map((_, index) => (
       <div
-        className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'}`}
+        className={`sk-userlist-skeleton-row ${extendedInfo ? 'extended' : ''} ${showIdColumn ? '' : 'without-id-column'} ${separatePhoneColumn ? 'super-mode' : ''}`}
         key={`userlist-skeleton-${index}`}
       >
         {showIdColumn && <Skeleton.Button active size="small" className="sk-userlist-skeleton-id" />}
         <div className="sk-userlist-skeleton-employee">
           <Skeleton.Input active size="small" className="sk-userlist-skeleton-name" />
-          <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
-          <Skeleton.Button active size="small" className="sk-userlist-skeleton-status" />
+          {!separatePhoneColumn && <>
+            <Skeleton.Input active size="small" className="sk-userlist-skeleton-phone" />
+            <Skeleton.Button active size="small" className="sk-userlist-skeleton-status" />
+          </>}
         </div>
+        {separatePhoneColumn && <Skeleton.Input active size="small" className="sk-userlist-skeleton-short" />}
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-medium" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
         <Skeleton.Button active size="small" className="sk-userlist-skeleton-short" />
@@ -143,6 +146,7 @@ const UserList = (props)=>{
   });
   const isSuperCompactMode = isSuperUser && isSuperFavoritesOnly;
   const isSuperTableMode = isSuperUser;
+  const groupEmployeeStatus = !isSuperTableMode && pageTheme === SKUD_PAGE_THEMES.MAIN;
   const separatePhoneColumn = isSuperTableMode && pageTheme === SKUD_PAGE_THEMES.MAIN;
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
@@ -1432,14 +1436,15 @@ const UserList = (props)=>{
                                     title="Телефон"
                                     aria-label="Телефон"
                                 />}
+                                {groupEmployeeStatus && <span className="sk-employee-status-label">Статус</span>}
                               </div>
                             </div>
 
                             {separatePhoneColumn && <div className="sk-super-phone-column">{renderColumnLabel('Телефон')}</div>}
                             {isModern && <div className="modern-phone-cell"><PhoneOutlined title="Телефон" /></div>}
-                            <div className="sk-userlist-status-cell">
+                            {!groupEmployeeStatus && <div className="sk-userlist-status-cell">
                               {renderColumnLabel('Статус')}
-                            </div>
+                            </div>}
 
                             <div
                                 className="sk-userlist-claims-cell"
@@ -1524,7 +1529,7 @@ const UserList = (props)=>{
                         </div>
                         </StickyWrapper>
                         {shouldShowTableSkeleton ? (
-                          <UserListTableSkeleton extendedInfo={shouldShowExtendedTableColumns} showIdColumn={effectiveShowIdColumn} />
+                          <UserListTableSkeleton extendedInfo={shouldShowExtendedTableColumns} showIdColumn={effectiveShowIdColumn} separatePhoneColumn={separatePhoneColumn} />
                         ) : filteredUsers.length === 0 ? (
                           <div className="sk-userlist-empty-state">
                             <Empty description="Нет данных для отображения" />
@@ -1557,6 +1562,7 @@ const UserList = (props)=>{
                                     show_id_column={effectiveShowIdColumn}
                                     current_user_id={userdata.user.id}
                                     super_mode={isSuperTableMode}
+                                    groupEmployeeStatus={groupEmployeeStatus}
                                     separatePhoneColumn={separatePhoneColumn}
                                     is_super_favorites_only={isSuperFavoritesOnly}
                                     on_set_super_favorite={handleSetSuperFavorite}
@@ -1581,7 +1587,7 @@ const UserList = (props)=>{
               <StickyWrapper {...(useStickyToolbar ? {} : {offsetTop: contentOffset})}>
                 <div className="sk-width-container sk-userlist-details-panel" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 46px)'}}>
                     {pageTheme === SKUD_PAGE_THEMES.MAIN && (
-                      <h2 className="sk-userlist-details-heading">Виджеты</h2>
+                      <h2 className="sk-userlist-details-heading">Информация</h2>
                     )}
                     <ExtendedInformationSidebar
                         target_user_guys={targetUserGuys}

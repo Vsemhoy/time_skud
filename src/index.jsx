@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import './assets/common-theme.css';
 import reportWebVitals from './reportWebVitals';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider } from 'antd';
+import { getSavedSkudPageTheme } from './Utils/skudPageTheme';
 import { StateProvider } from './components/ComStateProvider25/ComStateProvider25';
 
 /* + LOCALE */
@@ -40,81 +42,19 @@ const customLocale = {
 };
 /* - LOCALE */
 
-const THEME_STORAGE_KEY = 'skud_theme';
-const THEME_CHANGE_EVENT = 'skud-theme-change';
-const APP_PRIMARY_COLOR = '#6b829d';
+const root = ReactDOM.createRoot(document.getElementById('root'));
+document.documentElement.dataset.pageTheme = getSavedSkudPageTheme();
 
-const getSavedThemeMode = () => {
-    if (typeof window === 'undefined') {
-        return 'light';
-    }
+document.documentElement.classList.add('sk-theme-light');
+document.body.classList.add('sk-theme-light');
 
-    return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light';
-};
-
-const BrowserThemeProvider = () => {
-    const [themeMode, setThemeMode] = useState(getSavedThemeMode);
-
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            return undefined;
-        }
-
-        const handleThemeChange = (event) => {
-            setThemeMode(event.detail?.theme === 'dark' ? 'dark' : 'light');
-        };
-        const handleStorageChange = (event) => {
-            if (event.key === THEME_STORAGE_KEY) {
-                setThemeMode(event.newValue === 'dark' ? 'dark' : 'light');
-            }
-        };
-
-        window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
-        window.addEventListener('storage', handleStorageChange);
-
-        return () => {
-            window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
-            window.removeEventListener('storage', handleStorageChange);
-        };
-    }, []);
-
-    useEffect(() => {
-        const isDarkMode = themeMode === 'dark';
-        const themeClass = isDarkMode ? 'sk-theme-dark' : 'sk-theme-light';
-        const oppositeThemeClass = isDarkMode ? 'sk-theme-light' : 'sk-theme-dark';
-
-        document.documentElement.classList.remove(oppositeThemeClass);
-        document.body.classList.remove(oppositeThemeClass);
-        document.documentElement.classList.add(themeClass);
-        document.body.classList.add(themeClass);
-        document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
-        document.body.style.colorScheme = isDarkMode ? 'dark' : 'light';
-    }, [themeMode]);
-
-    const antdTheme = useMemo(() => ({
-        algorithm: themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-            colorPrimary: APP_PRIMARY_COLOR,
-        },
-    }), [themeMode]);
-
-    return (
-        <ConfigProvider
-            locale={customLocale}
-            theme={antdTheme}
-        >
+root.render(
+    <React.StrictMode>
+        <ConfigProvider locale={customLocale} theme={{ token: { colorPrimary: '#6b829d' } }}>
             <StateProvider>
                 <App />
             </StateProvider>
         </ConfigProvider>
-    );
-};
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-
-root.render(
-    <React.StrictMode>
-        <BrowserThemeProvider />
     </React.StrictMode>
 
 );

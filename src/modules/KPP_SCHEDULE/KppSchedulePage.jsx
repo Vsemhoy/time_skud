@@ -173,7 +173,7 @@ const KppSchedulePage = () => {
     return (
         <div className={isMain ? "sk-kpp-schedule-page sk-operations-main sk-shift-main" : "sk-kpp-schedule-page"}>
             {contextHolder}
-            <div className="sk-kpp-schedule-header shift-header">
+            <div className="sk-kpp-schedule-header shift-header ui-pagebar ui-pagebar--split">
                 <div>
                     <h2>График КПП</h2>
                     <span className="sk-kpp-schedule-subtitle">Пулково КПП, отдел {KPP_DEPARTMENT_ID}</span>

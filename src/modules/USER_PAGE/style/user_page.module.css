@@ -532,7 +532,7 @@ h1 {
 
 
 :global(.sk-personnel-profile).sk_mega_layout {
-    --sk-action-blue: #2465c3;
+    --sk-action-blue: var(--sk-active-button);
     padding: 0 8px 8px;
     background: #e5ecf5;
 }
@@ -549,6 +549,11 @@ h1 {
     color: inherit;
     text-align: left;
 }
+:global(.sk-personnel-profile) .sk_user_tabs :global(.ant-btn) > span:not(:global(.ant-btn-icon)) {
+    font-size: var(--ui-profile-tab-size);
+    line-height: 1.2;
+}
+
 :global(.sk-personnel-profile) .sk_user_header {
     column-gap: 10px;
 }

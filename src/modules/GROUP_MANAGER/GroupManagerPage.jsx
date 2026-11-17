@@ -504,7 +504,7 @@ const GroupManagerPage = (props)=>{
 
     return (
         <div className={isMain ? "sk-personnel-main sk-personnel-groups" : "sk-mw-1400 sk-p-12"}>
-            {isMain ? <header className="sk-personnel-titlebar">
+            {isMain ? <header className="sk-personnel-titlebar ui-pagebar ui-pagebar--centered">
                 <FiltersToggle icon={<FilterOutlined />} aria-controls="group-filters" aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>Фильтры</FiltersToggle>
                 <h2>Группы пользователей</h2>
                 <Button type="primary" icon={<PlusOutlined />} onClick={openBlankEditor}>Создать группу</Button>

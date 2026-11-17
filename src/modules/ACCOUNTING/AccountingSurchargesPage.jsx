@@ -227,7 +227,7 @@ const AccountingSurchargesPage = () => {
             <Layout className={'layout'}>
                 <Header className={'header'}>
                     <PageAffix>
-                        <div className={'sk-header-container'}>
+                        <div className="sk-header-container ui-pagebar ui-pagebar--centered">
                             {isMain ? (
                                 <AccountingPeriodFilters
                                     months={months}

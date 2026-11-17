@@ -171,7 +171,7 @@ const SchedModalSection1 = (props) => {
               <div className={'ant-table-content'}>
         
       {table.length ? (
-        <table className={'sk-table-table'}>
+        <table className={'ui-table sk-table-table'}>
         <thead className={'ant-table-thead'}>
           <tr>
             <th></th>

@@ -828,35 +828,35 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 
 .sk-claims-viewport {
-    --sk-action-blue: #2465c3;
-    --claims-heading-height: 40px;
+    --sk-action-blue: var(--sk-active-button);
+    --claims-heading-height: var(--ui-heading-height);
 }
 
 .sk-claims-table-main .sk-clamen-headerrow {
     box-sizing: border-box;
     height: var(--claims-heading-height);
-    border: 1px solid #435d78;
-    background: #506b89 !important;
+    border: 1px solid var(--ui-heading-divider);
+    background: var(--ui-heading-bg) !important;
     backdrop-filter: none;
 }
 
 .sk-claims-table-main .sk-clamen-headerrow > .sk-clamen-card {
     --app-text-color: white;
-    --column-divider-color: #435d78;
+    --column-divider-color: var(--ui-heading-divider);
     height: 100%;
-    background: #506b89;
+    background: var(--ui-heading-bg);
     color: white;
-    font-size: 12px;
+    font-size: var(--ui-heading-size);
     font-weight: 600;
 }
 
 .sk-claims-table-main .sk-clamen-card-wrapper > .sk-clamen-card {
-    height: 44px;
+    height: var(--ui-row-height);
     background: white;
 }
 
 .sk-claims-table-main .sk-clamen-card-wrapper:nth-child(even) > .sk-clamen-card {
-    background: #f5f8fa;
+    background: var(--ui-alt-row);
 }
 
 .sk-claims-table-main .sk-clamen-card > div > div {
@@ -865,12 +865,16 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     text-align: center;
 }
 
+.sk-clamen-card-wrapper .sk-clamen-card > div {
+    height: 31px;
+}
+
 .sk-claims-table-main .sk-clamen-card-wrapper .sk-clamen-card > div {
-    font-size: 12px;
+    font-size: var(--ui-text-size);
 }
 
 .sk-claims-table-main .sk-clamen-card-wrapper .sk-clamen-card > div:nth-child(2) {
-    font-size: 15px;
+    font-size: var(--ui-text-size);
 }
 
 .sk-claims-table-main .sk-clamen-card > div:nth-child(2) > div {
@@ -897,7 +901,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     border: 0;
     color: white;
     font-family: inherit;
-    font-size: 12px;
+    font-size: var(--ui-heading-size);
     font-weight: 600;
     cursor: pointer;
 }
@@ -930,7 +934,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     display: flex;
     justify-content: flex-end;
     padding: 8px;
-    border: 1px solid #b9c3ce;
+    border: 1px solid var(--ui-border);
     background: white;
 }
 
@@ -946,7 +950,8 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 
 .sk-claims-viewport .header {
-    height: 46px;
+    height: auto;
+    min-height: var(--ui-pagebar-height);
     padding: 0;
 }
 
@@ -956,10 +961,11 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     align-items: center;
     gap: 8px;
     box-sizing: border-box;
-    height: 46px;
-    padding: 0 8px;
-    background: white;
-    border-bottom: 1px solid #8f9dad;
+    min-height: var(--ui-pagebar-height);
+    height: auto;
+    padding: 0 var(--ui-bar-gutter);
+    background: var(--ui-surface);
+    border-bottom: 1px solid var(--ui-bar-border);
 }
 
 .sk-claims-viewport .header .page-header {
@@ -972,7 +978,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     height: 30px;
     padding-inline: 4px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--ui-heading-size);
     font-weight: 600;
 }
 
@@ -998,13 +1004,13 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     gap: 8px;
     height: 30px;
     padding: 0 8px;
-    border: 1px solid #b9c3ce;
+    border: 1px solid var(--ui-border);
     border-radius: 4px;
-    background: #f5f8fa;
+    background: var(--ui-alt-row);
     color: #213d60;
     white-space: nowrap;
     font: inherit;
-    font-size: 12px;
+    font-size: var(--ui-heading-size);
     line-height: 1;
 }
 
@@ -1107,9 +1113,9 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     box-sizing: border-box;
     flex: 0 0 var(--claims-heading-height);
     margin: 0;
-    background: #506b89;
+    background: var(--ui-heading-bg);
     color: white;
-    font-size: 12px;
+    font-size: var(--ui-heading-size);
     font-weight: 600;
 }
 

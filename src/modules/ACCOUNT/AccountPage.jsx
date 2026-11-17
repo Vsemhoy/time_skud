@@ -7,12 +7,15 @@ import { PROD_AXIOS_INSTANCE } from '../../API/API';
 import { ROUTE_PREFIX, CSRF_TOKEN } from '../../CONFIG/config';
 import TimeBankPanel from '../CLAIM_MANAGER_SK/components/TimeBankPanel';
 import { formatMoscowDateTime } from '../../components/Helpers/DateTimeHelpers';
+import { getSavedSkudPageTheme, SKUD_PAGE_THEMES } from '../../Utils/skudPageTheme';
+import './account-main.css';
 
 const hours = value => value == null ? '—' : `${Number((Number(value) / 3600).toFixed(2))} ч`;
 const clock = value => value == null ? '—' : `${String(Math.floor(value / 3600)).padStart(2, '0')}:${String(Math.floor(value % 3600 / 60)).padStart(2, '0')}`;
 const statuses = { 0: ['На согласовании', 'gold'], 1: ['Согласована', 'green'], 2: ['Отклонена', 'red'], 3: ['Отменена', 'default'] };
 
 export default function AccountPage({ userdata }) {
+  const isMain = getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN;
   const userId = userdata?.user?.id;
   const [month, setMonth] = useState(dayjs().startOf('month'));
   const [data, setData] = useState(null);
@@ -32,17 +35,17 @@ export default function AccountPage({ userdata }) {
   const profile = data?.profile;
   const name = profile ? [profile.surname, profile.name, profile.secondname].filter(Boolean).join(' ') : 'Сотрудник';
   const schedule = data?.schedule;
-  return <div style={{ maxWidth: 1400, margin: '0 auto', padding: '24px 16px 40px' }}>
-    <Space style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }} wrap>
+  return <div className={isMain ? 'sk-account-main' : undefined} style={isMain ? undefined : { maxWidth: 1400, margin: '0 auto', padding: '24px 16px 40px' }}>
+    <header className={isMain ? 'ui-pagebar ui-pagebar--split' : undefined} style={isMain ? undefined : { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
       <div><Typography.Title level={2} style={{ margin: 0 }}>Личный кабинет</Typography.Title><Typography.Text type="secondary">Мои данные, рабочее время и заявки</Typography.Text></div>
       <Button icon={<ReloadOutlined />} loading={loading} onClick={() => setRevision(v => v + 1)}>Обновить</Button>
-    </Space>
+    </header>
     {error && <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} />}
     {!data && loading ? <Skeleton active paragraph={{ rows: 8 }} /> : data && <>
-      <Row gutter={[20, 20]}>
+      <Row gutter={isMain ? [8, 8] : [20, 20]}>
         <Col xs={24} lg={10}>
-          <Card style={{ height: '100%' }}>
-            <Space align="start" size={16} style={{ marginBottom: 24 }}>
+          <Card title={isMain ? 'Данные сотрудника' : undefined} style={{ height: '100%' }}>
+            <Space align="start" size={isMain ? 12 : 16} style={{ marginBottom: isMain ? 12 : 24 }}>
               <Avatar size={64} icon={<UserOutlined />} />
               <div><Typography.Title level={4} style={{ margin: '0 0 4px' }}>{name}</Typography.Title><Typography.Text type="secondary">{profile.occupy || 'Должность не указана'}</Typography.Text></div>
             </Space>
@@ -56,8 +59,8 @@ export default function AccountPage({ userdata }) {
           </Card>
         </Col>
         <Col xs={24} lg={14}>
-          <Card style={{ height: '100%' }}>
-            <TimeBankPanel key={`${profile.id}-${revision}`} userId={profile.id} readOnly allowAdjust={false} />
+          <Card title={isMain ? 'Банк времени' : undefined} style={{ height: '100%' }}>
+            <TimeBankPanel key={`${profile.id}-${revision}`} userId={profile.id} readOnly allowAdjust={false} inTitledCard={isMain} />
             <Typography.Text type="secondary">Часы начисляются после подтверждения руководителем. Согласованные отгулы резервируют часы до списания.</Typography.Text>
           </Card>
         </Col>

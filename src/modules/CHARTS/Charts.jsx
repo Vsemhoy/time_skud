@@ -712,7 +712,7 @@ const  Charts = (props) => {
                 <Layout className={'layout'}>
                     <Header className={'header'}>
                         <HeaderWrapper>
-                            <div className={'sk-header-container'}>
+                            <div className="sk-header-container ui-pagebar ui-pagebar--centered">
                                 <HeaderGroup>
                                 <FiltersToggle aria-expanded={isOpenFilters} color={isMain ? 'primary' : 'default'}
                                         variant={isOpenFilters ? 'solid' : 'outlined'}

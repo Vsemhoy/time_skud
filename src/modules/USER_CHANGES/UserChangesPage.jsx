@@ -156,7 +156,7 @@ export default function UserChangesPage() {
             entities[value] || value},
         {title: 'Действие', dataIndex: 'action', width: 105, render: (value) => <Tag color={colors[value]}>{actions[value] || value}</Tag>},
         {title: 'Изменения', dataIndex: 'changes', width: 420, render: (changes) =>
-            <table className="user-changes-diff">
+            <table className="ui-table user-changes-diff">
                 <thead><tr><th>Поле</th><th>Было</th><th>Стало</th></tr></thead>
                 <tbody>{(changes ?? []).filter((change) => change.column !== 'recruitment_date').map((change, index) => (
                     <tr key={`${change.column}-${index}`}>
@@ -170,7 +170,7 @@ export default function UserChangesPage() {
 
     return (
         <div className={isMain ? "user-changes-page sk-personnel-main" : "user-changes-page"}>
-            <header className="user-changes-toolbar">
+            <header className="user-changes-toolbar ui-pagebar ui-pagebar--centered">
                 <FiltersToggle className="user-changes-filter-toggle" icon={<FilterOutlined />}
                     aria-expanded={filtersOpen} aria-controls="user-changes-filters"
                     onClick={() => setFiltersOpen((value) => !value)}>Фильтры</FiltersToggle>

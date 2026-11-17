@@ -499,7 +499,7 @@ const EventMonitorToolbar = (props)=>
             <Content className="sk-event-monitor-content">
                 <Affix offsetTop={props.isMain ? 46 : 0}>
                     <div className="sk-event-monitor-affix-head">
-                        <div className="sk-event-monitor-content-header">
+                        <div className="sk-event-monitor-content-header ui-pagebar ui-pagebar--split">
                             <h2>Монитор событий СКУД</h2>
                             {props.isMain ? (
                                 <div className="sk-event-monitor-header-actions">

@@ -430,22 +430,26 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    min-height: 42px;
+    min-height: var(--ui-heading-height);
     background: var(--operations-header);
     border: 1px solid var(--operations-divider);
     border-radius: 0;
     box-shadow: none;
 }
 :global(.sk-accounting-main) .sk_department_table_header { border-color: var(--operations-divider); }
-:global(.sk-accounting-main) .sk_department_table_header_p { text-shadow: none; font-weight: 600; }
+:global(.sk-accounting-main) .sk_department_table_header_p { text-shadow: none; font-size: var(--ui-heading-size); font-weight: var(--ui-heading-weight); }
 :global(.sk-accounting-main) :is(.sk_department_header, .sk_bankcard_days_month) {
-    background: #d5e0ec;
-    border-color: #b9c3ce;
+    background: var(--ui-section-bg);
+    border-color: var(--ui-border);
     box-shadow: none;
 }
 :global(.sk-accounting-main) .sk_bankcard_days_panel { margin: 0; box-shadow: none; }
-:global(.sk-accounting-main) :is(.sk_person_row_basic_hover_container, .sk_surcharge_row, .sk_bankcard_row) { min-height: 44px; }
-:global(.sk-accounting-main) :is(.sk_person_row_basic_hover_container, .sk_surcharge_row, .sk_bankcard_row):nth-child(even) { background: #f5f8fa; }
+:global(.sk-accounting-main) :is(.sk_person_row_basic_hover_container, .sk_surcharge_row, .sk_bankcard_row) { min-height: var(--ui-row-height); }
+:global(.sk-accounting-main) :is(.sk_person_row_basic_hover_container, .sk_surcharge_row, .sk_bankcard_row):nth-child(even) { background: var(--ui-alt-row); }
+
+:global(.sk-accounting-main) .sk_person_row_content {
+    padding-block: 2px;
+}
 
 :global(.sk-accounting-fit) .sk_accounting_table_wrapper {
     min-width: 0;

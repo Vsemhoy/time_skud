@@ -49,7 +49,7 @@ const UserModal = ({ userId, visible, onClose }) => {
                 <p>Загрузка...</p>
             ) : (
                 <div>
-                    <table className={'sk-user-view-table'}>
+                    <table className={'ui-table sk-user-view-table'}>
                         <tbody>
                             <tr>
                                 <td>Телефон</td>

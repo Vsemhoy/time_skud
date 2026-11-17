@@ -622,6 +622,18 @@ const UserMonitorListCard = (props) => {
 
     
 
+    const statusBadge = badger && (
+        <span
+            className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
+            style={{'--modern-status-bg': statusBackground}}
+            data-modern-absent={props.modern && !badger.text ? 'true' : undefined}
+            title={badger.title}
+        >
+            {badger.icon}
+            <span>{badger.text || ((props.modern || props.groupEmployeeStatus) ? 'не пришел' : '')}</span>
+        </span>
+    );
+
     return (
         /*<div
             onMouseOver={handleMouseOver}
@@ -822,25 +834,14 @@ const UserMonitorListCard = (props) => {
                                 {!props.separatePhoneColumn && <span className="sk-userlist-phone-inline">
                                     {formatPhone(content.phone)}
                                 </span>}
+                                {props.groupEmployeeStatus && statusBadge}
                             </div>
                         </div>
                     </div>
 
                     {props.separatePhoneColumn && <div className="sk-super-phone-column">{formatPhone(content.phone)}</div>}
                     {props.modern && <div className="modern-phone-cell">{formatPhone(content.phone)}</div>}
-                    <div className="sk-userlist-status-cell">
-                        {badger && (
-                            <span
-                                className="sk-userlist-status-inline sk-userlist-status-inline--tag sk-userlist-status-inline--tag-new"
-                                style={{'--modern-status-bg': statusBackground}}
-                                data-modern-absent={props.modern && !badger.text ? 'true' : undefined}
-                                title={badger.title}
-                            >
-                                {badger.icon}
-                                <span>{badger.text || (props.modern ? 'не пришел' : '')}</span>
-                            </span>
-                        )}
-                    </div>
+                    {!props.groupEmployeeStatus && <div className="sk-userlist-status-cell">{statusBadge}</div>}
 
                     <div className={`sk-userlist-enter-cell ${isLateEnter ? 'sk-userlist-enter-cell--late' : ''} ${selectedColumns.includes(10) ? "sk-col-selected" : ""}`}>
                         {renderEventDumpCell(displayedEnterTime)}

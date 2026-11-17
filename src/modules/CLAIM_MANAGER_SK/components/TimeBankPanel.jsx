@@ -9,7 +9,7 @@ const errorText = (e) => Object.values(e.response?.data?.errors || {}).flat().jo
 const bankApi = axios.create({ baseURL: HTTP_HOST, withCredentials: true, timeout: 300000 });
 const post = async (path, data) => (await bankApi.post(`${ROUTE_PREFIX}/timeskud/time-bank/${path}`, { data, _token: CSRF_TOKEN })).data.content;
 
-export default function TimeBankPanel({ userId, claimId, claimType, readOnly = false, debitStart, debitEnd, allowAdjust = true }) {
+export default function TimeBankPanel({ userId, claimId, claimType, readOnly = false, debitStart, debitEnd, allowAdjust = true, inTitledCard = false }) {
   const [bank, setBank] = useState(null);
   const [preview, setPreview] = useState(null);
   const [hours, setHours] = useState(null);
@@ -44,8 +44,8 @@ export default function TimeBankPanel({ userId, claimId, claimType, readOnly = f
     finally { setBusy(false); }
   };
   const creditable = [6, 10, 13].includes(Number(claimType));
-  return <Space direction="vertical" style={{ width: '100%', margin: '16px 0' }}>
-    <Typography.Title level={5}>Банк времени</Typography.Title>
+  return <Space direction="vertical" style={{ width: '100%', margin: inTitledCard ? '0 0 8px' : '16px 0' }}>
+    {!inTitledCard && <Typography.Title level={5}>Банк времени</Typography.Title>}
     {error && <Alert type="error" showIcon message={error} />}
     {quoteError && <Alert type="warning" showIcon message={quoteError} />}
     {quote && <Alert type="info" message={`Стоимость выбранного отгула: ${duration(quote.seconds)}`} />}
