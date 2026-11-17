@@ -90,8 +90,6 @@ return (
         on_chang_query_params={(data)=>{setQueryParams(data)}}
         pagination_total={totalRowsInQuery}
         on_create_event={refreshEvents}
-        onRefresh={refreshEvents}
-        refreshing={eventsLoading}
         user_to_search={userToSearch}
         can_create_event={canCreateEvent}
         event_user_scope={hasAcl(77) || !hasFullEventUserAccess ? 'warehouse' : 'all'}

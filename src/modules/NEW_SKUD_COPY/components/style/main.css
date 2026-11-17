@@ -29,9 +29,12 @@
 
 .main-page.newskud-copy-page .layout--newskud {
     padding-inline: 0;
+    overflow: clip;
 }
 
 .main-page.newskud-copy-page .header-user-list--newskud {
+    position: sticky;
+    top: 46px;
     width: 100%;
     margin-inline: 0;
     padding-inline: var(--sk-page-gutter) !important;
@@ -189,9 +192,29 @@
 }
 
 .main-page.newskud-copy-page .sk-userlist-table-frame {
-    border: 0;
+    overflow: clip;
+    border-block: 0;
+    border-inline: var(--panel-divider);
     border-radius: 0;
     box-shadow: none;
+}
+
+.main-page.newskud-copy-page .sk-layout-center > .sider {
+    overflow: clip;
+}
+
+.main-page.newskud-copy-page .sider .ant-layout-sider-children > .sk-width-container,
+.main-page.newskud-copy-page .sk-userlist-table-header-wrap {
+    position: sticky;
+    top: var(--sk-content-top);
+}
+
+.main-page .sider.pr15:not(.sider-hidden) + .content .sk-userlist-table-frame {
+    border-inline-start: 0;
+}
+
+.main-page .content:has(+ .sider.pl15:not(.sider-hidden)) .sk-userlist-table-frame {
+    border-inline-end: 0;
 }
 
 .main-page.newskud-copy-page .sk-userlist-details-panel {
@@ -218,6 +241,10 @@
 
 .main-page.newskud-copy-page .sk2-filters-panel__header {
     position: static;
+}
+
+.main-page.newskud-copy-page.newskud-page--super .sk-userlist-super-summary-scroll {
+    height: auto;
 }
 
 .main-page.newskud-copy-page .sk-userlist-details-scroll {
@@ -333,6 +360,37 @@
 .main-page.newskud-copy-page .sk-usermonic-headerrow > .sk-userlist-status-cell ~ div {
     justify-content: center;
     text-align: center;
+}
+
+.newskud-copy-page.main-page.newskud-page--super .sk-usermonic-cardrow-ou-test.super-mode.without-id-column {
+    grid-template-columns: minmax(230px, 1.8fr) minmax(72px, .75fr) repeat(5, minmax(90px, 1fr)) minmax(130px, 1fr);
+}
+
+.newskud-copy-page.main-page .sk-usermonic-cardrow-ou-test.super-mode > .sk-super-phone-column {
+    order: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newskud-copy-page.main-page .sk-usermonic-headerrow.super-mode {
+    box-sizing: border-box;
+    height: var(--sk-heading-height);
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.newskud-copy-page.main-page .sk-usermonic-headerrow.super-mode > div {
+    align-items: center;
+    padding-block: 0;
+}
+
+.newskud-copy-page.main-page .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell > div {
+    display: grid;
+    height: 100%;
+}
+
+.newskud-copy-page.main-page .sk-usermonic-headerrow.super-mode > .sk-userlist-employee-cell .sk-userlist-phone-header-icon svg {
+    display: block;
 }
 
 .main-page .sk-usermonic-headerrow .sk-userlist-phone-header-icon {

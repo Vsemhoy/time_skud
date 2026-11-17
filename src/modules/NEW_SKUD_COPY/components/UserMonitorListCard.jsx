@@ -819,13 +819,14 @@ const UserMonitorListCard = (props) => {
                                         </span>
                                     )}
                                 </span>
-                                <span className="sk-userlist-phone-inline">
+                                {!props.separatePhoneColumn && <span className="sk-userlist-phone-inline">
                                     {formatPhone(content.phone)}
-                                </span>
+                                </span>}
                             </div>
                         </div>
                     </div>
 
+                    {props.separatePhoneColumn && <div className="sk-super-phone-column">{formatPhone(content.phone)}</div>}
                     {props.modern && <div className="modern-phone-cell">{formatPhone(content.phone)}</div>}
                     <div className="sk-userlist-status-cell">
                         {badger && (
