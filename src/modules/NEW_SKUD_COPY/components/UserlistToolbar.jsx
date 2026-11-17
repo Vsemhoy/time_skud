@@ -1,3 +1,4 @@
+import FiltersToggle from "../../../components/FiltersToggle";
 ﻿import {Button, DatePicker, Dropdown, Input} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 import {Avatar, Skeleton, Switch} from "antd";
@@ -163,7 +164,7 @@ const UserListToolbar = (props) => {
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
                             { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
-                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Основная' },
+                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Общая' },
                         ]}
                         style={{ width: '112px' }}
                     />
@@ -296,6 +297,36 @@ const UserListToolbar = (props) => {
     }
 
 
+    const isMain = pageTheme === SKUD_PAGE_THEMES.MAIN;
+    const widgetsButton = (
+        <Button
+            type={isMain ? 'primary' : 'default'}
+            icon={props.isDetailsSidebarVisible
+                ? <span className="sk-userlist-lucide-btn-icon"><PanelRightClose size={16} strokeWidth={2.1} /></span>
+                : <span className="sk-userlist-lucide-btn-icon"><PanelRightOpen size={16} strokeWidth={2.1} /></span>}
+            className={isMain ? 'sk-userlist-compact-btn' : 'sk-userlist-compact-btn sk-userlist-icon-only-btn'}
+            title={props.isDetailsSidebarVisible ? 'Скрыть карточки справа' : 'Показать карточки справа'}
+            aria-label={props.isDetailsSidebarVisible ? 'Скрыть карточки справа' : 'Показать карточки справа'}
+            aria-expanded={props.isDetailsSidebarVisible}
+            onClick={props.onToggleDetailsSidebar}
+        >
+            {isMain && <span className="sk-userlist-btn-label">Виджеты</span>}
+        </Button>
+    );
+    const createClaimButton = !isSuperUser && (
+        <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
+            <Button
+                type={isMain ? 'default' : 'primary'}
+                aria-label="Создать заявку"
+                icon={<PlusOutlined />}
+                className={isMain ? 'sk-userlist-compact-btn sk-userlist-icon-only-btn' : 'sk-userlist-compact-btn'}
+                title={'Создать заявку'}
+            >
+                {!isMain && <span className="sk-userlist-btn-label">Создать заявку</span>}
+            </Button>
+        </Dropdown>
+    );
+
     return (
         <div style={{width: '100%'}}>
             <div className={'sk-header-container sk-userlist-toolbar-top'}>
@@ -333,13 +364,13 @@ const UserListToolbar = (props) => {
                             )}
                         </>
                     ) : (
-                        <Button color={'default'}
+                        <FiltersToggle color={'default'}
                                 variant={props.isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 className={'sk-userlist-compact-btn'}
-                                title={'Фильтры'}
+                                aria-expanded={props.isOpenFilters}
                                 onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
-                        ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
+                        ><span className={'sk-userlist-btn-label'}>Фильтры</span></FiltersToggle>
                     )}
                     {!isSuperUser && props.imExist && (
                         <Button
@@ -410,30 +441,8 @@ const UserListToolbar = (props) => {
                     />}
                 </div>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-right'}>
-                    <Button
-                        color={'default'}
-                        variant={'outlined'}
-                        icon={props.isDetailsSidebarVisible
-                            ? <span className="sk-userlist-lucide-btn-icon"><PanelRightClose size={16} strokeWidth={2.1} /></span>
-                            : <span className="sk-userlist-lucide-btn-icon"><PanelRightOpen size={16} strokeWidth={2.1} /></span>}
-                        className={'sk-userlist-compact-btn sk-userlist-icon-only-btn'}
-                        title={props.isDetailsSidebarVisible ? 'Скрыть карточки справа' : 'Показать карточки справа'}
-                        aria-label={props.isDetailsSidebarVisible ? 'Скрыть карточки справа' : 'Показать карточки справа'}
-                        aria-pressed={!props.isDetailsSidebarVisible}
-                        onClick={props.onToggleDetailsSidebar}
-                    />
-                    {!isSuperUser && (
-                        <Dropdown menu={{items: props.menuProps.items, onClick: handleEditorOpen}} trigger={['hover']}>
-                            <Button
-                                type="primary"
-                                icon={<PlusOutlined />}
-                                className={'sk-userlist-compact-btn'}
-                                title={'Создать заявку'}
-                            >
-                                <span className={'sk-userlist-btn-label'}>Создать заявку</span>
-                            </Button>
-                        </Dropdown>
-                    )}
+                    {isMain ? createClaimButton : widgetsButton}
+                    {isMain ? widgetsButton : createClaimButton}
                 </div>
             </div>
             {/*

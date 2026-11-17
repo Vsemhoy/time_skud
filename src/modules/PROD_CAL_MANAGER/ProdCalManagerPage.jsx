@@ -1,3 +1,4 @@
+import FiltersToggle from "../../components/FiltersToggle";
 import PersonnelTable from '../../components/PersonnelTable';
 import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
@@ -282,13 +283,13 @@ const ProdCalManagerPage = (props) => {
             <Header className={'header'}>
                 <PanelWrapper>
                     <div className={'sk-header-container'}>
-                        <Button color={'default'}
+                        <FiltersToggle color={'default'}
                                 aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 style={{ width: '125px' }}
                                 onClick={() => setIsOpenFilters(!isOpenFilters)}
-                        >Фильтры</Button>
+                        >Фильтры</FiltersToggle>
                         <h1 className={'page-header'}>Производственные календари</h1>
                         {isMain ? <div className="sk-personnel-actions">{createAction}</div> : <div />}
                     </div>

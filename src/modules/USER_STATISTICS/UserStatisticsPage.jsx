@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "./components/style/userstatisticspage.css";
 import DemoChart from "./components/style/DemoChart";
+import { getSavedSkudPageTheme, SKUD_PAGE_THEMES } from "../../Utils/skudPageTheme";
 import {  Button, DatePicker, Drawer, Pagination, Select } from "antd";
 import dayjs from "dayjs";
 import { PROD_AXIOS_INSTANCE } from "../../API/API";
@@ -351,7 +352,7 @@ const UserStatisticsPage = (props)=>{
             </div>
 
             <div className={'sk-usp-layout-container'}>
-                <div className="sk-usp-filter-col">
+                <div className={`sk-usp-filter-col${getSavedSkudPageTheme() === SKUD_PAGE_THEMES.MAIN ? ' sk-statistics-main-filter' : ''}`}>
                     
                     <div className={'sk-usp-filter-col-item'} >
                     <span className={'sk-usp-filter-col-label'}>Период</span>

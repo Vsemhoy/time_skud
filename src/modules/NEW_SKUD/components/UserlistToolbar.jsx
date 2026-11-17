@@ -1,3 +1,4 @@
+import FiltersToggle from "../../../components/FiltersToggle";
 ﻿import {Button, DatePicker, Dropdown} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 import {Avatar, Skeleton, Switch} from "antd";
@@ -163,7 +164,7 @@ const UserListToolbar = (props) => {
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
                             { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
-                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Основная' },
+                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Общая' },
                         ]}
                         style={{ width: '112px' }}
                     />
@@ -333,13 +334,13 @@ const UserListToolbar = (props) => {
                             )}
                         </>
                     ) : (
-                        <Button color={'default'}
+                        <FiltersToggle color={'default'}
                                 variant={props.isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 className={'sk-userlist-compact-btn'}
-                                title={'Фильтры'}
+                                aria-expanded={props.isOpenFilters}
                                 onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
-                        ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
+                        ><span className={'sk-userlist-btn-label'}>Фильтры</span></FiltersToggle>
                     )}
                     {!isSuperUser && props.imExist && (
                         <Button

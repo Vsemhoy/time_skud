@@ -274,7 +274,7 @@ const AppMenu23 = (props) => {
                             { value: SKUD_PAGE_THEMES.CLASSIC, label: 'Классическая' },
                             { value: SKUD_PAGE_THEMES.NEW, label: 'Новая' },
                             { value: SKUD_PAGE_THEMES.MODERN, label: 'Модерн' },
-                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Основная' },
+                            { value: SKUD_PAGE_THEMES.MAIN, label: 'Общая' },
                         ]}
                         style={{ width: '112px' }}
                     />

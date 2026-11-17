@@ -1,3 +1,4 @@
+import FiltersToggle from "../../components/FiltersToggle";
 import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Button, DatePicker, Form, InputNumber, Select, Table, Tag, Typography} from 'antd';
@@ -170,9 +171,9 @@ export default function UserChangesPage() {
     return (
         <div className={isMain ? "user-changes-page sk-personnel-main" : "user-changes-page"}>
             <header className="user-changes-toolbar">
-                <Button className="user-changes-filter-toggle" icon={<FilterOutlined />}
+                <FiltersToggle className="user-changes-filter-toggle" icon={<FilterOutlined />}
                     aria-expanded={filtersOpen} aria-controls="user-changes-filters"
-                    onClick={() => setFiltersOpen((value) => !value)}>Фильтры</Button>
+                    onClick={() => setFiltersOpen((value) => !value)}>Фильтры</FiltersToggle>
                 <Typography.Title level={2}>История изменений</Typography.Title>
             </header>
             <div className={`user-changes-layout${filtersOpen ? '' : ' without-filters'}`}>

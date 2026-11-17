@@ -1,6 +1,8 @@
 :root,
 .sk-theme-light {
     color-scheme: light;
+    --border-strong: #b8bdc4;
+    --panel-divider: 1px solid var(--border-strong);
     --app-bg-color: #eef2f6;
     --app-surface-color: #ffffff;
     --app-surface-gray-color: #eae9e9;

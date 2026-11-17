@@ -216,148 +216,150 @@ export const ClaimManagerSidebar = (props) => {
 
 
     return (
-        <div style={{maxHeight: '100vh', overflow: 'auto'}}>
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Пользователь</span>
-                <Input
-                    style={{ width: '100%' }}
-                    placeholder={'Имя пользователя'}
-                    allowClear={true}
-                    value={filterUserName}
-                    onChange={(ev)=>{setFilterUserName(ev.target.value)}}
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Текс полей описания</span>
-                <Input
-                    style={{ width: '100%' }}
-                    placeholder={'Поиск в доп.полях события'}
-                    allowClear={true}
-                    value={filterReason}
-                    onChange={(ev)=>{setFilterReason(ev.target.value)}}
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Компания</span>
-                <Select
-                    style={{ width: '100%' }}
-                    placeholder={'Компания, в которой служит сотрудник'}
-                    value={filterCompany}
-                    options={companyList}
-                    onChange={(ev)=>{setFilterCompany(ev)}}
-                    allowClear
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Отдел</span>
-                <Select
-                    style={{ width: '100%' }}
-                    placeholder={'Отдел, где работает сотрудник'}
-                    value={filterDepartment}
-                    options={props.depart_list.map((dep) => {return ({
-                        key: `depid_${dep.id}`,
-                        value: dep.id,
-                        label: dep.name
-                    })})}
-                    onChange={(ev)=>{setFilterDepartment(ev)}}
-                    allowClear
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Руководитель</span>
-                <Select
-                    style={{ width: '100%' }}
-                    placeholder={'Поиск по имени руководителя'}
-                    value={filterBoss}
-                    options={bossList}
-                    onChange={(ev)=>{setFilterBoss(ev)}}
-                    allowClear
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Дата начала и конца события</span>
-                <DatePicker.RangePicker
-                    style={{ width: '100%' }}
-                    placeholder={'Включающий диапазон дат, в которых искать событие'}
-                    value={filterEventInterval}
-                    onChange={setFilterEventInterval}
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Статус заявки</span>
-                <Select
-                    options={claimStatuses}
-                    style={{ width: '100%' }}
-                    placeholder={'Принят, отклонён'}
-                    value={filterStatus}
-                    onChange={(ev)=>{setFilterStatus(ev)}}
-                    />
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Исполненность</span>
-                <Select
-                    style={{ width: '100%' }}
-                    placeholder={'Статус исполнения'}
-                    value={filterShowEvaluated}
-                    options={evalStatuses}
-                    onChange={(ev)=>{setFilterShowEvaluated(ev)}}
-                    allowClear
-                    />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Удаленные заявки</span>
-                <Switch
-                    checked={filterShowDeleted}
-                    onChange={(ev)=>{setFilterShowDeleted(ev)}}
-                ></Switch>
-            </div>
-
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Аппрувер</span>
-                <Select
-                    style={{ width: '100%' }}
-                    placeholder={'Человек, принявший или отклонивший заявку'}
-                    value={filterApprover}
-                    />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'} >
-                <span className={'sk-usp-filter-col-label'}>Временной интервал для поиска</span>
-                <div className="sk-flex-space">
+        <div className="sk-sidebar-filter-form" style={{maxHeight: '100vh', overflow: 'auto'}}>
+            <div className="sk-sidebar-filter-fields">
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Пользователь</span>
                     <Input
-                        type="number"
-                        min={0}
-                        value={filterDurationStart}
-                        onChange={(ev)=>{setFilterDurationStart(ev.target?.value)}}
-                    />
-                    <Input
-                        type="number"
-                        min={0}
-                        value={filterDurationEnd}
-                        onChange={(ev)=>{setFilterDurationEnd(ev.target?.value)}}
-                    />
+                        style={{ width: '100%' }}
+                        placeholder={'Имя пользователя'}
+                        allowClear={true}
+                        value={filterUserName}
+                        onChange={(ev)=>{setFilterUserName(ev.target.value)}}
+                        />
                 </div>
 
-            </div>
 
-            <br />
-            <div className={'sk-usp-filter-col-item'} >
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Текс полей описания</span>
+                    <Input
+                        style={{ width: '100%' }}
+                        placeholder={'Поиск в доп.полях события'}
+                        allowClear={true}
+                        value={filterReason}
+                        onChange={(ev)=>{setFilterReason(ev.target.value)}}
+                        />
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Компания</span>
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder={'Компания, в которой служит сотрудник'}
+                        value={filterCompany}
+                        options={companyList}
+                        onChange={(ev)=>{setFilterCompany(ev)}}
+                        allowClear
+                        />
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Отдел</span>
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder={'Отдел, где работает сотрудник'}
+                        value={filterDepartment}
+                        options={props.depart_list.map((dep) => {return ({
+                            key: `depid_${dep.id}`,
+                            value: dep.id,
+                            label: dep.name
+                        })})}
+                        onChange={(ev)=>{setFilterDepartment(ev)}}
+                        allowClear
+                        />
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Руководитель</span>
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder={'Поиск по имени руководителя'}
+                        value={filterBoss}
+                        options={bossList}
+                        onChange={(ev)=>{setFilterBoss(ev)}}
+                        allowClear
+                        />
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Дата начала и конца события</span>
+                    <DatePicker.RangePicker
+                        style={{ width: '100%' }}
+                        placeholder={'Включающий диапазон дат, в которых искать событие'}
+                        value={filterEventInterval}
+                        onChange={setFilterEventInterval}
+                        />
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Статус заявки</span>
+                    <Select
+                        options={claimStatuses}
+                        style={{ width: '100%' }}
+                        placeholder={'Принят, отклонён'}
+                        value={filterStatus}
+                        onChange={(ev)=>{setFilterStatus(ev)}}
+                        />
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Исполненность</span>
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder={'Статус исполнения'}
+                        value={filterShowEvaluated}
+                        options={evalStatuses}
+                        onChange={(ev)=>{setFilterShowEvaluated(ev)}}
+                        allowClear
+                        />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Удаленные заявки</span>
+                    <Switch
+                        checked={filterShowDeleted}
+                        onChange={(ev)=>{setFilterShowDeleted(ev)}}
+                    ></Switch>
+                </div>
+
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Аппрувер</span>
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder={'Человек, принявший или отклонивший заявку'}
+                        value={filterApprover}
+                        />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'} >
+                    <span className={'sk-usp-filter-col-label'}>Временной интервал для поиска</span>
+                    <div className="sk-flex-space">
+                        <Input
+                            type="number"
+                            min={0}
+                            value={filterDurationStart}
+                            onChange={(ev)=>{setFilterDurationStart(ev.target?.value)}}
+                        />
+                        <Input
+                            type="number"
+                            min={0}
+                            value={filterDurationEnd}
+                            onChange={(ev)=>{setFilterDurationEnd(ev.target?.value)}}
+                        />
+                    </div>
+
+                </div>
+
+                <br />
+            </div>
+            <div className="sk-usp-filter-col-item sk-sidebar-filter-actions" >
             <Button
             block
             onClick={setInitialState}

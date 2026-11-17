@@ -1,3 +1,4 @@
+import FiltersToggle from "../../components/FiltersToggle";
 
 import {
     message, Affix,
@@ -784,13 +785,13 @@ const ClaimManagerPage = (props) => {
                     <Affix offsetTop={isMainTheme ? 46 : 0}>
                         <div className={'sk-header-container'}>
                             <HeaderActions>
-                            <Button color={isMainTheme ? 'primary' : 'default'}
+                            <FiltersToggle color={isMainTheme ? 'primary' : 'default'}
                                     variant={isOpenFilters ? 'solid' : 'outlined'}
                                     icon={<FilterOutlined />}
                                     style={isMainTheme ? undefined : {width: '140px'}}
                                     aria-expanded={isOpenFilters}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
-                            >Фильтры</Button>
+                            >Фильтры</FiltersToggle>
                             {isMainTheme && <>
                                 <Tooltip title="Мои заявки">
                                     <Button aria-label="Мои заявки" aria-pressed={showOnlyMine} icon={<UserOutlined />}

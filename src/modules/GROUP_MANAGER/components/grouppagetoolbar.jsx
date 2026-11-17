@@ -132,6 +132,20 @@ const GroupPageToolbar = (props) =>{
 
     
 
+    if (props.sidebar) {
+        return (
+            <div className="sk-group-filter-fields">
+                {companies.length > 1 && <label>Компания
+                    <Select aria-label="Компания" options={companies} value={usedCompany} onChange={setUsedCompany} />
+                </label>}
+                <label>Поиск
+                    <Input placeholder="Поиск по названию или пользователю" allowClear value={usedText}
+                        onChange={event => setUsedtext(event.target.value)} />
+                </label>
+            </div>
+        );
+    }
+
     return (
         <div className={"ts-toolbar"}>
         <div className={"sk-flex-gap"}>
