@@ -31,7 +31,7 @@ const EventMonitorListCard = (props) => {
                 {props.data.reason}
             </div>
             <div>
-                {dayjs(props.data.datetime_contr).format("DD-MM-YYYY   HH:mm")}
+                {dayjs(props.data.datetime_contr).format("HH:mm   DD.MM.YYYY")}
             </div>
             <div>
                 {getWeekDayString(dayjs(props.data.datetime_contr).day())}

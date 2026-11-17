@@ -534,7 +534,7 @@ const EventMonitorToolbar = (props)=>
                                     ><LeftOutlined /></Button>
                                     {selectedDateUnit === 'day' && (
                                         <DatePicker onChange={onChange}
-                                            format={"DD-MM-YYYY"}
+                                            format={"DD.MM.YYYY"}
                                             value={targetStartDate}
                                         />
                                     )}
