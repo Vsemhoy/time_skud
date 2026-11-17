@@ -299,7 +299,7 @@ const employeeTips = [
 
 const HelpPage = () => (
     <main className="sk-help-page">
-        <section className="sk-help-hero">
+        <section className="sk-help-hero ui-page-intro">
             <div>
                 <Tag color="blue" className="sk-help-hero-tag">Справка для сотрудников</Tag>
                 <Title level={1}>Как работать с программой учета времени</Title>

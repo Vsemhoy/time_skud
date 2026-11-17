@@ -174,7 +174,7 @@ const BuildersSchedulePage = () => {
     return (
         <div className={isMain ? "sk-builders-schedule-page sk-operations-main sk-shift-main" : "sk-builders-schedule-page"}>
             {contextHolder}
-            <div className="sk-builders-schedule-header shift-header">
+            <div className="sk-builders-schedule-header shift-header ui-pagebar ui-pagebar--split">
                 <div>
                     <h2>График строителей</h2>
                     <span className="sk-builders-schedule-subtitle">Строительный отдел, отдел {BUILDERS_DEPARTMENT_ID}</span>

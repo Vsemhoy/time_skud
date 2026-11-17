@@ -278,14 +278,14 @@
 }
 
 .sk-event-monitor-main .sk-event-monitor-content-header .sk-event-monitor-create {
-    border-color: #194c94;
-    background: linear-gradient(#306ec2, #20569f);
+    border-color: var(--sk-active-button-hover);
+    background: var(--sk-active-button);
     box-shadow: 0 2px 0 #163f76;
     color: white;
 }
 
 .sk-event-monitor-main .sk-event-monitor-content-header .sk-event-monitor-create:hover {
-    background: linear-gradient(#3777cb, #265fae);
+    background: var(--sk-active-button-hover);
     color: white;
 }
 
@@ -303,21 +303,22 @@
 .sk-event-monitor-main .sk-evemonic-cardrow {
     grid-template-columns: 100px 112px minmax(180px, 1.2fr) minmax(150px, 1fr) 150px 110px 84px;
     min-width: 886px;
-    min-height: 44px;
-    color: #182433;
+    min-height: var(--ui-row-height);
+    color: var(--ui-text);
     background: white;
-    font-size: 12px;
-    border-bottom-color: #dbe3ec;
+    font-size: var(--ui-text-size);
+    border-bottom-color: var(--ui-divider);
 }
 
 .sk-event-monitor-main .sk-evemonic-cardrow:nth-child(even) {
-    background: #f5f8fa;
+    background: var(--ui-alt-row);
 }
 
 .sk-event-monitor-main .sk-evemonic-cardrow > div {
+    padding-block: 2px;
     justify-content: center;
     text-align: center;
-    border-right-color: #dbe3ec;
+    border-right-color: var(--ui-divider);
     background: transparent;
 }
 
@@ -329,15 +330,16 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    min-height: 40px;
-    background: #506b89;
+    min-height: var(--ui-heading-height);
+    font-size: var(--ui-heading-size);
+    background: var(--ui-heading-bg);
     color: white;
     border: 0;
     font-weight: 600;
 }
 
 .sk-event-monitor-main .sk-evemonic-headerrow > div {
-    border-right-color: #435d78;
+    border-right-color: var(--ui-heading-divider);
 }
 
 .sk-event-monitor-main .sk-evemonic-headerrow > div:has(.sk-event-filter) {
@@ -369,7 +371,7 @@
     justify-content: flex-end;
     padding: 8px;
     background: white;
-    border: 1px solid #b9c3ce;
+    border: 1px solid var(--ui-border);
 }
 
 .sk-event-monitor-main .sk-event-monitor-table-toolbar {

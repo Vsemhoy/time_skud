@@ -783,7 +783,7 @@ const ClaimManagerPage = (props) => {
             <Layout className={'layout'}>
                 <Header className={'header'}>
                     <Affix offsetTop={isMainTheme ? 46 : 0}>
-                        <div className={'sk-header-container'}>
+                        <div className="sk-header-container ui-pagebar ui-pagebar--centered">
                             <HeaderActions>
                             <FiltersToggle color={isMainTheme ? 'primary' : 'default'}
                                     variant={isOpenFilters ? 'solid' : 'outlined'}

@@ -401,7 +401,7 @@ const UserManagerPage_2025 = (props) => {
             <Layout className={'layout'}>
                 <Header className={'header'}>
                     <PanelWrapper>
-                        <div className={'sk-header-container'}>
+                        <div className="sk-header-container ui-pagebar ui-pagebar--centered">
                             <FiltersToggle color={'default'}
                                     aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}

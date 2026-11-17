@@ -198,7 +198,7 @@ const GroupEditorModal = (props) => {
       </Form>
       {editedItem ? (
       <div className={'sk-modal-stat'}>
-          <table>
+          <table className="ui-table">
             <tbody>
               <tr>
                 <td>id</td>

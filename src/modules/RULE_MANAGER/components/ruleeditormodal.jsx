@@ -241,7 +241,7 @@ const RuleEditorModal = (props) => {
       </Form>
       {editedItem ? (
       <div className={'sk-modal-stat'}>
-          <table>
+          <table className="ui-table">
             <tbody>
               <tr>
                 <td>Создатель</td>

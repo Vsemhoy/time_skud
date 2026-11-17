@@ -51,7 +51,7 @@ const UserlistEventDumpCard = (props) => {
     return (
         <div className={`sk-w-padding-18 sk-umsmi-card${themeSafeClass}`}>
 
-        <table className={`sk-uml-table-dumper${themeSafeTableClass}`} style={{borderCollapse:'collapse'}}>
+        <table className={`ui-table sk-uml-table-dumper${themeSafeTableClass}`} style={{borderCollapse:'collapse'}}>
             <thead>
                 <tr style={{fontWeight: '500'}}>
                     <td>Вход</td>

@@ -7,9 +7,9 @@
 
 .sk-route-shell > .ant-layout-content:has(> .sk-operations-main) { min-height: 0; }
 .sk-operations-main {
-    --operations-header: #506b89;
-    --operations-divider: #435d78;
-    --operations-primary: #2465c3;
+    --operations-header: var(--ui-heading-bg);
+    --operations-divider: var(--ui-heading-divider);
+    --operations-primary: var(--sk-active-button);
     height: 100%;
     box-sizing: border-box;
 }
@@ -27,12 +27,12 @@
 .sk-accounting-main .header { height: auto; padding: 0; }
 .sk-accounting-main .sk-header-container,
 .sk-shift-main .shift-header {
-    min-height: 46px;
+    min-height: var(--ui-pagebar-height);
     margin: 0;
     padding: 5px 8px;
     align-items: center;
     background: white;
-    border-bottom: 1px solid #8f9dad;
+    border-bottom: 1px solid var(--ui-bar-border);
 }
 .sk-accounting-main .sk-header-container {
     display: grid;
@@ -68,17 +68,46 @@
     min-height: 0;
     overflow: auto;
     background: white;
-    border: 1px solid #b9c3ce;
+    border: 1px solid var(--ui-border);
 }
 .sk-shift-main .shift-grid--header,
 .sk-shift-main .shift-row { min-width: var(--schedule-min-width); }
 .sk-shift-main .shift-grid--header { position: sticky; top: 0; z-index: 4; }
 .sk-shift-main .shift-grid--header > div {
+    box-sizing: border-box;
+    min-height: var(--ui-heading-height);
+    font-size: var(--ui-heading-size);
+    font-weight: var(--ui-heading-weight);
     background: var(--operations-header);
     border-color: var(--operations-divider);
     color: white;
 }
+.sk-shift-main .shift-row > div {
+    box-sizing: border-box;
+    min-height: var(--ui-row-height);
+    font-size: var(--ui-text-size);
+}
+
+.sk-shift-main .shift-employee-cell {
+    gap: 0;
+    padding-block: 0;
+    line-height: 1.1;
+}
+
+.sk-shift-main .shift-row :is(.ant-select, .ant-input) {
+    height: calc(var(--ui-row-height) - 1px);
+    min-height: 0;
+}
+
+.sk-shift-main .shift-row .ant-select-selector {
+    min-height: 0 !important;
+}
+
+.sk-shift-main .shift-row .ant-select-selection-item {
+    line-height: normal !important;
+}
+
 .sk-shift-main .shift-grid--header span { color: inherit; }
 .sk-shift-main .shift-grid--header .is-weekend { background: #852f39; }
-.sk-shift-main .shift-row:nth-child(even) > div { background: #f5f8fa; }
+.sk-shift-main .shift-row:nth-child(even) > div { background: var(--ui-alt-row); }
 .sk-shift-main .shift-employee-cell strong { font-weight: 400; }

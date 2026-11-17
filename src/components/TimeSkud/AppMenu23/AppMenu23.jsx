@@ -1,23 +1,13 @@
-import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Select, Skeleton, Switch } from 'antd';
+import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Select, Skeleton } from 'antd';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
-import {HomeOutlined, LoginOutlined, NotificationOutlined, ScheduleOutlined, ThunderboltOutlined, UnorderedListOutlined, UserOutlined} from '@ant-design/icons';
+import {HomeOutlined, LoginOutlined, NotificationOutlined, ScheduleOutlined, ThunderboltOutlined, UserOutlined} from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
 import Chat from "corp-chat-library-antd-react-socket";
 import Notificator from "corp-notificator-library-antd-react-socket";
 import {getSavedSkudPageTheme, saveSkudPageTheme, SKUD_PAGE_THEMES} from '../../../Utils/skudPageTheme';
-
-const THEME_STORAGE_KEY = 'skud_theme';
-
-const getSavedThemeMode = () => {
-    if (typeof window === 'undefined') {
-        return 'light';
-    }
-
-    return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light';
-};
 
 const isBrowserNotificationSupported = () => (
     typeof window !== 'undefined' && 'Notification' in window
@@ -96,7 +86,6 @@ const AppMenu23 = (props) => {
     const [notificatorLoading, setNotificatorLoading] = useState(true);
 
     const [countOfNotifications, setCountOfNotifications] = useState(0);
-    const [themeMode, setThemeMode] = useState(getSavedThemeMode);
     const [pageTheme, setPageTheme] = useState(getSavedSkudPageTheme);
     const navigate = useNavigate();
     const location = useLocation();
@@ -168,28 +157,6 @@ const AppMenu23 = (props) => {
       console.log(props.count_of_notifications);
     }, [props.count_of_notifications]);
 
-    useEffect(() => {
-        const handleStorageChange = (event) => {
-            if (event.key === THEME_STORAGE_KEY) {
-                setThemeMode(event.newValue === 'dark' ? 'dark' : 'light');
-            }
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-
-        return () => {
-            window.removeEventListener('storage', handleStorageChange);
-        };
-    }, []);
-
-    const handleThemeChange = (checked) => {
-        const nextThemeMode = checked ? 'dark' : 'light';
-
-        setThemeMode(nextThemeMode);
-        window.localStorage.setItem(THEME_STORAGE_KEY, nextThemeMode);
-        window.location.reload();
-    };
-
     const handlePageThemeChange = (nextPageTheme) => {
         setPageTheme(nextPageTheme);
         saveSkudPageTheme(nextPageTheme);
@@ -212,10 +179,6 @@ const AppMenu23 = (props) => {
         window.dispatchEvent(new CustomEvent('newskud:open-bill-list'));
     };
 
-    const openNewSkudClaimsList = () => {
-        window.dispatchEvent(new CustomEvent('newskud:open-claims-list'));
-    };
-
     // User dropdown menu
     const userMenuItems = [
         {
@@ -225,38 +188,10 @@ const AppMenu23 = (props) => {
             onClick: () => navigate('/my'),
         },
         {
-            key: 'status',
-            label: 'Статус: Онлайн',
-        },
-        ...[
-            {
-                key: 'newskud-bill-list',
-                icon: <ScheduleOutlined />,
-                label: 'Расчетный лист',
-                onClick: openNewSkudBillList,
-            },
-            {
-                key: 'newskud-claims-list',
-                icon: <UnorderedListOutlined />,
-                label: 'Список заявок',
-                onClick: openNewSkudClaimsList,
-            },
-        ],
-        {
-            key: 'theme',
-            label: (
-                <div
-                    onClick={(event) => event.stopPropagation()}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minWidth: '160px' }}
-                >
-                    <span>Темная тема</span>
-                    <Switch
-                        size="small"
-                        checked={themeMode === 'dark'}
-                        onChange={handleThemeChange}
-                    />
-                </div>
-            ),
+            key: 'newskud-bill-list',
+            icon: <ScheduleOutlined />,
+            label: 'Расчетный лист',
+            onClick: openNewSkudBillList,
         },
         {
             key: 'page-theme',
@@ -501,13 +436,13 @@ const AppMenu23 = (props) => {
     }
 
     return (
-        <div className={isMain ? 'sk-main-menu-sticky' : undefined}>
+        <div className={isMain ? 'sk-main-menu-sticky ui-topmenu-sticky' : undefined}>
             <Header
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                className={`sk-main-menu ${isNewSkudCopy || isModern || isMain ? 'sk-main-menu--newskud-copy' : ''} ${isMain ? 'sk-main-menu--main' : ''} ${isModern ? 'sk-main-menu--modern' : ''}`}
+                className={`sk-main-menu ${isNewSkudCopy || isModern || isMain ? 'sk-main-menu--newskud-copy' : ''} ${isMain ? 'sk-main-menu--main ui-topmenu' : ''} ${isModern ? 'sk-main-menu--modern' : ''}`}
             >
                 {isMain && (
-                    <div className="sk-main-menu-brand">
+                    <div className="sk-main-menu-brand ui-topmenu-brand">
                         <a href={HTTP_HOST} aria-label="Домой" title="Домой"><HomeOutlined /></a>
                         <strong>СКУД</strong>
                     </div>
@@ -528,7 +463,7 @@ const AppMenu23 = (props) => {
                     />
                 )}
 
-                <div className="sk-main-menu-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
+                <div className="sk-main-menu-actions ui-topmenu-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
 
                     {props.is_loading ? (
                         <div className="sk-appmenu-skeleton-right" aria-hidden="true">

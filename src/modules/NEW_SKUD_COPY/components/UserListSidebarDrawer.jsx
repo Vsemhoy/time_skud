@@ -207,7 +207,7 @@ const UserListSidebarDrawer = (props) => {
                       ) : (
                         <>{ targetUserInfo.state_data != null ? (
                           <div className={'sk-w-padding-18 sk-umsmi-card'}>
-                          <table className="sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
+                          <table className="ui-table sk-uml-table-dumper" style={{borderCollapse:'collapse'}}>
                               <tbody>
                                 <tr>
                                   <td style={{textAlign: 'left'}}>Дата и время начала</td>

@@ -1262,7 +1262,7 @@ useEffect(() => {
                         
                     </div>
                     <br/>
-                    <div className={'sk-flex-space'}>
+                    <div className={'sk-flex-space ui-pagebar ui-pagebar--filters'}>
                         <div className={'sk-flex'} style={{alignContent: 'center', alignItems: 'center'}}>
                             <div className={'sk-select-visicom'}>Доступы к компании: </div>
                             <div>

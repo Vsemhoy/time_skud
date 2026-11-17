@@ -1,0 +1,30 @@
+.sk-account-main {
+    box-sizing: border-box;
+    padding: 0 var(--ui-bar-gutter) var(--ui-bar-gutter);
+    min-height: calc(100dvh - var(--ui-nav-height));
+    background: var(--app-bg-color);
+}
+
+.sk-account-main > .ui-pagebar {
+    margin-inline: calc(-1 * var(--ui-bar-gutter));
+    margin-bottom: var(--ui-bar-gap);
+}
+
+.sk-account-main > .ant-row > .ant-col > .ant-card {
+    border: 0;
+}
+
+.sk-account-main .ant-table-thead > tr > th::before {
+    display: none;
+}
+
+.sk-account-main .ant-card-head,
+.sk-account-main .ant-table-container,
+.sk-account-main .ant-table-wrapper .ant-table-thead > tr > th {
+    border-radius: var(--ui-card-radius) !important;
+}
+
+.sk-account-main .ant-table-wrapper .ant-table-tbody > tr.ant-table-row > td {
+    height: var(--ui-row-height);
+    padding: var(--ui-cell-padding);
+}

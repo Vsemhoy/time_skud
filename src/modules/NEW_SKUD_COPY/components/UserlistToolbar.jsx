@@ -1,7 +1,7 @@
 import FiltersToggle from "../../../components/FiltersToggle";
 ﻿import {Button, DatePicker, Dropdown, Input} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
-import {Avatar, Skeleton, Switch} from "antd";
+import {Avatar, Skeleton} from "antd";
 
 
 import dayjs from "dayjs";
@@ -11,7 +11,7 @@ import {
     CaretLeftOutlined, CaretRightOutlined,
     FilterOutlined, HomeOutlined, PlusOutlined, UserOutlined, SearchOutlined, LeftOutlined, RightOutlined, ReloadOutlined
 } from "@ant-design/icons";
-import {LoginOutlined, ScheduleOutlined, UnorderedListOutlined} from "@ant-design/icons";
+import {LoginOutlined, ScheduleOutlined} from "@ant-design/icons";
 import {Star, PanelRightClose, PanelRightOpen} from "lucide-react";
 import { getWeekDayString } from "../../../components/Helpers/TextHelpers";
 import { StateContext } from "../../../components/ComStateProvider25/ComStateProvider25";
@@ -31,13 +31,6 @@ const UserListToolbar = (props) => {
     const [isAddUserOpen, setIsAddUserOpen] = useState(false);
     const [selectedSuperUserId, setSelectedSuperUserId] = useState(null);
     const [isAddingSuperUser, setIsAddingSuperUser] = useState(false);
-    const [themeMode, setThemeMode] = useState(() => {
-        if (typeof window === 'undefined') {
-            return 'light';
-        }
-
-        return window.localStorage.getItem('skud_theme') === 'dark' ? 'dark' : 'light';
-    });
     const [pageTheme, setPageTheme] = useState(getSavedSkudPageTheme);
 
 
@@ -97,13 +90,6 @@ const UserListToolbar = (props) => {
         }
     }
 
-    const handleThemeChange = (checked) => {
-        const nextThemeMode = checked ? 'dark' : 'light';
-        setThemeMode(nextThemeMode);
-        window.localStorage.setItem('skud_theme', nextThemeMode);
-        window.location.reload();
-    };
-
     const handlePageThemeChange = (nextPageTheme) => {
         setPageTheme(nextPageTheme);
         saveSkudPageTheme(nextPageTheme);
@@ -126,28 +112,6 @@ const UserListToolbar = (props) => {
             label: 'Расчетный лист',
             onClick: () => window.dispatchEvent(new CustomEvent('newskud:open-bill-list')),
         },
-        {
-            key: 'newskud-claims-list',
-            icon: <UnorderedListOutlined />,
-            label: 'Список заявок',
-            onClick: () => window.dispatchEvent(new CustomEvent('newskud:open-claims-list')),
-        },
-        ...(!isSuperUser ? [{
-            key: 'theme',
-            label: (
-                <div
-                    onClick={(event) => event.stopPropagation()}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', minWidth: '160px' }}
-                >
-                    <span>Темная тема</span>
-                    <Switch
-                        size="small"
-                        checked={themeMode === 'dark'}
-                        onChange={handleThemeChange}
-                    />
-                </div>
-            ),
-        }] : []),
         {
             key: 'page-theme',
             label: (
@@ -267,7 +231,7 @@ const UserListToolbar = (props) => {
     if (props.isInitialLoading) {
         return (
             <div style={{width: '100%'}}>
-                <div className={'sk-header-container sk-userlist-toolbar-top sk-userlist-toolbar-top--skeleton'}>
+                <div className={'ui-pagebar ui-pagebar--date sk-header-container sk-userlist-toolbar-top sk-userlist-toolbar-top--skeleton'}>
                     <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
                         {isSuperUser ? (
                             <>
@@ -310,7 +274,7 @@ const UserListToolbar = (props) => {
             aria-expanded={props.isDetailsSidebarVisible}
             onClick={props.onToggleDetailsSidebar}
         >
-            {isMain && <span className="sk-userlist-btn-label">Виджеты</span>}
+            {isMain && <span className="sk-userlist-btn-label">Информация</span>}
         </Button>
     );
     const createClaimButton = !isSuperUser && (
@@ -329,7 +293,7 @@ const UserListToolbar = (props) => {
 
     return (
         <div style={{width: '100%'}}>
-            <div className={'sk-header-container sk-userlist-toolbar-top'}>
+            <div className={'ui-pagebar ui-pagebar--date sk-header-container sk-userlist-toolbar-top'}>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
                     {isSuperUser ? (
                         <>

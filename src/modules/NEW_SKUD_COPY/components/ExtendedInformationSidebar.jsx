@@ -999,7 +999,7 @@ const ExtendedInformationSidebar = (props) => {
         if (targetUserInfo.state_data != null) {
             return (
                 <div className={'sk-w-padding-18 sk-umsmi-card'}>
-                    <table className="sk-uml-table-dumper"
+                    <table className="ui-table sk-uml-table-dumper"
                            style={{borderCollapse: 'collapse'}}>
                         <tbody>
                         <tr>
@@ -1035,7 +1035,7 @@ const ExtendedInformationSidebar = (props) => {
 
         return (
             <div className={'sk-w-padding-18 sk-umsmi-card'}>
-                <table className="sk-uml-table-dumper"
+                <table className="ui-table sk-uml-table-dumper"
                        style={{borderCollapse: 'collapse'}}>
                     <tbody>
                     <tr>

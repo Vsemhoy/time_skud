@@ -305,7 +305,7 @@ const SchedManagerPage = (props) => {
         <Layout className={isMain ? "layout sk-personnel-main sk-claims-viewport" : "layout"}>
             <Header className={'header'}>
                 <PanelWrapper>
-                    <div className={'sk-header-container'}>
+                    <div className="sk-header-container ui-pagebar ui-pagebar--centered">
                         <FiltersToggle color={'default'}
                                 aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}

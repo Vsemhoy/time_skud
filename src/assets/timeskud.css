@@ -1440,8 +1440,8 @@ font-size: smaller;
 
 .newskud-page .ant-btn.sk-userlist-favorites-btn[aria-pressed="true"],
 .newskud-page .ant-btn.sk-userlist-favorites-btn[aria-pressed="true"]:hover {
-    background: #000000 !important;
-    border-color: #000000 !important;
+    background: var(--sk-active-button, #000000) !important;
+    border-color: var(--sk-active-button, #000000) !important;
     color: #ffffff !important;
 }
 
