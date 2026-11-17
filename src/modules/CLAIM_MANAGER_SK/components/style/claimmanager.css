@@ -941,6 +941,8 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 
 .sk-claims-viewport .sk-layout-center {
     padding-inline: 8px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
 }
 
 .sk-claims-viewport .header {
@@ -1046,7 +1048,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 
 .sk-claims-viewport .sk-layout-center > .content {
-    padding-bottom: 8px;
+    padding-bottom: 0;
     overflow: hidden;
 }
 
@@ -1085,7 +1087,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 }
 
 .sk-claims-viewport .sider.pr15:not(.sider-hidden) {
-    border-inline-end: 3px solid #849ab1;
+    border-inline-end: var(--panel-divider);
 }
 
 .sk-claims-viewport .sk-usp-filter-col {
@@ -1111,11 +1113,35 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     font-weight: 600;
 }
 
+.sk-claims-viewport .sk-sidebar-filter-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden !important;
+}
+
+.sk-claims-viewport .sk-sidebar-filter-fields {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.sk-claims-viewport .sk-sidebar-filter-actions {
+    flex: none;
+}
+
+.sk-claims-viewport .sk-sidebar-filter-actions > br,
+.sk-claims-viewport .sk-sidebar-filter-fields > br {
+    display: none;
+}
+
 .sk-claims-viewport .sk-usp-filter-col-item {
-    padding: 8px 16px;
+    padding: 5px 16px;
 }
 
 .sk-claims-viewport .sk-usp-filter-col-label {
+    margin-bottom: 3px;
     color: #536a88;
     font-size: 11px;
     font-weight: 600;

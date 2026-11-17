@@ -1,3 +1,4 @@
+import PersonnelEditAction from "../../../components/PersonnelEditAction";
 import React, { useEffect, useState } from "react";
 import "./style/schedlistrow.css";
 import { Button, Flex, Tag } from "antd";
@@ -75,7 +76,7 @@ const SchedListRow = (props) => {
                 <td><div className="sk-personnel-icon-label"><SchedIcons type={itemData.skud_schedule_type_id} size="20px" />{itemData.name}</div></td>
                 <td>{itemData.description}</td>
                 <td>{companyName}</td><td>{scheduleYear}</td><td>{linkedUsersCount}</td>
-                <td><Button size="small" aria-label="Редактировать график" icon={<EditOutlined />} onClick={openEditor} /></td>
+                <td><PersonnelEditAction label="Редактировать график" onClick={openEditor} /></td>
             </tr>
         );
     }

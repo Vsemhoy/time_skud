@@ -1,3 +1,4 @@
+import FiltersToggle from "../../components/FiltersToggle";
 import React, {useEffect, useRef, useState} from 'react';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {Affix, Button, Layout, Pagination, Radio, Select, Spin, Tag, Tooltip} from "antd";
@@ -713,12 +714,12 @@ const  Charts = (props) => {
                         <HeaderWrapper>
                             <div className={'sk-header-container'}>
                                 <HeaderGroup>
-                                <Button aria-expanded={isOpenFilters} color={isMain ? 'primary' : 'default'}
+                                <FiltersToggle aria-expanded={isOpenFilters} color={isMain ? 'primary' : 'default'}
                                         variant={isOpenFilters ? 'solid' : 'outlined'}
                                         icon={<FilterOutlined />}
                                         style={isMain ? undefined : { width: '140px' }}
                                         onClick={() => setIsOpenFilters(!isOpenFilters)}
-                                >Фильтры</Button>
+                                >Фильтры</FiltersToggle>
                                 {isMain && <>
                                     <Button title="Мои заявки" aria-label="Мои заявки" aria-pressed={myClaims} icon={<UserOutlined />}
                                         onClick={() => { setCurrentPage(1); setMySubjects(false); setMyClaims(!myClaims); }} />

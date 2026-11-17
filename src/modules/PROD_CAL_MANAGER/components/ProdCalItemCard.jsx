@@ -1,3 +1,4 @@
+import PersonnelEditAction from "../../../components/PersonnelEditAction";
 import React, { useEffect, useState } from "react";
 
 import './style/prodcalitemcard.css';
@@ -58,7 +59,7 @@ const [ calData, setCalData] = useState(data);
                 <td><div className="sk-personnel-icon-label"><ChineseZodiac year={calData.year} />{calData.year}</div></td>
                 <td>{calData.company_name}</td>
                 <td>{calData.count_links ?? 0}</td><td>{status ?? '—'}</td>
-                <td><Button size="small" aria-label="Редактировать календарь" icon={<EditOutlined />} onClick={openModalClick} /></td>
+                <td><PersonnelEditAction label="Редактировать календарь" onClick={openModalClick} /></td>
             </tr>
         );
     }

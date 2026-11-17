@@ -1,3 +1,4 @@
+import FiltersToggle from "../../../components/FiltersToggle";
 import {Button, Collapse, DatePicker, Drawer, Input, Select} from "antd";
 import React, { useState, useEffect, use, useContext } from "react";
 
@@ -137,14 +138,14 @@ const UserListToolbar = (props) => {
         <div style={{width: '100%'}}>
             <div className={'sk-header-container sk-userlist-toolbar-top'}>
                 <div className={'sk-flex-space sk-userlist-toolbar-top-left'}>
-                    <Button color={'default'}
+                    <FiltersToggle color={'default'}
                             variant={props.isOpenFilters ? 'solid' : 'outlined'}
                             icon={<FilterOutlined />}
                             className={'sk-userlist-compact-btn'}
                             style={{ width: '150px' }}
-                            title={'Фильтры'}
+                            aria-expanded={props.isOpenFilters}
                             onClick={() => props.setIsOpenFilters(!props.isOpenFilters)}
-                    ><span className={'sk-userlist-btn-label'}>Фильтры</span></Button>
+                    ><span className={'sk-userlist-btn-label'}>Фильтры</span></FiltersToggle>
                 </div>
                 <div className="sk-flex sk-userlist-toolbar-top-center">
                     <CaretLeftOutlined

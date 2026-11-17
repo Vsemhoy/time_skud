@@ -1,0 +1,39 @@
+.sk-route-shell button.ant-btn.sk-filters-toggle {
+    width: 190px;
+    min-width: 190px;
+    height: 30px;
+    padding-inline: 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: none;
+    background: #2465c3 !important;
+    border-color: #2465c3 !important;
+    color: white !important;
+}
+
+.sk-route-shell button.ant-btn.sk-filters-toggle:hover {
+    background: #194c94 !important;
+    border-color: #194c94 !important;
+}
+
+@media (min-width: 901px) and (max-width: 1530px) {
+    .sk-route-shell button.ant-btn.sk-filters-toggle {
+        width: auto;
+        min-width: 128px;
+        height: 32px;
+        padding-inline: 15px;
+    }
+
+    .sk-route-shell .sk-filters-toggle .anticon { margin-inline-end: 8px; }
+}
+
+@media (max-width: 900px) {
+    .sk-route-shell button.ant-btn.sk-filters-toggle {
+        width: 32px;
+        min-width: 32px;
+        padding-inline: 0;
+    }
+
+    .sk-filters-toggle-label { display: none; }
+}

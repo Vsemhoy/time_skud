@@ -134,152 +134,153 @@ const ClaimManagerSidebar = (props) => {
 
 
     return (
-        <div style={{maxHeight: '100vh', overflow: 'auto'}}>
+        <div className="sk-sidebar-filter-form" style={{maxHeight: '100vh', overflow: 'auto'}}>
+            <div className="sk-sidebar-filter-fields">
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Пользователь / должность</span>
+                    <Input style={{width: '100%'}}
+                            placeholder={'Имя пользователя / должность'}
+                            allowClear={true}
+                            value={filterUserNameOrDepartment}
+                            onChange={(ev) => {
+                                setFilterUserNameOrDepartment(ev.target.value)
+                            }}
+                    />
+                </div>
 
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Пользователь / должность</span>
-                <Input style={{width: '100%'}}
-                        placeholder={'Имя пользователя / должность'}
-                        allowClear={true}
-                        value={filterUserNameOrDepartment}
-                        onChange={(ev) => {
-                            setFilterUserNameOrDepartment(ev.target.value)
-                        }}
-                />
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Руководитель</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Выберите руководителя'}
+                            value={filterBoss}
+                            options={props.boss_list}
+                            onChange={(ev) => {
+                                setFilterBoss(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Компания</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Все компании'}
+                            value={filterCompany}
+                            options={props.company_list}
+                            onChange={(ev) => {
+                                setFilterCompany(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Отдел</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Все отделы'}
+                            value={filterDepartment}
+                            options={props.depart_list}
+                            onChange={(ev) => {
+                                setFilterDepartment(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Вход</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Разрешен'}
+                            value={filterEnter}
+                            options={props.enters_list}
+                            onChange={(ev) => {
+                                setFilterEnter(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Статус пользователя</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Работающие / уволенные'}
+                            value={filterUserStatus}
+                            options={props.user_statuses_list}
+                            onChange={(ev) => {
+                                setFilterUserStatus(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Группа пользователя</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Любая'}
+                            value={filterGroup}
+                            options={props.groups_list}
+                            onChange={(ev) => {
+                                setFilterGroup(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Текущий тип графика</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Все типы'}
+                            value={currentScheduleType}
+                            options={props.current_chart_types_list}
+                            onChange={(ev) => {
+                                setCurrentScheduleType(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Текущий график</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Любые графики'}
+                            value={currentSchedule}
+                            options={props.current_charts_list}
+                            onChange={(ev) => {
+                                setCurrentSchedule(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Текущие типы правил</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Все типы'}
+                            value={currentRuleType}
+                            options={props.current_rule_types_list}
+                            onChange={(ev) => {
+                                setCurrentRuleType(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <div className={'sk-usp-filter-col-item'}>
+                    <span className={'sk-usp-filter-col-label'}>Текущие правила</span>
+                    <Select style={{width: '100%'}}
+                            placeholder={'Любые правила'}
+                            value={currentRule}
+                            options={props.current_rules_list}
+                            onChange={(ev) => {
+                                setCurrentRule(ev)
+                            }}
+                            allowClear
+                    />
+                </div>
+
+                <br/>
             </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Руководитель</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Выберите руководителя'}
-                        value={filterBoss}
-                        options={props.boss_list}
-                        onChange={(ev) => {
-                            setFilterBoss(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Компания</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Все компании'}
-                        value={filterCompany}
-                        options={props.company_list}
-                        onChange={(ev) => {
-                            setFilterCompany(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Отдел</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Все отделы'}
-                        value={filterDepartment}
-                        options={props.depart_list}
-                        onChange={(ev) => {
-                            setFilterDepartment(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Вход</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Разрешен'}
-                        value={filterEnter}
-                        options={props.enters_list}
-                        onChange={(ev) => {
-                            setFilterEnter(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Статус пользователя</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Работающие / уволенные'}
-                        value={filterUserStatus}
-                        options={props.user_statuses_list}
-                        onChange={(ev) => {
-                            setFilterUserStatus(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Группа пользователя</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Любая'}
-                        value={filterGroup}
-                        options={props.groups_list}
-                        onChange={(ev) => {
-                            setFilterGroup(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Текущий тип графика</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Все типы'}
-                        value={currentScheduleType}
-                        options={props.current_chart_types_list}
-                        onChange={(ev) => {
-                            setCurrentScheduleType(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Текущий график</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Любые графики'}
-                        value={currentSchedule}
-                        options={props.current_charts_list}
-                        onChange={(ev) => {
-                            setCurrentSchedule(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Текущие типы правил</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Все типы'}
-                        value={currentRuleType}
-                        options={props.current_rule_types_list}
-                        onChange={(ev) => {
-                            setCurrentRuleType(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <div className={'sk-usp-filter-col-item'}>
-                <span className={'sk-usp-filter-col-label'}>Текущие правила</span>
-                <Select style={{width: '100%'}}
-                        placeholder={'Любые правила'}
-                        value={currentRule}
-                        options={props.current_rules_list}
-                        onChange={(ev) => {
-                            setCurrentRule(ev)
-                        }}
-                        allowClear
-                />
-            </div>
-
-            <br/>
-            <div className={'sk-usp-filter-col-item'}>
+            <div className="sk-usp-filter-col-item sk-sidebar-filter-actions">
                 <Button block onClick={setInitialState}>Очистить фильтры</Button>
             </div>
         </div>

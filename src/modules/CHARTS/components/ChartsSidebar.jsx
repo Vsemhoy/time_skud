@@ -120,9 +120,8 @@ const ChartsSidebar = (props) => {
     };
 
     return (
-        <div style={{height: 'calc(100vh - 17px - 64px - 46px)', overflow: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-
-            <div>
+        <div className="sk-sidebar-filter-form" style={{height: 'calc(100vh - 17px - 64px - 46px)', overflow: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+            <div className="sk-sidebar-filter-fields">
                 <div className={'sk-usp-filter-col-item'}>
                     <span className={'sk-usp-filter-col-label'}>Год</span>
                     <Select style={{width: '100%'}}
@@ -247,8 +246,7 @@ const ChartsSidebar = (props) => {
                 </div>
 
             </div>
-
-            <div className={'sk-usp-filter-col-item'}>
+            <div className="sk-usp-filter-col-item sk-sidebar-filter-actions">
                 <Button block onClick={setInitialState}>Очистить фильтры</Button>
             </div>
         </div>

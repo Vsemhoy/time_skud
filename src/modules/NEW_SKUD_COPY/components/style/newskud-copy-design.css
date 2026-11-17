@@ -561,6 +561,22 @@
     line-height: 1.2;
 }
 
+.newskud-copy-page.main-page .sk-usermonic-cardrow-ou.sk-usermonic-crd-divider {
+    height: 28px;
+    color: var(--app-text-color, #182b42);
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.newskud-copy-page.main-page .sk-usermonic-crd-divider > div:nth-child(2) {
+    padding-inline: 15px;
+    text-align: left;
+}
+
+.newskud-copy-page.main-page .sk-usermonic-cardrow-ou.sk-usermonic-crd-divider > div:nth-child(2) > div {
+    justify-content: flex-start;
+}
+
 .newskud-copy-page .sider.pr15 {
     padding-right: 10px !important;
 }

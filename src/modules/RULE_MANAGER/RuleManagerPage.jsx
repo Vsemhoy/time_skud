@@ -1,3 +1,5 @@
+import PersonnelEditAction from "../../components/PersonnelEditAction";
+import FiltersToggle from "../../components/FiltersToggle";
 import PersonnelTable from '../../components/PersonnelTable';
 import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
@@ -271,13 +273,13 @@ const RuleManagerPage = (props) => {
             <Header className={'header'}>
                 <PanelWrapper>
                     <div className={'sk-header-container'}>
-                        <Button color={'default'}
+                        <FiltersToggle color={'default'}
                                 aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
                                 icon={<FilterOutlined />}
                                 style={{ width: '125px' }}
                                 onClick={() => setIsOpenFilters(!isOpenFilters)}
-                        >Фильтры</Button>
+                        >Фильтры</FiltersToggle>
                         <h1 className={'page-header'}>Правила учёта рабочего времени</h1>
                         {isMain ? <div className="sk-personnel-actions">{createAction}</div> : <div />}
                     </div>
@@ -347,14 +349,14 @@ const RuleManagerPage = (props) => {
                                                 <td><Button size="small" aria-expanded={closedRules.includes(rule.id)} onClick={() => openCloseRules(rule.id)}>
                                                     {rule.users_count ?? 0} <UserOutlined />
                                                 </Button></td>
-                                                <td><Button size="small" aria-label="Редактировать правило" icon={<EditOutlined />} onClick={() => onOpenModalEditor(rule.id)} /></td>
+                                                <td><PersonnelEditAction label="Редактировать правило" onClick={() => onOpenModalEditor(rule.id)} /></td>
                                             </tr>
                                             {closedRules.includes(rule.id) && <tr><td colSpan={5}>
                                                 <PersonnelTable label={`Сотрудники — ${rule.name}`} headings={['ID','Сотрудник','Должность','Действия']}
                                                     empty={!users.some(user => userRules[user.id]?.includes(+rule.id))}>
                                                     {users.filter(user => userRules[user.id]?.includes(+rule.id)).map(user => (
                                                         <tr key={user.id}><td>{user.id}</td><td>{[user.surname,user.name,user.patronymic].filter(Boolean).join(' ')}</td>
-                                                            <td>{user.occupy}</td><td><NavLink to={`/hr/usermanager/${user.id}/rules`}>Редактировать</NavLink></td></tr>
+                                                            <td>{user.occupy}</td><td><PersonnelEditAction to={`/hr/usermanager/${user.id}/rules`} /></td></tr>
                                                     ))}
                                                 </PersonnelTable>
                                             </td></tr>}

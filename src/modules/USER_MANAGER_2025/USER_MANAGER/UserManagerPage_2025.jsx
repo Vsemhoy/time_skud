@@ -1,3 +1,5 @@
+import PersonnelEditAction from "../../../components/PersonnelEditAction";
+import FiltersToggle from "../../../components/FiltersToggle";
 import PersonnelTable from '../../../components/PersonnelTable';
 import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../../Utils/skudPageTheme';
 import React, {useEffect, useState} from 'react';
@@ -400,13 +402,13 @@ const UserManagerPage_2025 = (props) => {
                 <Header className={'header'}>
                     <PanelWrapper>
                         <div className={'sk-header-container'}>
-                            <Button color={'default'}
+                            <FiltersToggle color={'default'}
                                     aria-expanded={isOpenFilters}
                                 variant={isOpenFilters ? 'solid' : 'outlined'}
                                     icon={<FilterOutlined />}
                                     style={{ width: '125px' }}
                                     onClick={() => setIsOpenFilters(!isOpenFilters)}
-                            >Фильтры</Button>
+                            >Фильтры</FiltersToggle>
                             <h1 className={'page-header'}>Список сотрудников</h1>
                             {isMain ? <div className="sk-personnel-actions">{createAction}{toolsButton}</div> : toolsButton}
                         </div>
@@ -499,7 +501,7 @@ const UserManagerPage_2025 = (props) => {
                                                             <td>{user.groups?.map(group => <Tag key={group.id} closable onClose={event => removeGroup(event, group, user.id)}>{group.name}</Tag>)}</td>
                                                             <td><div className="sk-user-row-actions">
                                                                 <Button icon={<EyeOutlined />} aria-expanded={openRules.includes(user.id)} onClick={event => openCloseUserRules(event, user.id)}>Подробнее</Button>
-                                                                <NavLink to={`/hr/usermanager/${user.id}`}><EditOutlined /> Редактировать</NavLink>
+                                                                <PersonnelEditAction to={`/hr/usermanager/${user.id}`} />
                                                             </div></td>
                                                         </tr>
                                                         {openRules.includes(user.id) && <tr><td colSpan={6}>{renderUserDetails(user)}</td></tr>}

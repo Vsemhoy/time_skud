@@ -10,6 +10,13 @@
     border-radius: 6px;
 }
 
+.sk-usp-filter-col.sk-statistics-main-filter {
+    box-sizing: border-box;
+    border-inline-end: var(--panel-divider);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
 .sk-usp-openmode-group {
     display: flex;
     justify-content: space-between;

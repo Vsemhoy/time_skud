@@ -118,6 +118,29 @@
 .sk-personnel-main .user-changes-filter-toggle[aria-expanded="false"] { background: white; color: #182433; border-color: #b9c3ce; }
 .sk-personnel-titlebar > button:last-child { justify-self: end; }
 .sk-personnel-titlebar h2 { margin: 0; font-size: 20px; font-weight: 500; }
+.sk-group-layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+.sk-group-filter-sidebar {
+    flex: 0 0 min(320px, 45%);
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-y: auto;
+    background: white;
+    border-inline-end: var(--panel-divider);
+}
+.sk-group-filter-sidebar .sk-claims-filter-title { height: 40px; }
+.sk-group-filter-fields { padding: 5px 16px; }
+.sk-group-filter-fields label {
+    display: grid;
+    gap: 3px;
+    margin-bottom: 10px;
+    color: #536a88;
+    font-size: 11px;
+    font-weight: 600;
+}
 .sk-personnel-groups .sk-group-1col-body { flex: 1; min-height: 0; overflow: auto; background: white; }
 .sk-personnel-groups .sk-group-list { gap: 0; }
 .sk-personnel-main .user-changes-layout { min-height: 0; flex: 1; gap: 0; align-items: stretch; }
@@ -128,7 +151,7 @@
     padding: 0;
     background: white;
     border: 0;
-    border-right: 3px solid #849ab1;
+    border-inline-end: var(--panel-divider);
     border-radius: 0;
 }
 .sk-personnel-main .user-changes-sidebar .sk-claims-filter-title {
@@ -265,7 +288,7 @@
     gap: 8px;
 }
 
-.sk-user-row-actions > a {
+.sk-personnel-main .sk-personnel-edit {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -277,11 +300,13 @@
     border-radius: 6px;
     background: white;
     color: #214f80;
+    cursor: pointer;
+    font-family: inherit;
     font-size: 14px;
     white-space: nowrap;
 }
 
-.sk-user-row-actions > a:hover {
+.sk-personnel-main .sk-personnel-edit:hover {
     color: #2465c3;
     border-color: currentColor;
 }

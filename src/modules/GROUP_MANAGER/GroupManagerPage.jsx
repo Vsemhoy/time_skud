@@ -1,3 +1,5 @@
+import PersonnelEditAction from "../../components/PersonnelEditAction";
+import FiltersToggle from "../../components/FiltersToggle";
 import PersonnelTable from '../../components/PersonnelTable';
 import {getSavedSkudPageTheme, SKUD_PAGE_THEMES} from '../../Utils/skudPageTheme';
 import React, { useEffect, useState } from "react";
@@ -503,13 +505,15 @@ const GroupManagerPage = (props)=>{
     return (
         <div className={isMain ? "sk-personnel-main sk-personnel-groups" : "sk-mw-1400 sk-p-12"}>
             {isMain ? <header className="sk-personnel-titlebar">
-                <Button icon={<FilterOutlined />} aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>Фильтры</Button>
+                <FiltersToggle icon={<FilterOutlined />} aria-controls="group-filters" aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>Фильтры</FiltersToggle>
                 <h2>Группы пользователей</h2>
                 <Button type="primary" icon={<PlusOutlined />} onClick={openBlankEditor}>Создать группу</Button>
             </header> : <><br /><h2>Группировка пользователей</h2></>}
-            <div hidden={isMain && !showFilters}>
+            <div className={isMain ? 'sk-group-layout' : undefined}>
+            <div id="group-filters" className={isMain ? 'sk-group-filter-sidebar' : undefined} hidden={isMain && !showFilters}>
+            {isMain && <h2 className="sk-claims-filter-title">Фильтры</h2>}
             <GroupPageToolbar
-                hideCreate={isMain}
+                sidebar={isMain}
                 companies={companies}
                 userData={props.userdata}
                 onChangeFilter={onSetFilters}
@@ -525,7 +529,7 @@ const GroupManagerPage = (props)=>{
                     {groupList.map(group => (
                         <tr key={group.id}>
                             <td>{group.id}</td><td>{group.name}</td><td>{group.company_name}</td><td>{group.users_count ?? 0}</td>
-                            <td><Button size="small" onClick={event => openModalEditor(group.id, event)}>Редактировать</Button></td>
+                            <td><PersonnelEditAction onClick={event => openModalEditor(group.id, event)} /></td>
                         </tr>
                     ))}
                 </PersonnelTable>
@@ -556,6 +560,7 @@ const GroupManagerPage = (props)=>{
                 ): ""}
 
 </>}
+            </div>
             </div>
 
             <div>
