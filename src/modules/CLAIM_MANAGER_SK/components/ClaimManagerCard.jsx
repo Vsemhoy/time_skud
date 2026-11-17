@@ -323,7 +323,7 @@ const ClaimManagerCard = (props) => {
                   <div className={'sk-align-center'} >  {/*title={props.data?.id}*/}
                       <div className={'sk-claimicon'}>
                           {/*<ClaimIcon title={props.data.state_title} icon={props.data.state_icon}/>*/}
-                          <StateIconsController IdState={props.data.skud_current_state_id}/>
+                          <StateIconsController IdState={props.data.skud_current_state_id} height={'20px'}/>
                       </div>
                   </div>
               </div>

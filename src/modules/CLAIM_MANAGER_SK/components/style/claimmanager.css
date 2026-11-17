@@ -865,6 +865,10 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     text-align: center;
 }
 
+.sk-clamen-card-wrapper .sk-clamen-card > div {
+    height: 31px;
+}
+
 .sk-claims-table-main .sk-clamen-card-wrapper .sk-clamen-card > div {
     font-size: var(--ui-text-size);
 }
