@@ -109,7 +109,9 @@ const UserList = (props)=>{
   const [collapsedDepartments, setCollapsedDepartments] = useState([]);
   const toolbarElementRef = useRef(null);
   const [toolbarHeight, setToolbarHeight] = useState(52);
-  const menuOffset = pageTheme === SKUD_PAGE_THEMES.MAIN ? 46 : 0;
+  const useStickyToolbar = pageTheme === SKUD_PAGE_THEMES.MAIN;
+  const StickyWrapper = useStickyToolbar ? React.Fragment : Affix;
+  const menuOffset = useStickyToolbar ? 46 : 0;
   const contentOffset = menuOffset + (isModern ? toolbarHeight : NEW_SKUD_AFFIX_OFFSET);
   useEffect(() => {
     if (!isModern || !toolbarElementRef.current) return;
@@ -141,6 +143,7 @@ const UserList = (props)=>{
   });
   const isSuperCompactMode = isSuperUser && isSuperFavoritesOnly;
   const isSuperTableMode = isSuperUser;
+  const separatePhoneColumn = isSuperTableMode && pageTheme === SKUD_PAGE_THEMES.MAIN;
   const HIDDEN_DEPARTMENT_IDS = [17, 18];
   const LIMITED_DEPARTMENT_ID = 19;
   const LIMITED_USER_ID = 583;
@@ -1330,7 +1333,7 @@ const UserList = (props)=>{
       <div className={`mega-layout newskud-page newskud-copy-page ${pageTheme === SKUD_PAGE_THEMES.MAIN ? 'main-page' : ''} ${isModern ? 'modern-page' : ''} ${isSuperUser ? 'newskud-page--super' : ''}`}>
         {isInitialPageLoading && <UserListInitialLoader phase={initialLoaderPhase} />}
         <Layout className={'layout layout--newskud'}>
-          <Affix offsetTop={menuOffset}>
+          <StickyWrapper {...(useStickyToolbar ? {} : {offsetTop: menuOffset})}>
             <Header ref={toolbarElementRef} className={'header-user-list header-user-list--newskud'}>
               <UserListToolbar
                 modern={isModern}
@@ -1368,8 +1371,8 @@ const UserList = (props)=>{
                 })}
               />
             </Header>
-          </Affix>
-          <Layout className="sk-layout-center">
+          </StickyWrapper>
+          <Layout className="sk-layout-center" style={useStickyToolbar ? {'--sk-content-top': `${contentOffset}px`} : undefined}>
             <Sider width={shouldShowFilterSidebar ? "320px" : 0}
                    className={`sider ${shouldShowFilterSidebar ? '' : 'sider-hidden'} pr15`}
                    style={{
@@ -1378,7 +1381,7 @@ const UserList = (props)=>{
                      pointerEvents: shouldShowFilterSidebar ? 'auto' : 'none',
                    }}
             >
-              <Affix offsetTop={contentOffset}>
+              <StickyWrapper {...(useStickyToolbar ? {} : {offsetTop: contentOffset})}>
                 <div className="sk-width-container">
                   <div className="sk-usp-filter-col sk2-filters-shell" style={{height: 'calc(100vh - 46px - 46px)'}}>
                     <FiltersSidebar collapsible={pageTheme !== SKUD_PAGE_THEMES.MAIN}
@@ -1394,7 +1397,7 @@ const UserList = (props)=>{
                     />
                   </div>
                 </div>
-              </Affix>
+              </StickyWrapper>
             </Sider>
             <Content className="content no-pb">
               <div className={'sk-arche-stack'} style={{paddingBottom: '50vh'}} ref={tableRef} tabIndex={-1}>
@@ -1402,7 +1405,7 @@ const UserList = (props)=>{
                       <Empty />
                   ):(
                       <div className="sk-userlist-table-frame">
-                        <Affix offsetTop={contentOffset}>
+                        <StickyWrapper {...(useStickyToolbar ? {} : {offsetTop: contentOffset})}>
                           <div className="sk-userlist-table-header-wrap">
                             <div
                                 className={`sk-usermonic-cardrow-ou-test sk-usermonic-headerrow ${shouldShowExtendedTableColumns ? 'extended' : ''} ${effectiveShowIdColumn ? '' : 'without-id-column'} ${isSuperTableMode ? 'super-mode' : ''}`}>
@@ -1424,14 +1427,15 @@ const UserList = (props)=>{
                               <div className={`${selectedColumns.includes(2) ? "sk-col-selected" : ""}`}
                                    style={{textAlign: 'left'}}>
                                 {pageTheme === SKUD_PAGE_THEMES.MAIN ? renderColumnLabel('Сотрудник') : <span>Сотрудник</span>}
-                                <PhoneOutlined
+                                {!separatePhoneColumn && <PhoneOutlined
                                     className="sk-userlist-phone-header-icon"
                                     title="Телефон"
                                     aria-label="Телефон"
-                                />
+                                />}
                               </div>
                             </div>
 
+                            {separatePhoneColumn && <div className="sk-super-phone-column">{renderColumnLabel('Телефон')}</div>}
                             {isModern && <div className="modern-phone-cell"><PhoneOutlined title="Телефон" /></div>}
                             <div className="sk-userlist-status-cell">
                               {renderColumnLabel('Статус')}
@@ -1518,7 +1522,7 @@ const UserList = (props)=>{
 
                           </div>
                         </div>
-                        </Affix>
+                        </StickyWrapper>
                         {shouldShowTableSkeleton ? (
                           <UserListTableSkeleton extendedInfo={shouldShowExtendedTableColumns} showIdColumn={effectiveShowIdColumn} />
                         ) : filteredUsers.length === 0 ? (
@@ -1553,6 +1557,7 @@ const UserList = (props)=>{
                                     show_id_column={effectiveShowIdColumn}
                                     current_user_id={userdata.user.id}
                                     super_mode={isSuperTableMode}
+                                    separatePhoneColumn={separatePhoneColumn}
                                     is_super_favorites_only={isSuperFavoritesOnly}
                                     on_set_super_favorite={handleSetSuperFavorite}
                                     favorite_row_state={favoriteRowStates[String(arche.id)]}
@@ -1573,7 +1578,7 @@ const UserList = (props)=>{
                      visibility: shouldShowDetailsSidebar ? 'visible' : 'hidden',
                    }}
             >
-              <Affix offsetTop={contentOffset}>
+              <StickyWrapper {...(useStickyToolbar ? {} : {offsetTop: contentOffset})}>
                 <div className="sk-width-container sk-userlist-details-panel" style={{border: '1px solid gainsboro', borderRadius: '6px', height: 'calc(100vh - 46px - 46px)'}}>
                     {pageTheme === SKUD_PAGE_THEMES.MAIN && (
                       <h2 className="sk-userlist-details-heading">Виджеты</h2>
@@ -1593,7 +1598,7 @@ const UserList = (props)=>{
                         on_open_bill_list={handleOpenBillListModal}
                     />
                 </div>
-              </Affix>
+              </StickyWrapper>
             </Sider>}
           </Layout>
         </Layout>

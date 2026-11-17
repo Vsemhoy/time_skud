@@ -1,4 +1,4 @@
-import { DownOutlined, LeftOutlined, PlusOutlined, ReloadOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons";
+import { DownOutlined, LeftOutlined, PlusOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons";
 import { Affix, Button, DatePicker, Drawer, Dropdown, Input, Layout, Pagination, Popover, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
@@ -503,9 +503,6 @@ const EventMonitorToolbar = (props)=>
                             <h2>Монитор событий СКУД</h2>
                             {props.isMain ? (
                                 <div className="sk-event-monitor-header-actions">
-                                    <Button icon={<ReloadOutlined />} loading={props.refreshing} onClick={props.onRefresh}>
-                                        Обновить
-                                    </Button>
                                     {createButton}
                                 </div>
                             ) : <span>Найдено: {props.pagination_total}</span>}
