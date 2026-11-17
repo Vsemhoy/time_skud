@@ -116,7 +116,7 @@
 
 .sk-evemonic-cardrow {
     display: grid;
-    grid-template-columns: 110px 52px minmax(220px, 1.2fr) minmax(220px, 1fr) 150px 110px 84px;
+    grid-template-columns: 135px 52px minmax(220px, 1.2fr) minmax(220px, 1fr) 150px 110px 84px;
     align-items: stretch;
     min-width: 980px;
     border-bottom: 1px solid var(--table-border-divider-color);
