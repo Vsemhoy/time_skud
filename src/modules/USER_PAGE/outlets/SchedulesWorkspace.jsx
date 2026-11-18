@@ -314,7 +314,7 @@ function SchedulesWorkspace(props) {
                                 ))}
                             </PersonnelTable>
                         </div>
-                        <div className="sk-claims-table-pagination">{pagination}</div>
+                        <div className="sk-claims-table-pagination ui-pagination">{pagination}</div>
                     </> : <div className={styles.sk_schedule_table}>
                         <div className={`${styles.sk_schedule_table_row_wrapper} ${styles.sk_table_row_header}`}>
                             <div className={styles.sk_schedule_table_row}>

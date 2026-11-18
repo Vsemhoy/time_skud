@@ -576,7 +576,7 @@ const EventMonitorToolbar = (props)=>
                     {props.isMain && tableHeader}
                     {props.children}
                 </div>
-                {props.isMain && <div className="sk-event-monitor-pagination">{pagination}</div>}
+                {props.isMain && <div className="sk-event-monitor-pagination ui-pagination">{pagination}</div>}
             </Content>
 
 

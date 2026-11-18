@@ -365,8 +365,7 @@
     background: #385773;
 }
 
-.sk-event-monitor-main .sk-event-monitor-table-toolbar,
-.sk-event-monitor-main .sk-event-monitor-pagination {
+.sk-event-monitor-main .sk-event-monitor-table-toolbar {
     display: flex;
     justify-content: flex-end;
     padding: 8px;
@@ -387,6 +386,4 @@
     margin-inline-end: auto;
 }
 
-.sk-event-monitor-main .sk-event-monitor-pagination {
-    border-top: 0;
-}
+

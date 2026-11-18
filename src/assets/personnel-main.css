@@ -38,17 +38,6 @@
     flex-shrink: 0;
 }
 
-.sk-personnel-main .sk-pagination-wrapper,
-.sk-personnel-main .user-changes-table .ant-table-pagination {
-    display: flex;
-    justify-content: flex-end;
-    height: auto;
-    margin: 0;
-    padding: 8px;
-    border: 1px solid var(--ui-border);
-    background: white;
-}
-
 .sk-personnel-main .sk-pagination-container { flex-wrap: wrap; }
 .sk-personnel-main .sk-pagination-container .ant-tag { order: -1; }
 .sk-personnel-main .sk-usp-filter-col > div { overflow-y: auto; }

@@ -1062,7 +1062,7 @@ const ClaimManagerPage = (props) => {
                                     ))}
                                 </div>
                                 {isMainTheme && (
-                                    <div className="sk-claims-table-pagination">
+                                    <div className="sk-claims-table-pagination ui-pagination">
                                         <Pagination
                                             current={page}
                                             pageSize={onPage}
