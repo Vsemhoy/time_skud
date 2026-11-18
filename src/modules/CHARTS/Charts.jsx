@@ -904,7 +904,7 @@ const  Charts = (props) => {
                                 onPreviousMonth,
                                 onNextMonth,
                             }}/>
-                            {isMain && <div className="sk-claims-table-pagination">
+                            {isMain && <div className="sk-claims-table-pagination ui-pagination">
                                 <Pagination current={currentPage} pageSize={pageSize} total={allUsersCount}
                                     showTotal={count => `Всего: ${count}`} showSizeChanger showQuickJumper pageSizeOptions={[100, 200]}
                                     onChange={(page, size) => { setPageSize(size); setCurrentPage(size === pageSize ? page : 1); }} />

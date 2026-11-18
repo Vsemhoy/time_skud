@@ -446,7 +446,7 @@ const UserManagerPage_2025 = (props) => {
                     <Content className="content">
                         <div className="sk-content-table-wrapper">
                             <PanelWrapper {...(isMain ? {} : {offsetTop: 44})}>
-                                <div className="sk-pagination-wrapper">
+                                <div className="sk-pagination-wrapper ui-pagination">
                                     <div className="sk-pagination-container">
                                         <Pagination
                                             showQuickJumper={isMain}

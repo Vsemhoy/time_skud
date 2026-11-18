@@ -527,7 +527,7 @@ const AppMenu23 = (props) => {
 
                     {!props.is_loading && <Dropdown menu={{ items: userMenuItems }} trigger={['hover']}>
                         <div
-                            className="sk-appmenu-user"
+                            className={isMain ? "sk-appmenu-user ui-topmenu-user" : "sk-appmenu-user"}
                             style={{
                                 cursor: 'pointer',
                                 display: 'flex',
@@ -545,7 +545,7 @@ const AppMenu23 = (props) => {
                             {props.user_act?.user ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', lineHeight: 1 }}>
                                     {isMain ? (
-                                        <span className="sk-main-menu-initial" aria-hidden="true">
+                                        <span className="sk-main-menu-initial ui-topmenu-initial" aria-hidden="true">
                                             {(props.user_act.user.surname || props.user_act.user.name || '?').trim().charAt(0).toUpperCase()}
                                         </span>
                                     ) : <Avatar

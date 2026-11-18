@@ -596,6 +596,31 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     border-color: #d6d6d6;
 }
 
+.sk-claims-viewport .sk-claim-status-tag.ant-tag {
+    width: 140px;
+    max-width: 100%;
+    box-sizing: border-box;
+    height: 22px;
+    padding: 0 6px;
+    gap: 6px;
+    border: 1px solid rgb(0 0 0 / 20%);
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.sk-claims-viewport .sk-claim-status-tag > .anticon {
+    order: -1;
+}
+
+.sk-claims-viewport .sk-claim-status-tag > span:first-child {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
 .sk-claim-date {
     display: inline-flex;
     align-items: center;
@@ -930,7 +955,7 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     text-overflow: ellipsis;
 }
 
-.sk-claims-table-pagination {
+.sk-claims-table-pagination:not(.ui-pagination) {
     display: flex;
     justify-content: flex-end;
     padding: 8px;

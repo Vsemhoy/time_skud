@@ -35,6 +35,10 @@ html[data-page-theme="main"] {
     --ui-bar-border: #8f9dad;
     --ui-nav-active-bg: #dbe7f3;
     --ui-page-title-size: 20px;
+    --ui-pagination-size: 32px;
+    --ui-pagination-padding: 8px;
+    --ui-pagination-gap: 8px;
+    --ui-pagination-radius: 4px;
     --sk-active-button: #324760;
     --sk-active-button-hover: #293b50;
 }
@@ -94,6 +98,64 @@ html[data-page-theme="main"] .ant-table-wrapper .ant-table-tbody > tr:last-child
     border-block-end: 1px solid var(--ui-divider);
 }
 
+/* Для Pagination используйте обёртку ui-pagination.
+   Пагинация встроенных таблиц Ant Design получает оформление автоматически. */
+html[data-page-theme="main"] :is(.ui-pagination, .ant-table-wrapper .ant-table-pagination) {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    flex: none;
+    box-sizing: border-box;
+    height: auto;
+    margin: 0;
+    padding: var(--ui-pagination-padding);
+    border: 1px solid var(--ui-border);
+    background: var(--ui-surface);
+}
+
+html[data-page-theme="main"] .ant-pagination {
+    font-family: var(--ui-font);
+    font-size: var(--ui-heading-size);
+    color: var(--ui-text);
+    flex-wrap: wrap;
+    row-gap: var(--ui-pagination-gap);
+}
+
+html[data-page-theme="main"] .ant-pagination :is(.ant-pagination-item, .ant-pagination-prev, .ant-pagination-next, .ant-pagination-jump-prev, .ant-pagination-jump-next) {
+    box-sizing: border-box;
+    min-width: var(--ui-pagination-size);
+    height: var(--ui-pagination-size);
+    line-height: calc(var(--ui-pagination-size) - 2px);
+    border-radius: var(--ui-pagination-radius);
+    margin-inline-end: var(--ui-pagination-gap);
+}
+
+html[data-page-theme="main"] .ant-pagination .ant-pagination-item-active {
+    background: var(--ui-surface);
+    border-color: var(--sk-active-button);
+}
+
+html[data-page-theme="main"] .ant-pagination .ant-pagination-item-active a,
+html[data-page-theme="main"] .ant-pagination .ant-pagination-item:not(.ant-pagination-disabled):hover a {
+    color: var(--sk-active-button);
+}
+
+html[data-page-theme="main"] .ant-pagination :is(.ant-pagination-options-quick-jumper, .ant-pagination-total-text) {
+    height: var(--ui-pagination-size);
+    line-height: var(--ui-pagination-size);
+}
+
+html[data-page-theme="main"] .ant-pagination :is(.ant-select, .ant-pagination-options-quick-jumper input) {
+    height: var(--ui-pagination-size);
+    font-size: var(--ui-heading-size);
+}
+
+html[data-page-theme="main"] .ant-pagination :is(.ant-select-selector, .ant-pagination-options-quick-jumper input) {
+    border-color: var(--ui-border);
+    border-radius: var(--ui-pagination-radius);
+}
+
 html[data-page-theme="main"] .ui-card {
     border: 1px solid var(--ui-border);
 }
@@ -151,6 +213,85 @@ html[data-page-theme="main"] .ui-topmenu {
     background: var(--ui-surface);
     border-bottom: 1px solid var(--ui-border);
     font: var(--ui-heading-size)/1.2 var(--ui-font);
+    width: 100%;
+    height: var(--ui-nav-height);
+    margin: 0;
+    box-shadow: none;
+}
+
+html[data-page-theme="main"] .ui-topmenu-brand {
+    color: #425267;
+    font: 800 11px/1 var(--ui-font);
+    letter-spacing: .08em;
+}
+
+html[data-page-theme="main"] .ui-topmenu-brand strong {
+    font: inherit;
+    letter-spacing: inherit;
+}
+
+html[data-page-theme="main"] .ui-topmenu-brand > a {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 26px;
+    height: 26px;
+    border: 1px solid #9eabb9;
+    border-radius: 3px;
+    color: var(--sk-active-button);
+    background: var(--ui-surface);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+html[data-page-theme="main"] .ui-topmenu-actions {
+    margin-inline-start: auto;
+    line-height: 1;
+}
+
+html[data-page-theme="main"] .ui-topmenu-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+    height: 30px;
+    min-width: 0;
+    padding: 2px 8px 2px 2px;
+    border: 1px solid #9eabb9;
+    border-radius: 3px;
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    font: 600 12px/1 var(--ui-font);
+    white-space: nowrap;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+html[data-page-theme="main"] .ui-topmenu-user .ui-topmenu-initial {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border-radius: 3px;
+    background: var(--sk-active-button);
+    color: white;
+}
+
+html[data-page-theme="main"] .ui-topmenu-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    height: 30px;
+    min-width: 34px;
+    padding: 0 9px;
+    border: 1px solid var(--sk-active-button);
+    border-radius: 4px;
+    background: var(--sk-active-button);
+    color: white;
+    font: 400 12px/1 var(--ui-font);
 }
 
 /* Вторая строка: centered и date — три зоны; split — заголовок и действия;
