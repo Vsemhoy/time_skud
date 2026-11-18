@@ -1,7 +1,12 @@
 import { Affix, Avatar, Badge, Button, Drawer, Dropdown, Menu, Select, Skeleton } from 'antd';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {BFF_PORT, CSRF_TOKEN, HTTP_HOST, HTTP_ROOT, PRODMODE, ROUTE_PREFIX} from '../../../CONFIG/config';
-import {HomeOutlined, LoginOutlined, NotificationOutlined, ScheduleOutlined, ThunderboltOutlined, UserOutlined} from '@ant-design/icons';
+import {
+    BankOutlined, CheckSquareOutlined, ContactsOutlined, FundViewOutlined,
+    HomeOutlined, LoginOutlined, NotificationOutlined,
+    ProfileOutlined, QuestionCircleOutlined, ScheduleOutlined, TableOutlined,
+    TeamOutlined, ThunderboltOutlined, UserOutlined
+} from '@ant-design/icons';
 import {matchPath, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import { Header } from 'antd/es/layout/layout';
 import { StateContext } from './../../ComStateProvider25/ComStateProvider25';
@@ -249,14 +254,17 @@ const AppMenu23 = (props) => {
         {
             key: '/',
             label: <NavLink to="/">Сотрудники</NavLink>,
+            icon: <TeamOutlined />
         },
         {
             key: '/monitor/events',
             label: <NavLink to="/monitor/events">Монитор событий</NavLink>,
+            icon: <FundViewOutlined />,
         },
         {
             key: 'menu1',
             label: 'Заявки',
+            icon: <ScheduleOutlined />,
             children: [
                 {
                     key: '/claims',
@@ -309,6 +317,7 @@ const AppMenu23 = (props) => {
         {
             key: 'menu2',
             label: 'Персонал',
+            icon: <ContactsOutlined />,
             children: [
                 {
                     key: '/hr/usermanager',
@@ -339,6 +348,7 @@ const AppMenu23 = (props) => {
         {
             key: 'menu3',
             label: 'Бухгалтерия',
+            icon: <BankOutlined />,
             children: [
                 {
                     key: '/accounting/staffingschedule',
@@ -357,18 +367,22 @@ const AppMenu23 = (props) => {
         {
             key: '/kpp-schedule',
             label: <NavLink to="/kpp-schedule">График КПП</NavLink>,
+            icon: <TableOutlined />,
         },
         {
             key: '/builders-schedule',
             label: <NavLink to="/builders-schedule">График строителей</NavLink>,
+            icon: <TableOutlined />,
         },
         {
             key: '/admin/aclskud',
             label: <NavLink to="admin/aclskud">Доступы СКУД</NavLink>,
+            icon: <CheckSquareOutlined />,
         },
         {
             key: '/help',
             label: <NavLink to="/help">Справка</NavLink>,
+            icon: <QuestionCircleOutlined />
         },
         /*{
             key: 'menu4',
