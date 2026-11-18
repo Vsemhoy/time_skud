@@ -447,7 +447,7 @@
 .sk-clamen-card-wrapper > .sk-clamen-card {
     background-color: var(--app-surface-color);
     color: var(--app-text-color);
-    height: 54px;
+    /*height: 54px;*/
     transition: background-color 0.2s ease;
 }
 .sk-clamen-card-wrapper > .sk-clamen-card > div:first-child > div {
@@ -478,7 +478,7 @@
     background: var(--row-main-bg-color);
     transition: background-color 0.2s ease;
     min-width: 1272px;
-    height: 54px;
+    /*height: 54px;*/
 }
 .sk-clamen-headerrow {
     background-color: color-mix(in srgb, var(--app-surface-color) 86%, var(--row-selected-color_2) 14%) !important;
