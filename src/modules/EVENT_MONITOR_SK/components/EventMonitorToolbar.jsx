@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import React, { useState, useEffect } from "react";
 import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
+import {Header} from "antd/es/layout/layout";
 
 const { Content, Sider } = Layout;
 const manualEntryTitle = "Ручное добавление записи";
@@ -396,7 +397,7 @@ const EventMonitorToolbar = (props)=>
     };
 
     const tableHeader = (
-        <div className="sk-evemonic-cardrow sk-evemonic-headerrow">
+        <div className="sk-evemonic-cardrow sk-evemonic-headerrow" style={{top: props.isMain ? 0 : 0}}>
             <div>id</div>
             <div>{props.isMain ? (
                 <Dropdown trigger={['click']} menu={{
@@ -496,17 +497,21 @@ const EventMonitorToolbar = (props)=>
                     </div>
                 </Affix>
             </Sider>}
+            <Header className={'header'} style={{paddingTop: 0, height: 'auto'}}>
+                {/*<Affix offsetTop={props.isMain ? 46 : 0}>*/}
+                    <div className="sk-event-monitor-content-header ui-pagebar ui-pagebar--split">
+                        <h2>Монитор событий СКУД</h2>
+                        {props.isMain ? (
+                            <div className="sk-event-monitor-header-actions">
+                                {createButton}
+                            </div>
+                        ) : <span>Найдено: {props.pagination_total}</span>}
+                    </div>
+                {/*</Affix>*/}
+            </Header>
             <Content className="sk-event-monitor-content">
-                <Affix offsetTop={props.isMain ? 46 : 0}>
+                {/*<Affix offsetTop={props.isMain ? 95 : 0}>*/}
                     <div className="sk-event-monitor-affix-head">
-                        <div className="sk-event-monitor-content-header ui-pagebar ui-pagebar--split">
-                            <h2>Монитор событий СКУД</h2>
-                            {props.isMain ? (
-                                <div className="sk-event-monitor-header-actions">
-                                    {createButton}
-                                </div>
-                            ) : <span>Найдено: {props.pagination_total}</span>}
-                        </div>
                         <div className="sk-event-monitor-table-toolbar">
                             {props.isMain ? (
                                 <Input
@@ -571,7 +576,7 @@ const EventMonitorToolbar = (props)=>
                         </div>
                         {!props.isMain && tableHeader}
                     </div>
-                </Affix>
+               {/* </Affix>*/}
                 <div className="sk-arche-stack sk-event-monitor-table">
                     {props.isMain && tableHeader}
                     {props.children}
