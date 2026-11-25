@@ -1,4 +1,5 @@
 import FiltersToggle from "../../components/FiltersToggle";
+import TableHeaderFilter from "../../components/TableHeaderFilter";
 
 import {
     message, Affix,
@@ -7,7 +8,7 @@ import {
     ConfigProvider,
     Dropdown,
     Layout, Modal,
-    Pagination, Popover, Input, InputNumber, DatePicker,
+    Pagination, Input, InputNumber, DatePicker,
     Radio,
     Select,
     Spin,
@@ -46,7 +47,7 @@ import {
     BlockOutlined,
     DockerOutlined,
     PlusOutlined,
-    PlusCircleOutlined, FilterOutlined, CalendarOutlined, DownOutlined, SearchOutlined, UserOutlined, TeamOutlined
+    PlusCircleOutlined, FilterOutlined, UserOutlined, TeamOutlined
 } from "@ant-design/icons";
 import {BASE_CLAIM_TYPES, USER_STATE_PLACES} from "../../CONFIG/DEFFORMS";
 import {CHART_STATES, USDA} from "../CHARTS/mock/mock";
@@ -238,6 +239,7 @@ const ClaimManagerPage = (props) => {
                 clabs.push({
                         value: claimType.id,
                         icon: <StateIconsController IdState={claimType.id} height="16px" />,
+                        title: claimType.title,
                         label: (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span>{claimType.title}</span>
@@ -540,31 +542,26 @@ const ClaimManagerPage = (props) => {
         setPage(1);
         setter(value);
     };
-    const dateFilter = <DatePicker.RangePicker value={columnFilters.filterEventInterval}
-        onChange={value => updateColumnFilter(columnFilters.setFilterEventInterval, value)} />;
-    const filterButton = (label, active, icon) => (
-            <button type="button" className="sk-claim-column-filter" data-active={Boolean(active)}
-                aria-label={`Фильтр: ${label}`} title={label}>
-                <span>{label === 'Информация' ? 'Инфо' : label}</span>{icon}
-            </button>
+    const optionHeading = (label, value, setter, options) => (
+        isMainTheme ? <TableHeaderFilter label={label} type="select" value={value}
+            options={options.map(option => ({value: option.value ?? 'all', label: option.label, disabled: option.disabled}))}
+            onChange={nextValue => updateColumnFilter(setter, nextValue === 'all' ? null : nextValue)} /> : label
     );
-    const columnHeading = (label, control, active, icon = <SearchOutlined />) => isMainTheme ? (
-        <Popover trigger="click" placement="bottomLeft" arrow={false} content={control}>
-            {filterButton(label, active, icon)}
-        </Popover>
-    ) : label;
-    const textFilter = (value, setter, placeholder) => <Input allowClear value={value}
-        placeholder={placeholder} onChange={e => updateColumnFilter(setter, e.target.value)} />;
-    const optionHeading = (label, value, setter, options, active) => isMainTheme ? (
-        <Dropdown trigger={['click']} placement="bottomLeft" menu={{
-            selectable: true,
-            selectedKeys: [String(value ?? 'all')],
-            items: options.map(o => ({key: String(o.value ?? 'all'), label: o.label, icon: o.icon})),
-            onClick: ({key}) => updateColumnFilter(setter, options.find(o => String(o.value ?? 'all') === key).value),
-        }}>
-            {filterButton(label, active, <DownOutlined />)}
-        </Dropdown>
-    ) : label;
+    const textHeading = (label, value, setter, placeholder) => (
+        isMainTheme ? <TableHeaderFilter label={label} type="text" value={value}
+            onChange={event => updateColumnFilter(setter, event.target.value)} placeholder={placeholder} /> : label
+    );
+    const dateHeading = (label, side) => {
+        const interval = columnFilters.filterEventInterval || [];
+        const date = interval[side] || null;
+        return isMainTheme ? <TableHeaderFilter label={label} type="date" value={date}
+            onChange={nextDate => {
+                const nextInterval = [...interval];
+                nextInterval[side] = nextDate;
+                updateColumnFilter(columnFilters.setFilterEventInterval,
+                    nextInterval.some(Boolean) ? nextInterval : null);
+            }} /> : label;
+    };
 
     const handleSetTypeSelect = (ev, value, canCreate) => {
         if (ev.button === 1 && value !== 0 && canCreate){
@@ -972,42 +969,52 @@ const ClaimManagerPage = (props) => {
                                             <div className={'sk-clamen-card'}>
                                                 <div>
                                                     <div>
-                                                        {optionHeading('Тип', typeSelect, selectClaimType, claimTypeOptions, Number(typeSelect) !== 0)}
+                                                        {isMainTheme ? <TableHeaderFilter label="Тип" type="select" value={typeSelect || null}
+                                                            options={claimTypeOptions.map(option => ({
+                                                                value: option.value,
+                                                                label: <Tooltip title={option.title}>
+                                                                    <span className="sk-claim-type-filter-icon" aria-label={option.title} role="img">{option.icon}</span>
+                                                                </Tooltip>,
+                                                                disabled: option.disabled,
+                                                            }))}
+                                                            onChange={selectClaimType} /> : 'Тип'}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        {columnHeading('Сотрудник', textFilter(columnFilters.filterUserName, columnFilters.setFilterUserName, 'Имя сотрудника'), columnFilters.filterUserName)}
+                                                        {textHeading('Сотрудник', columnFilters.filterUserName, columnFilters.setFilterUserName, 'Имя сотрудника')}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        {optionHeading('Статус', columnFilters.filterStatus, columnFilters.setFilterStatus, claimStatuses, columnFilters.filterStatus != null)}
+                                                        {optionHeading('Статус', columnFilters.filterStatus, columnFilters.setFilterStatus, claimStatuses)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        {columnHeading('Начало', dateFilter, columnFilters.filterEventInterval?.[0], <CalendarOutlined />)}
+                                                        {dateHeading('Начало', 0)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        {columnHeading('Конец', dateFilter, columnFilters.filterEventInterval?.[1], <CalendarOutlined />)}
+                                                        {dateHeading('Конец', 1)}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div title="количество дней в заявке">
-                                                        {columnHeading('Дней', <div className="sk-claim-duration-filter">
-                                                            <InputNumber min={0} placeholder="От" aria-label="Дней от" value={columnFilters.filterDurationStart || null}
-                                                                onChange={v => updateColumnFilter(columnFilters.setFilterDurationStart, v || 0)} />
-                                                            <InputNumber min={0} placeholder="До" aria-label="Дней до" value={columnFilters.filterDurationEnd || null}
-                                                                onChange={v => updateColumnFilter(columnFilters.setFilterDurationEnd, v || 0)} />
-                                                        </div>, columnFilters.filterDurationStart || columnFilters.filterDurationEnd)}
+                                                        {isMainTheme ? <TableHeaderFilter label="Дней" type="custom"
+                                                            value={[columnFilters.filterDurationStart, columnFilters.filterDurationEnd]}
+                                                            customControl={<div className="sk-claim-duration-filter">
+                                                            <InputNumber min={0} placeholder="От" aria-label="Дней от" value={columnFilters.filterDurationStart ?? null}
+                                                                onChange={v => updateColumnFilter(columnFilters.setFilterDurationStart, v)} />
+                                                            <InputNumber min={0} placeholder="До" aria-label="Дней до" value={columnFilters.filterDurationEnd ?? null}
+                                                                onChange={v => updateColumnFilter(columnFilters.setFilterDurationEnd, v)} />
+                                                        </div>} /> : 'Дней'}
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        {columnHeading('Информация', textFilter(columnFilters.filterReason, columnFilters.setFilterReason, 'Поиск по описанию'), columnFilters.filterReason)}
+                                                        {textHeading('Инфо', columnFilters.filterReason, columnFilters.setFilterReason, 'Поиск по описанию')}
                                                     </div>
                                                 </div>
                                                 <div>
@@ -1017,7 +1024,7 @@ const ClaimManagerPage = (props) => {
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        {optionHeading('Исп', columnFilters.filterShowEvaluated, columnFilters.setFilterShowEvaluated, evalStatuses, columnFilters.filterShowEvaluated != null)}
+                                                        {optionHeading('Исп', columnFilters.filterShowEvaluated, columnFilters.setFilterShowEvaluated, evalStatuses)}
                                                     </div>
                                                 </div>
                                                 <div>
