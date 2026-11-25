@@ -1,11 +1,13 @@
-import { DownOutlined, LeftOutlined, PlusOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons";
-import { Affix, Button, DatePicker, Drawer, Dropdown, Input, Layout, Pagination, Popover, Select } from "antd";
+import { LeftOutlined, PlusOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons";
+import { Affix, Button, DatePicker, Drawer, Input, Layout, Pagination, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Search from "antd/es/transfer/search";
 import dayjs from "dayjs";
 import React, { useState, useEffect } from "react";
 import {CSRF_TOKEN, ROUTE_PREFIX} from "../../../CONFIG/config"
 import { PROD_AXIOS_INSTANCE } from "../../../API/API";
+import {Header} from "antd/es/layout/layout";
+import TableHeaderFilter from "../../../components/TableHeaderFilter";
 
 const { Content, Sider } = Layout;
 const manualEntryTitle = "Ручное добавление записи";
@@ -396,35 +398,17 @@ const EventMonitorToolbar = (props)=>
     };
 
     const tableHeader = (
-        <div className="sk-evemonic-cardrow sk-evemonic-headerrow">
+        <div className="sk-evemonic-cardrow sk-evemonic-headerrow" style={{top: props.isMain ? 0 : 0}}>
             <div>id</div>
-            <div>{props.isMain ? (
-                <Dropdown trigger={['click']} menu={{
-                    items: sources.map(({value, label}) => ({key: value ?? 'all', label})),
-                    selectable: true,
-                    selectedKeys: [selectedSource ?? 'all'],
-                    onClick: ({key}) => {
-                        setSelectedSource(key === 'all' ? null : key);
-                        setPaginatorPage(1);
-                    },
-                }}>
-                    <button type="button" className="sk-event-filter" data-active={selectedSource !== null}
-                        aria-label="Фильтр по источнику">
-                        Источник <DownOutlined />
-                    </button>
-                </Dropdown>
-            ) : 'src'}</div>
-            <div>{props.isMain ? (
-                <Popover trigger="click" placement="bottomLeft" content={
-                    <Input allowClear aria-label="Поиск сотрудника" placeholder="Имя, фамилия или должность"
-                        value={targetString} onChange={handleSearchChange} />
-                }>
-                    <button type="button" className="sk-event-filter" data-active={Boolean(targetString.trim())}
-                        aria-label="Фильтр по сотруднику">
-                        Сотрудник <SearchOutlined />
-                    </button>
-                </Popover>
-            ) : 'Сотрудник'}</div>
+            <div>{props.isMain ? <TableHeaderFilter label="Источник" type="select" value={selectedSource}
+                options={sources.map(option => ({value: option.value ?? 'all', label: option.label}))}
+                onChange={value => {
+                    setSelectedSource(value == null || value === 'all' ? null : value);
+                    setPaginatorPage(1);
+                }} ariaLabel="Фильтр по источнику" /> : 'src'}</div>
+            <div>{props.isMain ? <TableHeaderFilter label="Сотрудник" type="text" value={targetString}
+                onChange={handleSearchChange} placeholder="Имя, фамилия или должность"
+                ariaLabel="Поиск сотрудника" /> : 'Сотрудник'}</div>
             <div>Причина</div>
             <div>Время события</div>
             <div>День</div>
@@ -496,17 +480,21 @@ const EventMonitorToolbar = (props)=>
                     </div>
                 </Affix>
             </Sider>}
+            <Header className={'header'} style={{paddingTop: 0, height: 'auto'}}>
+                {/*<Affix offsetTop={props.isMain ? 46 : 0}>*/}
+                    <div className="sk-event-monitor-content-header ui-pagebar ui-pagebar--split">
+                        <h2>Монитор событий СКУД</h2>
+                        {props.isMain ? (
+                            <div className="sk-event-monitor-header-actions">
+                                {createButton}
+                            </div>
+                        ) : <span>Найдено: {props.pagination_total}</span>}
+                    </div>
+                {/*</Affix>*/}
+            </Header>
             <Content className="sk-event-monitor-content">
-                <Affix offsetTop={props.isMain ? 46 : 0}>
+                {/*<Affix offsetTop={props.isMain ? 95 : 0}>*/}
                     <div className="sk-event-monitor-affix-head">
-                        <div className="sk-event-monitor-content-header ui-pagebar ui-pagebar--split">
-                            <h2>Монитор событий СКУД</h2>
-                            {props.isMain ? (
-                                <div className="sk-event-monitor-header-actions">
-                                    {createButton}
-                                </div>
-                            ) : <span>Найдено: {props.pagination_total}</span>}
-                        </div>
                         <div className="sk-event-monitor-table-toolbar">
                             {props.isMain ? (
                                 <Input
@@ -571,7 +559,7 @@ const EventMonitorToolbar = (props)=>
                         </div>
                         {!props.isMain && tableHeader}
                     </div>
-                </Affix>
+               {/* </Affix>*/}
                 <div className="sk-arche-stack sk-event-monitor-table">
                     {props.isMain && tableHeader}
                     {props.children}

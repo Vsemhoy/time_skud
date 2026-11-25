@@ -48,9 +48,9 @@ export function useClaimColumnFilters() {
     const [filterReason, setFilterReason] = useState('');
     const [filterStatus, setFilterStatus] = useState(null);
     const [filterEventInterval, setFilterEventInterval] = useState([null, null]);
-    const [filterShowEvaluated, setFilterShowEvaluated] = useState(0);
-    const [filterDurationStart, setFilterDurationStart] = useState(0);
-    const [filterDurationEnd, setFilterDurationEnd] = useState(0);
+    const [filterShowEvaluated, setFilterShowEvaluated] = useState(null);
+    const [filterDurationStart, setFilterDurationStart] = useState(null);
+    const [filterDurationEnd, setFilterDurationEnd] = useState(null);
     return {
         filterUserName, setFilterUserName,
         filterReason, setFilterReason,
@@ -83,9 +83,9 @@ export const ClaimManagerSidebar = (props) => {
         filterStatus: null,
         filterShowDeleted: false,
         filterApprover: '',
-        filterDurationStart: 0,
-        filterDurationEnd: 0, 
-        filterShowEvaluated: 0
+        filterDurationStart: null,
+        filterDurationEnd: null,
+        filterShowEvaluated: null
     }
     
     const [filterCompany, setFilterCompany] = useState(null);
@@ -344,13 +344,13 @@ export const ClaimManagerSidebar = (props) => {
                         <Input
                             type="number"
                             min={0}
-                            value={filterDurationStart}
+                            value={filterDurationStart ?? ''}
                             onChange={(ev)=>{setFilterDurationStart(ev.target?.value)}}
                         />
                         <Input
                             type="number"
                             min={0}
-                            value={filterDurationEnd}
+                            value={filterDurationEnd ?? ''}
                             onChange={(ev)=>{setFilterDurationEnd(ev.target?.value)}}
                         />
                     </div>

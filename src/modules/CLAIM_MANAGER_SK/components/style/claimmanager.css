@@ -890,6 +890,10 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     text-align: center;
 }
 
+.sk-claims-table-main .sk-clamen-headerrow .sk-clamen-card > div > div:has(.table-header-filter-cell) {
+    padding: 0;
+}
+
 .sk-clamen-card-wrapper .sk-clamen-card > div {
     height: 31px;
 }
@@ -906,53 +910,14 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
     text-align: left;
 }
 
-.sk-claims-table-main .sk-clamen-headerrow .sk-clamen-card > div > div:has(.sk-claim-column-filter) {
-    padding: 0;
-}
-
 .sk-claims-table-main .sk-clamen-headerrow .sk-clamen-card > div:nth-child(7) > div::after {
     content: none;
 }
 
-.sk-claim-column-filter {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2px;
-    width: 100%;
-    height: 100%;
-    padding: 0 8px;
-    background: transparent;
-    border: 0;
-    color: white;
-    font-family: inherit;
-    font-size: var(--ui-heading-size);
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.sk-claim-column-filter > .anticon {
-    flex-shrink: 0;
-    font-size: 11px;
-    opacity: .85;
-}
-
 .sk-claims-table-main .sk-clamen-card {
     grid-template-columns: minmax(56px, .56fr) minmax(280px, 3fr) minmax(170px, 1.7fr)
-        repeat(2, minmax(135px, 1.35fr)) minmax(72px, .72fr) minmax(68px, .68fr)
+        repeat(2, minmax(135px, 1.35fr)) minmax(100px, .72fr) minmax(68px, .68fr)
         minmax(64px, .64fr) repeat(3, minmax(72px, .72fr)) minmax(84px, .84fr);
-}
-
-.sk-claim-column-filter:hover,
-.sk-claim-column-filter[data-active="true"] {
-    background: #385773;
-}
-
-.sk-claim-column-filter > span:first-child {
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 .sk-claims-table-pagination:not(.ui-pagination) {
@@ -1053,7 +1018,14 @@ div:not(.sk-clamen-headerrow)  > .sk-clamen-card:hover > div {
 
 .sk-claim-duration-filter {
     display: flex;
-    gap: 8px;
+    width: 100%;
+    gap: 4px;
+}
+
+.table-header-filter-control .sk-claim-duration-filter .ant-input-number {
+    flex: 1 1 50%;
+    width: 50%;
+    min-width: 0;
 }
 
 .sk-route-shell:has(> .ant-layout-content > .sk-claims-viewport) {

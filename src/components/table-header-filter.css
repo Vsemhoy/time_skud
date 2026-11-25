@@ -1,0 +1,125 @@
+.table-header-filter-cell {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 0;
+    transition: background-color .16s ease;
+}
+.table-header-filter-main {
+    position: relative;
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+.table-header-filter-label {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    inset-inline: 0;
+    overflow: hidden;
+    color: #fff;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: top .16s ease, transform .16s ease, color .16s ease, font-size .16s ease;
+}
+.table-header-filter-control {
+    width: 100%;
+    min-width: 0;
+    opacity: 0;
+    transition: opacity .12s ease;
+}
+.table-header-filter-cell.is-raised .table-header-filter-control { opacity: 1; }
+.table-header-filter-control .ant-input,
+.table-header-filter-control .ant-input-number,
+.table-header-filter-control .ant-select,
+.table-header-filter-control .ant-picker,
+.table-header-filter-control .ant-input-affix-wrapper { width: 100%; }
+.table-header-filter-control :is(.ant-input, .ant-input-number, .ant-select, .ant-picker, .ant-picker-input > input) {
+    font-family: var(--ui-font, inherit);
+    font-size: var(--ui-heading-size, 12px);
+    font-weight: 400;
+}
+.table-header-filter-control .ant-input,
+.table-header-filter-control .ant-input-affix-wrapper,
+.table-header-filter-control .ant-input-number,
+.table-header-filter-control .ant-select-selector,
+.table-header-filter-control .ant-picker {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.table-header-filter-control .ant-input,
+.table-header-filter-control .ant-input-affix-wrapper,
+.table-header-filter-control .ant-input-number,
+.table-header-filter-control .ant-picker { height: 26px; padding: 0; }
+.table-header-filter-control .ant-input { color: #d1d5db; line-height: 26px; text-align: left; }
+.table-header-filter-control .ant-input-affix-wrapper { padding-inline: 0; }
+.table-header-filter-control .ant-input-number-input {
+    height: 26px;
+    padding: 0;
+    color: #d1d5db;
+    line-height: 26px;
+}
+.table-header-filter-control .ant-input-number-input-wrap { height: 26px; }
+.table-header-filter-control .ant-input-number-handler-wrap { display: none; }
+.table-header-filter-control .ant-select-selection-item,
+.table-header-filter-control .ant-picker-input > input { color: #d1d5db !important; text-align: left; }
+.table-header-filter-control .ant-select-selection-item { text-align: left; }
+.table-header-filter-control .ant-select-selector { height: 26px !important; min-height: 26px !important; padding: 0 18px 0 0 !important; }
+.table-header-filter-control .ant-select-selection-item { line-height: 24px !important; }
+.table-header-filter-control .ant-picker-input > input { height: 26px; }
+.table-header-filter-control .ant-input::placeholder,
+.table-header-filter-control .ant-picker-input > input::placeholder { color: transparent; }
+.table-header-filter-cell.is-raised { background: rgba(0, 0, 0, .24); }
+.table-header-filter-cell.is-raised .table-header-filter-label {
+    top: 1px;
+    inset-inline: 7px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: left;
+    transform: none;
+}
+.table-header-filter-cell.is-raised .table-header-filter-control { transform: translateY(5px); }
+.table-header-filter-cell.is-raised .table-header-filter-control .ant-input,
+.table-header-filter-cell.is-raised .table-header-filter-control .ant-input-number,
+.table-header-filter-cell.is-raised .table-header-filter-control .ant-select-selector,
+.table-header-filter-cell.is-raised .table-header-filter-control .ant-picker { min-height: 26px; }
+.table-header-filter-cell.has-sort .table-header-filter-main { flex-basis: 90%; }
+.table-header-filter-sort {
+    flex: 0 0 10%;
+    min-width: 18px;
+    padding: 0;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #c7d2df;
+    font-size: 10px;
+    cursor: pointer;
+}
+.table-header-filter-sort:hover { background: rgba(0, 0, 0, .08); }
+.table-header-filter-sort .is-selected { color: #fff; }
+.table-header-filter-cell:not(.has-sort) .table-header-filter-main { flex-basis: 100%; }
+.sk-claims-table-main .table-header-filter-label { color: #fff; }
+.sk-claims-table-main .table-header-filter-cell.is-raised { background: rgba(0, 0, 0, .24); }
+.sk-claim-type-filter-icon { display: inline-flex; align-items: center; min-width: 18px; height: 20px; }

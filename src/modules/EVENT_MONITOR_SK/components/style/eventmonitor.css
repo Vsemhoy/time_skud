@@ -342,27 +342,8 @@
     border-right-color: var(--ui-heading-divider);
 }
 
-.sk-event-monitor-main .sk-evemonic-headerrow > div:has(.sk-event-filter) {
+.sk-event-monitor-main .sk-evemonic-headerrow > div:has(.table-header-filter-cell) {
     padding: 0;
-}
-
-.sk-event-filter {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    padding: 0 10px;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-}
-
-.sk-event-filter:hover,
-.sk-event-filter[data-active="true"] {
-    background: #385773;
 }
 
 .sk-event-monitor-main .sk-event-monitor-table-toolbar {
