@@ -181,6 +181,7 @@ const getUserDepartmentId = (user) => (
     ?? user?.department
     ?? user?.depart_id
     ?? user?.id_department
+    ?? user?.id_departament
     ?? user?.department?.id
 );
 
